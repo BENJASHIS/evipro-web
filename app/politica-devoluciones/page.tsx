@@ -12,7 +12,7 @@ export default function PoliticaDevolucionesPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">1. Cancelación de membresía</h2>
-            <p>El suscriptor puede cancelar su membresía en cualquier momento desde el área de miembros o enviando un correo a <a href="mailto:consultas@evipro.pe" className="text-[#7bc96f] hover:underline">consultas@evipro.pe</a>. La cancelación tiene efecto al final del periodo ya pagado. No se realizan cobros adicionales tras la cancelación confirmada.</p>
+            <p>El suscriptor puede cancelar su membresía en cualquier momento desde el área de miembros o enviando un correo a <a href="mailto:reclamaciones@evipro.pe" className="text-[#7bc96f] hover:underline">reclamaciones@evipro.pe</a>. La cancelación tiene efecto al final del periodo ya pagado. No se realizan cobros adicionales tras la cancelación confirmada.</p>
           </section>
 
           <section>
@@ -38,7 +38,7 @@ export default function PoliticaDevolucionesPage() {
             <h2 className="text-white font-light text-lg mb-3">5. Proceso de solicitud de reembolso</h2>
             <p className="mb-3">Para solicitar un reembolso, el suscriptor debe:</p>
             <ol className="list-decimal list-inside space-y-2 ml-2">
-              <li>Enviar correo a <a href="mailto:consultas@evipro.pe" className="text-[#7bc96f] hover:underline">consultas@evipro.pe</a> con asunto &quot;Solicitud de reembolso&quot;.</li>
+              <li>Enviar correo a <a href="mailto:reclamaciones@evipro.pe" className="text-[#7bc96f] hover:underline">reclamaciones@evipro.pe</a> con asunto &quot;Solicitud de reembolso&quot;.</li>
               <li>Indicar nombre completo, email de la cuenta y motivo.</li>
               <li>Adjuntar comprobante de pago si está disponible.</li>
             </ol>
@@ -52,7 +52,7 @@ export default function PoliticaDevolucionesPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">7. Contacto</h2>
-            <p>Para cualquier consulta sobre esta política: <a href="mailto:consultas@evipro.pe" className="text-[#7bc96f] hover:underline">consultas@evipro.pe</a> o a través del <a href="/libro-reclamaciones" className="text-[#7bc96f] hover:underline">Libro de Reclamaciones</a>.</p>
+            <p>Para cualquier consulta sobre esta política: <a href="mailto:reclamaciones@evipro.pe" className="text-[#7bc96f] hover:underline">reclamaciones@evipro.pe</a> o a través del <a href="/libro-reclamaciones" className="text-[#7bc96f] hover:underline">Libro de Reclamaciones</a>.</p>
           </section>
 
         </div>
