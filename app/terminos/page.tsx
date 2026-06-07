@@ -22,17 +22,19 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">3. Descripción del servicio</h2>
-            <p className="mb-3">EVIPro ofrece membresías médicas con acceso a consultas virtuales y/o presenciales con el Dr. José Carlos Jara Ovalle (CMP por verificar), especialista en Medicina Integral y Cannabis Medicinal con sede en Cusco, Perú. Los planes disponibles son:</p>
+            <p className="mb-3">EVIPro ofrece membresías médicas con acceso a consultas virtuales y/o presenciales con el Dr. José Carlos Benjamín Jara Ovalle (CMP [CMP_PENDIENTE]), especialista en Medicina Integral y Cannabis Medicinal con sede en Cusco, Perú. Los planes disponibles son:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li><strong className="text-white">Plan Express</strong> (S/. 10/mes): 1 consulta virtual de 15 minutos + receta digital.</li>
-              <li><strong className="text-white">Plan Cannabis</strong> (S/. 49/mes): Consultas de seguimiento a precio preferencial, receta incluida, apoyo RENPUC, coordinación con farmacia magistral.</li>
-              <li><strong className="text-white">Plan Integral</strong> (S/. 79/mes): Consultas virtuales y presenciales a precio preferencial, todos los beneficios Cannabis más.</li>
+              <li><strong className="text-white">Plan Express</strong> (S/. 59/mes): 1 consulta virtual de 15 minutos + receta digital.</li>
+              <li><strong className="text-white">Plan Cannabis</strong> (S/. 89/mes): Consultas de seguimiento a precio preferencial, receta incluida, apoyo RENPUC, coordinación con farmacia magistral.</li>
+              <li><strong className="text-white">Plan Integral</strong> (S/. 149/mes): Consultas virtuales y presenciales a precio preferencial, todos los beneficios Cannabis más atención presencial.</li>
+              <li><strong className="text-white">Plan Turista Inicio</strong> (S/. 69 quincenal / S/. 119 mensual): Para visitantes nuevos en cannabis medicinal. Consulta virtual completa, receta, RENPUC nuevo candidato, farmacia.</li>
+              <li><strong className="text-white">Plan Turista Plus</strong> (S/. 49 quincenal / S/. 89 mensual): Para visitantes con tratamiento previo. Consulta express, revalidación de receta extranjera, RENPUC continuador, farmacia.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">4. Proceso de contratación y pago</h2>
-            <p>El pago se realiza mediante tarjeta de crédito o débito a través de la pasarela de pagos <strong className="text-white">Culqi</strong>, certificada PCI-DSS. EVIPro no almacena ni procesa datos de tarjetas bancarias. Los cobros son recurrentes según el periodo seleccionado (mensual, trimestral, semestral o anual). El usuario autoriza expresamente los cobros automáticos al contratar la membresía.</p>
+            <p>El pago se realiza mediante tarjeta de crédito o débito a través de la pasarela de pagos <strong className="text-white">Culqi</strong>, certificada PCI-DSS. EVIPro no almacena ni procesa datos de tarjetas bancarias. Los cobros son recurrentes según el periodo seleccionado (quincenal, mensual, trimestral, semestral o anual). El usuario autoriza expresamente los cobros automáticos al contratar la membresía.</p>
           </section>
 
           <section>
@@ -51,17 +53,31 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-light text-lg mb-3">8. Propiedad intelectual</h2>
+            <h2 className="text-white font-light text-lg mb-3">8. Plan Turista — Condiciones especiales</h2>
+            <p className="mb-3">
+              Los planes Turista Inicio y Turista Plus están diseñados para personas que visitan el territorio
+              peruano. Aplican las siguientes condiciones especiales:
+            </p>
+            <ul className="list-disc list-inside space-y-2 ml-2">
+              <li><strong className="text-white">Ámbito territorial:</strong> EVIPro opera exclusivamente dentro del territorio peruano. La atención médica, receta y coordinación de farmacia se realizan conforme a la legislación peruana.</li>
+              <li><strong className="text-white">Transporte internacional:</strong> El transporte o uso del producto fuera del Perú es responsabilidad exclusiva del paciente, conforme a las leyes de su país de destino. EVIPro puede orientar sobre restricciones si se solicita, sin asumir responsabilidad legal por el resultado.</li>
+              <li><strong className="text-white">Reembolso plan quincenal (15 días):</strong> Si el producto farmacéutico no es entregado antes de la fecha de salida del paciente, se reembolsa el costo del medicamento. La coordinación de farmacia (S/. 25) es discrecional: se reembolsa si el retraso fue por causas imputables a EVIPro; no se reembolsa si el paciente desistió. La consulta médica y receta no son reembolsables una vez prestado el servicio.</li>
+              <li><strong className="text-white">Reserva pre-llegada:</strong> El paciente puede contratar el plan y agendar la consulta virtual desde su país de origen antes de viajar a Cusco.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-light text-lg mb-3">9. Propiedad intelectual</h2>
             <p>Todo el contenido de EVIPro (textos médicos, guías, materiales educativos) es propiedad de José Carlos Benjamín Jara Ovalle y está protegido por las leyes de propiedad intelectual. Queda prohibida su reproducción sin autorización escrita.</p>
           </section>
 
           <section>
-            <h2 className="text-white font-light text-lg mb-3">9. Modificaciones</h2>
+            <h2 className="text-white font-light text-lg mb-3">10. Modificaciones</h2>
             <p>EVIPro se reserva el derecho de modificar estos términos con previo aviso de 15 días calendario mediante correo electrónico al usuario registrado. El uso continuado del servicio tras la notificación implica aceptación de los cambios.</p>
           </section>
 
           <section>
-            <h2 className="text-white font-light text-lg mb-3">10. Jurisdicción y ley aplicable</h2>
+            <h2 className="text-white font-light text-lg mb-3">11. Jurisdicción y ley aplicable</h2>
             <p>Estos términos se rigen por las leyes de la República del Perú. Cualquier controversia será sometida a la jurisdicción de los tribunales de la ciudad del Cusco, sin perjuicio del derecho del consumidor a recurrir al INDECOPI.</p>
           </section>
 
