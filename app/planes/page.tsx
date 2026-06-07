@@ -70,9 +70,6 @@ export default async function PlanesPage() {
                         {PERIOD_LABELS[plan.period]}
                       </p>
                       <p className="text-2xl font-light mb-1">S/. {plan.price_soles}</p>
-                      {plan.tickets_qty > 0 && (
-                        <p className="text-xs text-[#7bc96f]">{plan.tickets_qty} tickets sorteo</p>
-                      )}
                       <p className="text-xs text-gray-500 mt-3 group-hover:text-white transition-colors">
                         Suscribirme →
                       </p>

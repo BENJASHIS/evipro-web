@@ -21,7 +21,6 @@ export default async function MiembrosLayout({ children }: { children: React.Rea
         <div className="flex items-center gap-6 flex-wrap">
           {[
             { href: '/miembros', label: 'Inicio' },
-            { href: '/miembros/sorteos', label: 'Sorteos' },
             { href: '/miembros/contenido', label: 'Contenido' },
             { href: '/miembros/recetas', label: 'Farmacia' },
           ].map(link => (

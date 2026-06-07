@@ -2,9 +2,9 @@
 import { useState } from 'react'
 
 const SERVICIOS = [
-  'Plan Express (S/. 10/mes)',
-  'Plan Cannabis (S/. 49/mes)',
-  'Plan Integral (S/. 79/mes)',
+  'Plan Express (S/. 59/mes)',
+  'Plan Cannabis (S/. 89/mes)',
+  'Plan Integral (S/. 149/mes)',
   'Consulta virtual',
   'Consulta presencial',
   'Coordinación de farmacia',

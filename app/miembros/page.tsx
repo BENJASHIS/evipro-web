@@ -17,10 +17,9 @@ export default async function MiembrosPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: subscription }, { data: tickets }] = await Promise.all([
+  const [{ data: profile }, { data: subscription }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
     supabase.from('subscriptions').select('*, membership_plans(*)').eq('user_id', user.id).eq('status', 'active').maybeSingle(),
-    supabase.from('raffle_tickets').select('*').eq('user_id', user.id).order('issued_at', { ascending: false }).limit(5),
   ])
 
   const plan = subscription?.membership_plans as Record<string, unknown> | undefined
@@ -78,23 +77,6 @@ export default async function MiembrosPage() {
             </div>
           )}
 
-          {tickets && tickets.length > 0 && (
-            <div className="border border-white/10 rounded-lg p-6">
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Mis últimos tickets</p>
-                <Link href="/miembros/sorteos" className="text-xs text-[#7bc96f] hover:underline font-mono">
-                  Ver todos →
-                </Link>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {tickets.map(t => (
-                  <span key={t.id} className="text-xs font-mono bg-white/5 border border-white/10 px-3 py-1 rounded">
-                    {t.ticket_code}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
     </div>
