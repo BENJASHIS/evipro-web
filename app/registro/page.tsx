@@ -3,14 +3,31 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
+import type { DocType } from '@/lib/types'
+
+const DOC_TYPES: { value: DocType; label: string }[] = [
+  { value: 'dni', label: 'DNI (Perú)' },
+  { value: 'pasaporte', label: 'Pasaporte' },
+  { value: 'carnet_extranjeria', label: 'Carné de Extranjería' },
+  { value: 'cedula_identidad', label: 'Cédula de Identidad' },
+]
 
 export default function RegistroPage() {
-  const [form, setForm] = useState({ full_name: '', email: '', phone: '', city: '', password: '' })
+  const [form, setForm] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    city: '',
+    password: '',
+    doc_type: 'dni' as DocType,
+    doc_number: '',
+    country_origin: '',
+  })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -34,12 +51,17 @@ export default function RegistroPage() {
         full_name: form.full_name,
         phone: form.phone || null,
         city: form.city || null,
+        dni_encrypted: form.doc_number || null,
+        doc_type: form.doc_type,
+        country_origin: form.country_origin || null,
       })
       if (profileError) { setError('Error al crear perfil. Intenta de nuevo.'); setLoading(false); return }
     }
 
     router.push('/planes')
   }
+
+  const isForeign = form.doc_type !== 'dni'
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#080a08] py-12">
@@ -53,7 +75,7 @@ export default function RegistroPage() {
             { name: 'email', label: 'Correo electrónico', type: 'email', required: true },
             { name: 'password', label: 'Contraseña', type: 'password', required: true },
             { name: 'phone', label: 'Teléfono / WhatsApp', type: 'tel', required: false },
-            { name: 'city', label: 'Ciudad', type: 'text', required: false },
+            { name: 'city', label: 'Ciudad de residencia', type: 'text', required: false },
           ].map(field => (
             <div key={field.name}>
               <label className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">
@@ -69,6 +91,57 @@ export default function RegistroPage() {
               />
             </div>
           ))}
+
+          {/* Tipo de documento */}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">
+              Tipo de documento *
+            </label>
+            <select
+              name="doc_type"
+              value={form.doc_type}
+              onChange={handleChange}
+              className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#7bc96f]"
+            >
+              {DOC_TYPES.map(d => (
+                <option key={d.value} value={d.value} className="bg-[#080a08]">{d.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Número de documento */}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">
+              Número de documento *
+            </label>
+            <input
+              type="text"
+              name="doc_number"
+              value={form.doc_number}
+              onChange={handleChange}
+              required
+              placeholder={form.doc_type === 'dni' ? '12345678' : form.doc_type === 'pasaporte' ? 'AB123456' : ''}
+              className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#7bc96f]"
+            />
+          </div>
+
+          {/* País de origen — solo para extranjeros */}
+          {isForeign && (
+            <div>
+              <label className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">
+                País de origen *
+              </label>
+              <input
+                type="text"
+                name="country_origin"
+                value={form.country_origin}
+                onChange={handleChange}
+                required={isForeign}
+                placeholder="Colombia, Argentina, España..."
+                className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#7bc96f]"
+              />
+            </div>
+          )}
 
           {error && <p className="text-red-400 text-xs">{error}</p>}
 
