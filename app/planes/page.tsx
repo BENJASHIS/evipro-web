@@ -18,6 +18,16 @@ const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlig
     description: 'Seguimiento completo presencial y virtual',
     highlight: 'Consulta virtual S/. 10 · Presencial S/. 40',
   },
+  turista_inicio: {
+    name: 'Plan Turista Inicio',
+    description: 'Para visitantes con necesidades médicas básicas',
+    highlight: 'Atención rápida · Sin requisitos de residencia',
+  },
+  turista_plus: {
+    name: 'Plan Turista Plus',
+    description: 'Para visitantes con cobertura médica ampliada',
+    highlight: 'Consultas ilimitadas · Farmacia coordinada incluida',
+  },
 }
 
 const PERIOD_LABELS: Record<string, string> = {
@@ -25,6 +35,7 @@ const PERIOD_LABELS: Record<string, string> = {
   trimestral: 'Trimestral',
   semestral: 'Semestral',
   anual: 'Anual',
+  quincenal: 'Quincenal',
 }
 
 export default async function PlanesPage() {

@@ -1,8 +1,10 @@
-export type PlanType = 'express' | 'cannabis' | 'integral'
-export type PlanPeriod = 'mensual' | 'trimestral' | 'semestral' | 'anual'
+export type PlanType = 'express' | 'cannabis' | 'integral' | 'turista_inicio' | 'turista_plus'
+export type PlanPeriod = 'mensual' | 'trimestral' | 'semestral' | 'anual' | 'quincenal'
 export type SubscriptionStatus = 'pending' | 'active' | 'cancelled' | 'past_due'
 export type ContentMinPlan = 'express' | 'cannabis' | 'integral'
 export type PharmacyStatus = 'pending' | 'coordinated' | 'shipped' | 'delivered'
+
+export type DocType = 'dni' | 'pasaporte' | 'carnet_extranjeria' | 'cedula_identidad'
 
 export interface MembershipPlan {
   id: string
@@ -29,6 +31,8 @@ export interface Profile {
   city: string | null
   shalom_address: string | null
   member_since: string
+  doc_type: DocType | null
+  country_origin: string | null
 }
 
 export interface Subscription {

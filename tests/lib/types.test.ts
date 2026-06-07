@@ -38,3 +38,20 @@ describe('types', () => {
     expect(['pending', 'active', 'cancelled', 'past_due']).toContain(sub.status)
   })
 })
+
+describe('PlanType turista', () => {
+  it('acepta turista_inicio como PlanType válido', () => {
+    const tipo: import('../../lib/types').PlanType = 'turista_inicio'
+    expect(tipo).toBe('turista_inicio')
+  })
+
+  it('acepta turista_plus como PlanType válido', () => {
+    const tipo: import('../../lib/types').PlanType = 'turista_plus'
+    expect(tipo).toBe('turista_plus')
+  })
+
+  it('acepta quincenal como PlanPeriod válido', () => {
+    const periodo: import('../../lib/types').PlanPeriod = 'quincenal'
+    expect(periodo).toBe('quincenal')
+  })
+})
