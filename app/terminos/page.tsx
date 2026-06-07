@@ -22,7 +22,7 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">3. Descripción del servicio</h2>
-            <p className="mb-3">EVIPro ofrece membresías médicas con acceso a consultas virtuales y/o presenciales con el Dr. José Carlos Benjamín Jara Ovalle (CMP [CMP_PENDIENTE]), especialista en Medicina Integral y Cannabis Medicinal con sede en Cusco, Perú. Los planes disponibles son:</p>
+            <p className="mb-3">EVIPro ofrece membresías médicas con acceso a consultas virtuales y/o presenciales con el Dr. José Carlos Benjamín Jara Ovalle (CMP 82817), especialista en Medicina Integral y Cannabis Medicinal con sede en Cusco, Perú. Los planes disponibles son:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li><strong className="text-white">Plan Express</strong> (S/. 59/mes): 1 consulta virtual de 15 minutos + receta digital.</li>
               <li><strong className="text-white">Plan Cannabis</strong> (S/. 89/mes): Consultas de seguimiento a precio preferencial, receta incluida, apoyo RENPUC, coordinación con farmacia magistral.</li>
