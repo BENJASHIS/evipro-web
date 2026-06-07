@@ -6,13 +6,16 @@ import type { MembershipPlan } from '@/lib/types'
 const PLAN_NAMES: Record<string, string> = {
   express: 'Plan Express',
   cannabis: 'Plan Cannabis',
-  integral: 'Plan Integral'
+  integral: 'Plan Integral',
+  turista_inicio: 'Plan Turista Inicio',
+  turista_plus: 'Plan Turista Plus',
 }
 const PERIOD_NAMES: Record<string, string> = {
+  quincenal: 'Quincenal (15 días)',
   mensual: 'Mensual',
   trimestral: 'Trimestral',
   semestral: 'Semestral',
-  anual: 'Anual'
+  anual: 'Anual',
 }
 
 function CheckoutForm() {
@@ -23,6 +26,10 @@ function CheckoutForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [culqiReady, setCulqiReady] = useState(false)
+  const [legalAccepted, setLegalAccepted] = useState(false)
+
+  const isTurista = plan?.type === 'turista_inicio' || plan?.type === 'turista_plus'
+  const isQuincenal = plan?.period === 'quincenal'
 
   useEffect(() => {
     if (!planId) return
@@ -121,9 +128,35 @@ function CheckoutForm() {
 
       {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
 
+      {isQuincenal && (
+        <div className="border border-yellow-400/20 bg-yellow-400/5 rounded p-3 mb-4">
+          <p className="text-yellow-400 text-xs font-mono leading-relaxed">
+            ⚠️ Con plan quincenal el delivery (3-5 días hábiles) puede no completarse antes de tu salida.
+            Si el producto no llega a tiempo, se reembolsa el costo del medicamento. La coordinación
+            de farmacia (S/. 25) es discrecional según la causa del retraso.
+          </p>
+        </div>
+      )}
+
+      {isTurista && (
+        <label className="flex items-start gap-3 mb-4 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={legalAccepted}
+            onChange={e => setLegalAccepted(e.target.checked)}
+            className="mt-0.5 accent-[#7bc96f]"
+          />
+          <span className="text-xs text-gray-400 leading-relaxed">
+            Entiendo que EVIPro opera dentro del territorio peruano. El uso o transporte del
+            producto fuera del Perú es de mi exclusiva responsabilidad, conforme a la legislación
+            de mi país de destino.
+          </span>
+        </label>
+      )}
+
       <button
         onClick={handlePagar}
-        disabled={loading || !culqiReady}
+        disabled={loading || !culqiReady || (isTurista && !legalAccepted)}
         className="w-full py-3 bg-[#2d5a27] hover:bg-[#4a8c42] text-white rounded transition-colors disabled:opacity-50 text-sm"
       >
         {loading ? 'Procesando...' : !culqiReady ? 'Cargando...' : 'Pagar con tarjeta'}
