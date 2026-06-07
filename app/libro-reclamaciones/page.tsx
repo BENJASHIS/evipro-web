@@ -5,6 +5,8 @@ const SERVICIOS = [
   'Plan Express (S/. 59/mes)',
   'Plan Cannabis (S/. 89/mes)',
   'Plan Integral (S/. 149/mes)',
+  'Plan Turista Inicio (S/. 69 quincenal / S/. 119 mensual)',
+  'Plan Turista Plus (S/. 49 quincenal / S/. 89 mensual)',
   'Consulta virtual',
   'Consulta presencial',
   'Coordinación de farmacia',
