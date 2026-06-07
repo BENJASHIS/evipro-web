@@ -21,12 +21,12 @@ const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlig
   turista_inicio: {
     name: 'Plan Turista Inicio',
     description: 'Para visitantes que inician tratamiento con cannabis medicinal en Perú',
-    highlight: 'Consulta virtual completa · RENPUC nuevo candidato · Farmacia incluida',
+    highlight: 'Consulta virtual completa · RENPUC nuevo candidato · Coordinación con farmacia magistral',
   },
   turista_plus: {
     name: 'Plan Turista Plus',
     description: 'Para visitantes que ya usan cannabis y revalidan su tratamiento',
-    highlight: 'Consulta express · Revalidación receta extranjera · RENPUC continuador',
+    highlight: 'Consulta express · Revalidación receta extranjera · Coordinación con farmacia magistral',
   },
 }
 
