@@ -20,22 +20,22 @@ const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlig
   },
   turista_inicio: {
     name: 'Plan Turista Inicio',
-    description: 'Para visitantes con necesidades médicas básicas',
-    highlight: 'Atención rápida · Sin requisitos de residencia',
+    description: 'Para visitantes que inician tratamiento con cannabis medicinal en Perú',
+    highlight: 'Consulta virtual completa · RENPUC nuevo candidato · Farmacia incluida',
   },
   turista_plus: {
     name: 'Plan Turista Plus',
-    description: 'Para visitantes con cobertura médica ampliada',
-    highlight: 'Consultas ilimitadas · Farmacia coordinada incluida',
+    description: 'Para visitantes que ya usan cannabis y revalidan su tratamiento',
+    highlight: 'Consulta express · Revalidación receta extranjera · RENPUC continuador',
   },
 }
 
 const PERIOD_LABELS: Record<string, string> = {
+  quincenal: 'Quincenal (15 días)',
   mensual: 'Mensual',
   trimestral: 'Trimestral',
   semestral: 'Semestral',
   anual: 'Anual',
-  quincenal: 'Quincenal',
 }
 
 export default async function PlanesPage() {
@@ -60,7 +60,8 @@ export default async function PlanesPage() {
           Accede a atención médica especializada en Cannabis Medicinal, Medicina de Altura y Salud Mental.
         </p>
 
-        <div className="grid gap-12">
+        {/* Planes locales */}
+        <div className="grid gap-12 mb-20">
           {(['express', 'cannabis', 'integral'] as PlanType[]).map(type => {
             const info = PLAN_LABELS[type]
             const typePlans = byType[type] ?? []
@@ -69,7 +70,6 @@ export default async function PlanesPage() {
                 <h2 className="text-2xl font-light mb-1">{info.name}</h2>
                 <p className="text-gray-400 text-sm mb-2">{info.description}</p>
                 <p className="text-[#7bc96f] text-xs font-mono mb-6">✓ {info.highlight}</p>
-
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {typePlans.map(plan => (
                     <Link
@@ -92,7 +92,66 @@ export default async function PlanesPage() {
           })}
         </div>
 
-        <p className="text-center text-xs text-gray-600 mt-12 font-mono">
+        {/* Planes Turista */}
+        <div className="border-t border-white/10 pt-16">
+          <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono">Para visitantes</p>
+          <h2 className="text-3xl font-light font-serif italic mb-2">Planes Turista</h2>
+          <p className="text-gray-400 text-sm mb-4 max-w-xl">
+            Reserva desde tu país — la consulta es 100% virtual. Con plan de 15 días recomendamos
+            comprar al menos 7 días antes de llegar. Con plan de 30 días, mínimo 5 días de anticipación.
+          </p>
+
+          {/* Aviso legal */}
+          <div className="border border-yellow-400/20 bg-yellow-400/5 rounded-lg p-4 mb-10 max-w-2xl">
+            <p className="text-yellow-400 text-xs font-mono leading-relaxed">
+              EVIPro opera exclusivamente en territorio peruano. Podemos orientarte sobre restricciones
+              en tu país de destino si lo solicitas, pero el transporte del producto fuera del Perú
+              es responsabilidad exclusiva del viajero conforme a las leyes de su país.
+            </p>
+          </div>
+
+          <div className="grid gap-10">
+            {(['turista_inicio', 'turista_plus'] as PlanType[]).map(type => {
+              const info = PLAN_LABELS[type]
+              const typePlans = byType[type] ?? []
+              return (
+                <div key={type} className="border border-white/10 rounded-lg p-8">
+                  <h3 className="text-2xl font-light mb-1">{info.name}</h3>
+                  <p className="text-gray-400 text-sm mb-2">{info.description}</p>
+                  <p className="text-[#7bc96f] text-xs font-mono mb-6">✓ {info.highlight}</p>
+                  <div className="grid grid-cols-2 gap-4 max-w-sm">
+                    {typePlans.map(plan => (
+                      <Link
+                        key={plan.id}
+                        href={`/checkout?plan=${plan.id}`}
+                        className="block border border-white/10 hover:border-[#7bc96f] rounded p-4 text-center transition-colors group"
+                      >
+                        <p className="text-xs text-gray-500 uppercase tracking-widest mb-2 font-mono">
+                          {PERIOD_LABELS[plan.period]}
+                        </p>
+                        <p className="text-2xl font-light mb-1">S/. {plan.price_soles}</p>
+                        {plan.period === 'quincenal' && (
+                          <p className="text-xs text-yellow-400 mt-1 font-mono">⚠️ Ver aviso delivery</p>
+                        )}
+                        <p className="text-xs text-gray-500 mt-3 group-hover:text-white transition-colors">
+                          Reservar →
+                        </p>
+                      </Link>
+                    ))}
+                  </div>
+                  {typePlans.some(p => p.period === 'quincenal') && (
+                    <p className="text-xs text-gray-500 font-mono mt-4 max-w-md">
+                      ⚠️ Plan quincenal: el delivery (3-5 días hábiles) puede no completarse antes de tu salida.
+                      Si el producto no llega a tiempo, se reembolsa el costo del medicamento.
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-gray-600 mt-16 font-mono">
           Pagos procesados de forma segura por Culqi · Cancela cuando quieras
         </p>
       </div>
