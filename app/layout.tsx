@@ -29,8 +29,23 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {children}
-        <footer className="border-t border-white/5 bg-[#080a08] py-8 px-6">
+        <footer className="border-t border-white/5 bg-[#080a08] py-10 px-6">
           <div className="max-w-4xl mx-auto space-y-4">
+            {/* Contacto */}
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs font-mono text-gray-400">
+              <a href="tel:+51942185939" className="hover:text-white transition-colors">
+                942 185 939
+              </a>
+              <a href="tel:+51924074152" className="hover:text-white transition-colors">
+                924 074 152
+              </a>
+              <a href="mailto:consulta@evipro.pe" className="hover:text-white transition-colors">
+                consulta@evipro.pe
+              </a>
+              <span className="text-gray-600">
+                Av. Infancia 410 Consultorio 2, Wanchaq — Cusco, Perú
+              </span>
+            </div>
             {/* Redes sociales */}
             <div className="flex justify-center gap-6">
               <a href="https://www.instagram.com/eviproia" target="_blank" rel="noopener noreferrer"
