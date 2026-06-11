@@ -4,15 +4,17 @@ import Image from 'next/image'
 export default function Nav() {
   return (
     <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
-      <Link href="/" className="flex items-center gap-2.5 group">
+      <Link href="/" className="flex items-center gap-2 group">
         <Image
           src="/images/logo-evipro.png"
           alt="EVIPro"
-          width={34}
-          height={34}
+          width={32}
+          height={32}
           className="rounded-full"
         />
-        <span className="font-serif italic text-lg tracking-tight text-white">EVIPro</span>
+        <span className="text-xl tracking-tight">
+          <span className="font-bold text-white">EVI</span><span className="font-serif italic text-[#7bc96f]">Pro</span>
+        </span>
       </Link>
       <div className="flex items-center gap-6 text-xs font-mono text-gray-400">
         <Link href="/planes" className="hover:text-white transition-colors">Planes</Link>
