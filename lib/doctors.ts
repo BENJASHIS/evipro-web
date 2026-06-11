@@ -1,3 +1,5 @@
+import type { DoctorCounseling } from '@/lib/counseling'
+
 export type LanguageLevel = 'Nativo' | 'Avanzado' | 'Intermedio' | 'Básico'
 
 export interface Language {
@@ -26,6 +28,7 @@ export interface Doctor {
   availability: string
   whatsapp: string
   photo: string
+  counseling?: DoctorCounseling
 }
 
 export const DOCTORS: Doctor[] = [
@@ -51,6 +54,12 @@ export const DOCTORS: Doctor[] = [
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-jara.jpeg',
+    counseling: {
+      available: true,
+      description: 'Orientación sobre cannabis medicinal, preparación para consulta, dudas sobre medicina de altura y síntomas de salud mental.',
+      modalities: ['video', 'messaging', 'whatsapp'],
+      schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],
+    },
   },
   {
     slug: 'dr-vera',
@@ -76,5 +85,11 @@ export const DOCTORS: Doctor[] = [
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-vera.jpeg',
+    counseling: {
+      available: true,
+      description: 'Consejería para adulto mayor, cuidados paliativos, diabetes y enfermedades crónicas. Orientación para familias y cuidadores.',
+      modalities: ['video', 'messaging', 'whatsapp'],
+      schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],
+    },
   },
 ]
