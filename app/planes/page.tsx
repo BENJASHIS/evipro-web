@@ -5,11 +5,11 @@ import Link from 'next/link'
 import Nav from '@/app/components/Nav'
 
 const PLAN_IMAGES: Record<PlanType, { src: string; placeholder: string }> = {
-  express:        { src: '/images/planes/express.png',        placeholder: 'from-emerald-950 to-[#080a08]' },
-  cannabis:       { src: '/images/planes/cannabis.png',       placeholder: 'from-green-950 to-[#080a08]' },
-  integral:       { src: '/images/planes/integral.png',       placeholder: 'from-teal-950 to-[#080a08]' },
-  turista_inicio: { src: '/images/planes/turista-inicio.png', placeholder: 'from-amber-950 to-[#080a08]' },
-  turista_plus:   { src: '/images/planes/turista-plus.png',   placeholder: 'from-violet-950 to-[#080a08]' },
+  express:        { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-950 to-[#080a08]' },
+  cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-[#080a08]' },
+  integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-[#080a08]' },
+  turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-[#080a08]' },
+  turista_plus:   { src: '/images/planes/turista-plus.jpg',   placeholder: 'from-violet-950 to-[#080a08]' },
 }
 
 const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlight: string }> = {
