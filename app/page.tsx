@@ -1,19 +1,10 @@
 import Link from 'next/link'
+import Nav from '@/app/components/Nav'
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#080a08] text-white">
-      {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-5 max-w-5xl mx-auto">
-        <span className="font-serif italic text-lg tracking-tight">EVIPro</span>
-        <div className="flex items-center gap-6 text-xs font-mono text-gray-400">
-          <Link href="/planes" className="hover:text-white transition-colors">Planes</Link>
-          <Link href="/login" className="hover:text-white transition-colors">Ingresar</Link>
-          <Link href="/registro" className="border border-[#7bc96f] text-[#7bc96f] px-4 py-1.5 rounded hover:bg-[#7bc96f] hover:text-black transition-colors">
-            Unirme
-          </Link>
-        </div>
-      </nav>
+      <Nav />
 
       {/* Hero */}
       <section className="max-w-5xl mx-auto px-6 pt-24 pb-32">
@@ -81,6 +72,38 @@ export default function Home() {
         >
           Ver todos los planes →
         </Link>
+      </section>
+
+      {/* Contacto */}
+      <section className="border-t border-white/5 py-16 px-6">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono text-center">Contacto</p>
+          <div className="grid md:grid-cols-3 gap-6 text-center">
+            <div className="border border-white/10 rounded-lg p-6">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Teléfono</p>
+              <a href="tel:+51942185939" className="text-white hover:text-[#7bc96f] transition-colors font-light block">
+                942 185 939
+              </a>
+              <a href="tel:+51924074152" className="text-gray-400 hover:text-[#7bc96f] transition-colors font-light text-sm block mt-1">
+                924 074 152
+              </a>
+            </div>
+            <div className="border border-white/10 rounded-lg p-6">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Correo</p>
+              <a href="mailto:consulta@evipro.pe" className="text-white hover:text-[#7bc96f] transition-colors font-light">
+                consulta@evipro.pe
+              </a>
+            </div>
+            <div className="border border-white/10 rounded-lg p-6">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Consultorio</p>
+              <p className="text-white font-light text-sm leading-relaxed">
+                Av. Infancia 410 Consultorio 2<br />
+                Wanchaq · Cusco, Perú
+              </p>
+              <p className="text-gray-500 text-xs mt-1">Ref. frente a Subcafae</p>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   )
