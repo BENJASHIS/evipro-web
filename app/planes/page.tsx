@@ -85,7 +85,7 @@ export default async function PlanesPage() {
                     alt={info.name}
                     fill
                     className="object-cover opacity-80"
-                    onError={() => {}}
+
                   />
                 </div>
                 <div className="p-8">
@@ -146,7 +146,7 @@ export default async function PlanesPage() {
                       alt={info.name}
                       fill
                       className="object-cover opacity-80"
-                      onError={() => {}}
+  
                     />
                   </div>
                   <div className="p-8">
