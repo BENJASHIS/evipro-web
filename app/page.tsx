@@ -16,7 +16,8 @@ export default function Home() {
         </h1>
         <p className="text-gray-400 text-lg mb-10 max-w-xl">
           Accede a atención médica especializada en Cannabis Medicinal,
-          Medicina de Altura y Salud Mental con membresías desde S/. 59/mes.
+          Medicina de Altura, Gerontología, Cuidados Paliativos y más —
+          con membresías desde S/. 59/mes.
         </p>
         <div className="flex flex-wrap gap-4">
           <Link
@@ -49,6 +50,18 @@ export default function Home() {
             {
               title: 'Salud Mental',
               desc: 'Consultas virtuales y presenciales con enfoque integral y sin estigma.',
+            },
+            {
+              title: 'Gerontología',
+              desc: 'Atención integral del adulto mayor con enfoque humanizado para el paciente y su familia.',
+            },
+            {
+              title: 'Cuidados Paliativos',
+              desc: 'Acompañamiento médico en enfermedades crónicas y procesos de cuidado avanzado.',
+            },
+            {
+              title: 'Diabetes y Metabólico',
+              desc: 'Manejo de diabetes, enfermedades crónicas no transmisibles y seguimiento metabólico.',
             },
           ].map((item) => (
             <div key={item.title} className="border border-white/10 rounded-lg p-6">
