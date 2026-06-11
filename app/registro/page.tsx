@@ -46,7 +46,7 @@ export default function RegistroPage() {
     if (signUpError) { setError(signUpError.message); setLoading(false); return }
 
     if (data.user) {
-      const { error: profileError } = await supabase.from('profiles').insert({
+      const { error: profileError } = await supabase.from('profiles').upsert({
         id: data.user.id,
         full_name: form.full_name,
         phone: form.phone || null,
@@ -55,7 +55,7 @@ export default function RegistroPage() {
         doc_type: form.doc_type,
         country_origin: form.country_origin || null,
       })
-      if (profileError) { setError('Error al crear perfil. Intenta de nuevo.'); setLoading(false); return }
+      if (profileError) { setError('Error al crear perfil: ' + profileError.message); setLoading(false); return }
     }
 
     router.push('/planes')
