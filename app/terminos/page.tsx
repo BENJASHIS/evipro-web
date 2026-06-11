@@ -12,7 +12,7 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">1. Identificación del proveedor</h2>
-            <p>El presente sitio web <strong className="text-white">evipro.pe</strong> es operado por <strong className="text-white">José Carlos Benjamín Jara Ovalle</strong>, con RUC <strong className="text-white">10439904572</strong>, con domicilio fiscal en la ciudad de Cusco, Perú. Correo de contacto: <a href="mailto:consultas@evipro.pe" className="text-[#7bc96f] hover:underline">consultas@evipro.pe</a>.</p>
+            <p>El presente sitio web <strong className="text-white">evipro.pe</strong> es operado por <strong className="text-white">José Carlos Benjamín Jara Ovalle</strong>, con RUC <strong className="text-white">10439904572</strong>, con domicilio fiscal en la ciudad de Cusco, Perú. Correo de contacto: <a href="mailto:consulta@evipro.pe" className="text-[#7bc96f] hover:underline">consulta@evipro.pe</a>.</p>
           </section>
 
           <section>
@@ -49,7 +49,7 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">7. Protección de datos personales</h2>
-            <p>El tratamiento de datos personales se rige por la <strong className="text-white">Ley N.º 29733</strong> (Ley de Protección de Datos Personales del Perú). Los datos recopilados son utilizados exclusivamente para la prestación del servicio médico. Los datos sensibles (DNI, historia clínica) se almacenan de forma encriptada y solo son accesibles por el médico titular. El usuario puede solicitar acceso, rectificación, cancelación u oposición de sus datos escribiendo a <a href="mailto:consultas@evipro.pe" className="text-[#7bc96f] hover:underline">consultas@evipro.pe</a>.</p>
+            <p>El tratamiento de datos personales se rige por la <strong className="text-white">Ley N.º 29733</strong> (Ley de Protección de Datos Personales del Perú). Los datos recopilados son utilizados exclusivamente para la prestación del servicio médico. Los datos sensibles (DNI, historia clínica) se almacenan de forma encriptada y solo son accesibles por el médico titular. El usuario puede solicitar acceso, rectificación, cancelación u oposición de sus datos escribiendo a <a href="mailto:consulta@evipro.pe" className="text-[#7bc96f] hover:underline">consulta@evipro.pe</a>.</p>
           </section>
 
           <section>
