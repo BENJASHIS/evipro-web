@@ -29,9 +29,16 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
         <p className="text-gray-500 text-xs font-mono mb-4">
           {doctor.location} · {doctor.modality}
         </p>
-        <span className="text-[#7bc96f] text-xs font-mono group-hover:underline">
-          Ver perfil completo →
-        </span>
+        <div className="flex items-center justify-between">
+          <span className="text-[#7bc96f] text-xs font-mono group-hover:underline">
+            Ver perfil completo →
+          </span>
+          {doctor.counseling?.available && (
+            <span className="text-xs font-mono bg-[#7bc96f]/10 text-[#7bc96f] px-2 py-0.5 rounded">
+              Consejería
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   )
