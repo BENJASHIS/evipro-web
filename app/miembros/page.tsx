@@ -3,13 +3,19 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 const PLAN_NAMES: Record<string, string> = {
-  express: 'Plan Express', cannabis: 'Plan Cannabis', integral: 'Plan Integral'
+  express:        'Plan Express',
+  esencial:       'Plan Esencial',
+  cannabis:       'Plan Cannabis',
+  integral:       'Plan Integral',
+  turista_inicio: 'Plan Turista Inicio',
+  turista_plus:   'Plan Turista Plus',
 }
+
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  active:    { label: 'Activa',                   color: 'text-[#7bc96f]' },
-  pending:   { label: 'Pendiente de activación',  color: 'text-yellow-400' },
-  past_due:  { label: 'Pago pendiente',           color: 'text-red-400' },
-  cancelled: { label: 'Cancelada',                color: 'text-gray-500' },
+  active:    { label: 'Activa',                  color: 'text-[#7bc96f]' },
+  pending:   { label: 'Pendiente de activación', color: 'text-yellow-400' },
+  past_due:  { label: 'Pago pendiente',          color: 'text-red-400' },
+  cancelled: { label: 'Cancelada',               color: 'text-gray-500' },
 }
 
 export default async function MiembrosPage() {
@@ -19,10 +25,28 @@ export default async function MiembrosPage() {
 
   const [{ data: profile }, { data: subscription }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('subscriptions').select('*, membership_plans(*)').eq('user_id', user.id).eq('status', 'active').maybeSingle(),
+    supabase
+      .from('subscriptions')
+      .select('*, membership_plans(*)')
+      .eq('user_id', user.id)
+      .in('status', ['active', 'pending'])
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ])
 
   const plan = subscription?.membership_plans as Record<string, unknown> | undefined
+  const isActive = subscription?.status === 'active'
+  const planType = plan?.type as string | undefined
+
+  const hasCannabisEmergency = planType === 'cannabis' || planType === 'integral'
+  const hasTickets = Number(plan?.tickets_qty ?? 0) > 0
+  const virtualPrice = Number(plan?.discount_virtual_pct ?? 0) > 0
+    ? Math.round(70 * (1 - Number(plan!.discount_virtual_pct) / 100))
+    : null
+  const presencialPrice = Number(plan?.discount_presencial_pct ?? 0) > 0
+    ? Math.round(100 * (1 - Number(plan!.discount_presencial_pct) / 100))
+    : null
 
   return (
     <div>
@@ -34,18 +58,27 @@ export default async function MiembrosPage() {
       {!subscription ? (
         <div className="border border-white/10 rounded-lg p-8 text-center">
           <p className="text-gray-400 mb-4">No tienes una membresía activa.</p>
-          <Link href="/planes" className="text-[#7bc96f] underline text-sm">Ver planes →</Link>
+          <Link href="/planes" className="bg-[#2d5a27] hover:bg-[#4a8c42] text-white px-6 py-2 rounded font-mono text-sm transition-colors">
+            Ver planes →
+          </Link>
         </div>
       ) : (
         <div className="grid gap-6">
+
+          {/* Estado de membresía */}
           <div className="border border-white/10 rounded-lg p-6">
             <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-3">Tu membresía</p>
-            <div className="flex items-baseline justify-between flex-wrap gap-2">
-              <h2 className="text-xl font-light">{PLAN_NAMES[plan?.type as string] ?? 'Plan'}</h2>
+            <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+              <h2 className="text-xl font-light">{PLAN_NAMES[planType ?? ''] ?? 'Plan'}</h2>
               <span className={`text-sm font-mono ${STATUS_LABELS[subscription.status]?.color ?? 'text-white'}`}>
                 {STATUS_LABELS[subscription.status]?.label ?? subscription.status}
               </span>
             </div>
+            {!isActive && (
+              <p className="text-xs text-yellow-400 font-mono mt-2">
+                Tu pago fue recibido. El equipo EVIPro activará tu cuenta en breve.
+              </p>
+            )}
             {subscription.period_end && (
               <p className="text-xs text-gray-500 mt-2 font-mono">
                 Próximo cobro: {new Date(subscription.period_end).toLocaleDateString('es-PE')}
@@ -53,27 +86,82 @@ export default async function MiembrosPage() {
             )}
           </div>
 
-          {plan && (
+          {/* Beneficios */}
+          {plan && isActive && (
             <div className="border border-white/10 rounded-lg p-6">
               <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-3">Tus beneficios</p>
               <ul className="space-y-2 text-sm text-gray-300">
-                {Number(plan.discount_virtual_pct) > 0 && (
-                  <li>✓ Consulta virtual: <span className="text-white font-light">
-                    S/. {Math.round(70 * (1 - Number(plan.discount_virtual_pct) / 100))}
-                    <span className="text-gray-500 line-through ml-2">S/. 70</span>
-                  </span></li>
+                {virtualPrice !== null && (
+                  <li>✓ Consulta virtual de seguimiento:
+                    <span className="text-white font-light ml-1">S/. {virtualPrice}</span>
+                    <span className="text-gray-500 line-through ml-2 text-xs">S/. 70</span>
+                  </li>
                 )}
-                {Number(plan.discount_presencial_pct) > 0 && (
-                  <li>✓ Consulta presencial: <span className="text-white font-light">
-                    S/. {Math.round(100 * (1 - Number(plan.discount_presencial_pct) / 100))}
-                    <span className="text-gray-500 line-through ml-2">S/. 100</span>
-                  </span></li>
+                {presencialPrice !== null && (
+                  <li>✓ Consulta presencial:
+                    <span className="text-white font-light ml-1">S/. {presencialPrice}</span>
+                    <span className="text-gray-500 line-through ml-2 text-xs">S/. 100</span>
+                  </li>
                 )}
                 {Boolean(plan.includes_prescription) && <li>✓ Receta digital incluida</li>}
                 {Boolean(plan.includes_renpuc_support) && <li>✓ Apoyo con registro RENPUC</li>}
                 {Boolean(plan.includes_pharmacy_coord) && <li>✓ Coordinación con farmacia magistral</li>}
-                <li>✓ Prioridad en emergencias cannábicas 24/7</li>
+                {hasCannabisEmergency && <li>✓ Prioridad en emergencias cannábicas 24/7</li>}
+                {hasTickets && (
+                  <li>✓ <span className="text-yellow-400">{Number(plan.tickets_qty)} ticket{Number(plan.tickets_qty) > 1 ? 's' : ''} de sorteo por periodo</span></li>
+                )}
               </ul>
+            </div>
+          )}
+
+          {/* Accesos rápidos */}
+          {isActive && (
+            <div className="border border-white/10 rounded-lg p-6">
+              <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Accesos rápidos</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Link
+                  href="/consejeria"
+                  className="flex items-center gap-3 p-4 border border-white/10 rounded hover:border-[#7bc96f]/50 transition-colors group"
+                >
+                  <span className="text-2xl">💬</span>
+                  <div>
+                    <p className="text-sm text-white group-hover:text-[#7bc96f] transition-colors">Consejería médica</p>
+                    <p className="text-xs text-gray-500 font-mono">Agenda una sesión</p>
+                  </div>
+                </Link>
+                <a
+                  href="https://wa.me/51942185939"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 border border-white/10 rounded hover:border-[#7bc96f]/50 transition-colors group"
+                >
+                  <span className="text-2xl">📱</span>
+                  <div>
+                    <p className="text-sm text-white group-hover:text-[#7bc96f] transition-colors">WhatsApp EVIPro</p>
+                    <p className="text-xs text-gray-500 font-mono">942 185 939</p>
+                  </div>
+                </a>
+                <Link
+                  href="/medicos"
+                  className="flex items-center gap-3 p-4 border border-white/10 rounded hover:border-[#7bc96f]/50 transition-colors group"
+                >
+                  <span className="text-2xl">👨‍⚕️</span>
+                  <div>
+                    <p className="text-sm text-white group-hover:text-[#7bc96f] transition-colors">Equipo médico</p>
+                    <p className="text-xs text-gray-500 font-mono">Ver perfiles</p>
+                  </div>
+                </Link>
+                <a
+                  href="mailto:consulta@evipro.pe"
+                  className="flex items-center gap-3 p-4 border border-white/10 rounded hover:border-[#7bc96f]/50 transition-colors group"
+                >
+                  <span className="text-2xl">✉️</span>
+                  <div>
+                    <p className="text-sm text-white group-hover:text-[#7bc96f] transition-colors">Soporte</p>
+                    <p className="text-xs text-gray-500 font-mono">consulta@evipro.pe</p>
+                  </div>
+                </a>
+              </div>
             </div>
           )}
 
