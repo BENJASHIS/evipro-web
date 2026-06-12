@@ -61,8 +61,8 @@ function CheckoutForm() {
     setError(null)
 
     const w = window as Window & {
-      Culqi?: { settings: (s: object) => void; open: () => void }
-      culqi?: (token: { id: string }) => void
+      Culqi?: { settings: (s: object) => void; open: () => void; token?: { id: string } }
+      culqi?: () => void
     }
 
     if (!w.Culqi) {
@@ -78,7 +78,9 @@ function CheckoutForm() {
       description: `${PLAN_NAMES[plan.type] ?? plan.type} · ${PERIOD_NAMES[plan.period] ?? plan.period}`,
     })
 
-    w.culqi = async (token) => {
+    w.culqi = async () => {
+      const token = w.Culqi?.token
+      if (!token?.id) { setError('Error al procesar el pago. Intenta de nuevo.'); setLoading(false); return }
       try {
         const res = await fetch('/api/subscriptions', {
           method: 'POST',

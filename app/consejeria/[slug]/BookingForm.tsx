@@ -106,8 +106,8 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
 
   function handlePaidBooking() {
     const w = window as Window & {
-      Culqi?: { settings: (s: object) => void; open: () => void }
-      culqi?: (token: { id: string }) => void
+      Culqi?: { settings: (s: object) => void; open: () => void; token?: { id: string } }
+      culqi?: () => void
     }
     if (!w.Culqi || price === null) return
     w.Culqi.settings({
@@ -116,7 +116,9 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
       amount: price * 100,
       description: `Consejería ${MODALITY_LABELS[modality!]} · ${doctor.name}`,
     })
-    w.culqi = (token) => {
+    w.culqi = () => {
+      const token = w.Culqi?.token
+      if (!token?.id) { setError('Error al procesar el pago. Intenta de nuevo.'); return }
       saveBooking({ paid: true, payment_method: 'culqi', culqi_order_id: token.id })
     }
     w.Culqi.open()
