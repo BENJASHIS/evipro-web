@@ -6,6 +6,7 @@ import Nav from '@/app/components/Nav'
 
 const PLAN_IMAGES: Record<PlanType, { src: string; placeholder: string }> = {
   express:        { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-950 to-[#080a08]' },
+  esencial:       { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-900 to-[#080a08]' },
   cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-[#080a08]' },
   integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-[#080a08]' },
   turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-[#080a08]' },
@@ -17,6 +18,11 @@ const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlig
     name: 'Plan Express',
     description: 'Puerta de entrada al cuidado médico especializado',
     highlight: '1 consulta virtual de 15 min incluida',
+  },
+  esencial: {
+    name: 'Plan Esencial',
+    description: 'Seguimiento y bienestar — un paso sobre Express',
+    highlight: 'Consulta virtual seguimiento S/. 30 · 1 ticket de sorteo mensual',
   },
   cannabis: {
     name: 'Plan Cannabis',
@@ -73,7 +79,7 @@ export default async function PlanesPage() {
 
         {/* Planes locales */}
         <div className="grid gap-12 mb-20">
-          {(['express', 'cannabis', 'integral'] as PlanType[]).map(type => {
+          {(['express', 'esencial', 'cannabis', 'integral'] as PlanType[]).map(type => {
             const info = PLAN_LABELS[type]
             const img = PLAN_IMAGES[type]
             const typePlans = byType[type] ?? []
