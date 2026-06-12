@@ -45,7 +45,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
 
   useEffect(() => {
     const script = document.createElement('script')
-    script.src = 'https://checkout.culqi.com/js/v4'
+    script.src = 'https://checkout.culqi.com/js/v3'
     script.async = true
     script.onload = () => {
       const w = window as Window & { Culqi?: { publicKey: string } }
