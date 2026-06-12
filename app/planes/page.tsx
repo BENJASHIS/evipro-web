@@ -4,9 +4,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Nav from '@/app/components/Nav'
 
-const PLAN_IMAGES: Record<PlanType, { src: string; placeholder: string }> = {
+const PLAN_IMAGES: Record<PlanType, { src: string | null; placeholder: string }> = {
   express:        { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-950 to-[#080a08]' },
-  esencial:       { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-900 to-[#080a08]' },
+  esencial:       { src: null,                                placeholder: 'from-emerald-900 to-[#0d1f0d]' },
   cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-[#080a08]' },
   integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-[#080a08]' },
   turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-[#080a08]' },
@@ -86,13 +86,14 @@ export default async function PlanesPage() {
             return (
               <div key={type} className="border border-white/10 rounded-lg overflow-hidden">
                 <div className={`relative w-full h-48 bg-gradient-to-br ${img.placeholder}`}>
-                  <Image
-                    src={img.src}
-                    alt={info.name}
-                    fill
-                    className="object-cover opacity-80"
-
-                  />
+                  {img.src && (
+                    <Image
+                      src={img.src}
+                      alt={info.name}
+                      fill
+                      className="object-cover opacity-80"
+                    />
+                  )}
                 </div>
                 <div className="p-8">
                   <h2 className="text-2xl font-light mb-1">{info.name}</h2>
