@@ -1,13 +1,16 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { activateSubscription } from '@/app/admin/actions'
 import Link from 'next/link'
 
 export default async function AdminPage() {
   const supabase = await createServerSupabaseClient()
 
-  const [{ count: totalActive }, { count: totalPending }, { data: recentSubs }, { data: recentRequests }, { count: totalCounseling }] =
+  const [{ count: totalActive }, { count: totalPending }, { data: pendingSubs }, { data: recentSubs }, { data: recentRequests }, { count: totalCounseling }] =
     await Promise.all([
       supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
       supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+      supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period, price_soles)')
+        .eq('status', 'pending').order('created_at', { ascending: false }),
       supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period)')
         .eq('status', 'active').order('created_at', { ascending: false }).limit(10),
       supabase.from('pharmacy_requests').select('*, profiles(full_name)')
@@ -35,6 +38,43 @@ export default async function AdminPage() {
           <p className="text-xs font-mono text-gray-600 mt-2 group-hover:text-[#7bc96f] transition-colors">Ver todas →</p>
         </Link>
       </div>
+
+      {/* Suscripciones pendientes de activar */}
+      {pendingSubs && pendingSubs.length > 0 && (
+        <div className="border border-yellow-400/20 rounded-lg p-6 mb-8">
+          <p className="text-xs font-mono text-yellow-400 uppercase tracking-widest mb-4">
+            Pagos pendientes de activar ({pendingSubs.length})
+          </p>
+          <div className="space-y-3">
+            {pendingSubs.map(sub => {
+              const profile = sub.profiles as Record<string, string>
+              const plan = sub.membership_plans as Record<string, string>
+              return (
+                <div key={sub.id} className="border border-white/10 rounded p-4 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm text-white">{profile?.full_name}</p>
+                    <p className="text-xs text-gray-500 font-mono">
+                      {profile?.city} · {profile?.phone}
+                    </p>
+                    <p className="text-xs text-gray-400 font-mono mt-0.5 capitalize">
+                      {plan?.type} · {plan?.period} · S/. {plan?.price_soles}
+                    </p>
+                  </div>
+                  <form action={activateSubscription}>
+                    <input type="hidden" name="id" value={sub.id} />
+                    <button
+                      type="submit"
+                      className="shrink-0 bg-[#2d5a27] hover:bg-[#4a8c42] text-white text-xs font-mono px-4 py-2 rounded transition-colors"
+                    >
+                      Activar →
+                    </button>
+                  </form>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {recentRequests && recentRequests.length > 0 && (
         <div className="border border-yellow-400/20 rounded-lg p-6 mb-8">

@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { confirmBooking } from '@/app/admin/actions'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
 import Link from 'next/link'
@@ -101,6 +102,19 @@ export default async function AdminConsejeriaPage() {
               )}
             </div>
 
+            {/* Confirmar en DB */}
+            {!b.confirmed_at && (
+              <form action={confirmBooking}>
+                <input type="hidden" name="id" value={b.id} />
+                <button
+                  type="submit"
+                  className="shrink-0 text-xs font-mono bg-[#2d5a27] hover:bg-[#4a8c42] text-white px-3 py-1.5 rounded transition-colors"
+                >
+                  Confirmar ✓
+                </button>
+              </form>
+            )}
+
             {/* WhatsApp confirm */}
             <a
               href={`https://wa.me/${b.patient_phone}?text=${encodeURIComponent(
@@ -112,7 +126,7 @@ export default async function AdminConsejeriaPage() {
               rel="noopener noreferrer"
               className="shrink-0 text-xs font-mono border border-[#7bc96f]/30 text-[#7bc96f] px-3 py-1.5 rounded hover:bg-[#7bc96f]/10 transition-colors"
             >
-              Confirmar por WA →
+              WA →
             </a>
           </div>
         ))}
