@@ -148,13 +148,14 @@ export default async function PlanesPage() {
               return (
                 <div key={type} className="border border-white/10 rounded-lg overflow-hidden">
                   <div className={`relative w-full h-48 bg-gradient-to-br ${img.placeholder}`}>
-                    <Image
-                      src={img.src}
-                      alt={info.name}
-                      fill
-                      className="object-cover opacity-80"
-  
-                    />
+                    {img.src && (
+                      <Image
+                        src={img.src}
+                        alt={info.name}
+                        fill
+                        className="object-cover opacity-80"
+                      />
+                    )}
                   </div>
                   <div className="p-8">
                     <h3 className="text-2xl font-light mb-1">{info.name}</h3>
