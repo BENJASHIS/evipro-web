@@ -33,8 +33,8 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith('/admin')) {
-    const role = user?.user_metadata?.role
-    if (role !== 'admin') {
+    const ADMIN_EMAILS = ['drecs2003@gmail.com', 'consulta@evipro.pe']
+    if (!user || !ADMIN_EMAILS.includes(user.email ?? '')) {
       return NextResponse.redirect(new URL('/miembros', request.url))
     }
   }
