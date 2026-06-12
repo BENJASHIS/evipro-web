@@ -6,7 +6,7 @@ import Nav from '@/app/components/Nav'
 
 const PLAN_IMAGES: Record<PlanType, { src: string | null; placeholder: string }> = {
   express:        { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-950 to-[#080a08]' },
-  esencial:       { src: null,                                placeholder: 'from-emerald-900 to-[#0d1f0d]' },
+  esencial:       { src: '/images/planes/esencial.jpg',       placeholder: 'from-emerald-900 to-[#0d1f0d]' },
   cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-[#080a08]' },
   integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-[#080a08]' },
   turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-[#080a08]' },
