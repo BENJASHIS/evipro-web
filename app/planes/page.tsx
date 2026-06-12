@@ -74,7 +74,7 @@ export default async function PlanesPage() {
         <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono">Membresías</p>
         <h1 className="text-4xl font-light font-serif italic mb-4">Elige tu plan de salud</h1>
         <p className="text-gray-400 mb-16 max-w-xl">
-          Accede a atención médica especializada en Cannabis Medicinal, Medicina de Altura y Salud Mental.
+          Accede a atención médica especializada en Cannabis Medicinal, Medicina de Altura, Salud del Adulto Mayor y Bienestar Integral.
         </p>
 
         {/* Planes locales */}
