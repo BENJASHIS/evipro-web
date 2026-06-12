@@ -76,7 +76,6 @@ function CheckoutForm() {
       currency: 'PEN',
       amount: Math.round(plan.price_soles * 100),
       description: `${PLAN_NAMES[plan.type] ?? plan.type} · ${PERIOD_NAMES[plan.period] ?? plan.period}`,
-      order: `evipro-${plan.id}-${Date.now()}`,
     })
 
     w.culqi = async (token) => {

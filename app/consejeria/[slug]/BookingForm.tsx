@@ -115,7 +115,6 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
       currency: 'PEN',
       amount: price * 100,
       description: `Consejería ${MODALITY_LABELS[modality!]} · ${doctor.name}`,
-      order: `consejeria-${doctor.slug}-${Date.now()}`,
     })
     w.culqi = (token) => {
       saveBooking({ paid: true, payment_method: 'culqi', culqi_order_id: token.id })
