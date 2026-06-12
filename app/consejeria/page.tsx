@@ -25,7 +25,7 @@ export default function ConsejeriaPage() {
           una consulta formal, o saber si tu situación requiere atención médica.
         </p>
 
-        <div className="flex flex-wrap gap-3 mb-16">
+        <div className="flex flex-wrap gap-3 mb-12">
           {[
             'Video (15–20 min) · S/. 15',
             'Mensajería · Gratis 1ra vez, luego S/. 3',
@@ -37,6 +37,21 @@ export default function ConsejeriaPage() {
             >
               {label}
             </span>
+          ))}
+        </div>
+
+        {/* Cómo funciona */}
+        <div className="grid md:grid-cols-3 gap-4 mb-16">
+          {[
+            { n: '01', title: 'Elige tu especialista', desc: 'Selecciona el médico según tu necesidad: cannabis medicinal o salud del adulto mayor.' },
+            { n: '02', title: 'Elige modalidad', desc: 'Video para una sesión en tiempo real, o mensajería/WhatsApp si prefieres escribir y recibir respuesta ese día.' },
+            { n: '03', title: 'Recibe orientación', desc: 'El médico confirma tu sesión por WhatsApp en menos de 2 h. Primera sesión de mensajería: gratis.' },
+          ].map(step => (
+            <div key={step.n} className="border border-white/10 rounded-lg p-5">
+              <p className="text-[#7bc96f] font-mono text-xs mb-3">{step.n}</p>
+              <p className="text-white text-sm font-light mb-1">{step.title}</p>
+              <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
+            </div>
           ))}
         </div>
 
