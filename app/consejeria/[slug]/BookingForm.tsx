@@ -69,6 +69,8 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
       if (res.ok) {
         const data = await res.json() as { is_first: boolean }
         setIsFirst(data.is_first)
+      } else {
+        setIsFirst(true)
       }
     }, 500)
     return () => clearTimeout(timer)
