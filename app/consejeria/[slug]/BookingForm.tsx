@@ -330,7 +330,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
           {price !== null && price > 0 && (
             <div className="text-xs text-gray-500 font-mono pt-2 border-t border-white/10 space-y-1">
               <p>O paga con Yape:</p>
-              <p className="text-white">942 185 939</p>
+              <p className="text-white">924 074 152</p>
               <p className="text-gray-600 text-[10px]">
                 Envía comprobante al mismo número por WhatsApp.
               </p>
