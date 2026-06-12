@@ -73,9 +73,20 @@ export default async function PlanesPage() {
       <div className="max-w-5xl mx-auto px-4 py-16">
         <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono">Membresías</p>
         <h1 className="text-4xl font-light font-serif italic mb-4">Elige tu plan de salud</h1>
-        <p className="text-gray-400 mb-16 max-w-xl">
+        <p className="text-gray-400 mb-8 max-w-xl">
           Accede a atención médica especializada en Cannabis Medicinal, Medicina de Altura, Salud del Adulto Mayor y Bienestar Integral.
         </p>
+
+        {/* Tarifas de referencia sin membresía */}
+        <div className="border border-white/10 rounded-lg p-4 mb-16 bg-white/[0.02]">
+          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-3">Sin membresía</p>
+          <div className="flex flex-wrap gap-6 text-sm">
+            <span className="text-gray-400">Consulta virtual <span className="text-white font-light ml-1">S/. 70</span></span>
+            <span className="text-gray-400">Consulta presencial <span className="text-white font-light ml-1">S/. 100</span></span>
+            <span className="text-gray-400">Visita a domicilio <span className="text-white font-light ml-1">desde S/. 150</span></span>
+          </div>
+          <p className="text-xs text-gray-600 font-mono mt-2">Con membresía pagas menos en cada consulta de seguimiento.</p>
+        </div>
 
         {/* Planes locales */}
         <div className="grid gap-12 mb-20">
@@ -98,7 +109,32 @@ export default async function PlanesPage() {
                 <div className="p-8">
                   <h2 className="text-2xl font-light mb-1">{info.name}</h2>
                   <p className="text-gray-400 text-sm mb-2">{info.description}</p>
-                  <p className="text-[#7bc96f] text-xs font-mono mb-6">✓ {info.highlight}</p>
+                  <p className="text-[#7bc96f] text-xs font-mono mb-4">✓ {info.highlight}</p>
+
+                  {/* Precios de consulta con este plan */}
+                  {typePlans[0] && (Number(typePlans[0].discount_virtual_pct) > 0 || Number(typePlans[0].discount_presencial_pct) > 0) && (
+                    <div className="flex flex-wrap gap-4 mb-6 text-xs font-mono">
+                      {Number(typePlans[0].discount_virtual_pct) > 0 && (
+                        <span className="text-gray-300">
+                          Virtual{' '}
+                          <span className="text-white font-medium">
+                            S/. {Math.round(70 * (1 - Number(typePlans[0].discount_virtual_pct) / 100))}
+                          </span>
+                          <span className="text-gray-600 line-through ml-1">S/. 70</span>
+                        </span>
+                      )}
+                      {Number(typePlans[0].discount_presencial_pct) > 0 && (
+                        <span className="text-gray-300">
+                          Presencial{' '}
+                          <span className="text-white font-medium">
+                            S/. {Math.round(100 * (1 - Number(typePlans[0].discount_presencial_pct) / 100))}
+                          </span>
+                          <span className="text-gray-600 line-through ml-1">S/. 100</span>
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {typePlans.map(plan => (
                       <Link
