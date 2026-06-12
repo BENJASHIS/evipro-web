@@ -36,12 +36,20 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [culqiReady, setCulqiReady] = useState(false)
+  const [bookedSlots, setBookedSlots] = useState<Set<string>>(new Set())
 
   const SCHEDULE = doctor.counseling?.schedule ?? ['09:00','10:00','11:00','14:00','15:00','17:00']
   const weekdays = getWeekdays(7)
 
   const price = modality && isFirst !== null ? getPrice(modality, isFirst) : null
   const isFree = price === 0
+
+  useEffect(() => {
+    fetch(`/api/consejeria/booked-slots?doctor_slug=${doctor.slug}`)
+      .then(r => r.ok ? r.json() : { booked: [] })
+      .then((data: { booked: string[] }) => setBookedSlots(new Set(data.booked)))
+      .catch(() => {})
+  }, [doctor.slug])
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -207,12 +215,16 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
                   <div className="flex flex-wrap gap-2">
                     {SCHEDULE.map(time => {
                       const active = selectedDate === toISODate(day) && selectedTime === time
+                      const taken = bookedSlots.has(`${toISODate(day)}T${time}`)
                       return (
                         <button
                           key={time}
+                          disabled={taken}
                           onClick={() => { setSelectedDate(toISODate(day)); setSelectedTime(time) }}
                           className={`px-3 py-1.5 text-xs rounded font-mono transition-colors ${
-                            active
+                            taken
+                              ? 'bg-white/5 text-gray-600 line-through cursor-not-allowed'
+                              : active
                               ? 'bg-[#7bc96f] text-black'
                               : 'bg-white/5 text-gray-300 hover:bg-white/10'
                           }`}
