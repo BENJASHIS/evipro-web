@@ -63,6 +63,25 @@ export async function createCulqiSubscription(data: {
   return res.json()
 }
 
+export async function createCulqiCharge(data: {
+  amount: number
+  currency_code: string
+  email: string
+  source_id: string
+  description?: string
+}) {
+  const res = await fetch(`${CULQI_API}/charges`, {
+    method: 'POST',
+    headers: buildCulqiHeaders(process.env.CULQI_PRIVATE_KEY!),
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.user_message || `Culqi error: ${res.status}`)
+  }
+  return res.json()
+}
+
 export async function createCulqiPlan(data: {
   name: string
   amount: number

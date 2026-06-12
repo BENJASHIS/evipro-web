@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-server'
-import { createCulqiSubscription } from '@/lib/culqi'
+import { createCulqiCharge } from '@/lib/culqi'
+
+const PLAN_NAMES: Record<string, string> = {
+  express: 'Plan Express',
+  cannabis: 'Plan Cannabis',
+  integral: 'Plan Integral',
+  turista_inicio: 'Plan Turista Inicio',
+  turista_plus: 'Plan Turista Plus',
+}
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
@@ -20,28 +28,22 @@ export async function POST(req: NextRequest) {
 
   if (!plan) return NextResponse.json({ error: 'Plan no encontrado' }, { status: 404 })
 
-  if (!plan.culqi_plan_id) {
-    return NextResponse.json(
-      { error: 'Plan no configurado en Culqi todavía. Contacta al administrador.' },
-      { status: 422 }
-    )
-  }
-
   const serviceSupabase = createServiceClient()
 
   try {
-    const culqiSub = await createCulqiSubscription({
-      token_id,
-      plan_id: plan.culqi_plan_id,
-      tyc: true,
+    const charge = await createCulqiCharge({
+      amount: Math.round(plan.price_soles * 100),
+      currency_code: 'PEN',
+      email: user.email!,
+      source_id: token_id,
+      description: `${PLAN_NAMES[plan.type] ?? plan.type} · ${plan.period}`,
     })
 
     const { error } = await serviceSupabase.from('subscriptions').insert({
       user_id: user.id,
       plan_id: plan.id,
       status: 'pending',
-      culqi_subscription_id: culqiSub.id,
-      culqi_customer_id: culqiSub.customer_id ?? null,
+      culqi_subscription_id: charge.id,
     })
 
     if (error) throw error
