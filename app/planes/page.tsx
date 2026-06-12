@@ -79,7 +79,7 @@ export default async function PlanesPage() {
 
         {/* Planes locales */}
         <div className="grid gap-12 mb-20">
-          {(['express', 'esencial', 'cannabis', 'integral'] as PlanType[]).map(type => {
+          {(['esencial', 'express', 'cannabis', 'integral'] as PlanType[]).map(type => {
             const info = PLAN_LABELS[type]
             const img = PLAN_IMAGES[type]
             const typePlans = byType[type] ?? []
