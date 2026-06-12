@@ -1,9 +1,10 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import Link from 'next/link'
 
 export default async function AdminPage() {
   const supabase = await createServerSupabaseClient()
 
-  const [{ count: totalActive }, { count: totalPending }, { data: recentSubs }, { data: recentRequests }] =
+  const [{ count: totalActive }, { count: totalPending }, { data: recentSubs }, { data: recentRequests }, { count: totalCounseling }] =
     await Promise.all([
       supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
       supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
@@ -11,6 +12,7 @@ export default async function AdminPage() {
         .eq('status', 'active').order('created_at', { ascending: false }).limit(10),
       supabase.from('pharmacy_requests').select('*, profiles(full_name)')
         .eq('status', 'pending').order('created_at', { ascending: false }),
+      supabase.from('counseling_bookings').select('*', { count: 'exact', head: true }),
     ])
 
   return (
@@ -18,7 +20,7 @@ export default async function AdminPage() {
       <p className="text-xs font-mono uppercase tracking-widest text-[#7bc96f] mb-2">Admin</p>
       <h1 className="text-3xl font-light font-serif italic mb-8">Panel EVIPro</h1>
 
-      <div className="grid grid-cols-2 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
         <div className="border border-white/10 rounded-lg p-6">
           <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Suscriptores activos</p>
           <p className="text-4xl font-light text-[#7bc96f]">{totalActive ?? 0}</p>
@@ -27,6 +29,11 @@ export default async function AdminPage() {
           <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Pendientes de activación</p>
           <p className="text-4xl font-light text-yellow-400">{totalPending ?? 0}</p>
         </div>
+        <Link href="/admin/consejeria" className="border border-white/10 rounded-lg p-6 hover:border-[#7bc96f]/50 transition-colors group">
+          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Reservas consejería</p>
+          <p className="text-4xl font-light text-blue-400">{totalCounseling ?? 0}</p>
+          <p className="text-xs font-mono text-gray-600 mt-2 group-hover:text-[#7bc96f] transition-colors">Ver todas →</p>
+        </Link>
       </div>
 
       {recentRequests && recentRequests.length > 0 && (
