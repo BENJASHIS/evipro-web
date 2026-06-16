@@ -6,5 +6,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const { data: { user } } = await supabase.auth.getUser()
   const ADMIN_EMAILS = ['drecs2003@gmail.com', 'consulta@evipro.pe']
   if (!user || !ADMIN_EMAILS.includes(user.email ?? '')) redirect('/miembros')
-  return <div className="min-h-screen bg-[#080a08] text-white p-8">{children}</div>
+  return <div className="min-h-screen bg-ink text-white p-8">{children}</div>
 }
