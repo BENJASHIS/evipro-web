@@ -1,42 +1,32 @@
-import Link from 'next/link'
 import Nav from '@/app/components/Nav'
+import Badge from '@/app/components/ui/Badge'
+import Button from '@/app/components/ui/Button'
+import Card from '@/app/components/ui/Card'
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#080a08] text-white">
+    <main className="min-h-screen bg-ink text-white">
       <Nav />
 
       {/* Hero */}
       <section className="max-w-5xl mx-auto px-6 pt-24 pb-32">
-        <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-6 font-mono">
-          Cusco · Perú
-        </p>
+        <Badge className="mb-6">Cusco · Perú</Badge>
         <h1 className="text-5xl md:text-6xl font-light font-serif italic leading-tight mb-6 max-w-2xl">
           Medicina integral<br />al alcance de todos
         </h1>
-        <p className="text-gray-400 text-lg mb-10 max-w-xl">
+        <p className="text-muted text-lg mb-10 max-w-xl">
           Accede a atención médica especializada en Cannabis Medicinal,
           Medicina de Altura, Gerontología, Cuidados Paliativos y más —
           con membresías desde S/. 59/mes.
         </p>
         <div className="flex flex-wrap gap-4">
-          <Link
-            href="/planes"
-            className="bg-[#7bc96f] text-black px-8 py-3 rounded font-mono text-sm hover:bg-[#6ab85f] transition-colors"
-          >
-            Ver planes →
-          </Link>
-          <Link
-            href="/registro"
-            className="border border-white/20 text-white px-8 py-3 rounded font-mono text-sm hover:border-white/50 transition-colors"
-          >
-            Crear cuenta
-          </Link>
+          <Button variant="primary" href="/planes">Ver planes →</Button>
+          <Button variant="outline" href="/registro">Crear cuenta</Button>
         </div>
       </section>
 
       {/* Beneficios */}
-      <section className="border-t border-white/5 py-20 px-6">
+      <section className="border-t border-subtle py-20 px-6">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
           {[
             {
@@ -64,11 +54,11 @@ export default function Home() {
               desc: 'Manejo de diabetes, enfermedades crónicas no transmisibles y seguimiento metabólico.',
             },
           ].map((item) => (
-            <div key={item.title} className="border border-white/10 rounded-lg p-6">
-              <p className="text-[#7bc96f] text-xs font-mono uppercase tracking-widest mb-3">✓</p>
+            <Card key={item.title} className="rounded-lg">
+              <p className="text-brand text-xs font-mono uppercase tracking-widest mb-3">✓</p>
               <h3 className="text-lg font-light mb-2">{item.title}</h3>
-              <p className="text-gray-400 text-sm">{item.desc}</p>
-            </div>
+              <p className="text-muted text-sm">{item.desc}</p>
+            </Card>
           ))}
         </div>
       </section>
@@ -76,44 +66,39 @@ export default function Home() {
       {/* CTA */}
       <section className="py-20 px-6 text-center">
         <h2 className="text-3xl font-light font-serif italic mb-4">¿Listo para comenzar?</h2>
-        <p className="text-gray-400 mb-8 text-sm font-mono">
+        <p className="text-muted mb-8 text-sm font-mono">
           Membresías mensuales, trimestrales y semestrales · Cancela cuando quieras
         </p>
-        <Link
-          href="/planes"
-          className="bg-[#7bc96f] text-black px-10 py-3 rounded font-mono text-sm hover:bg-[#6ab85f] transition-colors"
-        >
-          Ver todos los planes →
-        </Link>
+        <Button variant="primary" href="/planes" className="px-10">Ver todos los planes →</Button>
       </section>
 
       {/* Contacto */}
-      <section className="border-t border-white/5 py-16 px-6">
+      <section className="border-t border-subtle py-16 px-6">
         <div className="max-w-5xl mx-auto">
-          <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono text-center">Contacto</p>
+          <Badge className="mb-4 text-center">Contacto</Badge>
           <div className="grid md:grid-cols-3 gap-6 text-center">
-            <div className="border border-white/10 rounded-lg p-6">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Teléfono</p>
-              <a href="tel:+51942185939" className="text-white hover:text-[#7bc96f] transition-colors font-light block">
+            <div className="border border-subtle rounded-lg p-6">
+              <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Teléfono</p>
+              <a href="tel:+51942185939" className="text-white hover:text-brand transition-colors font-light block">
                 942 185 939
               </a>
-              <a href="tel:+51924074152" className="text-gray-400 hover:text-[#7bc96f] transition-colors font-light text-sm block mt-1">
+              <a href="tel:+51924074152" className="text-muted hover:text-brand transition-colors font-light text-sm block mt-1">
                 924 074 152
               </a>
             </div>
-            <div className="border border-white/10 rounded-lg p-6">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Correo</p>
-              <a href="mailto:consulta@evipro.pe" className="text-white hover:text-[#7bc96f] transition-colors font-light">
+            <div className="border border-subtle rounded-lg p-6">
+              <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Correo</p>
+              <a href="mailto:consulta@evipro.pe" className="text-white hover:text-brand transition-colors font-light">
                 consulta@evipro.pe
               </a>
             </div>
-            <div className="border border-white/10 rounded-lg p-6">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Consultorio</p>
+            <div className="border border-subtle rounded-lg p-6">
+              <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Consultorio</p>
               <p className="text-white font-light text-sm leading-relaxed">
                 Av. Infancia 410 Consultorio 2<br />
                 Wanchaq · Cusco, Perú
               </p>
-              <p className="text-gray-500 text-xs mt-1">Ref. frente a Subcafae</p>
+              <p className="text-faint text-xs mt-1">Ref. frente a Subcafae</p>
             </div>
           </div>
         </div>

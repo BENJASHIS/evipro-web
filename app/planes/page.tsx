@@ -3,14 +3,15 @@ import type { MembershipPlan, PlanType } from '@/lib/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import Nav from '@/app/components/Nav'
+import Badge from '@/app/components/ui/Badge'
 
 const PLAN_IMAGES: Record<PlanType, { src: string | null; placeholder: string }> = {
-  express:        { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-950 to-[#080a08]' },
-  esencial:       { src: '/images/planes/esencial.jpg',       placeholder: 'from-emerald-900 to-[#0d1f0d]' },
-  cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-[#080a08]' },
-  integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-[#080a08]' },
-  turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-[#080a08]' },
-  turista_plus:   { src: '/images/planes/turista-plus.jpg',   placeholder: 'from-violet-950 to-[#080a08]' },
+  express:        { src: '/images/planes/express.jpg',        placeholder: 'from-emerald-950 to-ink' },
+  esencial:       { src: '/images/planes/esencial.jpg',       placeholder: 'from-emerald-900 to-surface-2' },
+  cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-ink' },
+  integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-ink' },
+  turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-ink' },
+  turista_plus:   { src: '/images/planes/turista-plus.jpg',   placeholder: 'from-violet-950 to-ink' },
 }
 
 const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlight: string }> = {
@@ -68,24 +69,24 @@ export default async function PlanesPage() {
   }, {})
 
   return (
-    <main className="min-h-screen bg-[#080a08] text-white">
+    <main className="min-h-screen bg-ink text-white">
       <Nav />
       <div className="max-w-5xl mx-auto px-4 py-16">
-        <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono">Membresías</p>
+        <Badge className="mb-4">Membresías</Badge>
         <h1 className="text-4xl font-light font-serif italic mb-4">Elige tu plan de salud</h1>
-        <p className="text-gray-400 mb-8 max-w-xl">
+        <p className="text-muted mb-8 max-w-xl">
           Accede a atención médica especializada en Cannabis Medicinal, Medicina de Altura, Salud del Adulto Mayor y Bienestar Integral.
         </p>
 
         {/* Tarifas de referencia sin membresía */}
-        <div className="border border-white/10 rounded-lg p-4 mb-16 bg-white/[0.02]">
-          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-3">Sin membresía</p>
+        <div className="border border-subtle rounded-lg p-4 mb-16 bg-white/[0.02]">
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">Sin membresía</p>
           <div className="flex flex-wrap gap-6 text-sm">
-            <span className="text-gray-400">Consulta virtual <span className="text-white font-light ml-1">S/. 70</span></span>
-            <span className="text-gray-400">Consulta presencial <span className="text-white font-light ml-1">S/. 100</span></span>
-            <span className="text-gray-400">Visita a domicilio <span className="text-white font-light ml-1">desde S/. 150</span></span>
+            <span className="text-muted">Consulta virtual <span className="text-white font-light ml-1">S/. 70</span></span>
+            <span className="text-muted">Consulta presencial <span className="text-white font-light ml-1">S/. 100</span></span>
+            <span className="text-muted">Visita a domicilio <span className="text-white font-light ml-1">desde S/. 150</span></span>
           </div>
-          <p className="text-xs text-gray-600 font-mono mt-2">Con membresía pagas menos en cada consulta de seguimiento.</p>
+          <p className="text-xs text-faint font-mono mt-2">Con membresía pagas menos en cada consulta de seguimiento.</p>
         </div>
 
         {/* Planes locales */}
@@ -95,7 +96,7 @@ export default async function PlanesPage() {
             const img = PLAN_IMAGES[type]
             const typePlans = byType[type] ?? []
             return (
-              <div key={type} className="border border-white/10 rounded-lg overflow-hidden">
+              <div key={type} className="border border-subtle rounded-lg overflow-hidden">
                 <div className={`relative w-full h-48 bg-gradient-to-br ${img.placeholder}`}>
                   {img.src && (
                     <Image
@@ -108,8 +109,8 @@ export default async function PlanesPage() {
                 </div>
                 <div className="p-8">
                   <h2 className="text-2xl font-light mb-1">{info.name}</h2>
-                  <p className="text-gray-400 text-sm mb-2">{info.description}</p>
-                  <p className="text-[#7bc96f] text-xs font-mono mb-4">✓ {info.highlight}</p>
+                  <p className="text-muted text-sm mb-2">{info.description}</p>
+                  <p className="text-brand text-xs font-mono mb-4">✓ {info.highlight}</p>
 
                   {/* Precios de consulta con este plan */}
                   {typePlans[0] && (Number(typePlans[0].discount_virtual_pct) > 0 || Number(typePlans[0].discount_presencial_pct) > 0) && (
@@ -120,7 +121,7 @@ export default async function PlanesPage() {
                           <span className="text-white font-medium">
                             S/. {Math.round(70 * (1 - Number(typePlans[0].discount_virtual_pct) / 100))}
                           </span>
-                          <span className="text-gray-600 line-through ml-1">S/. 70</span>
+                          <span className="text-faint line-through ml-1">S/. 70</span>
                         </span>
                       )}
                       {Number(typePlans[0].discount_presencial_pct) > 0 && (
@@ -129,7 +130,7 @@ export default async function PlanesPage() {
                           <span className="text-white font-medium">
                             S/. {Math.round(100 * (1 - Number(typePlans[0].discount_presencial_pct) / 100))}
                           </span>
-                          <span className="text-gray-600 line-through ml-1">S/. 100</span>
+                          <span className="text-faint line-through ml-1">S/. 100</span>
                         </span>
                       )}
                     </div>
@@ -140,13 +141,13 @@ export default async function PlanesPage() {
                       <Link
                         key={plan.id}
                         href={`/checkout?plan=${plan.id}`}
-                        className="block border border-white/10 hover:border-[#7bc96f] rounded p-4 text-center transition-colors group"
+                        className="block border border-subtle hover:border-brand rounded p-4 text-center transition-colors group"
                       >
-                        <p className="text-xs text-gray-500 uppercase tracking-widest mb-2 font-mono">
+                        <p className="text-xs text-faint uppercase tracking-widest mb-2 font-mono">
                           {PERIOD_LABELS[plan.period]}
                         </p>
                         <p className="text-2xl font-light mb-1">S/. {plan.price_soles}</p>
-                        <p className="text-xs text-gray-500 mt-3 group-hover:text-white transition-colors">
+                        <p className="text-xs text-faint mt-3 group-hover:text-white transition-colors">
                           Suscribirme →
                         </p>
                       </Link>
@@ -159,10 +160,10 @@ export default async function PlanesPage() {
         </div>
 
         {/* Planes Turista */}
-        <div className="border-t border-white/10 pt-16">
-          <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono">Para visitantes</p>
+        <div className="border-t border-subtle pt-16">
+          <Badge className="mb-4">Para visitantes</Badge>
           <h2 className="text-3xl font-light font-serif italic mb-2">Planes Turista</h2>
-          <p className="text-gray-400 text-sm mb-4 max-w-xl">
+          <p className="text-muted text-sm mb-4 max-w-xl">
             Reserva desde tu país — la consulta es 100% virtual. Con plan de 15 días recomendamos
             comprar al menos 7 días antes de llegar. Con plan de 30 días, mínimo 5 días de anticipación.
           </p>
@@ -182,7 +183,7 @@ export default async function PlanesPage() {
               const img = PLAN_IMAGES[type]
               const typePlans = byType[type] ?? []
               return (
-                <div key={type} className="border border-white/10 rounded-lg overflow-hidden">
+                <div key={type} className="border border-subtle rounded-lg overflow-hidden">
                   <div className={`relative w-full h-48 bg-gradient-to-br ${img.placeholder}`}>
                     {img.src && (
                       <Image
@@ -195,30 +196,30 @@ export default async function PlanesPage() {
                   </div>
                   <div className="p-8">
                     <h3 className="text-2xl font-light mb-1">{info.name}</h3>
-                    <p className="text-gray-400 text-sm mb-2">{info.description}</p>
-                    <p className="text-[#7bc96f] text-xs font-mono mb-6">✓ {info.highlight}</p>
+                    <p className="text-muted text-sm mb-2">{info.description}</p>
+                    <p className="text-brand text-xs font-mono mb-6">✓ {info.highlight}</p>
                     <div className="grid grid-cols-2 gap-4 max-w-sm">
                       {typePlans.map(plan => (
                         <Link
                           key={plan.id}
                           href={`/checkout?plan=${plan.id}`}
-                          className="block border border-white/10 hover:border-[#7bc96f] rounded p-4 text-center transition-colors group"
+                          className="block border border-subtle hover:border-brand rounded p-4 text-center transition-colors group"
                         >
-                          <p className="text-xs text-gray-500 uppercase tracking-widest mb-2 font-mono">
+                          <p className="text-xs text-faint uppercase tracking-widest mb-2 font-mono">
                             {PERIOD_LABELS[plan.period]}
                           </p>
                           <p className="text-2xl font-light mb-1">S/. {plan.price_soles}</p>
                           {plan.period === 'quincenal' && (
                             <p className="text-xs text-yellow-400 mt-1 font-mono">Ver aviso delivery</p>
                           )}
-                          <p className="text-xs text-gray-500 mt-3 group-hover:text-white transition-colors">
+                          <p className="text-xs text-faint mt-3 group-hover:text-white transition-colors">
                             Reservar →
                           </p>
                         </Link>
                       ))}
                     </div>
                     {typePlans.some(p => p.period === 'quincenal') && (
-                      <p className="text-xs text-gray-500 font-mono mt-4 max-w-md">
+                      <p className="text-xs text-faint font-mono mt-4 max-w-md">
                         Plan quincenal: el delivery (3-5 días hábiles) puede no completarse antes de tu salida.
                         Si el producto no llega a tiempo, se reembolsa el costo del medicamento.
                       </p>
@@ -230,7 +231,7 @@ export default async function PlanesPage() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-gray-600 mt-16 font-mono">
+        <p className="text-center text-xs text-faint mt-16 font-mono">
           Pagos procesados de forma segura por Culqi · Cancela cuando quieras
         </p>
       </div>
