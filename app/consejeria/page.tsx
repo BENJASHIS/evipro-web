@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Nav from '@/app/components/Nav'
+import Badge from '@/app/components/ui/Badge'
 import Link from 'next/link'
 import Image from 'next/image'
 import { DOCTORS } from '@/lib/doctors'
@@ -13,14 +14,14 @@ export default function ConsejeriaPage() {
   const counselingDoctors = DOCTORS.filter(d => d.counseling?.available)
 
   return (
-    <main className="min-h-screen bg-[#080a08] text-white">
+    <main className="min-h-screen bg-ink text-white">
       <Nav />
       <div className="max-w-5xl mx-auto px-4 py-16">
-        <p className="text-xs tracking-widest text-[#7bc96f] uppercase mb-4 font-mono">Consejería</p>
+        <Badge className="mb-4">Consejería</Badge>
         <h1 className="text-4xl font-light font-serif italic mb-4">
           Orientación médica a tu medida
         </h1>
-        <p className="text-gray-400 mb-8 max-w-xl text-sm">
+        <p className="text-muted mb-8 max-w-xl text-sm">
           Sesiones cortas con nuestros especialistas. Para dudas concretas, orientación antes de
           una consulta formal, o saber si tu situación requiere atención médica.
         </p>
@@ -33,7 +34,7 @@ export default function ConsejeriaPage() {
           ].map(label => (
             <span
               key={label}
-              className="text-xs bg-white/5 border border-white/10 px-4 py-2 rounded-full text-gray-300 font-mono"
+              className="text-xs bg-white/5 border border-subtle px-4 py-2 rounded-full text-gray-300 font-mono"
             >
               {label}
             </span>
@@ -47,10 +48,10 @@ export default function ConsejeriaPage() {
             { n: '02', title: 'Elige modalidad', desc: 'Video para una sesión en tiempo real, o mensajería/WhatsApp si prefieres escribir y recibir respuesta ese día.' },
             { n: '03', title: 'Recibe orientación', desc: 'El médico confirma tu sesión por WhatsApp en menos de 2 h. Primera sesión de mensajería: gratis.' },
           ].map(step => (
-            <div key={step.n} className="border border-white/10 rounded-lg p-5">
-              <p className="text-[#7bc96f] font-mono text-xs mb-3">{step.n}</p>
+            <div key={step.n} className="border border-subtle rounded-lg p-5">
+              <p className="text-brand font-mono text-xs mb-3">{step.n}</p>
               <p className="text-white text-sm font-light mb-1">{step.title}</p>
-              <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
+              <p className="text-faint text-xs leading-relaxed">{step.desc}</p>
             </div>
           ))}
         </div>
@@ -59,7 +60,7 @@ export default function ConsejeriaPage() {
           {counselingDoctors.map(doctor => (
             <div
               key={doctor.slug}
-              className="border border-white/10 rounded-lg p-6 flex flex-col gap-4"
+              className="border border-subtle rounded-lg p-6 flex flex-col gap-4"
             >
               <div className="flex items-center gap-4">
                 <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0 bg-white/5">
@@ -67,11 +68,11 @@ export default function ConsejeriaPage() {
                 </div>
                 <div>
                   <h2 className="text-white font-light text-lg leading-tight">{doctor.name}</h2>
-                  <p className="text-gray-500 text-xs font-mono mt-0.5">CMP {doctor.cmp}</p>
+                  <p className="text-faint text-xs font-mono mt-0.5">CMP {doctor.cmp}</p>
                 </div>
               </div>
 
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-muted text-sm leading-relaxed">
                 {doctor.counseling!.description}
               </p>
 
@@ -83,13 +84,13 @@ export default function ConsejeriaPage() {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/10">
-                <p className="text-xs text-gray-500 font-mono">
+              <div className="flex items-center justify-between mt-auto pt-3 border-t border-subtle">
+                <p className="text-xs text-faint font-mono">
                   {doctor.location} · {doctor.modality}
                 </p>
                 <Link
                   href={`/consejeria/${doctor.slug}`}
-                  className="text-xs font-mono text-[#7bc96f] hover:underline"
+                  className="text-xs font-mono text-brand hover:underline"
                 >
                   Agendar →
                 </Link>
