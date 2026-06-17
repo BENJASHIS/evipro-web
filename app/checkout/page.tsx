@@ -106,24 +106,24 @@ function CheckoutForm() {
   if (!planId) {
     return (
       <div className="text-center">
-        <p className="text-gray-400 mb-4">No se especificó un plan.</p>
-        <a href="/planes" className="text-[#7bc96f] underline text-sm">Ver planes →</a>
+        <p className="text-muted mb-4">No se especificó un plan.</p>
+        <a href="/planes" className="text-brand underline text-sm">Ver planes →</a>
       </div>
     )
   }
 
   if (!plan) {
-    return <div className="text-gray-400 text-center py-8">Cargando plan...</div>
+    return <div className="text-muted text-center py-8">Cargando plan...</div>
   }
 
   return (
-    <div className="w-full max-w-sm p-8 border border-white/10 rounded-lg">
-      <p className="text-xs text-[#7bc96f] font-mono uppercase tracking-widest mb-2">Resumen del pedido</p>
+    <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
+      <p className="text-xs text-brand font-mono uppercase tracking-widest mb-2">Resumen del pedido</p>
       <h2 className="text-2xl font-light text-white mb-1">{PLAN_NAMES[plan.type] ?? plan.type}</h2>
-      <p className="text-gray-400 text-sm mb-6">{PERIOD_NAMES[plan.period] ?? plan.period}</p>
+      <p className="text-muted text-sm mb-6">{PERIOD_NAMES[plan.period] ?? plan.period}</p>
 
-      <div className="flex justify-between items-baseline border-t border-white/10 pt-4 mb-8">
-        <span className="text-gray-400 text-sm">Total</span>
+      <div className="flex justify-between items-baseline border-t border-subtle pt-4 mb-8">
+        <span className="text-muted text-sm">Total</span>
         <span className="text-3xl font-light text-white">S/. {plan.price_soles}</span>
       </div>
 
@@ -145,9 +145,9 @@ function CheckoutForm() {
             type="checkbox"
             checked={legalAccepted}
             onChange={e => setLegalAccepted(e.target.checked)}
-            className="mt-0.5 accent-[#7bc96f]"
+            className="mt-0.5 accent-brand"
           />
-          <span className="text-xs text-gray-400 leading-relaxed">
+          <span className="text-xs text-muted leading-relaxed">
             Entiendo que EVIPro opera dentro del territorio peruano. El uso o transporte del
             producto fuera del Perú es de mi exclusiva responsabilidad, conforme a la legislación
             de mi país de destino.
@@ -158,20 +158,20 @@ function CheckoutForm() {
       <button
         onClick={handlePagar}
         disabled={loading || !culqiReady || (isTurista && !legalAccepted)}
-        className="w-full py-3 bg-[#2d5a27] hover:bg-[#4a8c42] text-white rounded transition-colors disabled:opacity-50 text-sm"
+        className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white rounded transition-colors disabled:opacity-50 text-sm"
       >
         {loading ? 'Procesando...' : !culqiReady ? 'Cargando...' : 'Pagar con tarjeta'}
       </button>
 
-      <p className="text-center text-xs text-gray-600 mt-4 font-mono">Pago seguro con Culqi · PCI-DSS</p>
+      <p className="text-center text-xs text-faint mt-4 font-mono">Pago seguro con Culqi · PCI-DSS</p>
     </div>
   )
 }
 
 export default function CheckoutPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#080a08] text-white">
-      <Suspense fallback={<div className="text-gray-400">Cargando...</div>}>
+    <main className="min-h-screen flex items-center justify-center bg-ink text-white">
+      <Suspense fallback={<div className="text-muted">Cargando...</div>}>
         <CheckoutForm />
       </Suspense>
     </main>

@@ -20,7 +20,7 @@ export default async function AdminConsejeriaPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <Link href="/admin" className="text-xs font-mono text-gray-500 hover:text-white mb-4 block">
+      <Link href="/admin" className="text-xs font-mono text-faint hover:text-white mb-4 block">
         ← Panel admin
       </Link>
       <h1 className="text-3xl font-light font-serif italic mb-8">Reservas de Consejería</h1>
@@ -29,12 +29,12 @@ export default async function AdminConsejeriaPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         {[
           { label: 'Total', value: total, color: 'text-white' },
-          { label: 'Pagas', value: paid, color: 'text-[#7bc96f]' },
+          { label: 'Pagas', value: paid, color: 'text-brand' },
           { label: 'Gratuitas', value: free, color: 'text-blue-400' },
           { label: 'Por cobrar', value: pending, color: 'text-yellow-400' },
         ].map(s => (
-          <div key={s.label} className="border border-white/10 rounded-lg p-4">
-            <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-1">{s.label}</p>
+          <div key={s.label} className="border border-subtle rounded-lg p-4">
+            <p className="text-xs font-mono text-faint uppercase tracking-widest mb-1">{s.label}</p>
             <p className={`text-3xl font-light ${s.color}`}>{s.value}</p>
           </div>
         ))}
@@ -43,39 +43,39 @@ export default async function AdminConsejeriaPage() {
       {/* Bookings list */}
       <div className="space-y-3">
         {total === 0 && (
-          <p className="text-gray-500 text-sm text-center py-12 font-mono border border-white/10 rounded-lg">
+          <p className="text-faint text-sm text-center py-12 font-mono border border-subtle rounded-lg">
             Sin reservas aún.
           </p>
         )}
         {(bookings ?? []).map(b => (
-          <div key={b.id} className="border border-white/10 rounded-lg p-5 flex flex-col md:flex-row md:items-center gap-4">
+          <div key={b.id} className="border border-subtle rounded-lg p-5 flex flex-col md:flex-row md:items-center gap-4">
             {/* Patient */}
             <div className="flex-1">
               <p className="text-white font-light">{b.patient_name}</p>
-              <p className="text-xs text-gray-500 font-mono mt-0.5">{b.patient_phone}</p>
+              <p className="text-xs text-faint font-mono mt-0.5">{b.patient_phone}</p>
               {b.patient_note && (
-                <p className="text-xs text-gray-400 mt-1 italic">"{b.patient_note}"</p>
+                <p className="text-xs text-muted mt-1 italic">"{b.patient_note}"</p>
               )}
             </div>
 
             {/* Details */}
             <div className="flex flex-wrap gap-3 text-xs font-mono">
-              <span className="text-gray-400 capitalize">
+              <span className="text-muted capitalize">
                 {b.doctor_slug.replace('dr-', 'Dr. ')}
               </span>
-              <span className="text-gray-500">·</span>
+              <span className="text-faint">·</span>
               <span className="text-gray-300">
                 {MODALITY_LABELS[b.modality as Modality]}
               </span>
               {b.slot_date && (
                 <>
-                  <span className="text-gray-500">·</span>
-                  <span className="text-gray-400">
+                  <span className="text-faint">·</span>
+                  <span className="text-muted">
                     {b.slot_date} {b.slot_time ? b.slot_time.slice(0, 5) : ''}
                   </span>
                 </>
               )}
-              <span className="text-gray-500">·</span>
+              <span className="text-faint">·</span>
               {b.price_soles === 0
                 ? <span className="text-blue-400">Gratis</span>
                 : <span className="text-white">S/. {b.price_soles}</span>}
@@ -84,11 +84,11 @@ export default async function AdminConsejeriaPage() {
             {/* Status */}
             <div className="shrink-0">
               {b.confirmed_at ? (
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#7bc96f]/10 text-[#7bc96f]">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-brand/10 text-brand">
                   Confirmada
                 </span>
               ) : b.paid ? (
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#7bc96f]/10 text-[#7bc96f]">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-brand/10 text-brand">
                   Pagada
                 </span>
               ) : b.payment_method === 'free' ? (
@@ -108,7 +108,7 @@ export default async function AdminConsejeriaPage() {
                 <input type="hidden" name="id" value={b.id} />
                 <button
                   type="submit"
-                  className="shrink-0 text-xs font-mono bg-[#2d5a27] hover:bg-[#4a8c42] text-white px-3 py-1.5 rounded transition-colors"
+                  className="shrink-0 text-xs font-mono bg-brand-deep hover:bg-brand-mid text-white px-3 py-1.5 rounded transition-colors"
                 >
                   Confirmar ✓
                 </button>
@@ -124,7 +124,7 @@ export default async function AdminConsejeriaPage() {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="shrink-0 text-xs font-mono border border-[#7bc96f]/30 text-[#7bc96f] px-3 py-1.5 rounded hover:bg-[#7bc96f]/10 transition-colors"
+              className="shrink-0 text-xs font-mono border border-brand/30 text-brand px-3 py-1.5 rounded hover:bg-brand/10 transition-colors"
             >
               WA →
             </a>

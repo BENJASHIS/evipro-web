@@ -28,7 +28,7 @@ export default async function ConsejeriaSlugPage(
   if (!doctor) notFound()
 
   return (
-    <main className="min-h-screen bg-[#080a08] text-white">
+    <main className="min-h-screen bg-ink text-white">
       <Nav />
       <div className="max-w-5xl mx-auto px-4 py-16">
         <div className="flex items-center gap-4 mb-12">
@@ -36,11 +36,11 @@ export default async function ConsejeriaSlugPage(
             <Image src={doctor.photo} alt={doctor.name} fill className="object-cover" />
           </div>
           <div>
-            <p className="text-xs font-mono uppercase tracking-widest text-[#7bc96f] mb-0.5">
+            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-0.5">
               Consejería
             </p>
             <h1 className="text-2xl font-light">{doctor.name}</h1>
-            <p className="text-gray-500 text-xs font-mono">CMP {doctor.cmp}</p>
+            <p className="text-faint text-xs font-mono">CMP {doctor.cmp}</p>
           </div>
         </div>
 

@@ -2,17 +2,17 @@ export const metadata = { title: 'Términos y Condiciones — EVIPro' }
 
 export default function TerminosPage() {
   return (
-    <main className="min-h-screen bg-[#080a08] text-white py-20 px-4">
+    <main className="min-h-screen bg-ink text-white py-20 px-4">
       <div className="max-w-3xl mx-auto">
-        <p className="text-xs font-mono uppercase tracking-widest text-[#7bc96f] mb-4">Legal</p>
+        <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">Legal</p>
         <h1 className="text-4xl font-light font-serif italic mb-2">Términos y Condiciones</h1>
-        <p className="text-gray-500 text-xs font-mono mb-12">Última actualización: junio 2026</p>
+        <p className="text-faint text-xs font-mono mb-12">Última actualización: junio 2026</p>
 
         <div className="space-y-10 text-gray-300 text-sm leading-relaxed">
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">1. Identificación del proveedor</h2>
-            <p>El presente sitio web <strong className="text-white">evipro.pe</strong> es operado por <strong className="text-white">José Carlos Benjamín Jara Ovalle</strong>, con RUC <strong className="text-white">10439904572</strong>, con domicilio fiscal en la ciudad de Cusco, Perú. Correo de contacto: <a href="mailto:consulta@evipro.pe" className="text-[#7bc96f] hover:underline">consulta@evipro.pe</a>.</p>
+            <p>El presente sitio web <strong className="text-white">evipro.pe</strong> es operado por <strong className="text-white">José Carlos Benjamín Jara Ovalle</strong>, con RUC <strong className="text-white">10439904572</strong>, con domicilio fiscal en la ciudad de Cusco, Perú. Correo de contacto: <a href="mailto:consulta@evipro.pe" className="text-brand hover:underline">consulta@evipro.pe</a>.</p>
           </section>
 
           <section>
@@ -49,7 +49,7 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">7. Protección de datos personales</h2>
-            <p>El tratamiento de datos personales se rige por la <strong className="text-white">Ley N.º 29733</strong> (Ley de Protección de Datos Personales del Perú). Los datos recopilados son utilizados exclusivamente para la prestación del servicio médico. Los datos sensibles (DNI, historia clínica) se almacenan de forma encriptada y solo son accesibles por el médico titular. El usuario puede solicitar acceso, rectificación, cancelación u oposición de sus datos escribiendo a <a href="mailto:consulta@evipro.pe" className="text-[#7bc96f] hover:underline">consulta@evipro.pe</a>.</p>
+            <p>El tratamiento de datos personales se rige por la <strong className="text-white">Ley N.º 29733</strong> (Ley de Protección de Datos Personales del Perú). Los datos recopilados son utilizados exclusivamente para la prestación del servicio médico. Los datos sensibles (DNI, historia clínica) se almacenan de forma encriptada y solo son accesibles por el médico titular. El usuario puede solicitar acceso, rectificación, cancelación u oposición de sus datos escribiendo a <a href="mailto:consulta@evipro.pe" className="text-brand hover:underline">consulta@evipro.pe</a>.</p>
           </section>
 
           <section>
@@ -83,7 +83,7 @@ export default function TerminosPage() {
 
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-wrap gap-6 text-xs text-gray-600 font-mono">
+        <div className="mt-16 pt-8 border-t border-subtle flex flex-wrap gap-6 text-xs text-faint font-mono">
           <a href="/politica-devoluciones" className="hover:text-white transition-colors">Política de cancelaciones →</a>
           <a href="/libro-reclamaciones" className="hover:text-white transition-colors">Libro de reclamaciones →</a>
         </div>

@@ -13,17 +13,17 @@ export default function Nav() {
           className="rounded-full"
         />
         <span className="text-xl tracking-tight">
-          <span className="font-bold text-white">EVI</span><span className="font-serif italic text-[#7bc96f]">Pro</span>
+          <span className="font-bold text-white">EVI</span><span className="font-serif italic text-brand">Pro</span>
         </span>
       </Link>
-      <div className="flex items-center gap-6 text-xs font-mono text-gray-400">
+      <div className="flex items-center gap-6 text-xs font-mono text-muted">
         <Link href="/planes" className="hover:text-white transition-colors">Planes</Link>
         <Link href="/medicos" className="hover:text-white transition-colors">Médicos</Link>
         <Link href="/consejeria" className="hover:text-white transition-colors">Consejería</Link>
         <Link href="/login" className="hover:text-white transition-colors">Ingresar</Link>
         <Link
           href="/registro"
-          className="border border-[#7bc96f] text-[#7bc96f] px-4 py-1.5 rounded hover:bg-[#7bc96f] hover:text-black transition-colors"
+          className="border border-brand text-brand px-4 py-1.5 rounded hover:bg-brand hover:text-black transition-colors"
         >
           Unirme
         </Link>

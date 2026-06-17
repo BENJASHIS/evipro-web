@@ -20,22 +20,22 @@ export default async function AdminPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <p className="text-xs font-mono uppercase tracking-widest text-[#7bc96f] mb-2">Admin</p>
+      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Admin</p>
       <h1 className="text-3xl font-light font-serif italic mb-8">Panel EVIPro</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-        <div className="border border-white/10 rounded-lg p-6">
-          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Suscriptores activos</p>
-          <p className="text-4xl font-light text-[#7bc96f]">{totalActive ?? 0}</p>
+        <div className="border border-subtle rounded-lg p-6">
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Suscriptores activos</p>
+          <p className="text-4xl font-light text-brand">{totalActive ?? 0}</p>
         </div>
-        <div className="border border-white/10 rounded-lg p-6">
-          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Pendientes de activación</p>
+        <div className="border border-subtle rounded-lg p-6">
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Pendientes de activación</p>
           <p className="text-4xl font-light text-yellow-400">{totalPending ?? 0}</p>
         </div>
-        <Link href="/admin/consejeria" className="border border-white/10 rounded-lg p-6 hover:border-[#7bc96f]/50 transition-colors group">
-          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Reservas consejería</p>
+        <Link href="/admin/consejeria" className="border border-subtle rounded-lg p-6 hover:border-brand/50 transition-colors group">
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Reservas consejería</p>
           <p className="text-4xl font-light text-blue-400">{totalCounseling ?? 0}</p>
-          <p className="text-xs font-mono text-gray-600 mt-2 group-hover:text-[#7bc96f] transition-colors">Ver todas →</p>
+          <p className="text-xs font-mono text-faint mt-2 group-hover:text-brand transition-colors">Ver todas →</p>
         </Link>
       </div>
 
@@ -50,13 +50,13 @@ export default async function AdminPage() {
               const profile = sub.profiles as Record<string, string>
               const plan = sub.membership_plans as Record<string, string>
               return (
-                <div key={sub.id} className="border border-white/10 rounded p-4 flex items-center justify-between gap-4">
+                <div key={sub.id} className="border border-subtle rounded p-4 flex items-center justify-between gap-4">
                   <div className="min-w-0">
                     <p className="text-sm text-white">{profile?.full_name}</p>
-                    <p className="text-xs text-gray-500 font-mono">
+                    <p className="text-xs text-faint font-mono">
                       {profile?.city} · {profile?.phone}
                     </p>
-                    <p className="text-xs text-gray-400 font-mono mt-0.5 capitalize">
+                    <p className="text-xs text-muted font-mono mt-0.5 capitalize">
                       {plan?.type} · {plan?.period} · S/. {plan?.price_soles}
                     </p>
                   </div>
@@ -64,7 +64,7 @@ export default async function AdminPage() {
                     <input type="hidden" name="id" value={sub.id} />
                     <button
                       type="submit"
-                      className="shrink-0 bg-[#2d5a27] hover:bg-[#4a8c42] text-white text-xs font-mono px-4 py-2 rounded transition-colors"
+                      className="shrink-0 bg-brand-deep hover:bg-brand-mid text-white text-xs font-mono px-4 py-2 rounded transition-colors"
                     >
                       Activar →
                     </button>
@@ -83,12 +83,12 @@ export default async function AdminPage() {
           </p>
           <div className="space-y-3">
             {recentRequests.map(req => (
-              <div key={req.id} className="border border-white/10 rounded p-4">
+              <div key={req.id} className="border border-subtle rounded p-4">
                 <p className="text-sm font-light mb-1">
                   {(req.profiles as Record<string, string>)?.full_name}
                 </p>
-                <p className="text-xs text-gray-400 mb-1">{req.product_notes}</p>
-                <p className="text-xs text-gray-500 font-mono">📍 {req.shalom_address}</p>
+                <p className="text-xs text-muted mb-1">{req.product_notes}</p>
+                <p className="text-xs text-faint font-mono">📍 {req.shalom_address}</p>
               </div>
             ))}
           </div>
@@ -96,24 +96,24 @@ export default async function AdminPage() {
       )}
 
       {/* Link al libro de reclamaciones */}
-      <div className="border border-white/10 rounded-lg p-6 mb-8">
-        <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Libro de Reclamaciones</p>
-        <p className="text-gray-400 text-sm">Las reclamaciones recibidas se gestionan vía <a href="mailto:reclamaciones@evipro.pe" className="text-[#7bc96f] underline">reclamaciones@evipro.pe</a>. El plazo legal de respuesta es 30 días calendario.</p>
+      <div className="border border-subtle rounded-lg p-6 mb-8">
+        <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Libro de Reclamaciones</p>
+        <p className="text-muted text-sm">Las reclamaciones recibidas se gestionan vía <a href="mailto:reclamaciones@evipro.pe" className="text-brand underline">reclamaciones@evipro.pe</a>. El plazo legal de respuesta es 30 días calendario.</p>
       </div>
 
-      <div className="border border-white/10 rounded-lg p-6">
-        <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Suscriptores activos recientes</p>
+      <div className="border border-subtle rounded-lg p-6">
+        <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Suscriptores activos recientes</p>
         <div className="space-y-3">
           {(recentSubs ?? []).map(sub => {
             const profile = sub.profiles as Record<string, string>
             const plan = sub.membership_plans as Record<string, string>
             return (
-              <div key={sub.id} className="flex items-center justify-between border-b border-white/5 pb-3">
+              <div key={sub.id} className="flex items-center justify-between border-b border-subtle pb-3">
                 <div>
                   <p className="text-sm">{profile?.full_name}</p>
-                  <p className="text-xs text-gray-500 font-mono">{profile?.city} · {profile?.phone}</p>
+                  <p className="text-xs text-faint font-mono">{profile?.city} · {profile?.phone}</p>
                 </div>
-                <span className="text-xs font-mono text-[#7bc96f] capitalize">
+                <span className="text-xs font-mono text-brand capitalize">
                   {plan?.type} · {plan?.period}
                 </span>
               </div>
