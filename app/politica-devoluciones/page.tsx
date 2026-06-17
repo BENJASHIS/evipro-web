@@ -2,17 +2,17 @@ export const metadata = { title: 'Política de Cancelaciones — EVIPro' }
 
 export default function PoliticaDevolucionesPage() {
   return (
-    <main className="min-h-screen bg-[#080a08] text-white py-20 px-4">
+    <main className="min-h-screen bg-ink text-white py-20 px-4">
       <div className="max-w-3xl mx-auto">
-        <p className="text-xs font-mono uppercase tracking-widest text-[#7bc96f] mb-4">Legal</p>
+        <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">Legal</p>
         <h1 className="text-4xl font-light font-serif italic mb-2">Política de Cancelaciones y Reembolsos</h1>
-        <p className="text-gray-500 text-xs font-mono mb-12">Última actualización: junio 2026</p>
+        <p className="text-faint text-xs font-mono mb-12">Última actualización: junio 2026</p>
 
         <div className="space-y-10 text-gray-300 text-sm leading-relaxed">
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">1. Cancelación de membresía</h2>
-            <p>El suscriptor puede cancelar su membresía en cualquier momento desde el área de miembros o enviando un correo a <a href="mailto:reclamaciones@evipro.pe" className="text-[#7bc96f] hover:underline">reclamaciones@evipro.pe</a>. La cancelación tiene efecto al final del periodo ya pagado. No se realizan cobros adicionales tras la cancelación confirmada.</p>
+            <p>El suscriptor puede cancelar su membresía en cualquier momento desde el área de miembros o enviando un correo a <a href="mailto:reclamaciones@evipro.pe" className="text-brand hover:underline">reclamaciones@evipro.pe</a>. La cancelación tiene efecto al final del periodo ya pagado. No se realizan cobros adicionales tras la cancelación confirmada.</p>
           </section>
 
           <section>
@@ -38,7 +38,7 @@ export default function PoliticaDevolucionesPage() {
             <h2 className="text-white font-light text-lg mb-3">5. Proceso de solicitud de reembolso</h2>
             <p className="mb-3">Para solicitar un reembolso, el suscriptor debe:</p>
             <ol className="list-decimal list-inside space-y-2 ml-2">
-              <li>Enviar correo a <a href="mailto:reclamaciones@evipro.pe" className="text-[#7bc96f] hover:underline">reclamaciones@evipro.pe</a> con asunto &quot;Solicitud de reembolso&quot;.</li>
+              <li>Enviar correo a <a href="mailto:reclamaciones@evipro.pe" className="text-brand hover:underline">reclamaciones@evipro.pe</a> con asunto &quot;Solicitud de reembolso&quot;.</li>
               <li>Indicar nombre completo, email de la cuenta y motivo.</li>
               <li>Adjuntar comprobante de pago si está disponible.</li>
             </ol>
@@ -52,12 +52,12 @@ export default function PoliticaDevolucionesPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">7. Contacto</h2>
-            <p>Para cualquier consulta sobre esta política: <a href="mailto:reclamaciones@evipro.pe" className="text-[#7bc96f] hover:underline">reclamaciones@evipro.pe</a> o a través del <a href="/libro-reclamaciones" className="text-[#7bc96f] hover:underline">Libro de Reclamaciones</a>.</p>
+            <p>Para cualquier consulta sobre esta política: <a href="mailto:reclamaciones@evipro.pe" className="text-brand hover:underline">reclamaciones@evipro.pe</a> o a través del <a href="/libro-reclamaciones" className="text-brand hover:underline">Libro de Reclamaciones</a>.</p>
           </section>
 
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-wrap gap-6 text-xs text-gray-600 font-mono">
+        <div className="mt-16 pt-8 border-t border-subtle flex flex-wrap gap-6 text-xs text-faint font-mono">
           <a href="/terminos" className="hover:text-white transition-colors">Términos y Condiciones →</a>
           <a href="/libro-reclamaciones" className="hover:text-white transition-colors">Libro de reclamaciones →</a>
         </div>

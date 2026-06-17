@@ -52,10 +52,10 @@ export default function RecetasPage() {
   if (!subscription) {
     return (
       <div>
-        <p className="text-xs font-mono uppercase tracking-widest text-[#7bc96f] mb-2">Farmacia</p>
+        <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Farmacia</p>
         <h1 className="text-3xl font-light font-serif italic mb-8">Coordinación de farmacia</h1>
-        <div className="border border-white/10 rounded-lg p-8 text-center">
-          <p className="text-gray-400 text-sm">Necesitas una membresía Cannabis o Integral para acceder a este servicio.</p>
+        <div className="border border-subtle rounded-lg p-8 text-center">
+          <p className="text-muted text-sm">Necesitas una membresía Cannabis o Integral para acceder a este servicio.</p>
         </div>
       </div>
     )
@@ -63,60 +63,60 @@ export default function RecetasPage() {
 
   return (
     <div>
-      <p className="text-xs font-mono uppercase tracking-widest text-[#7bc96f] mb-2">Farmacia</p>
+      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Farmacia</p>
       <h1 className="text-3xl font-light font-serif italic mb-4">Coordinación de farmacia</h1>
-      <p className="text-gray-400 text-sm mb-8">
+      <p className="text-muted text-sm mb-8">
         Coordinamos con nuestra farmacia magistral aliada el envío de tu producto a la agencia Shalom más cercana.
         El costo de envío (S/. 8–15) y el producto son cobrados directamente por la farmacia.
       </p>
 
       {success && (
-        <div className="border border-[#7bc96f]/30 bg-[#7bc96f]/5 rounded-lg p-4 mb-6">
-          <p className="text-[#7bc96f] text-sm">✓ Solicitud enviada. Coordinaremos con la farmacia a la brevedad.</p>
+        <div className="border border-brand/30 bg-brand/5 rounded-lg p-4 mb-6">
+          <p className="text-brand text-sm">✓ Solicitud enviada. Coordinaremos con la farmacia a la brevedad.</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="border border-white/10 rounded-lg p-6 mb-8 space-y-4">
-        <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-2">Nueva solicitud</p>
+      <form onSubmit={handleSubmit} className="border border-subtle rounded-lg p-6 mb-8 space-y-4">
+        <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Nueva solicitud</p>
         <div>
-          <label className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">Producto / notas de la receta *</label>
+          <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Producto / notas de la receta *</label>
           <textarea
             value={form.product_notes}
             onChange={e => setForm(prev => ({ ...prev, product_notes: e.target.value }))}
             required rows={3} placeholder="Ej: Aceite CBD:THC 20:1, 30ml, según receta del Dr. Carlos"
-            className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#7bc96f] resize-none"
+            className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand resize-none"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">Agencia Shalom de destino *</label>
+          <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Agencia Shalom de destino *</label>
           <input
             type="text" value={form.shalom_address}
             onChange={e => setForm(prev => ({ ...prev, shalom_address: e.target.value }))}
             required placeholder="Ej: Shalom Sicuani, Cusco"
-            className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-[#7bc96f]"
+            className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand"
           />
         </div>
         <button type="submit" disabled={sending}
-          className="w-full py-2 bg-[#2d5a27] hover:bg-[#4a8c42] text-white text-sm rounded transition-colors disabled:opacity-50">
+          className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50">
           {sending ? 'Enviando...' : 'Solicitar coordinación'}
         </button>
       </form>
 
       {requests.length > 0 && (
         <div>
-          <p className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Mis solicitudes</p>
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Mis solicitudes</p>
           <div className="space-y-3">
             {requests.map(req => (
-              <div key={req.id} className="border border-white/10 rounded-lg p-4">
+              <div key={req.id} className="border border-subtle rounded-lg p-4">
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-sm text-white">{req.product_notes}</p>
-                  <span className="text-xs font-mono text-[#7bc96f] ml-4 shrink-0">
+                  <span className="text-xs font-mono text-brand ml-4 shrink-0">
                     {STATUS_LABELS[req.status]}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 font-mono">📍 {req.shalom_address}</p>
+                <p className="text-xs text-faint font-mono">📍 {req.shalom_address}</p>
                 {req.tracking_info && (
-                  <p className="text-xs text-gray-400 font-mono mt-1">Guía: {req.tracking_info}</p>
+                  <p className="text-xs text-muted font-mono mt-1">Guía: {req.tracking_info}</p>
                 )}
               </div>
             ))}
