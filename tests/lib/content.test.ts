@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateContentFile, buildStoragePath, MEMBER_CONTENT_BUCKET } from '../../lib/content'
+import { validateContentFile, buildStoragePath, MEMBER_CONTENT_BUCKET, attachSignedUrls, type ContentRow } from '../../lib/content'
 
 describe('validateContentFile', () => {
   it('acepta PNG bajo el límite', () => {
@@ -45,5 +45,27 @@ describe('buildStoragePath', () => {
 describe('MEMBER_CONTENT_BUCKET', () => {
   it('es el bucket privado', () => {
     expect(MEMBER_CONTENT_BUCKET).toBe('member-content')
+  })
+})
+
+describe('attachSignedUrls', () => {
+  const base: ContentRow = {
+    id: '1', title: 'T', body: null, content_type: 'infographic',
+    file_path: null, file_kind: null, category: null, published_at: null,
+  }
+  it('firma solo filas con file_path', async () => {
+    const rows: ContentRow[] = [
+      { ...base, id: 'a', file_path: 'content/a/x.png', file_kind: 'image' },
+      { ...base, id: 'b', file_path: null },
+    ]
+    const sign = async (p: string) => `signed://${p}`
+    const out = await attachSignedUrls(rows, sign)
+    expect(out[0].file_url).toBe('signed://content/a/x.png')
+    expect(out[1].file_url).toBeNull()
+  })
+  it('propaga null si el firmador falla', async () => {
+    const rows: ContentRow[] = [{ ...base, file_path: 'content/a/x.png' }]
+    const out = await attachSignedUrls(rows, async () => null)
+    expect(out[0].file_url).toBeNull()
   })
 })

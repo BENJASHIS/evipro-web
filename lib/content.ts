@@ -35,3 +35,30 @@ export function buildStoragePath(contentId: string, filename: string): string {
     .replace(/^-+|-+$/g, '')
   return `content/${contentId}/${safe}`
 }
+
+export interface ContentRow {
+  id: string
+  title: string
+  body: string | null
+  content_type: string
+  file_path: string | null
+  file_kind: ContentFileKind | null
+  category: string | null
+  published_at: string | null
+}
+
+export interface ContentItem extends ContentRow {
+  file_url: string | null
+}
+
+export async function attachSignedUrls(
+  rows: ContentRow[],
+  sign: (path: string) => Promise<string | null>,
+): Promise<ContentItem[]> {
+  return Promise.all(
+    rows.map(async row => ({
+      ...row,
+      file_url: row.file_path ? await sign(row.file_path) : null,
+    })),
+  )
+}
