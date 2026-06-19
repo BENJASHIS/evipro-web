@@ -34,7 +34,7 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">4. Proceso de contratación y pago</h2>
-            <p>El pago se realiza mediante tarjeta de crédito o débito a través de la pasarela de pagos <strong className="text-white">Culqi</strong>, certificada PCI-DSS. EVIPro no almacena ni procesa datos de tarjetas bancarias. Los cobros son recurrentes según el periodo seleccionado (quincenal, mensual, trimestral, semestral o anual). El usuario autoriza expresamente los cobros automáticos al contratar la membresía.</p>
+            <p>El pago se realiza mediante tarjeta de crédito o débito a través de la pasarela de pagos <strong className="text-white">Mercado Pago</strong>, certificada PCI-DSS. EVIPro no almacena ni procesa datos de tarjetas bancarias. Los cobros son recurrentes según el periodo seleccionado (quincenal, mensual, trimestral, semestral o anual). El usuario autoriza expresamente los cobros automáticos al contratar la membresía.</p>
           </section>
 
           <section>

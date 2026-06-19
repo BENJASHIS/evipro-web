@@ -232,7 +232,7 @@ export default async function PlanesPage() {
         </div>
 
         <p className="text-center text-xs text-faint mt-16 font-mono">
-          Pagos procesados de forma segura por Culqi · Cancela cuando quieras
+          Pagos procesados de forma segura por Mercado Pago · Cancela cuando quieras
         </p>
       </div>
     </main>

@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import type { MembershipPlan } from '@/lib/types'
 
 const PLAN_NAMES: Record<string, string> = {
@@ -21,11 +21,9 @@ const PERIOD_NAMES: Record<string, string> = {
 function CheckoutForm() {
   const params = useSearchParams()
   const planId = params.get('plan')
-  const router = useRouter()
   const [plan, setPlan] = useState<MembershipPlan | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [culqiReady, setCulqiReady] = useState(false)
   const [legalAccepted, setLegalAccepted] = useState(false)
 
   const isTurista = plan?.type === 'turista_inicio' || plan?.type === 'turista_plus'
@@ -38,69 +36,29 @@ function CheckoutForm() {
       .then(data => { if (data) setPlan(data) })
   }, [planId])
 
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://checkout.culqi.com/js/v3'
-    script.async = true
-    script.onload = () => {
-      const w = window as Window & { Culqi?: { publicKey: string } }
-      if (w.Culqi) {
-        w.Culqi.publicKey = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY ?? ''
-        setCulqiReady(true)
-      }
-    }
-    document.head.appendChild(script)
-    return () => {
-      if (document.head.contains(script)) document.head.removeChild(script)
-    }
-  }, [])
-
   async function handlePagar() {
     if (!plan) return
     setLoading(true)
     setError(null)
 
-    const w = window as Window & {
-      Culqi?: { settings: (s: object) => void; open: () => void; token?: { id: string } }
-      culqi?: () => void
-    }
-
-    if (!w.Culqi) {
-      setError('Error cargando pasarela de pago.')
-      setLoading(false)
-      return
-    }
-
-    w.Culqi.settings({
-      title: 'EVIPro',
-      currency: 'PEN',
-      amount: Math.round(plan.price_soles * 100),
-      description: `${PLAN_NAMES[plan.type] ?? plan.type} · ${PERIOD_NAMES[plan.period] ?? plan.period}`,
-    })
-
-    w.culqi = async () => {
-      const token = w.Culqi?.token
-      if (!token?.id) { setError('Error al procesar el pago. Intenta de nuevo.'); setLoading(false); return }
-      try {
-        const res = await fetch('/api/subscriptions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token_id: token.id, plan_id: plan.id }),
-        })
-        if (res.ok) {
-          router.push('/miembros?bienvenida=1')
-        } else {
-          const data = await res.json()
-          setError(data.error ?? 'Error al procesar el pago.')
-          setLoading(false)
-        }
-      } catch {
-        setError('Error de red. Intenta de nuevo.')
+    try {
+      const res = await fetch('/api/subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_id: plan.id }),
+      })
+      const data = await res.json()
+      if (res.ok && data.init_point) {
+        // Redirige al checkout de Mercado Pago
+        window.location.href = data.init_point
+      } else {
+        setError(data.error ?? 'Error al procesar el pago.')
         setLoading(false)
       }
+    } catch {
+      setError('Error de red. Intenta de nuevo.')
+      setLoading(false)
     }
-
-    w.Culqi.open()
   }
 
   if (!planId) {
@@ -157,13 +115,13 @@ function CheckoutForm() {
 
       <button
         onClick={handlePagar}
-        disabled={loading || !culqiReady || (isTurista && !legalAccepted)}
+        disabled={loading || (isTurista && !legalAccepted)}
         className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white rounded transition-colors disabled:opacity-50 text-sm"
       >
-        {loading ? 'Procesando...' : !culqiReady ? 'Cargando...' : 'Pagar con tarjeta'}
+        {loading ? 'Redirigiendo...' : 'Pagar con Mercado Pago'}
       </button>
 
-      <p className="text-center text-xs text-faint mt-4 font-mono">Pago seguro con Culqi · PCI-DSS</p>
+      <p className="text-center text-xs text-faint mt-4 font-mono">Pago seguro con Mercado Pago · PCI-DSS</p>
     </div>
   )
 }
