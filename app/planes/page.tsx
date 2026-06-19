@@ -25,7 +25,7 @@ const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlig
   esencial: {
     name: 'Plan Esencial',
     description: 'Seguimiento ligero y bienestar para mantener tu tratamiento',
-    highlight: 'Consulta virtual seguimiento S/. 30 · 1 ticket de sorteo mensual',
+    highlight: 'Consulta virtual de seguimiento · 1 ticket de sorteo mensual',
     receta: 'Incluye receta simple, triple o especial según tu caso',
   },
   cannabis: {
@@ -37,7 +37,7 @@ const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlig
   integral: {
     name: 'Plan Integral',
     description: 'Seguimiento completo presencial y virtual',
-    highlight: 'Seguimiento, farmacovigilancia y mayor disponibilidad médica · Consulta virtual S/. 10 · Presencial S/. 20',
+    highlight: 'Seguimiento, farmacovigilancia y mayor disponibilidad médica',
     receta: 'Incluye receta simple, triple o especial según tu caso',
   },
   especialistas: {
