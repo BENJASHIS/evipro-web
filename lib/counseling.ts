@@ -30,6 +30,6 @@ export function getPrice(modality: Modality, isFirst: boolean): number {
   return isFirst ? first : recurring
 }
 
-export function getPaymentMethod(price: number): 'culqi' | 'free' {
-  return price === 0 ? 'free' : 'culqi'
+export function getPaymentMethod(price: number): 'mercadopago' | 'free' {
+  return price === 0 ? 'free' : 'mercadopago'
 }

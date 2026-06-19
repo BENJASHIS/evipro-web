@@ -18,7 +18,7 @@ export interface MembershipPlan {
   includes_renpuc_support: boolean
   includes_pharmacy_coord: boolean
   tickets_qty: number
-  culqi_plan_id: string | null
+  mp_plan_id: string | null
   created_at: string
 }
 
@@ -43,8 +43,8 @@ export interface Subscription {
   started_at: string | null
   period_start: string | null
   period_end: string | null
-  culqi_subscription_id: string | null
-  culqi_customer_id: string | null
+  mp_preference_id: string | null
+  mp_payment_id: string | null
   created_at: string
 }
 
