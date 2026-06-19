@@ -26,10 +26,10 @@ describe('getPaymentMethod', () => {
   it('zero price returns free', () => {
     expect(getPaymentMethod(0)).toBe('free')
   })
-  it('S/.15 returns culqi', () => {
-    expect(getPaymentMethod(15)).toBe('culqi')
+  it('S/.15 returns mercadopago', () => {
+    expect(getPaymentMethod(15)).toBe('mercadopago')
   })
-  it('S/.3 returns culqi', () => {
-    expect(getPaymentMethod(3)).toBe('culqi')
+  it('S/.3 returns mercadopago', () => {
+    expect(getPaymentMethod(3)).toBe('mercadopago')
   })
 })

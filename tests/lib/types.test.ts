@@ -15,7 +15,7 @@ describe('types', () => {
       includes_renpuc_support: true,
       includes_pharmacy_coord: true,
       tickets_qty: 3,
-      culqi_plan_id: null,
+      mp_plan_id: null,
       created_at: new Date().toISOString(),
     }
     expect(plan.type).toBe('cannabis')
@@ -31,8 +31,8 @@ describe('types', () => {
       started_at: new Date().toISOString(),
       period_start: new Date().toISOString(),
       period_end: new Date().toISOString(),
-      culqi_subscription_id: 'sub_123',
-      culqi_customer_id: 'cus_123',
+      mp_preference_id: null,
+      mp_payment_id: null,
       created_at: new Date().toISOString(),
     }
     expect(['pending', 'active', 'cancelled', 'past_due']).toContain(sub.status)

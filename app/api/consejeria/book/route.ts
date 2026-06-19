@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import type { Modality } from '@/lib/counseling'
+import { MODALITY_LABELS } from '@/lib/counseling'
+import { createMPPreference } from '@/lib/mercadopago'
 
 interface BookingBody {
   doctor_slug: string
@@ -13,8 +15,8 @@ interface BookingBody {
   is_first_session: boolean
   price_soles: number
   paid: boolean
-  payment_method: 'culqi' | 'yape' | 'free'
-  culqi_order_id?: string | null
+  payment_method: 'mercadopago' | 'yape' | 'free'
+  mp_preference_id?: string | null
 }
 
 export async function POST(req: NextRequest) {
@@ -29,6 +31,7 @@ export async function POST(req: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
+
   const { data, error } = await supabase
     .from('counseling_bookings')
     .insert({
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest) {
       price_soles,
       paid,
       payment_method,
-      culqi_order_id: body.culqi_order_id ?? null,
+      mp_preference_id: body.mp_preference_id ?? null,
     })
     .select('id')
     .single()
@@ -52,5 +55,43 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 })
   }
 
-  return NextResponse.json({ booking_id: data.id })
+  const booking_id: string = data.id
+
+  // For paid bookings via Mercado Pago, create preference and return init_point
+  if (payment_method === 'mercadopago' && price_soles > 0) {
+    try {
+      const pref = await createMPPreference({
+        items: [{
+          title: `EVIPro Consejería · ${MODALITY_LABELS[modality]}`,
+          unit_price: price_soles,
+          quantity: 1,
+        }],
+        payer_email: 'paciente@evipro.pe',
+        external_reference: `consejeria:${booking_id}`,
+        back_urls: {
+          success: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/consejeria/pago-ok?booking=${booking_id}`,
+          failure: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/consejeria/pago-error?booking=${booking_id}`,
+          pending: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/consejeria/pago-pendiente?booking=${booking_id}`,
+        },
+        metadata: { booking_id, doctor_slug, modality },
+      })
+
+      const preference_id = pref.id ?? ''
+      const init_point = pref.init_point ?? ''
+
+      if (preference_id) {
+        await supabase
+          .from('counseling_bookings')
+          .update({ mp_preference_id: preference_id })
+          .eq('id', booking_id)
+      }
+
+      return NextResponse.json({ booking_id, init_point, preference_id })
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error MP'
+      return NextResponse.json({ error: 'Error creando preferencia de pago: ' + msg }, { status: 500 })
+    }
+  }
+
+  return NextResponse.json({ booking_id })
 }
