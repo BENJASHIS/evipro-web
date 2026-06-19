@@ -35,7 +35,6 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
   const [loading, setLoading] = useState(false)
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [culqiReady, setCulqiReady] = useState(false)
   const [bookedSlots, setBookedSlots] = useState<Set<string>>(new Set())
 
   const SCHEDULE = doctor.counseling?.schedule ?? ['09:00','10:00','11:00','14:00','15:00','17:00']
@@ -50,21 +49,6 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
       .then((data: { booked: string[] }) => setBookedSlots(new Set(data.booked)))
       .catch(() => {})
   }, [doctor.slug])
-
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://checkout.culqi.com/js/v3'
-    script.async = true
-    script.onload = () => {
-      const w = window as Window & { Culqi?: { publicKey: string } }
-      if (w.Culqi) {
-        w.Culqi.publicKey = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY ?? ''
-        setCulqiReady(true)
-      }
-    }
-    document.head.appendChild(script)
-    return () => { if (document.head.contains(script)) document.head.removeChild(script) }
-  }, [])
 
   useEffect(() => {
     if (!phone || phone.length < 9 || !modality) { setIsFirst(null); return }
@@ -84,7 +68,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
     return () => clearTimeout(timer)
   }, [phone, modality, doctor.slug])
 
-  async function saveBooking(extra: { paid: boolean; payment_method: 'culqi' | 'free'; culqi_order_id?: string }) {
+  async function saveBooking(extra: { paid: boolean; payment_method: 'mercadopago' | 'free' }) {
     setLoading(true)
     setError(null)
     const res = await fetch('/api/consejeria/book', {
@@ -104,32 +88,17 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
       }),
     })
     if (res.ok) {
-      const data = await res.json() as { booking_id: string }
+      const data = await res.json() as { booking_id: string; init_point?: string }
+      if (data.init_point) {
+        // Reserva pagada: redirige al checkout de Mercado Pago
+        window.location.href = data.init_point
+        return
+      }
       setBookingId(data.booking_id)
     } else {
       setError('Error al guardar la reserva. Intenta de nuevo.')
     }
     setLoading(false)
-  }
-
-  function handlePaidBooking() {
-    const w = window as Window & {
-      Culqi?: { settings: (s: object) => void; open: () => void; token?: { id: string } }
-      culqi?: () => void
-    }
-    if (!w.Culqi || price === null) return
-    w.Culqi.settings({
-      title: 'EVIPro Consejería',
-      currency: 'PEN',
-      amount: price * 100,
-      description: `Consejería ${MODALITY_LABELS[modality!]} · ${doctor.name}`,
-    })
-    w.culqi = () => {
-      const token = w.Culqi?.token
-      if (!token?.id) { setError('Error al procesar el pago. Intenta de nuevo.'); return }
-      saveBooking({ paid: true, payment_method: 'culqi', culqi_order_id: token.id })
-    }
-    w.Culqi.open()
   }
 
   if (bookingId) {
@@ -325,10 +294,10 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
           </div>
 
           <button
-            disabled={!canSubmit || loading || (price !== null && price > 0 && !culqiReady)}
+            disabled={!canSubmit || loading}
             onClick={isFree
               ? () => saveBooking({ paid: false, payment_method: 'free' })
-              : handlePaidBooking}
+              : () => saveBooking({ paid: true, payment_method: 'mercadopago' })}
             className="w-full py-2.5 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-40 font-mono"
           >
             {loading
