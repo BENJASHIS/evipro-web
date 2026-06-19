@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import type { Modality } from '@/lib/counseling'
 import { MODALITY_LABELS } from '@/lib/counseling'
-import { createMPPreference } from '@/lib/mercadopago'
+import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 
 interface BookingBody {
   doctor_slug: string
@@ -88,7 +88,8 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({ booking_id, init_point, preference_id })
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Error MP'
+      const msg = describeMPError(err)
+      console.error('[consejeria/book] error creando preferencia:', JSON.stringify(err), msg)
       return NextResponse.json({ error: 'Error creando preferencia de pago: ' + msg }, { status: 500 })
     }
   }

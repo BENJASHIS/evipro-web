@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-server'
-import { createMPPreference } from '@/lib/mercadopago'
+import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 
 const PLAN_NAMES: Record<string, string> = {
   express: 'Plan Express',
@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
       preference_id: preference.id,
     })
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Error procesando pago'
+    const message = describeMPError(err)
+    console.error('[subscriptions] error creando pago:', JSON.stringify(err), message)
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

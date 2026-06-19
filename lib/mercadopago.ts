@@ -57,6 +57,27 @@ export async function getMPPayment(payment_id: string | number) {
   return payment.get({ id: String(payment_id) })
 }
 
+/**
+ * El SDK de Mercado Pago lanza el body JSON del error (objeto plano), no un
+ * Error. Esto extrae un mensaje legible incluyendo el detalle de `cause`.
+ */
+export function describeMPError(err: unknown): string {
+  if (err instanceof Error) return err.message
+  if (err && typeof err === 'object') {
+    const e = err as { message?: string; error?: string; status?: number; cause?: unknown }
+    const causes = Array.isArray(e.cause)
+      ? e.cause.map((c: unknown) => {
+          const cc = c as { description?: string; code?: string | number }
+          return cc?.description ?? cc?.code ?? JSON.stringify(c)
+        }).join('; ')
+      : ''
+    const base = e.message ?? e.error ?? 'Error de Mercado Pago'
+    const status = e.status ? ` [${e.status}]` : ''
+    return `${base}${status}${causes ? ` — ${causes}` : ''}`
+  }
+  return 'Error procesando pago'
+}
+
 export async function verifyMPWebhook(
   xSignature: string,
   xRequestId: string,
