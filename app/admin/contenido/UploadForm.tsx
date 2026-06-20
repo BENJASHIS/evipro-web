@@ -10,14 +10,15 @@ export default function UploadForm() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    const formEl = e.currentTarget
     setLoading(true); setError(null); setOk(false)
-    const form = new FormData(e.currentTarget)
+    const form = new FormData(formEl)
     const res = await fetch('/api/admin/content', { method: 'POST', body: form })
     const data = await res.json()
     setLoading(false)
     if (!res.ok) { setError(data.error ?? 'Error al subir'); return }
     setOk(true)
-    e.currentTarget.reset()
+    formEl.reset()
     router.refresh()
   }
 
