@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { isAdminUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
@@ -35,6 +36,7 @@ export default async function MiembrosPage() {
       .maybeSingle(),
   ])
 
+  const isAdmin = isAdminUser(user)
   const plan = subscription?.membership_plans as Record<string, unknown> | undefined
   const isActive = subscription?.status === 'active'
   const planType = plan?.type as string | undefined
@@ -55,7 +57,7 @@ export default async function MiembrosPage() {
         Bienvenido, {profile?.full_name?.split(' ')[0] ?? 'miembro'}
       </h1>
 
-      {!subscription ? (
+      {!subscription && !isAdmin ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
           <p className="text-muted mb-4">No tienes una membresía activa.</p>
           <Link href="/planes" className="bg-brand-deep hover:bg-brand-mid text-white px-6 py-2 rounded font-mono text-sm transition-colors">
@@ -65,7 +67,17 @@ export default async function MiembrosPage() {
       ) : (
         <div className="grid gap-6">
 
+          {/* Modo admin: vista previa sin membresía */}
+          {isAdmin && !isActive && (
+            <div className="border border-brand/30 bg-brand/5 rounded-lg p-4">
+              <p className="text-brand text-sm">
+                Modo admin · vista previa del área de miembro (sin membresía activa).
+              </p>
+            </div>
+          )}
+
           {/* Estado de membresía */}
+          {subscription && (
           <div className="border border-subtle rounded-lg p-6">
             <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">Tu membresía</p>
             <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
@@ -85,6 +97,7 @@ export default async function MiembrosPage() {
               </p>
             )}
           </div>
+          )}
 
           {/* Beneficios */}
           {plan && isActive && (
@@ -115,7 +128,7 @@ export default async function MiembrosPage() {
           )}
 
           {/* Accesos rápidos */}
-          {isActive && (
+          {(isActive || isAdmin) && (
             <div className="border border-subtle rounded-lg p-6">
               <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Accesos rápidos</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
