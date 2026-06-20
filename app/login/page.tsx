@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -29,7 +30,18 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-ink">
       <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
-        <h1 className="text-2xl font-light text-white mb-2 font-serif italic">EVIPro</h1>
+        <Link href="/" className="flex items-center gap-2 mb-2 w-fit">
+          <Image
+            src="/images/logo-evipro.png"
+            alt="EVIPro"
+            width={36}
+            height={36}
+            className="rounded-full"
+          />
+          <span className="text-2xl tracking-tight">
+            <span className="font-bold text-white">EVI</span><span className="font-serif italic text-brand">Pro</span>
+          </span>
+        </Link>
         <p className="text-sm text-muted mb-8">Ingresa a tu membresía</p>
 
         <form onSubmit={handleLogin} className="space-y-4">

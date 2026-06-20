@@ -10,40 +10,53 @@ const PLAN_IMAGES: Record<PlanType, { src: string | null; placeholder: string }>
   esencial:       { src: '/images/planes/esencial.jpg',       placeholder: 'from-emerald-900 to-surface-2' },
   cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-ink' },
   integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-ink' },
+  especialistas:  { src: null,                                placeholder: 'from-sky-950 to-ink' },
   turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-ink' },
   turista_plus:   { src: '/images/planes/turista-plus.jpg',   placeholder: 'from-violet-950 to-ink' },
 }
 
-const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlight: string }> = {
+const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlight: string; receta?: string; comingSoon?: boolean }> = {
   express: {
     name: 'Plan Express',
     description: 'Puerta de entrada al cuidado médico especializado',
-    highlight: '1 consulta virtual de 15 min incluida',
+    highlight: '1 consulta virtual de 15 min incluida · Consulta virtual y presencial con tarifa preferencial',
+    receta: 'Incluye receta simple, triple o especial según tu caso',
   },
   esencial: {
     name: 'Plan Esencial',
-    description: 'Seguimiento y bienestar — un paso sobre Express',
-    highlight: 'Consulta virtual seguimiento S/. 30 · 1 ticket de sorteo mensual',
+    description: 'Seguimiento ligero y bienestar para mantener tu tratamiento',
+    highlight: 'Consulta virtual de seguimiento · 1 ticket de sorteo mensual',
+    receta: 'Incluye receta simple, triple o especial según tu caso',
   },
   cannabis: {
     name: 'Plan Cannabis',
     description: 'Para pacientes de cannabis medicinal con seguimiento',
-    highlight: 'Emergencias cannábicas 24/7 · Receta incluida',
+    highlight: 'Emergencias cannábicas 24/7',
+    receta: 'Incluye receta simple, triple o especial según tu caso',
   },
   integral: {
     name: 'Plan Integral',
     description: 'Seguimiento completo presencial y virtual',
-    highlight: 'Consulta virtual S/. 10 · Presencial S/. 40',
+    highlight: 'Seguimiento, farmacovigilancia y mayor disponibilidad médica',
+    receta: 'Incluye receta simple, triple o especial según tu caso',
+  },
+  especialistas: {
+    name: 'Plan Especialistas',
+    description: 'Elige a tus especialistas según tu necesidad',
+    highlight: 'Cannabis medicinal y geriatría — pronto sumaremos más especialidades',
+    comingSoon: true,
   },
   turista_inicio: {
     name: 'Plan Turista Inicio',
     description: 'Para visitantes que inician tratamiento con cannabis medicinal en Perú',
     highlight: 'Consulta virtual completa · RENPUC nuevo candidato · Coordinación con farmacia magistral',
+    receta: 'Incluye receta simple, triple o especial según tu caso',
   },
   turista_plus: {
     name: 'Plan Turista Plus',
     description: 'Para visitantes que ya usan cannabis y revalidan su tratamiento',
     highlight: 'Consulta express · Revalidación receta extranjera · Coordinación con farmacia magistral',
+    receta: 'Incluye receta simple, triple o especial según tu caso',
   },
 }
 
@@ -68,6 +81,14 @@ export default async function PlanesPage() {
     return acc
   }, {})
 
+  // Orden de planes locales por precio ascendente; los "Próximamente" (sin precio) van al final.
+  const localTypes: PlanType[] = ['express', 'esencial', 'cannabis', 'integral', 'especialistas']
+  const minPrice = (type: PlanType) => {
+    const ps = byType[type] ?? []
+    return ps.length ? Math.min(...ps.map(p => Number(p.price_soles))) : Infinity
+  }
+  const orderedLocalTypes = [...localTypes].sort((a, b) => minPrice(a) - minPrice(b))
+
   return (
     <main className="min-h-screen bg-ink text-white">
       <Nav />
@@ -91,7 +112,7 @@ export default async function PlanesPage() {
 
         {/* Planes locales */}
         <div className="grid gap-12 mb-20">
-          {(['esencial', 'express', 'cannabis', 'integral'] as PlanType[]).map(type => {
+          {orderedLocalTypes.map(type => {
             const info = PLAN_LABELS[type]
             const img = PLAN_IMAGES[type]
             const typePlans = byType[type] ?? []
@@ -110,7 +131,8 @@ export default async function PlanesPage() {
                 <div className="p-8">
                   <h2 className="text-2xl font-light mb-1">{info.name}</h2>
                   <p className="text-muted text-sm mb-2">{info.description}</p>
-                  <p className="text-brand text-xs font-mono mb-4">✓ {info.highlight}</p>
+                  <p className={`text-brand text-xs font-mono ${info.receta ? 'mb-1' : 'mb-4'}`}>✓ {info.highlight}</p>
+                  {info.receta && <p className="text-faint text-xs font-mono mb-4">✓ {info.receta}</p>}
 
                   {/* Precios de consulta con este plan */}
                   {typePlans[0] && (Number(typePlans[0].discount_virtual_pct) > 0 || Number(typePlans[0].discount_presencial_pct) > 0) && (
@@ -136,23 +158,32 @@ export default async function PlanesPage() {
                     </div>
                   )}
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {typePlans.map(plan => (
-                      <Link
-                        key={plan.id}
-                        href={`/checkout?plan=${plan.id}`}
-                        className="block border border-subtle hover:border-brand rounded p-4 text-center transition-colors group"
-                      >
-                        <p className="text-xs text-faint uppercase tracking-widest mb-2 font-mono">
-                          {PERIOD_LABELS[plan.period]}
-                        </p>
-                        <p className="text-2xl font-light mb-1">S/. {plan.price_soles}</p>
-                        <p className="text-xs text-faint mt-3 group-hover:text-white transition-colors">
-                          Suscribirme →
-                        </p>
-                      </Link>
-                    ))}
-                  </div>
+                  {info.comingSoon ? (
+                    <div className="border border-subtle rounded p-6 text-center bg-white/[0.02]">
+                      <p className="text-xs text-faint uppercase tracking-widest mb-2 font-mono">Próximamente</p>
+                      <p className="text-muted text-sm">
+                        Estamos preparando este plan. Déjanos tus datos y te avisamos cuando esté disponible.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {typePlans.map(plan => (
+                        <Link
+                          key={plan.id}
+                          href={`/checkout?plan=${plan.id}`}
+                          className="block border border-subtle hover:border-brand rounded p-4 text-center transition-colors group"
+                        >
+                          <p className="text-xs text-faint uppercase tracking-widest mb-2 font-mono">
+                            {PERIOD_LABELS[plan.period]}
+                          </p>
+                          <p className="text-2xl font-light mb-1">S/. {plan.price_soles}</p>
+                          <p className="text-xs text-faint mt-3 group-hover:text-white transition-colors">
+                            Suscribirme →
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )
@@ -197,7 +228,8 @@ export default async function PlanesPage() {
                   <div className="p-8">
                     <h3 className="text-2xl font-light mb-1">{info.name}</h3>
                     <p className="text-muted text-sm mb-2">{info.description}</p>
-                    <p className="text-brand text-xs font-mono mb-6">✓ {info.highlight}</p>
+                    <p className="text-brand text-xs font-mono mb-1">✓ {info.highlight}</p>
+                    <p className="text-faint text-xs font-mono mb-6">✓ {info.receta}</p>
                     <div className="grid grid-cols-2 gap-4 max-w-sm">
                       {typePlans.map(plan => (
                         <Link
