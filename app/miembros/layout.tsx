@@ -23,6 +23,7 @@ export default async function MiembrosLayout({ children }: { children: React.Rea
             { href: '/miembros', label: 'Inicio' },
             { href: '/miembros/contenido', label: 'Contenido' },
             { href: '/miembros/recetas', label: 'Farmacia' },
+            { href: '/miembros/mensajes', label: 'Mensajes' },
             { href: '/miembros/sorteos', label: 'Sorteos' },
             { href: '/miembros/perfil', label: 'Perfil' },
           ].map(link => (
