@@ -70,12 +70,15 @@ export interface Raffle {
   created_at: string
 }
 
-export interface ContentItem {
+export interface Content {
   id: string
   title: string
-  body: string
-  content_type: 'article' | 'video' | 'guide'
-  min_plan: ContentMinPlan | null
+  body: string | null
+  content_type: 'article' | 'video' | 'guide' | 'infographic'
+  min_plan: 'express' | 'cannabis' | 'integral' | null
+  file_path: string | null
+  file_kind: 'image' | 'pdf' | null
+  category: string | null
   published_at: string | null
   created_at: string
 }
