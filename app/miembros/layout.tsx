@@ -1,11 +1,19 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { hasUnread } from '@/lib/messages'
 
 export default async function MiembrosLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const { data: conv } = await supabase
+    .from('conversations')
+    .select('last_message_at, last_sender_role, member_last_read_at, admin_last_read_at')
+    .eq('user_id', user.id)
+    .maybeSingle()
+  const unreadMessages = conv ? hasUnread(conv, 'member') : false
 
   async function signOut() {
     'use server'
@@ -28,8 +36,11 @@ export default async function MiembrosLayout({ children }: { children: React.Rea
             { href: '/miembros/perfil', label: 'Perfil' },
           ].map(link => (
             <Link key={link.href} href={link.href}
-              className="text-xs font-mono uppercase tracking-widest text-muted hover:text-white transition-colors">
+              className="relative text-xs font-mono uppercase tracking-widest text-muted hover:text-white transition-colors">
               {link.label}
+              {link.href === '/miembros/mensajes' && unreadMessages && (
+                <span className="absolute -top-1.5 -right-2.5 w-1.5 h-1.5 rounded-full bg-brand" />
+              )}
             </Link>
           ))}
           <form action={signOut}>
