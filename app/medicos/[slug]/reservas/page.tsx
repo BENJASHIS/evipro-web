@@ -1,13 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+import { createServiceClient } from '@/lib/supabase-server'
 import { DOCTORS } from '@/lib/doctors'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
+import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { notFound } from 'next/navigation'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 interface Booking {
   id: string
@@ -31,11 +27,23 @@ function statusLabel(b: Booking) {
   return { text: 'Sin pago', color: 'text-faint' }
 }
 
-export default async function ReservasPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ReservasPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ token?: string }>
+}) {
   const { slug } = await params
+  const { token } = await searchParams
   const doctor = DOCTORS.find(d => d.slug === slug)
   if (!doctor) notFound()
 
+  // Portal con datos de pacientes (PII): requiere token válido por médico.
+  // notFound() (404) en vez de redirect para no revelar la existencia del portal.
+  if (!verifyDoctorPortalToken(slug, token)) notFound()
+
+  const supabase = createServiceClient()
   const today = new Date().toISOString().split('T')[0]
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 

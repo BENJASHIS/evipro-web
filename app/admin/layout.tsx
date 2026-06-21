@@ -2,12 +2,12 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { hasUnread } from '@/lib/messages'
+import { isAdminUser } from '@/lib/auth'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const ADMIN_EMAILS = ['drecs2003@gmail.com', 'consulta@evipro.pe']
-  if (!user || !ADMIN_EMAILS.includes(user.email ?? '')) redirect('/miembros')
+  if (!isAdminUser(user)) redirect('/miembros')
 
   const { data: convs } = await supabase
     .from('conversations')

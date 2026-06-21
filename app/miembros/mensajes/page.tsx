@@ -7,6 +7,7 @@ export default function MensajesPage() {
   const [body, setBody] = useState('')
   const [sending, setSending] = useState(false)
   const [blocked, setBlocked] = useState(false)
+  const [adminPreview, setAdminPreview] = useState(false)
   const [loaded, setLoaded] = useState(false)
 
   async function load() {
@@ -14,6 +15,7 @@ export default function MensajesPage() {
     if (res.status === 403) { setBlocked(true); setLoaded(true); return }
     const data = await res.json()
     setMessages(data.messages ?? [])
+    setAdminPreview(Boolean(data.adminPreview))
     setLoaded(true)
   }
   useEffect(() => {
@@ -49,6 +51,13 @@ export default function MensajesPage() {
     <div>
       <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Mensajes</p>
       <h1 className="text-3xl font-light font-serif italic mb-4">Mensajería con la clínica</h1>
+      {adminPreview && (
+        <div className="border border-brand/30 bg-brand/5 rounded-lg p-4 mb-4">
+          <p className="text-brand text-sm">
+            Modo admin · vista previa del canal de mensajería (sin membresía activa).
+          </p>
+        </div>
+      )}
       <div className="border border-brand/30 bg-brand/5 rounded-lg p-4 mb-6">
         <p className="text-muted text-xs">
           Canal de coordinación y soporte. No reemplaza una consulta médica; ante una urgencia clínica agenda una consulta.

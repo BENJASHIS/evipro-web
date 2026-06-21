@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-server'
 import { validateMessageBody, buildPreview } from '@/lib/messages'
+import { isAdminUser } from '@/lib/auth'
 
 const CONV_COLS = 'id, user_id, last_message_at, last_message_preview, last_sender_role, member_last_read_at, admin_last_read_at, created_at'
 const MSG_COLS = 'id, conversation_id, sender_role, body, created_at'
@@ -17,8 +18,12 @@ async function requireActiveMember(supabase: Awaited<ReturnType<typeof createSer
   if (!user) return { error: NextResponse.json({ error: 'No autenticado' }, { status: 401 }) }
   const { data: sub } = await supabase
     .from('subscriptions').select('id').eq('user_id', user.id).eq('status', 'active').maybeSingle()
-  if (!sub) return { error: NextResponse.json({ error: 'Necesitas una suscripción activa' }, { status: 403 }) }
-  return { user }
+  if (!sub) {
+    // Los admins acceden al canal sin membresía (modo vista previa, igual que el dashboard).
+    if (isAdminUser(user)) return { user, adminPreview: true }
+    return { error: NextResponse.json({ error: 'Necesitas una suscripción activa' }, { status: 403 }) }
+  }
+  return { user, adminPreview: false }
 }
 
 export async function GET() {
@@ -38,7 +43,7 @@ export async function GET() {
   await service.from('conversations')
     .update({ member_last_read_at: new Date().toISOString() }).eq('id', conversation.id)
 
-  return NextResponse.json({ conversation, messages: messages ?? [] })
+  return NextResponse.json({ conversation, messages: messages ?? [], adminPreview: auth.adminPreview })
 }
 
 export async function POST(req: NextRequest) {

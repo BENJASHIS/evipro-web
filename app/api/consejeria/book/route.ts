@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createServiceClient } from '@/lib/supabase-server'
 import type { Modality } from '@/lib/counseling'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
@@ -27,10 +27,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  // Acceso server-side con service-role: counseling_bookings tiene RLS activado
+  // y deny-by-default; solo el service-role (o un admin autenticado) puede escribir.
+  const supabase = createServiceClient()
 
   const { data, error } = await supabase
     .from('counseling_bookings')

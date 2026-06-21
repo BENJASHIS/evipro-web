@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+import { createServiceClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -13,6 +8,8 @@ export async function GET(request: Request) {
   if (!doctorSlug) {
     return NextResponse.json({ error: 'doctor_slug required' }, { status: 400 })
   }
+
+  const supabase = createServiceClient()
 
   const today = new Date().toISOString().split('T')[0]
 
