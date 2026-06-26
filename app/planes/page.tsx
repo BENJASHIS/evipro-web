@@ -10,8 +10,8 @@ const PLAN_IMAGES: Record<PlanType, { src: string | null; placeholder: string }>
   esencial:       { src: '/images/planes/esencial.jpg',       placeholder: 'from-emerald-900 to-surface-2' },
   cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-ink' },
   integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-ink' },
-  especialistas:  { src: null,                                placeholder: 'from-sky-950 to-ink' },
-  acceso:         { src: null,                                placeholder: 'from-indigo-950 to-ink' },
+  especialistas:  { src: '/images/planes/especialistas.jpg',  placeholder: 'from-sky-950 to-ink' },
+  acceso:         { src: '/images/planes/acceso.jpg',         placeholder: 'from-indigo-950 to-ink' },
   turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-ink' },
   turista_plus:   { src: '/images/planes/turista-plus.jpg',   placeholder: 'from-violet-950 to-ink' },
 }
