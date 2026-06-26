@@ -22,11 +22,14 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">3. Descripción del servicio</h2>
-            <p className="mb-3">EVIPro ofrece membresías médicas con acceso a consultas virtuales y/o presenciales con el Dr. José Carlos Benjamín Jara Ovalle (CMP 82817), especialista en Medicina Integral y Cannabis Medicinal con sede en Cusco, Perú. Los planes disponibles son:</p>
+            <p className="mb-3">EVIPro ofrece membresías médicas con acceso a consultas virtuales y/o presenciales con su equipo médico: el Dr. José Carlos Benjamín Jara Ovalle (CMP 82817), especialista en Medicina Integral y Cannabis Medicinal, y el Dr. Shinvert Enmanuel Vera Sanchez (CMP 099649), especialista en Gerontología y Cuidados Paliativos, con sede en Cusco, Perú. Los planes disponibles son:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li><strong className="text-white">Plan Express</strong> (S/. 59/mes): 1 consulta virtual de 15 minutos + receta digital.</li>
-              <li><strong className="text-white">Plan Cannabis</strong> (S/. 89/mes): Consultas de seguimiento a precio preferencial, receta incluida, apoyo RENPUC, coordinación con farmacia magistral.</li>
-              <li><strong className="text-white">Plan Integral</strong> (S/. 149/mes): Consultas virtuales y presenciales a precio preferencial, todos los beneficios Cannabis más atención presencial.</li>
+              <li><strong className="text-white">Plan Axs</strong> (S/. 9.90/mes): Membresía de acceso por uso. Consultas virtuales y presenciales a tarifa reducida según duración, sin compromiso de permanencia.</li>
+              <li><strong className="text-white">Plan Express</strong> (S/. 10/mes): 1 consulta virtual de 15 minutos + receta digital.</li>
+              <li><strong className="text-white">Plan Esencial</strong> (S/. 29/mes): Consulta virtual de seguimiento, receta incluida y 1 ticket de sorteo mensual.</li>
+              <li><strong className="text-white">Plan Cannabis</strong> (desde S/. 49/mes): Consultas de seguimiento a precio preferencial, receta incluida, apoyo RENPUC, coordinación con farmacia magistral.</li>
+              <li><strong className="text-white">Plan Integral</strong> (desde S/. 79/mes): Consultas virtuales y presenciales a precio preferencial, todos los beneficios Cannabis más atención presencial.</li>
+              <li><strong className="text-white">Plan Especialistas</strong> (desde S/. 100/mes): Acceso a los especialistas en Cannabis Medicinal y Gerontología, con consejería y consultas a tarifa preferencial por duración.</li>
               <li><strong className="text-white">Plan Turista Inicio</strong> (S/. 69 quincenal / S/. 119 mensual): Para visitantes nuevos en cannabis medicinal. Consulta virtual completa, receta, RENPUC nuevo candidato, farmacia.</li>
               <li><strong className="text-white">Plan Turista Plus</strong> (S/. 49 quincenal / S/. 89 mensual): Para visitantes con tratamiento previo. Consulta express, revalidación de receta extranjera, RENPUC continuador, farmacia.</li>
             </ul>
