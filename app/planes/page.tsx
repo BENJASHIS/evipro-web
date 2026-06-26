@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import type { MembershipPlan, PlanType } from '@/lib/types'
+import type { ConsultationTier, MembershipPlan, PlanType } from '@/lib/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import Nav from '@/app/components/Nav'
@@ -71,6 +71,53 @@ const PERIOD_LABELS: Record<string, string> = {
   trimestral: 'Trimestral',
   semestral: 'Semestral',
   anual: 'Anual',
+}
+
+// Precios de consulta por duración. Si los tiers traen modalidad (Axs) → tabla Virtual/Presencial
+// por duración; si no (Especialistas) → lista simple etiqueta · precio.
+function ConsultationTiers({ tiers }: { tiers: ConsultationTier[] }) {
+  const hasModality = tiers.some(t => t.modality)
+
+  return (
+    <div className="border border-subtle rounded p-4 mb-6 bg-white/[0.02]">
+      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">Precios de consulta con este plan</p>
+      {hasModality ? (
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-faint text-[11px] font-mono uppercase tracking-widest">
+              <th className="text-left font-normal pb-2">Duración</th>
+              <th className="text-right font-normal pb-2">Virtual</th>
+              <th className="text-right font-normal pb-2">Presencial</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.values(
+              tiers.reduce<Record<string, { label: string; virtual?: number; presencial?: number }>>((acc, t) => {
+                acc[t.label] ??= { label: t.label }
+                acc[t.label][t.modality === 'presencial' ? 'presencial' : 'virtual'] = t.price_soles
+                return acc
+              }, {})
+            ).map((row, i) => (
+              <tr key={i} className="border-t border-subtle/40">
+                <td className="py-2 text-muted">{row.label}</td>
+                <td className="py-2 text-right text-white">{row.virtual != null ? `S/. ${row.virtual}` : '—'}</td>
+                <td className="py-2 text-right text-white">{row.presencial != null ? `S/. ${row.presencial}` : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <ul className="text-sm">
+          {tiers.map((t, i) => (
+            <li key={i} className="flex justify-between py-2 border-t border-subtle/40 first:border-0">
+              <span className="text-muted">{t.label}</span>
+              <span className="text-white">S/. {t.price_soles}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
 }
 
 export default async function PlanesPage() {
@@ -163,19 +210,9 @@ export default async function PlanesPage() {
                     </div>
                   )}
 
-                  {/* Lista de precios de consulta por duración (planes con consultation_tiers) */}
+                  {/* Precios de consulta por duración (planes con consultation_tiers) */}
                   {typePlans[0]?.consultation_tiers && typePlans[0].consultation_tiers.length > 0 && (
-                    <div className="border border-subtle rounded p-4 mb-6 bg-white/[0.02]">
-                      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">Precios de consulta con este plan</p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 text-xs font-mono">
-                        {typePlans[0].consultation_tiers.map((tier, i) => (
-                          <span key={i} className="text-gray-300">
-                            {tier.label}{tier.modality ? ` (${tier.modality})` : ''}{' '}
-                            <span className="text-white font-medium">S/. {tier.price_soles}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    <ConsultationTiers tiers={typePlans[0].consultation_tiers} />
                   )}
 
                   {info.comingSoon ? (
