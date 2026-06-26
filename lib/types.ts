@@ -1,4 +1,4 @@
-export type PlanType = 'express' | 'esencial' | 'cannabis' | 'integral' | 'especialistas' | 'turista_inicio' | 'turista_plus'
+export type PlanType = 'express' | 'esencial' | 'cannabis' | 'integral' | 'especialistas' | 'acceso' | 'turista_inicio' | 'turista_plus'
 export type PlanPeriod = 'mensual' | 'trimestral' | 'semestral' | 'anual' | 'quincenal'
 export type SubscriptionStatus = 'pending' | 'active' | 'cancelled' | 'past_due'
 export type ContentMinPlan = 'express' | 'cannabis' | 'integral'
@@ -6,12 +6,20 @@ export type PharmacyStatus = 'pending' | 'coordinated' | 'shipped' | 'delivered'
 
 export type DocType = 'dni' | 'pasaporte' | 'carnet_extranjeria' | 'cedula_identidad'
 
+export interface ConsultationTier {
+  label: string
+  minutes: number
+  modality?: 'virtual' | 'presencial'
+  price_soles: number
+}
+
 export interface MembershipPlan {
   id: string
   type: PlanType
   period: PlanPeriod
   price_soles: number
   consultation_minutes: number | null
+  consultation_tiers: ConsultationTier[] | null
   discount_virtual_pct: number
   discount_presencial_pct: number
   includes_prescription: boolean

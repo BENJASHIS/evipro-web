@@ -9,6 +9,7 @@ describe('types', () => {
       period: 'mensual',
       price_soles: 49,
       consultation_minutes: null,
+      consultation_tiers: null,
       discount_virtual_pct: 79,
       discount_presencial_pct: 0,
       includes_prescription: true,

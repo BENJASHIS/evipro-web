@@ -11,6 +11,7 @@ const PLAN_IMAGES: Record<PlanType, { src: string | null; placeholder: string }>
   cannabis:       { src: '/images/planes/cannabis.jpg',       placeholder: 'from-green-950 to-ink' },
   integral:       { src: '/images/planes/integral.jpg',       placeholder: 'from-teal-950 to-ink' },
   especialistas:  { src: null,                                placeholder: 'from-sky-950 to-ink' },
+  acceso:         { src: null,                                placeholder: 'from-indigo-950 to-ink' },
   turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-ink' },
   turista_plus:   { src: '/images/planes/turista-plus.jpg',   placeholder: 'from-violet-950 to-ink' },
 }
@@ -42,9 +43,13 @@ const PLAN_LABELS: Record<PlanType, { name: string; description: string; highlig
   },
   especialistas: {
     name: 'Plan Especialistas',
-    description: 'Elige a tus especialistas según tu necesidad',
-    highlight: 'Cannabis medicinal y geriatría — pronto sumaremos más especialidades',
-    comingSoon: true,
+    description: 'Cannabis medicinal + geriatría con dos especialistas en un solo plan',
+    highlight: 'Acceso a Dr. Jara y Dr. Vera · Tarifas de consulta preferenciales',
+  },
+  acceso: {
+    name: 'Plan Axs',
+    description: 'Acceso flexible: paga solo por la consulta que uses',
+    highlight: 'Sin compromiso · Consultas por duración a precio reducido',
   },
   turista_inicio: {
     name: 'Plan Turista Inicio',
@@ -82,7 +87,7 @@ export default async function PlanesPage() {
   }, {})
 
   // Orden de planes locales por precio ascendente; los "Próximamente" (sin precio) van al final.
-  const localTypes: PlanType[] = ['express', 'esencial', 'cannabis', 'integral', 'especialistas']
+  const localTypes: PlanType[] = ['express', 'esencial', 'cannabis', 'integral', 'especialistas', 'acceso']
   const minPrice = (type: PlanType) => {
     const ps = byType[type] ?? []
     return ps.length ? Math.min(...ps.map(p => Number(p.price_soles))) : Infinity
@@ -155,6 +160,21 @@ export default async function PlanesPage() {
                           <span className="text-faint line-through ml-1">S/. 100</span>
                         </span>
                       )}
+                    </div>
+                  )}
+
+                  {/* Lista de precios de consulta por duración (planes con consultation_tiers) */}
+                  {typePlans[0]?.consultation_tiers && typePlans[0].consultation_tiers.length > 0 && (
+                    <div className="border border-subtle rounded p-4 mb-6 bg-white/[0.02]">
+                      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">Precios de consulta con este plan</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 text-xs font-mono">
+                        {typePlans[0].consultation_tiers.map((tier, i) => (
+                          <span key={i} className="text-gray-300">
+                            {tier.label}{tier.modality ? ` (${tier.modality})` : ''}{' '}
+                            <span className="text-white font-medium">S/. {tier.price_soles}</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
 
