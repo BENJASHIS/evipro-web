@@ -1,4 +1,16 @@
 export type PlanType = 'express' | 'esencial' | 'cannabis' | 'integral' | 'especialistas' | 'acceso' | 'turista_inicio' | 'turista_plus'
+
+// Nombre visible por tipo de plan. Exhaustivo por PlanType: agregar un plan nuevo obliga a nombrarlo.
+export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
+  express: 'Plan Express',
+  esencial: 'Plan Esencial',
+  cannabis: 'Plan Cannabis',
+  integral: 'Plan Integral',
+  especialistas: 'Plan Especialistas',
+  acceso: 'Plan Axs',
+  turista_inicio: 'Plan Turista Inicio',
+  turista_plus: 'Plan Turista Plus',
+}
 export type PlanPeriod = 'mensual' | 'trimestral' | 'semestral' | 'anual' | 'quincenal'
 export type SubscriptionStatus = 'pending' | 'active' | 'cancelled' | 'past_due'
 export type ContentMinPlan = 'express' | 'cannabis' | 'integral'

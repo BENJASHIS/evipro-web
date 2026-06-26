@@ -1,15 +1,8 @@
 'use client'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import type { MembershipPlan } from '@/lib/types'
+import { PLAN_DISPLAY_NAMES, type MembershipPlan } from '@/lib/types'
 
-const PLAN_NAMES: Record<string, string> = {
-  express: 'Plan Express',
-  cannabis: 'Plan Cannabis',
-  integral: 'Plan Integral',
-  turista_inicio: 'Plan Turista Inicio',
-  turista_plus: 'Plan Turista Plus',
-}
 const PERIOD_NAMES: Record<string, string> = {
   quincenal: 'Quincenal (15 días)',
   mensual: 'Mensual',
@@ -77,7 +70,7 @@ function CheckoutForm() {
   return (
     <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
       <p className="text-xs text-brand font-mono uppercase tracking-widest mb-2">Resumen del pedido</p>
-      <h2 className="text-2xl font-light text-white mb-1">{PLAN_NAMES[plan.type] ?? plan.type}</h2>
+      <h2 className="text-2xl font-light text-white mb-1">{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</h2>
       <p className="text-muted text-sm mb-6">{PERIOD_NAMES[plan.period] ?? plan.period}</p>
 
       <div className="flex justify-between items-baseline border-t border-subtle pt-4 mb-8">

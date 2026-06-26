@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-server'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
-
-const PLAN_NAMES: Record<string, string> = {
-  express: 'Plan Express',
-  cannabis: 'Plan Cannabis',
-  integral: 'Plan Integral',
-  turista_inicio: 'Plan Turista Inicio',
-  turista_plus: 'Plan Turista Plus',
-}
+import { PLAN_DISPLAY_NAMES } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
@@ -41,7 +34,7 @@ export async function POST(req: NextRequest) {
     // Crear preferencia de pago en Mercado Pago
     const preference = await createMPPreference({
       items: [{
-        title: `${PLAN_NAMES[plan.type] ?? plan.type} · ${plan.period}`,
+        title: `${PLAN_DISPLAY_NAMES[plan.type as keyof typeof PLAN_DISPLAY_NAMES] ?? plan.type} · ${plan.period}`,
         unit_price: plan.price_soles,
         quantity: 1,
       }],
