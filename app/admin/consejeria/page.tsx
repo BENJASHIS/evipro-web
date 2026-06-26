@@ -54,7 +54,7 @@ export default async function AdminConsejeriaPage() {
               <p className="text-white font-light">{b.patient_name}</p>
               <p className="text-xs text-faint font-mono mt-0.5">{b.patient_phone}</p>
               {b.patient_note && (
-                <p className="text-xs text-muted mt-1 italic">"{b.patient_note}"</p>
+                <p className="text-xs text-muted mt-1 italic">&ldquo;{b.patient_note}&rdquo;</p>
               )}
             </div>
 

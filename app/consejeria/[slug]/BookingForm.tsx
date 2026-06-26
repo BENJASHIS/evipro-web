@@ -51,6 +51,8 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
   }, [doctor.slug])
 
   useEffect(() => {
+    // ponytail: reset síncrono intencional al invalidarse el input; el debounced-fetch va abajo
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!phone || phone.length < 9 || !modality) { setIsFirst(null); return }
     const timer = setTimeout(async () => {
       const res = await fetch('/api/consejeria/check-first', {

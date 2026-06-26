@@ -1,12 +1,18 @@
 'use client'
 import { useState } from 'react'
+import Link from 'next/link'
 
+// ponytail: sin precios hardcodeados — son identificadores de servicio para el reclamo;
+// los precios viven en membership_plans (Supabase) y aquí solo se desfasarían.
 const SERVICIOS = [
-  'Plan Express (S/. 59/mes)',
-  'Plan Cannabis (S/. 89/mes)',
-  'Plan Integral (S/. 149/mes)',
-  'Plan Turista Inicio (S/. 69 quincenal / S/. 119 mensual)',
-  'Plan Turista Plus (S/. 49 quincenal / S/. 89 mensual)',
+  'Plan Express',
+  'Plan Esencial',
+  'Plan Cannabis',
+  'Plan Integral',
+  'Plan Axs',
+  'Plan Especialistas (Cannabis + Gerontología)',
+  'Plan Turista Inicio',
+  'Plan Turista Plus',
   'Consulta virtual',
   'Consulta presencial',
   'Coordinación de farmacia',
@@ -61,7 +67,7 @@ export default function LibroReclamacionesPage() {
           <p className="text-gray-300 text-sm mb-6">Tu reclamación ha sido registrada exitosamente. Guarda este código de seguimiento:</p>
           <p className="text-3xl font-mono font-light text-white border border-subtle rounded px-6 py-4 mb-6">{code}</p>
           <p className="text-faint text-xs mb-8">Recibirás respuesta en <strong className="text-white">30 días calendario</strong> al correo <strong className="text-white">{form.email}</strong>. Para consultas escribe a <a href="mailto:reclamaciones@evipro.pe" className="text-brand">reclamaciones@evipro.pe</a> indicando tu código.</p>
-          <a href="/" className="text-xs font-mono text-faint hover:text-white transition-colors">← Volver al inicio</a>
+          <Link href="/" className="text-xs font-mono text-faint hover:text-white transition-colors">← Volver al inicio</Link>
         </div>
       </main>
     )

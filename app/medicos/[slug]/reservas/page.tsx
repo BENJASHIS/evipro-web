@@ -44,8 +44,9 @@ export default async function ReservasPage({
   if (!verifyDoctorPortalToken(slug, token)) notFound()
 
   const supabase = createServiceClient()
-  const today = new Date().toISOString().split('T')[0]
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const now = new Date()
+  const today = now.toISOString().split('T')[0]
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
   const { data: upcoming } = await supabase
     .from('counseling_bookings')
@@ -122,7 +123,7 @@ export default async function ReservasPage({
                         {b.is_first_session ? ' (1ra sesión)' : ''}
                       </p>
                       {b.patient_note && (
-                        <p className="text-faint text-xs italic mt-1">"{b.patient_note}"</p>
+                        <p className="text-faint text-xs italic mt-1">&ldquo;{b.patient_note}&rdquo;</p>
                       )}
                       <p className="text-faint text-xs font-mono mt-1">📱 {b.patient_phone}</p>
                     </div>
