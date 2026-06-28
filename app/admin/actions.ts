@@ -24,6 +24,19 @@ export async function activateSubscription(formData: FormData) {
   redirect(`/admin?ok=${encodeURIComponent(nombre)}`)
 }
 
+export async function dismissSubscription(formData: FormData) {
+  const id = formData.get('id') as string
+  const nombre = (formData.get('nombre') as string) || 'Suscriptor'
+  const supabase = createServiceClient()
+  const { error } = await supabase
+    .from('subscriptions')
+    .update({ status: 'cancelled' })
+    .eq('id', id)
+  if (error) throw new Error(`No se pudo descartar: ${error.message}`)
+  revalidatePath('/admin')
+  redirect(`/admin?dismissed=${encodeURIComponent(nombre)}`)
+}
+
 export async function confirmBooking(formData: FormData) {
   const id = formData.get('id') as string
   const supabase = createServiceClient()
