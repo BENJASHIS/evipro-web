@@ -2,7 +2,8 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { activateSubscription } from '@/app/admin/actions'
 import Link from 'next/link'
 
-export default async function AdminPage() {
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ ok?: string }> }) {
+  const { ok } = await searchParams
   const supabase = await createServerSupabaseClient()
 
   const [{ count: totalActive }, { count: totalPending }, { data: pendingSubs }, { data: recentSubs }, { data: recentRequests }, { count: totalCounseling }] =
@@ -22,6 +23,12 @@ export default async function AdminPage() {
     <div className="max-w-5xl mx-auto">
       <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Admin</p>
       <h1 className="text-3xl font-light font-serif italic mb-8">Panel EVIPro</h1>
+
+      {ok && (
+        <div className="border border-brand/40 bg-brand/10 rounded-lg px-4 py-3 mb-6 text-sm text-brand">
+          ✓ <span className="font-medium">{ok}</span> activado. Ya tiene acceso de miembro.
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
         <div className="border border-subtle rounded-lg p-6">
@@ -59,9 +66,15 @@ export default async function AdminPage() {
                     <p className="text-xs text-muted font-mono mt-0.5 capitalize">
                       {plan?.type} · {plan?.period} · S/. {plan?.price_soles}
                     </p>
+                    {sub.mp_payment_id ? (
+                      <p className="text-xs font-mono mt-1 text-brand">✓ Pagó en MercadoPago</p>
+                    ) : (
+                      <p className="text-xs font-mono mt-1 text-faint">Sin pago en MP · confirmar manualmente</p>
+                    )}
                   </div>
                   <form action={activateSubscription}>
                     <input type="hidden" name="id" value={sub.id} />
+                    <input type="hidden" name="nombre" value={profile?.full_name ?? ''} />
                     <button
                       type="submit"
                       className="shrink-0 bg-brand-deep hover:bg-brand-mid text-white text-xs font-mono px-4 py-2 rounded transition-colors"
