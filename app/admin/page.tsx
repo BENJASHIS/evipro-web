@@ -48,9 +48,9 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const [{ count: totalActive }, { count: totalPending }, { data: pendingSubs }, { data: recentSubs }, { data: recentRequests }, { count: totalCounseling }] =
     await Promise.all([
       supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-      supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+      supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'awaiting_payment'),
       supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period, price_soles)')
-        .eq('status', 'pending').order('created_at', { ascending: false }),
+        .eq('status', 'awaiting_payment').order('created_at', { ascending: false }),
       supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period)')
         .eq('status', 'active').order('created_at', { ascending: false }).limit(10),
       supabase.from('pharmacy_requests').select('*, profiles(full_name)')
@@ -84,7 +84,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           <p className="text-4xl font-light text-brand">{totalActive ?? 0}</p>
         </div>
         <div className="border border-subtle rounded-lg p-6">
-          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Pendientes de activación</p>
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Checkouts sin pagar</p>
           <p className="text-4xl font-light text-yellow-400">{totalPending ?? 0}</p>
         </div>
         <Link href="/admin/consejeria" className="border border-subtle rounded-lg p-6 hover:border-brand/50 transition-colors group">

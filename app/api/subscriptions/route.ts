@@ -22,10 +22,13 @@ export async function POST(req: NextRequest) {
   const serviceSupabase = createServiceClient()
 
   try {
-    // Crear suscripción pendiente primero para tener ID como referencia
+    // Crear la fila primero para tener ID como external_reference de MP.
+    // status 'awaiting_payment' = checkout iniciado; el webhook la pasa a
+    // 'active' al aprobarse el pago. Así un checkout abandonado no aparece
+    // como suscriptor "pendiente de activar".
     const { data: sub, error: subError } = await serviceSupabase
       .from('subscriptions')
-      .insert({ user_id: user.id, plan_id: plan.id, status: 'pending' })
+      .insert({ user_id: user.id, plan_id: plan.id, status: 'awaiting_payment' })
       .select('id')
       .single()
 

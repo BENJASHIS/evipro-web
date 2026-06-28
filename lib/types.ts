@@ -12,7 +12,7 @@ export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
   turista_plus: 'Plan Turista Plus',
 }
 export type PlanPeriod = 'mensual' | 'trimestral' | 'semestral' | 'anual' | 'quincenal'
-export type SubscriptionStatus = 'pending' | 'active' | 'cancelled' | 'past_due'
+export type SubscriptionStatus = 'awaiting_payment' | 'pending' | 'active' | 'cancelled' | 'past_due'
 export type ContentMinPlan = 'express' | 'cannabis' | 'integral'
 export type PharmacyStatus = 'pending' | 'coordinated' | 'shipped' | 'delivered'
 

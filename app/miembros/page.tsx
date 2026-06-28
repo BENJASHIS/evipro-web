@@ -30,7 +30,7 @@ export default async function MiembrosPage() {
       .from('subscriptions')
       .select('*, membership_plans(*)')
       .eq('user_id', user.id)
-      .in('status', ['active', 'pending'])
+      .in('status', ['active', 'pending', 'awaiting_payment'])
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
