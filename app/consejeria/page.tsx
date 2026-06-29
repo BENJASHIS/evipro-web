@@ -98,6 +98,34 @@ export default function ConsejeriaPage() {
             </div>
           ))}
         </div>
+
+        {/* Farmacia aliada */}
+        <div className="mt-16 border border-subtle rounded-lg p-6 flex flex-col sm:flex-row items-center gap-5">
+          <div className="bg-white rounded-lg p-4 shrink-0">
+            <Image
+              src="/images/aliados/cannavital.png"
+              alt="Cannavital Farmacia"
+              width={120}
+              height={120}
+              className="w-28 h-auto object-contain"
+            />
+          </div>
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-1">Farmacia aliada</p>
+            <h2 className="text-white text-lg font-light mb-1">Cannavital · Farmacia magistral</h2>
+            <p className="text-muted text-sm mb-3">
+              Farmacia magistral aliada para preparar las fórmulas indicadas por tu médico.
+            </p>
+            <a
+              href="https://cannavital.com.pe/farmacia-magistral/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-mono text-brand hover:underline"
+            >
+              Ver farmacia magistral →
+            </a>
+          </div>
+        </div>
       </div>
     </main>
   )
