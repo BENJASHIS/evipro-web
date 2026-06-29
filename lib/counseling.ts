@@ -7,10 +7,15 @@ export interface DoctorCounseling {
   schedule: string[]
 }
 
+// ponytail: piso de cobro de Mercado Pago. Cobros por debajo de este monto los
+// rechaza MP ("monto inferior al mínimo"). Verifica el mínimo real de tu cuenta
+// (MP → Actividad, código del rechazo) y ajusta aquí si hace falta.
+export const MP_MIN_CHARGE = 5
+
 export const MODALITY_PRICES: Record<Modality, { first: number; recurring: number }> = {
-  video:     { first: 15, recurring: 15 },
-  messaging: { first: 0,  recurring: 3  },
-  whatsapp:  { first: 0,  recurring: 3  },
+  video:     { first: 15,            recurring: 15            },
+  messaging: { first: 0,             recurring: MP_MIN_CHARGE },
+  whatsapp:  { first: 0,             recurring: MP_MIN_CHARGE },
 }
 
 export const MODALITY_LABELS: Record<Modality, string> = {
