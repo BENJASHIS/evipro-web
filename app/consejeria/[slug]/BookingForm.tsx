@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import type { Doctor } from '@/lib/doctors'
-import { MODALITY_LABELS, MODALITY_DURATION, getPrice, MP_MIN_CHARGE } from '@/lib/counseling'
+import { MODALITY_LABELS, MODALITY_DURATION, getPrice } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
 
 function getWeekdays(count: number): Date[] {
@@ -40,8 +40,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
   const SCHEDULE = doctor.counseling?.schedule ?? ['09:00','10:00','11:00','14:00','15:00','17:00']
   const weekdays = getWeekdays(7)
 
-  const price = modality && isFirst !== null ? getPrice(modality, isFirst) : null
-  const isFree = price === 0
+  const price = modality ? getPrice(modality, false) : null
 
   useEffect(() => {
     fetch(`/api/consejeria/booked-slots?doctor_slug=${doctor.slug}`)
@@ -133,7 +132,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
 
   const canProceedStep2 = modality === 'video' ? (selectedDate !== null && selectedTime !== null) : true
   const showDataStep = modality !== null && canProceedStep2
-  const canSubmit = showDataStep && name.trim() !== '' && phone.trim() !== '' && isFirst !== null
+  const canSubmit = showDataStep && name.trim() !== '' && phone.trim() !== ''
   const stepLabel = modality === 'video' ? '3 · Tus datos' : '2 · Tus datos'
 
   return (
@@ -147,7 +146,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
             1 · Modalidad
           </p>
           <div className="space-y-2">
-            {(doctor.counseling?.modalities ?? (['video','messaging','whatsapp'] as Modality[])).map(m => (
+            {(doctor.counseling?.modalities ?? (['video','whatsapp'] as Modality[])).map(m => (
               <button
                 key={m}
                 onClick={() => { setModality(m); setIsFirst(null) }}
@@ -163,7 +162,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
                     <p className="text-faint text-xs font-mono mt-0.5">{MODALITY_DURATION[m]}</p>
                   </div>
                   <p className="text-gray-300 text-sm font-mono shrink-0 ml-4">
-                    {m === 'video' ? 'S/. 15' : `Gratis 1ra vez · S/. ${MP_MIN_CHARGE}`}
+                    S/. {getPrice(m, false)}
                   </p>
                 </div>
               </button>
@@ -240,16 +239,6 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
                   placeholder="9XXXXXXXX"
                   className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand"
                 />
-                {isFirst === false && modality !== 'video' && (
-                  <p className="text-xs text-yellow-400 font-mono mt-1">
-                    Sesión recurrente · S/. {MP_MIN_CHARGE}
-                  </p>
-                )}
-                {isFirst === true && modality !== 'video' && (
-                  <p className="text-xs text-brand font-mono mt-1">
-                    Primera sesión · Gratis
-                  </p>
-                )}
               </div>
               <div>
                 <label className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono">
@@ -297,29 +286,15 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
 
           <button
             disabled={!canSubmit || loading}
-            onClick={isFree
-              ? () => saveBooking({ paid: false, payment_method: 'free' })
-              : () => saveBooking({ paid: true, payment_method: 'mercadopago' })}
+            onClick={() => saveBooking({ paid: true, payment_method: 'mercadopago' })}
             className="w-full py-2.5 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-40 font-mono"
           >
             {loading
               ? 'Procesando...'
               : price === null
-              ? 'Ingresa tus datos'
-              : price === 0
-              ? 'Reservar gratis →'
+              ? 'Elige modalidad'
               : `Pagar S/. ${price} →`}
           </button>
-
-          {price !== null && price > 0 && (
-            <div className="text-xs text-faint font-mono pt-2 border-t border-subtle space-y-1">
-              <p>O paga con Yape:</p>
-              <p className="text-white">924 074 152</p>
-              <p className="text-faint text-[10px]">
-                Envía comprobante al mismo número por WhatsApp.
-              </p>
-            </div>
-          )}
 
           <p className="text-xs text-faint font-mono pt-1">
             El Dr. confirmará tu sesión por WhatsApp en menos de 2 h.

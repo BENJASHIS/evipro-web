@@ -14,8 +14,8 @@ export const MP_MIN_CHARGE = 5
 
 export const MODALITY_PRICES: Record<Modality, { first: number; recurring: number }> = {
   video:     { first: 15,            recurring: 15            },
-  messaging: { first: 0,             recurring: MP_MIN_CHARGE },
-  whatsapp:  { first: 0,             recurring: MP_MIN_CHARGE },
+  messaging: { first: 0,             recurring: MP_MIN_CHARGE }, // legado: ya no se ofrece
+  whatsapp:  { first: MP_MIN_CHARGE, recurring: MP_MIN_CHARGE }, // S/5 plano, sin 1ra gratis
 }
 
 export const MODALITY_LABELS: Record<Modality, string> = {

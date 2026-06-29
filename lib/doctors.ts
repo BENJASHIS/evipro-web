@@ -57,7 +57,7 @@ export const DOCTORS: Doctor[] = [
     counseling: {
       available: true,
       description: 'Orientación sobre cannabis medicinal, preparación para consulta, dudas sobre medicina de altura y síntomas de salud mental.',
-      modalities: ['video', 'messaging', 'whatsapp'],
+      modalities: ['video', 'whatsapp'],
       schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],
     },
   },
@@ -88,7 +88,7 @@ export const DOCTORS: Doctor[] = [
     counseling: {
       available: true,
       description: 'Consejería para adulto mayor, cuidados paliativos, diabetes y enfermedades crónicas. Orientación para familias y cuidadores.',
-      modalities: ['video', 'messaging', 'whatsapp'],
+      modalities: ['video', 'whatsapp'],
       schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],
     },
   },
