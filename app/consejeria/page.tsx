@@ -103,7 +103,7 @@ export default function ConsejeriaPage() {
         <div className="mt-16 border border-subtle rounded-lg p-6 flex flex-col sm:flex-row items-center gap-5">
           <div className="bg-white rounded-lg p-4 shrink-0">
             <Image
-              src="/images/aliados/cannavital.png"
+              src="/images/aliados/cannavital.svg"
               alt="Cannavital Farmacia"
               width={120}
               height={120}
