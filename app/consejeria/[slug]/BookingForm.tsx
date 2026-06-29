@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import type { Doctor } from '@/lib/doctors'
-import { MODALITY_LABELS, MODALITY_DURATION, getPrice } from '@/lib/counseling'
+import { MODALITY_LABELS, MODALITY_DURATION, getPrice, MP_MIN_CHARGE } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
 
 function getWeekdays(count: number): Date[] {
@@ -163,7 +163,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
                     <p className="text-faint text-xs font-mono mt-0.5">{MODALITY_DURATION[m]}</p>
                   </div>
                   <p className="text-gray-300 text-sm font-mono shrink-0 ml-4">
-                    {m === 'video' ? 'S/. 15' : 'Gratis 1ra vez · S/. 3'}
+                    {m === 'video' ? 'S/. 15' : `Gratis 1ra vez · S/. ${MP_MIN_CHARGE}`}
                   </p>
                 </div>
               </button>
@@ -242,7 +242,7 @@ export default function BookingForm({ doctor }: { doctor: Doctor }) {
                 />
                 {isFirst === false && modality !== 'video' && (
                   <p className="text-xs text-yellow-400 font-mono mt-1">
-                    Sesión recurrente · S/. 3
+                    Sesión recurrente · S/. {MP_MIN_CHARGE}
                   </p>
                 )}
                 {isFirst === true && modality !== 'video' && (

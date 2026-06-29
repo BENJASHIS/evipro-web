@@ -4,6 +4,7 @@ import Badge from '@/app/components/ui/Badge'
 import Link from 'next/link'
 import Image from 'next/image'
 import { DOCTORS } from '@/lib/doctors'
+import { MP_MIN_CHARGE } from '@/lib/counseling'
 
 export const metadata: Metadata = {
   title: 'Consejería — EVIPro',
@@ -29,8 +30,8 @@ export default function ConsejeriaPage() {
         <div className="flex flex-wrap gap-3 mb-12">
           {[
             'Video (15–20 min) · S/. 15',
-            'Mensajería · Gratis 1ra vez, luego S/. 3',
-            'WhatsApp · Gratis 1ra vez, luego S/. 3',
+            `Mensajería · Gratis 1ra vez, luego S/. ${MP_MIN_CHARGE}`,
+            `WhatsApp · Gratis 1ra vez, luego S/. ${MP_MIN_CHARGE}`,
           ].map(label => (
             <span
               key={label}
