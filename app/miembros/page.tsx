@@ -2,6 +2,9 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { isAdminUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { bookingStatus, canPatientCancel, type BookingState } from '@/lib/bookings'
+import { MODALITY_LABELS } from '@/lib/counseling'
+import { CitaActions } from './CitaActions'
 
 const PLAN_NAMES: Record<string, string> = {
   express:        'Plan Express',
@@ -19,12 +22,19 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   cancelled: { label: 'Cancelada',               color: 'text-faint' },
 }
 
+const CITA_ESTADO: Record<BookingState, { label: string; color: string }> = {
+  cancelled:       { label: 'Cancelada',      color: 'text-faint' },
+  confirmed:       { label: 'Confirmada',     color: 'text-brand' },
+  pending_confirm: { label: 'Por confirmar',  color: 'text-yellow-400' },
+  unpaid:          { label: 'Pago pendiente', color: 'text-faint' },
+}
+
 export default async function MiembrosPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: subscription }] = await Promise.all([
+  const [{ data: profile }, { data: subscription }, { data: citas }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
     supabase
       .from('subscriptions')
@@ -34,6 +44,12 @@ export default async function MiembrosPage() {
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
+    supabase
+      .from('counseling_bookings')
+      .select('id, modality, slot_date, slot_time, confirmed_at, cancelled_at, cancel_reason, price_soles, paid, payment_method')
+      .eq('user_id', user.id)
+      .order('slot_date', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: false }),
   ])
 
   const isAdmin = isAdminUser(user)
@@ -98,6 +114,35 @@ export default async function MiembrosPage() {
             )}
           </div>
           )}
+
+          {/* Mis citas */}
+          <section className="border border-subtle rounded-lg p-6">
+            <p className="text-xs font-mono uppercase tracking-widest text-muted mb-4">Mis citas</p>
+            {(!citas || citas.length === 0) && (
+              <p className="text-faint text-sm font-mono">Aún no tienes citas. Reserva en Consejería.</p>
+            )}
+            <div className="space-y-3">
+              {(citas ?? []).map(c => {
+                const estado = CITA_ESTADO[bookingStatus(c)]
+                return (
+                  <div key={c.id} className="border-b border-subtle pb-3 last:border-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-white text-sm">{MODALITY_LABELS[c.modality as keyof typeof MODALITY_LABELS]}</span>
+                      <span className={`text-xs font-mono ${estado.color}`}>{estado.label}</span>
+                    </div>
+                    <p className="text-faint text-xs font-mono mt-1">
+                      {c.slot_date ? `${c.slot_date}${c.slot_time ? ' ' + c.slot_time : ''}` : 'Sin fecha fija'}
+                      {c.price_soles === 0 ? ' · Gratis' : ` · S/. ${c.price_soles}`}
+                    </p>
+                    {c.cancelled_at && c.cancel_reason && (
+                      <p className="text-faint text-xs italic mt-1">Motivo: {c.cancel_reason}</p>
+                    )}
+                    {canPatientCancel(c) && <CitaActions id={c.id} />}
+                  </div>
+                )
+              })}
+            </div>
+          </section>
 
           {/* Beneficios */}
           {plan && isActive && (
