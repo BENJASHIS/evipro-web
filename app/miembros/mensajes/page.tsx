@@ -1,6 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import type { Message } from '@/lib/types'
+
+const SUGERENCIA_PREFIX = '💡 Sugerencia de contenido: '
 
 export default function MensajesPage() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -9,6 +12,13 @@ export default function MensajesPage() {
   const [blocked, setBlocked] = useState(false)
   const [adminPreview, setAdminPreview] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('sugerir') === '1') {
+      setBody(prev => (prev ? prev : SUGERENCIA_PREFIX))
+    }
+  }, [searchParams])
 
   async function load() {
     const res = await fetch('/api/messages')

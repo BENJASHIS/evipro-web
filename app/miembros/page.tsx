@@ -174,6 +174,16 @@ export default async function MiembrosPage() {
                     <p className="text-xs text-faint font-mono">consulta@evipro.pe</p>
                   </div>
                 </a>
+                <Link
+                  href="/miembros/mensajes?sugerir=1"
+                  className="flex items-center gap-3 p-4 border border-subtle rounded hover:border-brand/50 transition-colors group"
+                >
+                  <span className="text-2xl">💡</span>
+                  <div>
+                    <p className="text-sm text-white group-hover:text-brand transition-colors">¿Qué contenido te gustaría? Pídelo →</p>
+                    <p className="text-xs text-faint font-mono">Sugerir vía mensajería</p>
+                  </div>
+                </Link>
               </div>
             </div>
           )}
