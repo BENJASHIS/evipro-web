@@ -1,6 +1,6 @@
 // tests/lib/bookings.test.ts
 import { describe, it, expect } from 'vitest'
-import { bookingStatus, validateCancelReason, MAX_CANCEL_REASON } from '../../lib/bookings'
+import { bookingStatus, validateCancelReason, MAX_CANCEL_REASON, canPatientCancel } from '../../lib/bookings'
 
 const base = { confirmed_at: null, cancelled_at: null, paid: false, payment_method: null }
 
@@ -32,5 +32,24 @@ describe('validateCancelReason', () => {
   })
   it('acepta y recorta un motivo válido', () => {
     expect(validateCancelReason('  paciente no responde  ')).toEqual({ ok: true, reason: 'paciente no responde' })
+  })
+})
+
+describe('canPatientCancel', () => {
+  const TODAY = '2026-07-10'
+  it('no cancelable si ya está cancelada', () => {
+    expect(canPatientCancel({ cancelled_at: 'x', slot_date: '2026-07-20' }, TODAY)).toBe(false)
+  })
+  it('cancelable si no tiene fecha (mensajería/WA)', () => {
+    expect(canPatientCancel({ cancelled_at: null, slot_date: null }, TODAY)).toBe(true)
+  })
+  it('cancelable si el slot es futuro', () => {
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2026-07-20' }, TODAY)).toBe(true)
+  })
+  it('cancelable el mismo día (lenient)', () => {
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2026-07-10' }, TODAY)).toBe(true)
+  })
+  it('no cancelable si el slot ya pasó', () => {
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2026-07-01' }, TODAY)).toBe(false)
   })
 })
