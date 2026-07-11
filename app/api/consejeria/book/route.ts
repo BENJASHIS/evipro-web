@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase-server'
+import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import type { Modality } from '@/lib/counseling'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
@@ -31,6 +31,9 @@ export async function POST(req: NextRequest) {
   // y deny-by-default; solo el service-role (o un admin autenticado) puede escribir.
   const supabase = createServiceClient()
 
+  const authClient = await createServerSupabaseClient()
+  const { data: { user } } = await authClient.auth.getUser()
+
   const { data, error } = await supabase
     .from('counseling_bookings')
     .insert({
@@ -46,6 +49,7 @@ export async function POST(req: NextRequest) {
       paid,
       payment_method,
       mp_preference_id: body.mp_preference_id ?? null,
+      user_id: user?.id ?? null,
     })
     .select('id')
     .single()
