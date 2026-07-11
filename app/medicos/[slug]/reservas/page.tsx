@@ -4,6 +4,8 @@ import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
 import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { notFound } from 'next/navigation'
+import { bookingStatus, type BookingState } from '@/lib/bookings'
+import { BookingActions } from './BookingActions'
 
 interface Booking {
   id: string
@@ -18,13 +20,16 @@ interface Booking {
   paid: boolean
   payment_method: string | null
   confirmed_at: string | null
+  cancelled_at: string | null
+  cancel_reason: string | null
   created_at: string
 }
 
-function statusLabel(b: Booking) {
-  if (b.confirmed_at) return { text: 'Confirmada', color: 'text-brand' }
-  if (b.paid || b.payment_method === 'free') return { text: 'Pendiente confirmar', color: 'text-yellow-400' }
-  return { text: 'Sin pago', color: 'text-faint' }
+const STATUS_LABEL: Record<BookingState, { text: string; color: string }> = {
+  cancelled:       { text: 'Cancelada',            color: 'text-faint line-through' },
+  confirmed:       { text: 'Confirmada',           color: 'text-brand' },
+  pending_confirm: { text: 'Pendiente confirmar',  color: 'text-yellow-400' },
+  unpaid:          { text: 'Sin pago',             color: 'text-faint' },
 }
 
 export default async function ReservasPage({
@@ -52,6 +57,7 @@ export default async function ReservasPage({
     .from('counseling_bookings')
     .select('*')
     .eq('doctor_slug', slug)
+    .is('cancelled_at', null)
     .gte('slot_date', today)
     .order('slot_date', { ascending: true })
     .order('slot_time', { ascending: true })
@@ -62,6 +68,7 @@ export default async function ReservasPage({
     .eq('doctor_slug', slug)
     .in('modality', ['messaging', 'whatsapp'])
     .is('confirmed_at', null)
+    .is('cancelled_at', null)
     .gte('created_at', thirtyDaysAgo + 'T00:00:00Z')
     .order('created_at', { ascending: false })
 
@@ -98,7 +105,7 @@ export default async function ReservasPage({
 
           <div className="space-y-3">
             {allPending.map(b => {
-              const status = statusLabel(b)
+              const status = STATUS_LABEL[bookingStatus(b)]
               const waMsg = encodeURIComponent(
                 `Hola ${b.patient_name}, soy ${doctor.name} de EVIPro.\n` +
                 `Confirmo tu sesión de consejería (${MODALITY_LABELS[b.modality]}).\n` +
@@ -136,6 +143,7 @@ export default async function ReservasPage({
                       Confirmar por WA →
                     </a>
                   </div>
+                  <BookingActions slug={slug} token={token!} id={b.id} />
                 </div>
               )
             })}
@@ -150,7 +158,7 @@ export default async function ReservasPage({
             </p>
             <div className="space-y-2">
               {(recent as Booking[]).map(b => {
-                const status = statusLabel(b)
+                const status = STATUS_LABEL[bookingStatus(b)]
                 return (
                   <div className="flex items-center justify-between border-b border-subtle py-2 gap-4" key={b.id}>
                     <div className="min-w-0">
