@@ -73,6 +73,35 @@ export default async function MiembrosPage() {
         Bienvenido, {profile?.full_name?.split(' ')[0] ?? 'miembro'}
       </h1>
 
+      {/* Mis citas */}
+      <section className="border border-subtle rounded-lg p-6 mb-6">
+        <p className="text-xs font-mono uppercase tracking-widest text-muted mb-4">Mis citas</p>
+        {(!citas || citas.length === 0) && (
+          <p className="text-faint text-sm font-mono">Aún no tienes citas. Reserva en Consejería.</p>
+        )}
+        <div className="space-y-3">
+          {(citas ?? []).map(c => {
+            const estado = CITA_ESTADO[bookingStatus(c)]
+            return (
+              <div key={c.id} className="border-b border-subtle pb-3 last:border-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-white text-sm">{MODALITY_LABELS[c.modality as keyof typeof MODALITY_LABELS]}</span>
+                  <span className={`text-xs font-mono ${estado.color}`}>{estado.label}</span>
+                </div>
+                <p className="text-faint text-xs font-mono mt-1">
+                  {c.slot_date ? `${c.slot_date}${c.slot_time ? ' ' + c.slot_time : ''}` : 'Sin fecha fija'}
+                  {c.price_soles === 0 ? ' · Gratis' : ` · S/. ${c.price_soles}`}
+                </p>
+                {c.cancelled_at && c.cancel_reason && (
+                  <p className="text-faint text-xs italic mt-1">Motivo: {c.cancel_reason}</p>
+                )}
+                {canPatientCancel(c) && <CitaActions id={c.id} />}
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
       {!subscription && !isAdmin ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
           <p className="text-muted mb-4">No tienes una membresía activa.</p>
@@ -114,35 +143,6 @@ export default async function MiembrosPage() {
             )}
           </div>
           )}
-
-          {/* Mis citas */}
-          <section className="border border-subtle rounded-lg p-6">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted mb-4">Mis citas</p>
-            {(!citas || citas.length === 0) && (
-              <p className="text-faint text-sm font-mono">Aún no tienes citas. Reserva en Consejería.</p>
-            )}
-            <div className="space-y-3">
-              {(citas ?? []).map(c => {
-                const estado = CITA_ESTADO[bookingStatus(c)]
-                return (
-                  <div key={c.id} className="border-b border-subtle pb-3 last:border-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-white text-sm">{MODALITY_LABELS[c.modality as keyof typeof MODALITY_LABELS]}</span>
-                      <span className={`text-xs font-mono ${estado.color}`}>{estado.label}</span>
-                    </div>
-                    <p className="text-faint text-xs font-mono mt-1">
-                      {c.slot_date ? `${c.slot_date}${c.slot_time ? ' ' + c.slot_time : ''}` : 'Sin fecha fija'}
-                      {c.price_soles === 0 ? ' · Gratis' : ` · S/. ${c.price_soles}`}
-                    </p>
-                    {c.cancelled_at && c.cancel_reason && (
-                      <p className="text-faint text-xs italic mt-1">Motivo: {c.cancel_reason}</p>
-                    )}
-                    {canPatientCancel(c) && <CitaActions id={c.id} />}
-                  </div>
-                )
-              })}
-            </div>
-          </section>
 
           {/* Beneficios */}
           {plan && isActive && (
