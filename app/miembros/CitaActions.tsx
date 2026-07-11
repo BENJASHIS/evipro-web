@@ -34,7 +34,7 @@ export function CitaActions({ id }: { id: string }) {
           <input
             value={reason}
             onChange={e => setReason(e.target.value)}
-            placeholder="Motivo (opcional para ti, útil para la clínica)"
+            placeholder="Motivo de la cancelación"
             className="bg-transparent border border-subtle rounded px-2 py-1 text-xs text-white"
           />
           <div className="flex gap-2">
