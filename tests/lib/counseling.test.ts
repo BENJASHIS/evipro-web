@@ -11,14 +11,14 @@ describe('getPrice', () => {
   it('messaging is free for first session', () => {
     expect(getPrice('messaging', true)).toBe(0)
   })
-  it('messaging is S/.3 for recurring', () => {
-    expect(getPrice('messaging', false)).toBe(3)
+  it('messaging is S/.5 for recurring', () => {
+    expect(getPrice('messaging', false)).toBe(5)
   })
-  it('whatsapp is free for first session', () => {
-    expect(getPrice('whatsapp', true)).toBe(0)
+  it('whatsapp is S/.5 for first session (sin 1ra gratis)', () => {
+    expect(getPrice('whatsapp', true)).toBe(5)
   })
-  it('whatsapp is S/.3 for recurring', () => {
-    expect(getPrice('whatsapp', false)).toBe(3)
+  it('whatsapp is S/.5 for recurring', () => {
+    expect(getPrice('whatsapp', false)).toBe(5)
   })
 })
 
