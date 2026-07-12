@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
+import Script from 'next/script';
 import "./globals.css";
+
+// GA4 (Google Ads / Analytics). El measurement ID es público: viaja en el HTML del cliente.
+// ponytail: snippet oficial de Google vía next/script; GA4 "medición mejorada" cubre la
+// navegación SPA sin código extra. Sube a @next/third-parties solo si necesitas eventos custom.
+const GA_ID = 'G-2HXXPSN49M';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +51,20 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-ink text-white font-sans">
         {children}
         <Analytics />
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`}
+            </Script>
+          </>
+        )}
         <footer className="border-t border-subtle bg-ink py-10 px-6">
           <div className="max-w-4xl mx-auto space-y-4">
             {/* Contacto */}
