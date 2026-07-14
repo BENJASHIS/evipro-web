@@ -121,17 +121,37 @@ export const CONSEJOS: Record<AmbitoId, Record<'amarillo' | 'rojo', string[]>> =
 }
 
 // Recursos de ayuda para la pantalla de seguridad (banderas rojas).
-// Líneas oficiales de Perú confirmadas por el equipo clínico (Carlos, 2026-07-13).
+// Líneas oficiales de Perú verificadas por el equipo clínico (Carlos, 2026-07-13).
 export const RECURSOS_AYUDA: { nombre: string; contacto: string; detalle: string }[] = [
   {
-    nombre: 'Línea 113 (opción 5) — Salud mental, MINSA',
+    nombre: 'Línea 113 (opción 5) — Infosalud, MINSA',
     contacto: '113',
-    detalle: 'Gratuita, 24 horas, desde cualquier operador.',
+    detalle: 'Orientación en salud mental. Gratuita, 24 horas, desde cualquier operador.',
+  },
+  {
+    nombre: 'Instituto Nacional de Salud Mental',
+    contacto: '0800-00-068',
+    detalle: 'Línea gratuita nacional de salud mental.',
   },
   {
     nombre: 'Línea 100 — Violencia familiar y sexual, MIMP',
     contacto: '100',
     detalle: 'Gratuita, 24 horas.',
+  },
+  {
+    nombre: 'Emergencias médicas — SAMU',
+    contacto: '106',
+    detalle: 'Central de emergencias médicas. Gratuita, 24 horas.',
+  },
+  {
+    nombre: 'WhatsApp Infosalud (MINSA)',
+    contacto: '955 557 000 · 952 842 623',
+    detalle: 'Orientación por chat con el Ministerio de Salud.',
+  },
+  {
+    nombre: 'Chat 100 (MIMP) por WhatsApp',
+    contacto: '(01) 743 8800',
+    detalle: 'Apoyo ante situaciones de violencia.',
   },
 ]
 
