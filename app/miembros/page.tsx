@@ -102,6 +102,18 @@ export default async function MiembrosPage() {
         </div>
       </section>
 
+      {/* Regen: regulador de entorno */}
+      <Link
+        href="/miembros/regen"
+        className="block border border-subtle rounded-lg p-6 mb-6 hover:border-brand/50 transition-colors group"
+      >
+        <p className="text-xs font-mono uppercase tracking-widest text-muted mb-2">Bienestar</p>
+        <p className="text-sm text-white group-hover:text-brand transition-colors">¿Cómo está tu entorno?</p>
+        <p className="text-xs text-faint font-mono mt-1">
+          Evalúa el clima de tus 4 ámbitos (hogar, trabajo, familia, círculo social) y recibe consejos concretos.
+        </p>
+      </Link>
+
       {!subscription && !isAdmin ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
           <p className="text-muted mb-4">No tienes una membresía activa.</p>
