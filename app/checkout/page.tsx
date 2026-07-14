@@ -3,6 +3,57 @@ import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { PLAN_DISPLAY_NAMES, type MembershipPlan } from '@/lib/types'
 
+// Modal que corta el pago cuando el usuario no está autenticado (401 del server).
+// La auth se valida en /api/subscriptions; aquí solo es la UX previa al checkout.
+function AuthRequiredModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
+    >
+      <div
+        className="w-full max-w-sm rounded-lg border border-subtle bg-ink p-6"
+        onClick={e => e.stopPropagation()}
+      >
+        <h2 id="auth-modal-title" className="text-xl font-light text-white mb-2">Debes crear una cuenta</h2>
+        <p className="text-muted text-sm leading-relaxed mb-6">
+          Para realizar un pago es necesario crear una cuenta o iniciar sesión. Esto nos permite
+          asociar tu compra, mantener tu historial de pedidos y brindarte soporte.
+        </p>
+        <div className="flex flex-col gap-3">
+          <a
+            href="/registro"
+            className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white text-center rounded transition-colors text-sm"
+          >
+            Crear cuenta
+          </a>
+          <a
+            href="/login"
+            className="w-full py-3 border border-subtle hover:border-brand text-white text-center rounded transition-colors text-sm"
+          >
+            Iniciar sesión
+          </a>
+          <button
+            onClick={onClose}
+            className="text-xs text-faint hover:text-white font-mono mt-1 transition-colors"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const PERIOD_NAMES: Record<string, string> = {
   quincenal: 'Quincenal (15 días)',
   mensual: 'Mensual',
@@ -18,6 +69,7 @@ function CheckoutForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [legalAccepted, setLegalAccepted] = useState(false)
+  const [showAuthModal, setShowAuthModal] = useState(false)
 
   const isTurista = plan?.type === 'turista_inicio' || plan?.type === 'turista_plus'
   const isQuincenal = plan?.period === 'quincenal'
@@ -40,6 +92,12 @@ function CheckoutForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan_id: plan.id }),
       })
+      if (res.status === 401) {
+        // No autenticado: no se inicia el pago, se pide crear cuenta / iniciar sesión.
+        setShowAuthModal(true)
+        setLoading(false)
+        return
+      }
       const data = await res.json()
       if (res.ok && data.init_point) {
         // Redirige al checkout de Mercado Pago
@@ -115,6 +173,8 @@ function CheckoutForm() {
       </button>
 
       <p className="text-center text-xs text-faint mt-4 font-mono">Pago seguro con Mercado Pago · PCI-DSS</p>
+
+      {showAuthModal && <AuthRequiredModal onClose={() => setShowAuthModal(false)} />}
     </div>
   )
 }
