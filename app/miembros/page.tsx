@@ -16,10 +16,11 @@ const PLAN_NAMES: Record<string, string> = {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  active:    { label: 'Activa',                  color: 'text-brand' },
-  pending:   { label: 'Pendiente de activación', color: 'text-yellow-400' },
-  past_due:  { label: 'Pago pendiente',          color: 'text-red-400' },
-  cancelled: { label: 'Cancelada',               color: 'text-faint' },
+  active:           { label: 'Activa',                  color: 'text-brand' },
+  awaiting_payment: { label: 'Verificando pago',        color: 'text-yellow-400' },
+  pending:          { label: 'Pendiente de activación', color: 'text-yellow-400' },
+  past_due:         { label: 'Pago pendiente',          color: 'text-red-400' },
+  cancelled:        { label: 'Cancelada',               color: 'text-faint' },
 }
 
 const CITA_ESTADO: Record<BookingState, { label: string; color: string }> = {
