@@ -121,13 +121,17 @@ export const CONSEJOS: Record<AmbitoId, Record<'amarillo' | 'rojo', string[]>> =
 }
 
 // Recursos de ayuda para la pantalla de seguridad (banderas rojas).
-// ⚠ ponytail: NO inventar números. El usuario aporta las líneas oficiales de Perú
-// (salud mental / violencia). Reemplazar este placeholder antes de lanzar.
+// Líneas oficiales de Perú confirmadas por el equipo clínico (Carlos, 2026-07-13).
 export const RECURSOS_AYUDA: { nombre: string; contacto: string; detalle: string }[] = [
   {
-    nombre: 'Línea de ayuda (pendiente de completar)',
-    contacto: 'PENDIENTE',
-    detalle: 'Reemplazar con las líneas oficiales de Perú que aporte el equipo.',
+    nombre: 'Línea 113 (opción 5) — Salud mental, MINSA',
+    contacto: '113',
+    detalle: 'Gratuita, 24 horas, desde cualquier operador.',
+  },
+  {
+    nombre: 'Línea 100 — Violencia familiar y sexual, MIMP',
+    contacto: '100',
+    detalle: 'Gratuita, 24 horas.',
   },
 ]
 
