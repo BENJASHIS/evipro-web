@@ -39,7 +39,7 @@ export const AMBITOS: Ambito[] = [
     preguntas: [
       { id: 'hogar_1', texto: 'En casa me siento tenso/a o "pisando huevos".' },
       { id: 'hogar_2', texto: 'Las discusiones en casa terminan en gritos o silencios largos.' },
-      { id: 'hogar_3', texto: 'Cuando llego a casa siento alivio de estar fuera de otras partes… pero no descanso.' },
+      { id: 'hogar_3', texto: 'Llegar a casa no me da descanso; sigo tenso/a.' },
       { id: 'hogar_4', texto: 'He sentido miedo de alguien con quien vivo.', redFlag: true },
     ],
   },
