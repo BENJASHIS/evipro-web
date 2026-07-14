@@ -17,6 +17,9 @@ export async function saveRegenEvaluacion(raw: unknown): Promise<SaveResult> {
   if (!parsed.ok) return { ok: false, error: parsed.error }
   const resultado = evaluate(parsed.respuestas)
 
+  // Persistir el historial es best-effort y secundario: la red de seguridad
+  // (mostrar el resultado, incluida la pantalla de red flags) nunca puede
+  // depender de que el insert en Supabase tenga éxito.
   const supabase = createServiceClient()
   const { error } = await supabase
     .from('regen_evaluaciones')
@@ -27,7 +30,7 @@ export async function saveRegenEvaluacion(raw: unknown): Promise<SaveResult> {
       flags: resultado.redFlags,
       safety_triggered: resultado.safetyTriggered,
     })
-  if (error) return { ok: false, error: 'No se pudo guardar: ' + error.message }
+  if (error) console.error('saveRegenEvaluacion: fallo al guardar historial', error)
 
   revalidatePath('/miembros/regen')
   return { ok: true, resultado }
