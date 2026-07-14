@@ -37,7 +37,7 @@ export const AMBITOS: Ambito[] = [
     id: 'hogar',
     nombre: 'Hogar',
     preguntas: [
-      { id: 'hogar_1', texto: 'En casa me siento tenso/a o "pisando huevos".' },
+      { id: 'hogar_1', texto: 'En casa vivo con cuidado de no provocar un conflicto.' },
       { id: 'hogar_2', texto: 'Las discusiones en casa terminan en gritos o silencios largos.' },
       { id: 'hogar_3', texto: 'Llegar a casa no me da descanso; sigo tenso/a.' },
       { id: 'hogar_4', texto: 'He sentido miedo de alguien con quien vivo.', redFlag: true },
@@ -57,7 +57,7 @@ export const AMBITOS: Ambito[] = [
     id: 'familia',
     nombre: 'Familia',
     preguntas: [
-      { id: 'familia_1', texto: 'Las conversaciones con mi familia me dejan mal.' },
+      { id: 'familia_1', texto: 'Las conversaciones con mi familia me dejan dolido/a o ansioso/a.' },
       { id: 'familia_2', texto: 'Siento que me controlan o me culpan por todo.' },
       { id: 'familia_3', texto: 'Evito a mi familia para no sentirme peor.' },
       { id: 'familia_4', texto: 'Alguien de mi familia me hace sentir en peligro.', redFlag: true },
