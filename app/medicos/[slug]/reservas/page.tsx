@@ -5,10 +5,13 @@ import type { Modality } from '@/lib/counseling'
 import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { notFound } from 'next/navigation'
 import { bookingStatus, type BookingState } from '@/lib/bookings'
+import { CREDIT_STATUS_LABEL, CREDIT_VALID_DAYS, type CreditStatus } from '@/lib/credits'
 import { BookingActions } from './BookingActions'
+import { CreditActions } from './CreditActions'
 
 interface Booking {
   id: string
+  user_id: string | null
   modality: Modality
   slot_date: string | null
   slot_time: string | null
@@ -79,6 +82,13 @@ export default async function ReservasPage({
     .order('created_at', { ascending: false })
     .limit(5)
 
+  const { data: credits } = await supabase
+    .from('consultation_credits')
+    .select('id, code, member_name, status, created_at')
+    .eq('minted_by_slug', slug)
+    .order('created_at', { ascending: false })
+    .limit(30)
+
   const allPending = [
     ...(upcoming ?? []),
     ...(messagingPending ?? []).filter(m =>
@@ -143,11 +153,44 @@ export default async function ReservasPage({
                       Confirmar por WA →
                     </a>
                   </div>
-                  <BookingActions slug={slug} token={token!} id={b.id} />
+                  <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name} />
                 </div>
               )
             })}
           </div>
+        </section>
+
+        {/* Créditos de consulta gratis */}
+        <section className="mb-10">
+          <p className="text-xs font-mono uppercase tracking-widest text-muted mb-1">
+            Créditos de consulta gratis ({credits?.length ?? 0})
+          </p>
+          <p className="text-faint text-xs font-mono mb-4">
+            Se acuñan con &ldquo;🎁 Dar consulta gratis&rdquo; en una reserva. Válidos ~{CREDIT_VALID_DAYS} días.
+          </p>
+          {!credits?.length ? (
+            <p className="text-faint text-sm font-mono">Aún no has dado ninguna consulta gratis.</p>
+          ) : (
+            <div className="space-y-2">
+              {credits.map(c => {
+                const label = CREDIT_STATUS_LABEL[c.status as CreditStatus]
+                return (
+                  <div key={c.id} className="border border-subtle rounded-lg p-3 flex items-center justify-between gap-4 flex-wrap">
+                    <div className="min-w-0">
+                      <p className="text-sm text-white">
+                        <span className="font-mono text-brand">{c.code}</span>
+                        {' · '}{c.member_name}
+                      </p>
+                      <p className="text-xs text-faint font-mono">
+                        {new Date(c.created_at).toLocaleDateString('es-PE')} · <span className={label.color}>{label.text}</span>
+                      </p>
+                    </div>
+                    {c.status === 'active' && <CreditActions slug={slug} token={token!} id={c.id} />}
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </section>
 
         {/* Últimas 5 reservas */}

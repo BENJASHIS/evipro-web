@@ -35,7 +35,7 @@ export default async function MiembrosPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: subscription }, { data: citas }] = await Promise.all([
+  const [{ data: profile }, { data: subscription }, { data: citas }, { data: credits }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
     supabase
       .from('subscriptions')
@@ -50,6 +50,12 @@ export default async function MiembrosPage() {
       .select('id, modality, slot_date, slot_time, confirmed_at, cancelled_at, cancel_reason, price_soles, paid, payment_method')
       .eq('user_id', user.id)
       .order('slot_date', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('consultation_credits')
+      .select('id, code, created_at')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
       .order('created_at', { ascending: false }),
   ])
 
@@ -102,6 +108,24 @@ export default async function MiembrosPage() {
           })}
         </div>
       </section>
+
+      {/* Consultas gratis (perk de fidelidad) */}
+      {(credits ?? []).length > 0 && (
+        <section className="border border-brand/30 rounded-lg p-6 mb-6">
+          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">🎁 Consulta gratis</p>
+          <p className="text-sm text-white mb-3">
+            Tienes {credits!.length === 1 ? 'una consulta gratis' : `${credits!.length} consultas gratis`}. Usa el código al reservar,
+            o compártelo con quien lo necesite.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {credits!.map(c => (
+              <span key={c.id} className="text-sm font-mono px-3 py-1.5 rounded border border-brand bg-brand/10 text-brand">
+                {c.code}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Regen: regulador de entorno */}
       <Link
