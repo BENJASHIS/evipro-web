@@ -17,8 +17,10 @@ describe('estructura de contenido', () => {
   it('cada ámbito tiene al menos 4 preguntas', () => {
     for (const a of AMBITOS) expect(a.preguntas.length).toBeGreaterThanOrEqual(4)
   })
-  it('cada ámbito tiene al menos una pregunta bandera roja', () => {
-    for (const a of AMBITOS) expect(a.preguntas.some(p => p.redFlag)).toBe(true)
+  it('el instrumento tiene al menos una pregunta bandera roja', () => {
+    // Social ya no tiene flag (era aislamiento, no peligro); las de peligro
+    // real (hogar/trabajo/familia) sí disparan la red de seguridad.
+    expect(AMBITOS.flatMap(a => a.preguntas).some(p => p.redFlag)).toBe(true)
   })
   it('los ids de pregunta son únicos en todo el instrumento', () => {
     const ids = AMBITOS.flatMap(a => a.preguntas.map(p => p.id))

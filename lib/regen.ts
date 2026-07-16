@@ -3,7 +3,7 @@
 // ponytail: el copy final (preguntas, consejos, recursos de ayuda) lo aporta el
 // usuario (roadmap 🙋). Este set es funcional y testeable; se afina sin tocar lógica.
 
-export const REGEN_VERSION = '2026.07.13'
+export const REGEN_VERSION = '2026.07.15'
 
 // Escala Likert 0..4. Redactamos TODA pregunta para que mayor valor = más desgaste.
 // ponytail: sin reverse-scoring en v1; si se añaden preguntas "positivas", invertir aquí.
@@ -40,7 +40,7 @@ export const AMBITOS: Ambito[] = [
       { id: 'hogar_1', texto: 'En casa vivo con cuidado de no provocar un conflicto.' },
       { id: 'hogar_2', texto: 'Las discusiones en casa terminan en gritos o silencios largos.' },
       { id: 'hogar_3', texto: 'Llegar a casa no me da descanso; sigo tenso/a.' },
-      { id: 'hogar_4', texto: 'He sentido miedo de alguien con quien vivo.', redFlag: true },
+      { id: 'hogar_4', texto: 'Siento miedo de alguien con quien vivo.', redFlag: true },
     ],
   },
   {
@@ -50,7 +50,7 @@ export const AMBITOS: Ambito[] = [
       { id: 'trabajo_1', texto: 'Termino la jornada agotado/a emocionalmente, no solo cansado/a.' },
       { id: 'trabajo_2', texto: 'Siento que me tratan con desprecio o me humillan.' },
       { id: 'trabajo_3', texto: 'Me cuesta desconectar del trabajo en mi tiempo libre.' },
-      { id: 'trabajo_4', texto: 'He sufrido acoso, amenazas o maltrato en el trabajo.', redFlag: true },
+      { id: 'trabajo_4', texto: 'Sufro acoso, amenazas o maltrato en el trabajo.', redFlag: true },
     ],
   },
   {
@@ -70,7 +70,7 @@ export const AMBITOS: Ambito[] = [
       { id: 'social_1', texto: 'Con mis amistades me siento juzgado/a o menospreciado/a.' },
       { id: 'social_2', texto: 'Me siento solo/a incluso cuando estoy acompañado/a.' },
       { id: 'social_3', texto: 'Digo que sí a cosas que no quiero por miedo a que se molesten.' },
-      { id: 'social_4', texto: 'Siento que nadie me apoyaría si lo necesitara de verdad.', redFlag: true },
+      { id: 'social_4', texto: 'Siento que nadie me apoyaría si lo necesitara de verdad.' },
     ],
   },
 ]
