@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import type { Modality } from '@/lib/counseling'
-import { MODALITY_LABELS } from '@/lib/counseling'
+import { MODALITY_LABELS, MODALITY_PRICES, getPrice, getPaymentMethod } from '@/lib/counseling'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 
 interface BookingBody {
@@ -13,19 +13,26 @@ interface BookingBody {
   patient_phone: string
   patient_note?: string | null
   is_first_session: boolean
-  price_soles: number
-  paid: boolean
-  payment_method: 'mercadopago' | 'yape' | 'free'
   mp_preference_id?: string | null
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json() as BookingBody
-  const { doctor_slug, modality, patient_name, patient_phone, is_first_session, price_soles, paid, payment_method } = body
+  const { doctor_slug, modality, patient_name, patient_phone, is_first_session } = body
 
   if (!doctor_slug || !modality || !patient_name || !patient_phone) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
+  if (!(modality in MODALITY_PRICES)) {
+    return NextResponse.json({ error: 'Modalidad inválida' }, { status: 400 })
+  }
+
+  // Frontera de confianza: el precio, el método y el estado de pago se DERIVAN en
+  // el servidor. Nunca se aceptan del cliente (si no, cualquiera reserva "pagado
+  // y gratis" sin pasar por Mercado Pago). paid=false hasta que el webhook confirme.
+  const price_soles = getPrice(modality, is_first_session)
+  const payment_method = getPaymentMethod(price_soles)
+  const paid = false
 
   // Acceso server-side con service-role: counseling_bookings tiene RLS activado
   // y deny-by-default; solo el service-role (o un admin autenticado) puede escribir.

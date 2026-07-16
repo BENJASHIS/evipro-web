@@ -1,9 +1,18 @@
 'use server'
-import { createServiceClient } from '@/lib/supabase-server'
+import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
+import { isAdminUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+// Las server actions se exponen como endpoints POST y NO heredan el gate de
+// app/admin/layout.tsx. Cada una debe verificar admin por su cuenta.
+async function requireAdmin() {
+  const { data: { user } } = await (await createServerSupabaseClient()).auth.getUser()
+  if (!isAdminUser(user)) throw new Error('No autorizado')
+}
+
 export async function activateSubscription(formData: FormData) {
+  await requireAdmin()
   const id = formData.get('id') as string
   const nombre = (formData.get('nombre') as string) || 'Suscriptor'
   const supabase = createServiceClient()
@@ -25,6 +34,7 @@ export async function activateSubscription(formData: FormData) {
 }
 
 export async function dismissSubscription(formData: FormData) {
+  await requireAdmin()
   const id = formData.get('id') as string
   const nombre = (formData.get('nombre') as string) || 'Suscriptor'
   const supabase = createServiceClient()
@@ -38,6 +48,7 @@ export async function dismissSubscription(formData: FormData) {
 }
 
 export async function confirmBooking(formData: FormData) {
+  await requireAdmin()
   const id = formData.get('id') as string
   const supabase = createServiceClient()
   await supabase

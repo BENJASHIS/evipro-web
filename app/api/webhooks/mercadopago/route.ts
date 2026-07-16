@@ -13,10 +13,15 @@ export async function POST(req: NextRequest) {
 
   const dataId = body.data?.id ?? ''
 
-  if (process.env.MP_WEBHOOK_SECRET) {
-    const valid = await verifyMPWebhook(xSignature, xRequestId, dataId)
-    if (!valid) return NextResponse.json({ error: 'Firma inválida' }, { status: 401 })
+  // La verificación de firma NUNCA es opcional (AGENTS.md). Si el secreto no está
+  // configurado, se rechaza: procesar sin firma dejaría el webhook abierto a
+  // cualquiera. Fail-closed.
+  if (!process.env.MP_WEBHOOK_SECRET) {
+    console.error('[webhook/mp] MP_WEBHOOK_SECRET no configurado; se rechaza el webhook')
+    return NextResponse.json({ error: 'Webhook no configurado' }, { status: 500 })
   }
+  const valid = await verifyMPWebhook(xSignature, xRequestId, dataId)
+  if (!valid) return NextResponse.json({ error: 'Firma inválida' }, { status: 401 })
 
   const supabase = createServiceClient()
   const type = body.type ?? ''
@@ -66,11 +71,15 @@ async function handlePagoAprobado(
 
   const { data: sub } = await supabase
     .from('subscriptions')
-    .select('id, user_id, plan_id, membership_plans(tickets_qty)')
+    .select('id, user_id, plan_id, status, mp_payment_id, membership_plans(tickets_qty)')
     .eq('id', subscriptionId)
     .single()
 
   if (!sub) return
+
+  // Idempotencia: MP reintenta/duplica webhooks. Si esta suscripción ya quedó
+  // activa con este mismo pago, no reprocesar (evita pagos y tickets duplicados).
+  if (sub.status === 'active' && sub.mp_payment_id === paymentId) return
 
   const now = new Date()
   const periodEnd = new Date(now)

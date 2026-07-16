@@ -3,10 +3,11 @@
 export const ADMIN_EMAILS = ['drecs2003@gmail.com', 'consulta@evipro.pe']
 
 export function isAdminUser(
-  user: { email?: string | null; user_metadata?: { role?: string } } | null,
+  user: { email?: string | null } | null,
 ): boolean {
   if (!user) return false
+  // Solo la allowlist de emails. NO confiar en user_metadata: es editable por el
+  // propio usuario (supabase.auth.updateUser) → sería escalada a admin.
   const email = user.email?.toLowerCase() ?? ''
-  if (ADMIN_EMAILS.includes(email)) return true
-  return user.user_metadata?.role === 'admin'
+  return ADMIN_EMAILS.includes(email)
 }
