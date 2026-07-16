@@ -107,8 +107,8 @@ export const CONSEJOS: Record<AmbitoId, Record<'amarillo' | 'rojo', string[]>> =
       'Refuerza vínculos que sí te nutren; no toda relación familiar tiene que pesar lo mismo.',
     ],
     rojo: [
-      'Sentirte en control o culpa constante desgasta; poner distancia no es traición, es cuidarte.',
-      'Apóyate en alguien de confianza fuera del núcleo familiar para ver la situación con perspectiva.',
+      'Sentirte controlado/a o con culpa constante desgasta; poner distancia no es traición, es cuidarte.',
+      'No tienes que resolverlo solo/a: una orientación profesional puede ayudarte a poner límites sanos.',
     ],
   },
   social: {
