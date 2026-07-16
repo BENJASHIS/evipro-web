@@ -144,14 +144,24 @@ export default function ConsejeriaPage() {
             <p className="text-muted text-sm mb-3">
               Centro aliado de fisioterapia y rehabilitación para complementar tu tratamiento.
             </p>
-            <a
-              href="https://www.facebook.com/fisioimperium"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-mono text-brand hover:underline"
-            >
-              Ver en Facebook →
-            </a>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center sm:justify-start">
+              <a
+                href="https://www.facebook.com/fisioimperium"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono text-brand hover:underline"
+              >
+                Ver en Facebook →
+              </a>
+              <a
+                href="https://www.google.com/maps/place/FisioImperium/@-13.5252192,-71.9712776,17z/data=!3m1!4b1!4m6!3m5!1s0x916dd5e3b6d1316f:0xee13937c3020a575!8m2!3d-13.5252192!4d-71.9687027!16s%2Fg%2F11qh0zx6gd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono text-brand hover:underline"
+              >
+                Cómo llegar →
+              </a>
+            </div>
           </div>
         </div>
       </div>
