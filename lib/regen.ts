@@ -12,10 +12,13 @@ export const VALOR_MIN = 0
 export const VALOR_MAX = ESCALA.length - 1 // 4
 
 // Umbrales de color sobre el score normalizado 0..100.
-export const UMBRAL_AMARILLO = 34 // score >= 34 → amarillo
-export const UMBRAL_ROJO = 67     // score >= 67 → rojo
+// Calibración laxa (Carlos, 2026-07-15): 🟢 hasta ~"a veces sostenido", 🟡 desde
+// "a veces" en todo el ámbito, 🔴 desde "a menudo" en todo el ámbito.
+export const UMBRAL_AMARILLO = 50 // score >= 50 → amarillo
+export const UMBRAL_ROJO = 75     // score >= 75 → rojo
 // Nivel de respuesta a partir del cual una pregunta bandera roja dispara la red de seguridad.
-export const RED_FLAG_NIVEL = 3   // "A menudo" o "Siempre"
+// En preguntas de peligro, "A veces" ya basta: se err del lado de la seguridad.
+export const RED_FLAG_NIVEL = 2   // "A veces" en adelante
 
 export type AmbitoId = 'hogar' | 'trabajo' | 'familia' | 'social'
 export type Color = 'verde' | 'amarillo' | 'rojo'

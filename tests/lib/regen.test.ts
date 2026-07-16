@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   AMBITOS, ESCALA, REGEN_VERSION,
+  UMBRAL_AMARILLO, UMBRAL_ROJO, RED_FLAG_NIVEL,
   colorFor, scoreAmbito, evaluate, parseRespuestas,
   type Respuesta,
 } from '../../lib/regen'
@@ -37,14 +38,14 @@ describe('estructura de contenido', () => {
 describe('colorFor (umbrales)', () => {
   it('verde por debajo del umbral amarillo', () => {
     expect(colorFor(0)).toBe('verde')
-    expect(colorFor(33)).toBe('verde')
+    expect(colorFor(UMBRAL_AMARILLO - 1)).toBe('verde')
   })
   it('amarillo entre umbral amarillo y rojo', () => {
-    expect(colorFor(34)).toBe('amarillo')
-    expect(colorFor(66)).toBe('amarillo')
+    expect(colorFor(UMBRAL_AMARILLO)).toBe('amarillo')
+    expect(colorFor(UMBRAL_ROJO - 1)).toBe('amarillo')
   })
   it('rojo desde el umbral rojo', () => {
-    expect(colorFor(67)).toBe('rojo')
+    expect(colorFor(UMBRAL_ROJO)).toBe('rojo')
     expect(colorFor(100)).toBe('rojo')
   })
 })
@@ -81,7 +82,7 @@ describe('evaluate', () => {
   it('bandera roja en el nivel de riesgo dispara seguridad aunque el resto esté sano', () => {
     const flagPregunta = AMBITOS.flatMap(a => a.preguntas).find(p => p.redFlag)!
     const resp = allValores(0).map(x =>
-      x.preguntaId === flagPregunta.id ? { ...x, valor: 3 } : x)
+      x.preguntaId === flagPregunta.id ? { ...x, valor: RED_FLAG_NIVEL } : x)
     const r = evaluate(resp)
     expect(r.safetyTriggered).toBe(true)
     expect(r.redFlags).toContain(flagPregunta.id)
@@ -89,7 +90,7 @@ describe('evaluate', () => {
   it('bandera roja por debajo del nivel de riesgo NO dispara seguridad', () => {
     const flagPregunta = AMBITOS.flatMap(a => a.preguntas).find(p => p.redFlag)!
     const resp = allValores(0).map(x =>
-      x.preguntaId === flagPregunta.id ? { ...x, valor: 2 } : x)
+      x.preguntaId === flagPregunta.id ? { ...x, valor: RED_FLAG_NIVEL - 1 } : x)
     const r = evaluate(resp)
     expect(r.safetyTriggered).toBe(false)
     expect(r.redFlags).toEqual([])
