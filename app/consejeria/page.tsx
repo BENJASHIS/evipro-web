@@ -126,6 +126,34 @@ export default function ConsejeriaPage() {
             </a>
           </div>
         </div>
+
+        {/* Centro aliado */}
+        <div className="mt-6 border border-subtle rounded-lg p-6 flex flex-col sm:flex-row items-center gap-5">
+          <div className="bg-white rounded-lg p-4 shrink-0">
+            <Image
+              src="/images/aliados/fisioimperium.png"
+              alt="FisioImperium"
+              width={120}
+              height={120}
+              className="w-28 h-auto object-contain"
+            />
+          </div>
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-1">Centro aliado</p>
+            <h2 className="text-white text-lg font-light mb-1">FisioImperium · Centro médico integral</h2>
+            <p className="text-muted text-sm mb-3">
+              Centro aliado de fisioterapia y rehabilitación para complementar tu tratamiento.
+            </p>
+            <a
+              href="https://www.facebook.com/fisioimperium"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-mono text-brand hover:underline"
+            >
+              Ver en Facebook →
+            </a>
+          </div>
+        </div>
       </div>
     </main>
   )
