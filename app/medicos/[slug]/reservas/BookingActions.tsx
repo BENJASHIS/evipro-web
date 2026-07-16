@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { confirmBooking, cancelBooking, mintCredit } from './actions'
+import { confirmBooking, cancelBooking } from './actions'
+import { GiftCreditButton } from './GiftCreditButton'
 
 export function BookingActions(
   { slug, token, id, userId, memberName }:
@@ -11,16 +12,6 @@ export function BookingActions(
   const [showCancel, setShowCancel] = useState(false)
   const [reason, setReason] = useState('')
   const [err, setErr] = useState('')
-  const [gifted, setGifted] = useState(false)
-
-  function onGift() {
-    setErr('')
-    startTransition(async () => {
-      const r = await mintCredit(slug, token, userId!, memberName)
-      if (r.ok) setGifted(true)
-      else setErr(r.error ?? 'Error')
-    })
-  }
 
   function onConfirm() {
     setErr('')
@@ -56,20 +47,7 @@ export function BookingActions(
         >
           Cancelar
         </button>
-        {userId && (
-          gifted ? (
-            <span className="text-xs font-mono px-3 py-1.5 text-brand">🎁 Consulta gratis dada</span>
-          ) : (
-            <button
-              onClick={onGift}
-              disabled={pending}
-              title="Acuña 1 crédito de consulta gratis para este miembro"
-              className="text-xs font-mono px-3 py-1.5 rounded border border-brand/40 text-brand hover:bg-brand/10 transition-colors disabled:opacity-50"
-            >
-              🎁 Dar consulta gratis
-            </button>
-          )
-        )}
+        <GiftCreditButton slug={slug} token={token} userId={userId} memberName={memberName} />
       </div>
       {showCancel && (
         <div className="flex gap-2">

@@ -8,6 +8,7 @@ import { bookingStatus, type BookingState } from '@/lib/bookings'
 import { CREDIT_STATUS_LABEL, CREDIT_VALID_DAYS, type CreditStatus } from '@/lib/credits'
 import { BookingActions } from './BookingActions'
 import { CreditActions } from './CreditActions'
+import { GiftCreditButton } from './GiftCreditButton'
 
 interface Booking {
   id: string
@@ -213,7 +214,10 @@ export default async function ReservasPage({
                         {b.price_soles === 0 ? 'Gratis' : `S/. ${b.price_soles}`}
                       </p>
                     </div>
-                    <span className={`text-xs font-mono shrink-0 ${status.color}`}>{status.text}</span>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className={`text-xs font-mono ${status.color}`}>{status.text}</span>
+                      <GiftCreditButton slug={slug} token={token!} userId={b.user_id} memberName={b.patient_name} />
+                    </div>
                   </div>
                 )
               })}
