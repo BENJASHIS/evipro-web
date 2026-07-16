@@ -117,7 +117,7 @@ export default function ConsejeriaPage() {
               Farmacia magistral aliada para preparar las fórmulas indicadas por tu médico.
             </p>
             <a
-              href="https://cannavital.com.pe/farmacia-magistral/"
+              href="https://cannavital.pe/farmacia-magistral/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-mono text-brand hover:underline"
