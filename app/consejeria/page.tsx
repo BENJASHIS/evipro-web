@@ -116,14 +116,24 @@ export default function ConsejeriaPage() {
             <p className="text-muted text-sm mb-3">
               Farmacia magistral aliada para preparar las fórmulas indicadas por tu médico.
             </p>
-            <a
-              href="https://cannavital.pe/farmacia-magistral/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-mono text-brand hover:underline"
-            >
-              Ver farmacia magistral →
-            </a>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center sm:justify-start">
+              <a
+                href="https://cannavital.pe/farmacia-magistral/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono text-brand hover:underline"
+              >
+                Ver farmacia magistral →
+              </a>
+              <a
+                href="https://www.instagram.com/cannavital.farmacia/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono text-brand hover:underline"
+              >
+                Instagram →
+              </a>
+            </div>
           </div>
         </div>
 
