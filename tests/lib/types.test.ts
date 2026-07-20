@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { MembershipPlan, Subscription } from '../../lib/types'
+import { PLAN_DISPLAY_NAMES, PERIOD_LABELS } from '../../lib/types'
 
 describe('types', () => {
   it('MembershipPlan tiene los campos requeridos', () => {
@@ -54,5 +55,17 @@ describe('PlanType turista', () => {
   it('acepta quincenal como PlanPeriod válido', () => {
     const periodo: import('../../lib/types').PlanPeriod = 'quincenal'
     expect(periodo).toBe('quincenal')
+  })
+})
+
+describe('modelo de planes base + addons', () => {
+  it('PLAN_DISPLAY_NAMES nombra basica y evipro', () => {
+    expect(PLAN_DISPLAY_NAMES.basica).toBeTruthy()
+    expect(PLAN_DISPLAY_NAMES.evipro).toBeTruthy()
+  })
+  it('PERIOD_LABELS cubre las 3 duraciones base', () => {
+    expect(PERIOD_LABELS.mensual).toBeTruthy()
+    expect(PERIOD_LABELS.trimestral).toBeTruthy()
+    expect(PERIOD_LABELS.semestral).toBeTruthy()
   })
 })

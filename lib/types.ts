@@ -1,7 +1,9 @@
-export type PlanType = 'express' | 'esencial' | 'cannabis' | 'integral' | 'especialistas' | 'acceso' | 'turista_inicio' | 'turista_plus'
+export type PlanType = 'basica' | 'evipro' | 'express' | 'esencial' | 'cannabis' | 'integral' | 'especialistas' | 'acceso' | 'turista_inicio' | 'turista_plus'
 
 // Nombre visible por tipo de plan. Exhaustivo por PlanType: agregar un plan nuevo obliga a nombrarlo.
 export const PLAN_DISPLAY_NAMES: Record<PlanType, string> = {
+  basica: 'Membresía Básica',
+  evipro: 'Membresía EVIPro',
   express: 'Plan Express',
   esencial: 'Plan Esencial',
   cannabis: 'Plan Cannabis',
@@ -40,6 +42,30 @@ export interface MembershipPlan {
   tickets_qty: number
   mp_plan_id: string | null
   created_at: string
+  allows_addons: boolean
+}
+
+export const PERIOD_LABELS: Record<PlanPeriod, string> = {
+  quincenal: 'Quincenal (15 días)',
+  mensual: 'Mensual',
+  trimestral: 'Trimestral',
+  semestral: 'Semestral',
+  anual: 'Anual',
+}
+
+export interface PlanAddon {
+  id: string
+  slug: string
+  label: string
+  doctor_slug: string | null
+  period: PlanPeriod
+  price_soles: number
+  active: boolean
+}
+
+export interface SubscriptionAddon {
+  subscription_id: string
+  addon_id: string
 }
 
 export interface Profile {
