@@ -91,7 +91,10 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
           }),
         })
         if (res.ok) setBookingId(((await res.json()) as { booking_id: string }).booking_id)
-        else setError('Error al guardar la solicitud. Intenta de nuevo.')
+        else {
+          const data = await res.json().catch(() => null) as { error?: string } | null
+          setError(data?.error ?? 'Error al guardar la solicitud. Intenta de nuevo.')
+        }
       } else {
         const res = await fetch('/api/consejeria/book', {
           method: 'POST',
@@ -114,7 +117,10 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
           const data = (await res.json()) as { booking_id: string; init_point?: string }
           if (data.init_point) { window.location.href = data.init_point; return }
           setBookingId(data.booking_id)
-        } else setError('Error al guardar la reserva. Intenta de nuevo.')
+        } else {
+          const err = await res.json().catch(() => null) as { error?: string } | null
+          setError(err?.error ?? 'Error al guardar la reserva. Intenta de nuevo.')
+        }
       }
     } catch {
       setError('No se pudo conectar. Revisa tu internet e intenta de nuevo.')
