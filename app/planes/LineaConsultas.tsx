@@ -1,13 +1,15 @@
 import { PRECIOS_CONSULTA } from '@/lib/consulta-pricing'
 
-/** Línea compacta de precios de consulta para una tarjeta de plan (escalera 1ª→2ª→3ª+). */
+/** Precio de 1ª consulta (presencial/virtual) para una tarjeta de plan, con pista
+ *  de que la reconsulta baja a la mitad. El detalle completo va en la nota al pie. */
 export default function LineaConsultas({ esMiembro }: { esMiembro: boolean }) {
   const key = esMiembro ? 'miembro' : 'noMiembro'
-  const p = PRECIOS_CONSULTA.presencial[key]
-  const v = PRECIOS_CONSULTA.virtual[key]
+  const presencial = PRECIOS_CONSULTA.presencial[key][0]
+  const virtual = PRECIOS_CONSULTA.virtual[key][0]
   return (
-    <span className="font-mono text-white">
-      Presencial S/. {p[0]}→{p[1]}→{p[2]} · Virtual S/. {v[0]}→{v[1]}→{v[2]}
+    <span className="text-muted">
+      <span className="font-mono text-white">Presencial S/. {presencial} · Virtual S/. {virtual}</span>{' '}
+      <span className="text-faint">(reconsulta a mitad)</span>
     </span>
   )
 }

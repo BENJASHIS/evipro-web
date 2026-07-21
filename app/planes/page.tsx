@@ -74,7 +74,7 @@ export default async function PlanesPage() {
         </div>
 
         <p className="text-xs text-faint font-mono mt-16 leading-relaxed max-w-2xl mx-auto text-center">
-          Precios de consulta en formato 1ª→2ª→3ª+: la reconsulta cuesta la mitad; de la 3ª en adelante, el piso.
+          La reconsulta cuesta la mitad de la primera; de la 3ª consulta en adelante, el piso.
           Reinicia si pasan 90 días sin volver. Miembro que acaba de pagar/renovar: su próxima consulta arranca
           directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia).
         </p>
