@@ -62,6 +62,9 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) {
+    if (error.code === '23505') {
+      return NextResponse.json({ error: 'Ese horario ya fue reservado. Elige otro.' }, { status: 409 })
+    }
     console.error('[consejeria/book] db error:', error.message)
     return NextResponse.json({ error: 'No se pudo guardar la reserva' }, { status: 500 })
   }
