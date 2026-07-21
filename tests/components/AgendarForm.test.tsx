@@ -70,4 +70,37 @@ describe('AgendarForm', () => {
       expect(vi.mocked(fetch).mock.calls.some(c => c[0] === '/api/consejeria/book')).toBe(true),
     )
   })
+
+  it('consejería (WhatsApp) envía el payload de pago correcto (paid, mercadopago, price_soles)', async () => {
+    render(<AgendarForm doctor={doctor} />)
+    fireEvent.click(screen.getByText('WhatsApp'))
+    fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
+    fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByText(/Pagar/))
+    await waitFor(() => {
+      const call = vi.mocked(fetch).mock.calls.find(c => c[0] === '/api/consejeria/book')
+      expect(call).toBeTruthy()
+      const body = JSON.parse((call![1] as RequestInit).body as string)
+      expect(body.paid).toBe(true)
+      expect(body.payment_method).toBe('mercadopago')
+      expect(body.price_soles).toBe(5) // getPrice('whatsapp', false) = MP_MIN_CHARGE
+    })
+  })
+
+  it('consejería con init_point redirige al checkout de Mercado Pago', async () => {
+    vi.stubGlobal('fetch', vi.fn((url: string) => {
+      if (url.includes('/book')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({ booking_id: 'abc12345', init_point: 'https://mp.example/checkout/xyz' }) })
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ booked: [], is_first: true }) })
+    }))
+    const loc = { href: '' }
+    Object.defineProperty(window, 'location', { value: loc, writable: true, configurable: true })
+    render(<AgendarForm doctor={doctor} />)
+    fireEvent.click(screen.getByText('WhatsApp'))
+    fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
+    fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByText(/Pagar/))
+    await waitFor(() => expect(loc.href).toBe('https://mp.example/checkout/xyz'))
+  })
 })
