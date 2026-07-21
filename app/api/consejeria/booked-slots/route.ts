@@ -17,7 +17,6 @@ export async function GET(request: Request) {
     .from('counseling_bookings')
     .select('slot_date, slot_time')
     .eq('doctor_slug', doctorSlug)
-    .eq('modality', 'video')
     .gte('slot_date', today)
     .not('slot_date', 'is', null)
     .not('slot_time', 'is', null)

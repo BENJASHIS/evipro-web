@@ -25,3 +25,27 @@ export function precioConsulta(
   const idx = Math.min(Math.max(escalon, 1), 3) - 1
   return fila[idx]
 }
+
+export type ModalidadReserva = ModalidadConsulta | 'domicilio'
+
+export const PRECIO_DOMICILIO = 150
+
+export const CONSULTA_MODALITY_LABELS: Record<ModalidadReserva, string> = {
+  presencial: 'Presencial',
+  virtual: 'Virtual (teleconsulta)',
+  domicilio: 'A domicilio',
+}
+
+/** Precio nominal que guarda /reservar (referencia; el cobro real lo aplica el
+ *  médico con la escalera). 1ª consulta no miembro para presencial/virtual;
+ *  precio plano para domicilio (sin escalera). */
+export function precioReferencia(modalidad: ModalidadReserva): number {
+  return modalidad === 'domicilio' ? PRECIO_DOMICILIO : precioConsulta(modalidad, false, 1)
+}
+
+/** Texto de escalera que muestra la página pública (precios no miembro). */
+export function escaleraReserva(modalidad: ModalidadReserva): string {
+  if (modalidad === 'domicilio') return `Desde S/${PRECIO_DOMICILIO} (sin escalera)`
+  const [p1, p2, p3] = PRECIOS_CONSULTA[modalidad].noMiembro
+  return `1ª S/${p1} · reconsulta S/${p2} · desde 3ª S/${p3}`
+}

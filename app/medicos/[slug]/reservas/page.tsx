@@ -2,6 +2,7 @@ import { createServiceClient } from '@/lib/supabase-server'
 import { DOCTORS } from '@/lib/doctors'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
+import { CONSULTA_MODALITY_LABELS, type ModalidadReserva } from '@/lib/consulta-pricing'
 import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { notFound } from 'next/navigation'
 import { bookingStatus, type BookingState } from '@/lib/bookings'
@@ -13,7 +14,7 @@ import { GiftCreditButton } from './GiftCreditButton'
 interface Booking {
   id: string
   user_id: string | null
-  modality: Modality
+  modality: Modality | ModalidadReserva
   slot_date: string | null
   slot_time: string | null
   patient_name: string
@@ -35,6 +36,9 @@ const STATUS_LABEL: Record<BookingState, { text: string; color: string }> = {
   pending_confirm: { text: 'Pendiente confirmar',  color: 'text-yellow-400' },
   unpaid:          { text: 'Sin pago',             color: 'text-faint' },
 }
+
+const ALL_MODALITY_LABELS: Record<string, string> = { ...MODALITY_LABELS, ...CONSULTA_MODALITY_LABELS }
+const MODALIDADES_CONSULTA = ['presencial', 'virtual', 'domicilio']
 
 export default async function ReservasPage({
   params,
@@ -70,7 +74,9 @@ export default async function ReservasPage({
     .from('counseling_bookings')
     .select('*')
     .eq('doctor_slug', slug)
-    .in('modality', ['messaging', 'whatsapp'])
+    // domicilio es una consulta sin horario fijo (slot_date null), igual que messaging/whatsapp:
+    // no aparece en `upcoming` (que filtra por slot_date), así que debe listarse aquí.
+    .in('modality', ['messaging', 'whatsapp', 'domicilio'])
     .is('confirmed_at', null)
     .is('cancelled_at', null)
     .gte('created_at', thirtyDaysAgo + 'T00:00:00Z')
@@ -119,7 +125,7 @@ export default async function ReservasPage({
               const status = STATUS_LABEL[bookingStatus(b)]
               const waMsg = encodeURIComponent(
                 `Hola ${b.patient_name}, soy ${doctor.name} de EVIPro.\n` +
-                `Confirmo tu sesión de consejería (${MODALITY_LABELS[b.modality]}).\n` +
+                `Confirmo tu ${MODALIDADES_CONSULTA.includes(b.modality) ? 'cita' : 'sesión de consejería'} (${ALL_MODALITY_LABELS[b.modality] ?? b.modality}).\n` +
                 (b.slot_date ? `📅 ${b.slot_date} a las ${b.slot_time}\n` : '') +
                 `Ref: ${b.id.slice(0, 8)}`
               )
@@ -134,7 +140,7 @@ export default async function ReservasPage({
                         <span className={`text-xs font-mono ${status.color}`}>{status.text}</span>
                       </div>
                       <p className="text-muted text-xs font-mono mb-1">
-                        {MODALITY_LABELS[b.modality]}
+                        {ALL_MODALITY_LABELS[b.modality] ?? b.modality}
                         {b.slot_date ? ` · ${b.slot_date} ${b.slot_time}` : ''}
                         {' · '}
                         {b.price_soles === 0 ? 'Gratis' : `S/. ${b.price_soles}`}
@@ -208,7 +214,7 @@ export default async function ReservasPage({
                     <div className="min-w-0">
                       <p className="text-sm text-white truncate">{b.patient_name}</p>
                       <p className="text-xs text-faint font-mono">
-                        {MODALITY_LABELS[b.modality]}
+                        {ALL_MODALITY_LABELS[b.modality] ?? b.modality}
                         {b.slot_date ? ` · ${b.slot_date}` : ''}
                         {' · '}
                         {b.price_soles === 0 ? 'Gratis' : `S/. ${b.price_soles}`}

@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { MembershipPlan, PlanAddon } from '@/lib/types'
+import Link from 'next/link'
 import Nav from '@/app/components/Nav'
 import Badge from '@/app/components/ui/Badge'
 import ConfiguradorEvipro from './ConfiguradorEvipro'
@@ -78,6 +79,9 @@ export default async function PlanesPage() {
           Reinicia si pasan 90 días sin volver. Miembro que acaba de pagar/renovar: su próxima consulta arranca
           directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia).
         </p>
+        <Link href="/reservar" className="inline-block mt-3 text-sm font-mono text-brand underline hover:text-white">
+          Agendar consulta sin membresía →
+        </Link>
 
         <p className="text-center text-xs text-faint mt-6 font-mono">
           Pagos procesados de forma segura por Mercado Pago · Cancela cuando quieras
