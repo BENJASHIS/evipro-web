@@ -5,6 +5,7 @@ import Badge from '@/app/components/ui/Badge'
 import ConfiguradorEvipro from './ConfiguradorEvipro'
 import ConfiguradorTurista from './ConfiguradorTurista'
 import PlanCTA from './PlanCTA'
+import TablaConsultas from './TablaConsultas'
 
 export default async function PlanesPage() {
   const supabase = await createServerSupabaseClient()
@@ -31,16 +32,8 @@ export default async function PlanesPage() {
         <h1 className="text-4xl font-light font-serif italic mb-4">Elige tu plan de salud</h1>
         <p className="text-muted mb-8 max-w-xl">Tres opciones simples: apoya la página, arma tu membresía completa, o viaja.</p>
 
-        {/* Tarifas de referencia sin membresía */}
-        <div className="border border-subtle rounded-lg p-4 mb-16 bg-white/[0.02]">
-          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">Sin membresía</p>
-          <div className="flex flex-wrap gap-6 text-sm">
-            <span className="text-muted">Consulta virtual <span className="text-white font-light ml-1">S/. 70</span></span>
-            <span className="text-muted">Consulta presencial <span className="text-white font-light ml-1">S/. 100</span></span>
-            <span className="text-muted">Visita a domicilio <span className="text-white font-light ml-1">desde S/. 150</span></span>
-          </div>
-          <p className="text-xs text-faint font-mono mt-2">Con membresía pagas menos en cada consulta de seguimiento.</p>
-        </div>
+        {/* Precios de consulta (escalera de reconsulta) */}
+        <TablaConsultas />
 
         {/* Ruta 1: Básica / Apoyo */}
         {basica && (

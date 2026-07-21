@@ -6,9 +6,6 @@ import { computeCartTotal } from '@/lib/billing'
 import PlanCTA from './PlanCTA'
 
 const PERIODS: PlanPeriod[] = ['mensual', 'trimestral', 'semestral']
-// Precios base de consulta sin membresía (mismos del bloque "Sin membresía" en /planes).
-const BASE_VIRTUAL = 70
-const BASE_PRESENCIAL = 100
 
 /** `plans` = solo filas EVIPro (una por período). `addons` = módulos activos. */
 export default function ConfiguradorEvipro({ plans, addons }: { plans: MembershipPlan[]; addons: PlanAddon[] }) {
@@ -41,27 +38,11 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
         <h2 className="text-2xl font-light">Membresía EVIPro</h2>
         <span className="text-xs font-mono text-brand uppercase tracking-widest">Recomendado</span>
       </div>
-      <p className="text-muted text-sm mb-6">Suma los especialistas que necesites. Estos beneficios aplican en cada consulta que reserves:</p>
+      <p className="text-muted text-sm mb-6">Receta, RENPUC y farmacia incluidos, y precios de consulta de miembro (ver tabla arriba). Suma los especialistas que necesites.</p>
 
-      {/* Beneficios: descuentos de consulta (se aplican solos al reservar) + qué incluye */}
+      {/* Qué incluye EVIPro (los precios de consulta viven en la tabla de arriba) */}
       {ref && (
         <div className="border border-subtle rounded p-4 mb-6 bg-white/[0.02]">
-          <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm mb-3">
-            {Number(ref.discount_virtual_pct) > 0 && (
-              <span className="text-muted">
-                Consulta virtual{' '}
-                <span className="text-white font-medium ml-1">S/. {Math.round(BASE_VIRTUAL * (1 - Number(ref.discount_virtual_pct) / 100))}</span>
-                <span className="text-faint line-through ml-1">S/. {BASE_VIRTUAL}</span>
-              </span>
-            )}
-            {Number(ref.discount_presencial_pct) > 0 && (
-              <span className="text-muted">
-                Consulta presencial{' '}
-                <span className="text-white font-medium ml-1">S/. {Math.round(BASE_PRESENCIAL * (1 - Number(ref.discount_presencial_pct) / 100))}</span>
-                <span className="text-faint line-through ml-1">S/. {BASE_PRESENCIAL}</span>
-              </span>
-            )}
-          </div>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono text-brand">
             {ref.includes_prescription && <span>✓ Receta incluida</span>}
             {ref.includes_renpuc_support && <span>✓ Apoyo RENPUC</span>}
