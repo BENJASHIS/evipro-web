@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyMPWebhook, getMPPayment } from '@/lib/mercadopago'
 import { createServiceClient } from '@/lib/supabase-server'
 import { generateTicketBatch } from '@/lib/tickets'
+import { computePeriodEnd } from '@/lib/billing'
 import type { PaymentResponse } from 'mercadopago/dist/clients/payment/commonTypes'
 
 type ServiceClient = ReturnType<typeof createServiceClient>
@@ -71,7 +72,7 @@ async function handlePagoAprobado(
 
   const { data: sub } = await supabase
     .from('subscriptions')
-    .select('id, user_id, plan_id, status, mp_payment_id, membership_plans(tickets_qty)')
+    .select('id, user_id, plan_id, status, mp_payment_id, membership_plans(tickets_qty, period)')
     .eq('id', subscriptionId)
     .single()
 
@@ -82,8 +83,8 @@ async function handlePagoAprobado(
   if (sub.status === 'active' && sub.mp_payment_id === paymentId) return
 
   const now = new Date()
-  const periodEnd = new Date(now)
-  periodEnd.setMonth(periodEnd.getMonth() + 1)
+  const planRowForPeriod = (Array.isArray(sub.membership_plans) ? sub.membership_plans[0] : sub.membership_plans) as { period: import('@/lib/types').PlanPeriod } | null
+  const periodEnd = computePeriodEnd(planRowForPeriod?.period ?? 'mensual', now)
 
   await supabase.from('subscriptions').update({
     status: 'active',

@@ -1,6 +1,7 @@
 'use server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import { isAdminUser } from '@/lib/auth'
+import { computePeriodEnd } from '@/lib/billing'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -16,9 +17,14 @@ export async function activateSubscription(formData: FormData) {
   const id = formData.get('id') as string
   const nombre = (formData.get('nombre') as string) || 'Suscriptor'
   const supabase = createServiceClient()
+  const { data: subRow } = await supabase
+    .from('subscriptions')
+    .select('membership_plans(period)')
+    .eq('id', id)
+    .single()
+  const planRow = (Array.isArray(subRow?.membership_plans) ? subRow?.membership_plans[0] : subRow?.membership_plans) as { period: import('@/lib/types').PlanPeriod } | null
   const now = new Date()
-  const periodEnd = new Date(now)
-  periodEnd.setMonth(periodEnd.getMonth() + 1)
+  const periodEnd = computePeriodEnd(planRow?.period ?? 'mensual', now)
   const { error } = await supabase
     .from('subscriptions')
     .update({
