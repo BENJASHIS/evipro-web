@@ -5,7 +5,7 @@ import Badge from '@/app/components/ui/Badge'
 import ConfiguradorEvipro from './ConfiguradorEvipro'
 import ConfiguradorTurista from './ConfiguradorTurista'
 import PlanCTA from './PlanCTA'
-import TablaConsultas from './TablaConsultas'
+import LineaConsultas from './LineaConsultas'
 
 export default async function PlanesPage() {
   const supabase = await createServerSupabaseClient()
@@ -32,15 +32,13 @@ export default async function PlanesPage() {
         <h1 className="text-4xl font-light font-serif italic mb-4">Elige tu plan de salud</h1>
         <p className="text-muted mb-8 max-w-xl">Tres opciones simples: apoya la página, arma tu membresía completa, o viaja.</p>
 
-        {/* Precios de consulta (escalera de reconsulta) */}
-        <TablaConsultas />
-
         {/* Ruta 1: Básica / Apoyo */}
         {basica && (
           <div className="border border-subtle rounded-lg p-6 mb-6 bg-white/[0.02] flex items-center justify-between gap-4">
             <div>
               <h2 className="text-xl font-light mb-1">Membresía Básica</h2>
-              <p className="text-muted text-sm">Contenido + 1 ticket de sorteo. Para apoyar la página.</p>
+              <p className="text-muted text-sm mb-2">Contenido + 1 ticket de sorteo. Para apoyar la página.</p>
+              <p className="text-xs text-muted">Consultas a precio regular: <LineaConsultas esMiembro={false} /></p>
             </div>
             <div className="text-right shrink-0">
               <p className="text-2xl font-light mb-2">S/. {basica.price_soles}<span className="text-xs text-faint">/mes</span></p>
@@ -75,7 +73,13 @@ export default async function PlanesPage() {
           <ConfiguradorTurista plans={(turistaPlans ?? []) as MembershipPlan[]} />
         </div>
 
-        <p className="text-center text-xs text-faint mt-16 font-mono">
+        <p className="text-xs text-faint font-mono mt-16 leading-relaxed max-w-2xl mx-auto text-center">
+          Precios de consulta en formato 1ª→2ª→3ª+: la reconsulta cuesta la mitad; de la 3ª en adelante, el piso.
+          Reinicia si pasan 90 días sin volver. Miembro que acaba de pagar/renovar: su próxima consulta arranca
+          directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia).
+        </p>
+
+        <p className="text-center text-xs text-faint mt-6 font-mono">
           Pagos procesados de forma segura por Mercado Pago · Cancela cuando quieras
         </p>
       </div>
