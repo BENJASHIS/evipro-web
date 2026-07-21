@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { computePeriodEnd } from '../../lib/billing'
+import { computePeriodEnd, computeCartTotal, buildCartItems } from '../../lib/billing'
 
 describe('computePeriodEnd', () => {
   const from = new Date('2026-01-15T00:00:00.000Z')
@@ -23,5 +23,26 @@ describe('computePeriodEnd', () => {
     const orig = new Date('2026-01-15T00:00:00.000Z')
     computePeriodEnd('mensual', orig)
     expect(orig.toISOString()).toBe('2026-01-15T00:00:00.000Z')
+  })
+})
+
+describe('computeCartTotal', () => {
+  it('base sin add-ons = base', () => {
+    expect(computeCartTotal(49, [])).toBe(49)
+  })
+  it('base + add-ons suma todo', () => {
+    expect(computeCartTotal(49, [20, 20])).toBe(89)
+  })
+})
+
+describe('buildCartItems', () => {
+  it('un item por base y por cada add-on', () => {
+    const items = buildCartItems(
+      { title: 'Membresía EVIPro · mensual', price: 49 },
+      [{ title: 'Cannabis (Dr. Jara)', price: 20 }],
+    )
+    expect(items).toHaveLength(2)
+    expect(items[0]).toEqual({ title: 'Membresía EVIPro · mensual', unit_price: 49, quantity: 1 })
+    expect(items[1]).toEqual({ title: 'Cannabis (Dr. Jara)', unit_price: 20, quantity: 1 })
   })
 })
