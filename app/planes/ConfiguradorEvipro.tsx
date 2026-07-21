@@ -1,9 +1,9 @@
 'use client'
 import { useMemo, useState } from 'react'
-import Link from 'next/link'
 import type { MembershipPlan, PlanAddon, PlanPeriod } from '@/lib/types'
 import { PERIOD_LABELS } from '@/lib/types'
 import { computeCartTotal } from '@/lib/billing'
+import PlanCTA from './PlanCTA'
 
 const PERIODS: PlanPeriod[] = ['mensual', 'trimestral', 'semestral']
 
@@ -47,7 +47,7 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`border rounded px-4 py-2 text-sm transition-colors ${period === p ? 'border-brand text-white' : 'border-subtle text-muted hover:border-white/40'}`}
+              className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand ${period === p ? 'border-brand text-white' : 'border-subtle text-muted hover:border-white/40'}`}
             >
               {PERIOD_LABELS[p]}
             </button>
@@ -76,15 +76,16 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
       {/* Total + CTA */}
       <div className="flex items-center justify-between border-t border-subtle pt-4">
         <span className="text-sm text-muted">Total {PERIOD_LABELS[period].toLowerCase()}</span>
-        <span className="text-3xl font-light">S/. {total}</span>
+        {plan
+          ? <span className="text-3xl font-light">S/. {total}</span>
+          : <span className="text-sm text-faint">No disponible por ahora</span>}
       </div>
       {plan && (
-        <Link
-          href={`/checkout?plan=${plan.id}${addonIds ? `&addons=${addonIds}` : ''}`}
-          className="block mt-4 text-center border border-brand hover:bg-brand/10 rounded p-3 text-sm transition-colors"
-        >
-          Suscribirme →
-        </Link>
+        <div className="mt-4">
+          <PlanCTA href={`/checkout?plan=${plan.id}${addonIds ? `&addons=${addonIds}` : ''}`} variant="primary">
+            Suscribirme →
+          </PlanCTA>
+        </div>
       )}
     </div>
   )
