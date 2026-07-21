@@ -36,7 +36,7 @@ export const CONSULTA_MODALITY_LABELS: Record<ModalidadReserva, string> = {
   domicilio: 'A domicilio',
 }
 
-/** Precio nominal que guarda /reservar (referencia; el cobro real lo aplica el
+/** Precio nominal que guarda el agendado de consulta (referencia; el cobro real lo aplica el
  *  médico con la escalera). 1ª consulta no miembro para presencial/virtual;
  *  precio plano para domicilio (sin escalera). */
 export function precioReferencia(modalidad: ModalidadReserva): number {
