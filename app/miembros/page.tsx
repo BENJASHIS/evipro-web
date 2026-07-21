@@ -175,7 +175,7 @@ export default async function MiembrosPage() {
             )}
             {subscription.period_end && (
               <p className="text-xs text-faint mt-2 font-mono">
-                Próximo cobro: {new Date(subscription.period_end).toLocaleDateString('es-PE')}
+                Vence el: {new Date(subscription.period_end).toLocaleDateString('es-PE')}
               </p>
             )}
           </div>

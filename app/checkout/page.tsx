@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { PLAN_DISPLAY_NAMES, type MembershipPlan } from '@/lib/types'
+import { PLAN_DISPLAY_NAMES, PERIOD_LABELS, type MembershipPlan, type PlanAddon } from '@/lib/types'
 
 // Modal que corta el pago cuando el usuario no está autenticado (401 del server).
 // La auth se valida en /api/subscriptions; aquí solo es la UX previa al checkout.
@@ -54,18 +54,12 @@ function AuthRequiredModal({ onClose }: { onClose: () => void }) {
   )
 }
 
-const PERIOD_NAMES: Record<string, string> = {
-  quincenal: 'Quincenal (15 días)',
-  mensual: 'Mensual',
-  trimestral: 'Trimestral',
-  semestral: 'Semestral',
-  anual: 'Anual',
-}
-
 function CheckoutForm() {
   const params = useSearchParams()
   const planId = params.get('plan')
+  const addonIds = (params.get('addons')?.split(',').filter(Boolean)) ?? []
   const [plan, setPlan] = useState<MembershipPlan | null>(null)
+  const [addons, setAddons] = useState<PlanAddon[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [legalAccepted, setLegalAccepted] = useState(false)
@@ -81,6 +75,17 @@ function CheckoutForm() {
       .then(data => { if (data) setPlan(data) })
   }, [planId])
 
+  useEffect(() => {
+    if (addonIds.length === 0) return
+    fetch('/api/plan-addons')
+      .then(r => r.ok ? r.json() : [])
+      .then((all: PlanAddon[]) => setAddons(all.filter(a => addonIds.includes(a.id))))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planId])
+
+  const addonsTotal = addons.reduce((acc, a) => acc + Number(a.price_soles), 0)
+  const total = Number(plan?.price_soles ?? 0) + addonsTotal
+
   async function handlePagar() {
     if (!plan) return
     setLoading(true)
@@ -90,7 +95,7 @@ function CheckoutForm() {
       const res = await fetch('/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan_id: plan.id }),
+        body: JSON.stringify({ plan_id: plan.id, addon_ids: addonIds }),
       })
       if (res.status === 401) {
         // No autenticado: no se inicia el pago, se pide crear cuenta / iniciar sesión.
@@ -129,11 +134,24 @@ function CheckoutForm() {
     <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
       <p className="text-xs text-brand font-mono uppercase tracking-widest mb-2">Resumen del pedido</p>
       <h2 className="text-2xl font-light text-white mb-1">{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</h2>
-      <p className="text-muted text-sm mb-6">{PERIOD_NAMES[plan.period] ?? plan.period}</p>
+      <p className="text-muted text-sm mb-6">{PERIOD_LABELS[plan.period] ?? plan.period}</p>
+
+      {addons.length > 0 && (
+        <div className="border-t border-subtle pt-4 mb-2 space-y-1">
+          <p className="text-muted text-sm flex justify-between">
+            <span>{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</span><span>S/. {plan.price_soles}</span>
+          </p>
+          {addons.map(a => (
+            <p key={a.id} className="text-muted text-sm flex justify-between">
+              <span>+ {a.label}</span><span>S/. {a.price_soles}</span>
+            </p>
+          ))}
+        </div>
+      )}
 
       <div className="flex justify-between items-baseline border-t border-subtle pt-4 mb-8">
         <span className="text-muted text-sm">Total</span>
-        <span className="text-3xl font-light text-white">S/. {plan.price_soles}</span>
+        <span className="text-3xl font-light text-white">S/. {total}</span>
       </div>
 
       {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
