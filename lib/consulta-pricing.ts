@@ -45,7 +45,7 @@ export function precioReferencia(modalidad: ModalidadReserva): number {
 
 /** Texto de escalera que muestra la página pública (precios no miembro). */
 export function escaleraReserva(modalidad: ModalidadReserva): string {
-  if (modalidad === 'domicilio') return `Desde S/${PRECIO_DOMICILIO} (sin escalera)`
+  if (modalidad === 'domicilio') return `Desde S/${PRECIO_DOMICILIO}`
   const [p1, p2, p3] = PRECIOS_CONSULTA[modalidad].noMiembro
   return `1ª S/${p1} · reconsulta S/${p2} · desde 3ª S/${p3}`
 }

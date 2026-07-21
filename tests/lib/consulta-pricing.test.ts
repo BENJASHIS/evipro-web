@@ -71,7 +71,7 @@ describe('escaleraReserva — texto informativo de la página', () => {
     expect(escaleraReserva('virtual')).toBe('1ª S/70 · reconsulta S/35 · desde 3ª S/17')
   })
   it('domicilio no tiene escalera', () => {
-    expect(escaleraReserva('domicilio')).toBe('Desde S/150 (sin escalera)')
+    expect(escaleraReserva('domicilio')).toBe('Desde S/150')
   })
 })
 
