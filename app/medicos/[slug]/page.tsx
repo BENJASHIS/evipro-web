@@ -129,14 +129,12 @@ export default async function DoctorPage({ params }: Props) {
               </ul>
             </div>
 
-            {doctor.counseling?.available && (
-              <Link
-                href={`/consejeria/${doctor.slug}`}
-                className="block w-full text-center bg-brand text-black py-3 rounded font-mono text-sm hover:bg-brand-hover transition-colors"
-              >
-                Agendar consejería →
-              </Link>
-            )}
+            <Link
+              href={`/medicos/${doctor.slug}/agendar`}
+              className="block w-full text-center bg-brand text-black py-3 rounded font-mono text-sm hover:bg-brand-hover transition-colors"
+            >
+              Agendar cita →
+            </Link>
 
             <Link
               href="/planes"
