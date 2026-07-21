@@ -89,7 +89,7 @@ export default function ConsejeriaPage() {
                   {doctor.location} · {doctor.modality}
                 </p>
                 <Link
-                  href={`/consejeria/${doctor.slug}`}
+                  href={`/medicos/${doctor.slug}/agendar`}
                   className="text-xs font-mono text-brand hover:underline"
                 >
                   Agendar →
