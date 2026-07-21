@@ -79,7 +79,7 @@ export default async function PlanesPage() {
           Reinicia si pasan 90 días sin volver. Miembro que acaba de pagar/renovar: su próxima consulta arranca
           directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia).
         </p>
-        <Link href="/reservar" className="inline-block mt-3 text-sm font-mono text-brand underline hover:text-white">
+        <Link href="/medicos" className="inline-block mt-3 text-sm font-mono text-brand underline hover:text-white">
           Agendar consulta sin membresía →
         </Link>
 
