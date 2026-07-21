@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import { precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
-import { DOCTORS } from '@/lib/doctors'
+import { validateBookingInput } from '@/lib/booking-validation'
 
 interface ReservaBody {
   doctor_slug: string
@@ -19,15 +19,11 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as ReservaBody
   const { doctor_slug, modality, patient_name, patient_phone } = body
 
-  if (!doctor_slug || !modality || !patient_name?.trim() || !patient_phone?.trim()) {
-    return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 })
-  }
-  if (!MODALIDADES.includes(modality)) {
+  if (!modality || !MODALIDADES.includes(modality)) {
     return NextResponse.json({ error: 'Modalidad inválida' }, { status: 400 })
   }
-  if (!DOCTORS.some(d => d.slug === doctor_slug)) {
-    return NextResponse.json({ error: 'Médico no encontrado' }, { status: 400 })
-  }
+  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note })
+  if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
 
   // Frontera de confianza: el precio se DERIVA en el servidor (nominal de referencia).
   // Cobro manual: paid=false, payment_method='manual' — el médico cobra y aplica la escalera.
@@ -57,7 +53,8 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) {
-    return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 })
+    console.error('[reservar/book] db error:', error.message)
+    return NextResponse.json({ error: 'No se pudo guardar la solicitud' }, { status: 500 })
   }
   return NextResponse.json({ booking_id: data.id })
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import type { Modality } from '@/lib/counseling'
 import { MODALITY_LABELS, MODALITY_PRICES, getPrice, getPaymentMethod } from '@/lib/counseling'
+import { validateBookingInput } from '@/lib/booking-validation'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 
 interface BookingBody {
@@ -20,12 +21,11 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as BookingBody
   const { doctor_slug, modality, patient_name, patient_phone, is_first_session } = body
 
-  if (!doctor_slug || !modality || !patient_name || !patient_phone) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-  }
-  if (!(modality in MODALITY_PRICES)) {
+  if (!modality || !(modality in MODALITY_PRICES)) {
     return NextResponse.json({ error: 'Modalidad inválida' }, { status: 400 })
   }
+  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note })
+  if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
 
   // Frontera de confianza: el precio, el método y el estado de pago se DERIVAN en
   // el servidor. Nunca se aceptan del cliente (si no, cualquiera reserva "pagado
@@ -62,7 +62,8 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) {
-    return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 })
+    console.error('[consejeria/book] db error:', error.message)
+    return NextResponse.json({ error: 'No se pudo guardar la reserva' }, { status: 500 })
   }
 
   const booking_id: string = data.id
