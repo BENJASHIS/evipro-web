@@ -1,33 +1,10 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { MembershipPlan, PlanAddon } from '@/lib/types'
-import { PERIOD_LABELS } from '@/lib/types'
-import Image from 'next/image'
-import Link from 'next/link'
 import Nav from '@/app/components/Nav'
 import Badge from '@/app/components/ui/Badge'
 import ConfiguradorEvipro from './ConfiguradorEvipro'
-
-type TuristaType = 'turista_inicio' | 'turista_plus'
-
-const PLAN_IMAGES: Record<TuristaType, { src: string | null; placeholder: string }> = {
-  turista_inicio: { src: '/images/planes/turista-inicio.jpg', placeholder: 'from-amber-950 to-ink' },
-  turista_plus:   { src: '/images/planes/turista-plus.jpg',   placeholder: 'from-violet-950 to-ink' },
-}
-
-const PLAN_LABELS: Record<TuristaType, { name: string; description: string; highlight: string; receta: string }> = {
-  turista_inicio: {
-    name: 'Plan Turista Inicio',
-    description: 'Para visitantes que inician tratamiento con cannabis medicinal en Perú',
-    highlight: 'Consulta virtual completa · RENPUC nuevo candidato · Coordinación con farmacia magistral',
-    receta: 'Incluye receta simple, triple o especial según tu caso',
-  },
-  turista_plus: {
-    name: 'Plan Turista Plus',
-    description: 'Para visitantes que ya usan cannabis y revalidan su tratamiento',
-    highlight: 'Consulta express · Revalidación receta extranjera · Coordinación con farmacia magistral',
-    receta: 'Incluye receta simple, triple o especial según tu caso',
-  },
-}
+import ConfiguradorTurista from './ConfiguradorTurista'
+import PlanCTA from './PlanCTA'
 
 export default async function PlanesPage() {
   const supabase = await createServerSupabaseClient()
@@ -45,11 +22,6 @@ export default async function PlanesPage() {
 
   const basica = (basePlans ?? []).find(p => p.type === 'basica') as MembershipPlan | undefined
   const eviproPlans = (basePlans ?? []).filter(p => p.type === 'evipro') as MembershipPlan[]
-
-  const byType = (turistaPlans ?? []).reduce<Record<string, MembershipPlan[]>>((acc, plan) => {
-    (acc[plan.type] ??= []).push(plan)
-    return acc
-  }, {})
 
   return (
     <main className="min-h-screen bg-ink text-white">
@@ -70,16 +42,16 @@ export default async function PlanesPage() {
           <p className="text-xs text-faint font-mono mt-2">Con membresía pagas menos en cada consulta de seguimiento.</p>
         </div>
 
-        {/* Ruta 1: Básica / Apoyo (tarjeta simple) */}
+        {/* Ruta 1: Básica / Apoyo */}
         {basica && (
-          <div className="border border-subtle rounded-lg p-6 mb-6 bg-white/[0.02] flex items-center justify-between">
+          <div className="border border-subtle rounded-lg p-6 mb-6 bg-white/[0.02] flex items-center justify-between gap-4">
             <div>
               <h2 className="text-xl font-light mb-1">Membresía Básica</h2>
               <p className="text-muted text-sm">Contenido + 1 ticket de sorteo. Para apoyar la página.</p>
             </div>
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <p className="text-2xl font-light mb-2">S/. {basica.price_soles}<span className="text-xs text-faint">/mes</span></p>
-              <Link href={`/checkout?plan=${basica.id}`} className="inline-block border border-subtle hover:border-brand rounded px-4 py-2 text-sm transition-colors">Suscribirme →</Link>
+              <PlanCTA href={`/checkout?plan=${basica.id}`} variant="secondary">Suscribirme →</PlanCTA>
             </div>
           </div>
         )}
@@ -89,17 +61,17 @@ export default async function PlanesPage() {
           <ConfiguradorEvipro plans={eviproPlans} addons={(addons ?? []) as PlanAddon[]} />
         </div>
 
-        {/* Ruta 3: Planes Turista */}
+        {/* Ruta 3: Turista (configurador) */}
         <div className="border-t border-subtle pt-16">
           <Badge className="mb-4">Para visitantes</Badge>
-          <h2 className="text-3xl font-light font-serif italic mb-2">Planes Turista</h2>
+          <h2 className="text-3xl font-light mb-2">Planes Turista</h2>
           <p className="text-muted text-sm mb-4 max-w-xl">
-            Reserva desde tu país — la consulta es 100% virtual. Con plan de 15 días recomendamos
-            comprar al menos 7 días antes de llegar. Con plan de 30 días, mínimo 5 días de anticipación.
+            Con plan de 15 días recomendamos comprar al menos 7 días antes de llegar.
+            Con plan de 30 días, mínimo 5 días de anticipación.
           </p>
 
-          {/* Aviso legal */}
-          <div className="border border-yellow-400/20 bg-yellow-400/5 rounded-lg p-4 mb-10 max-w-2xl">
+          {/* Aviso legal territorial */}
+          <div className="border border-yellow-400/20 bg-yellow-400/5 rounded-lg p-4 mb-8 max-w-2xl">
             <p className="text-yellow-400 text-xs font-mono leading-relaxed">
               EVIPro opera exclusivamente en territorio peruano. Podemos orientarte sobre restricciones
               en tu país de destino si lo solicitas, pero el transporte del producto fuera del Perú
@@ -107,59 +79,7 @@ export default async function PlanesPage() {
             </p>
           </div>
 
-          <div className="grid gap-10">
-            {(['turista_inicio', 'turista_plus'] as TuristaType[]).map(type => {
-              const info = PLAN_LABELS[type]
-              const img = PLAN_IMAGES[type]
-              const typePlans = byType[type] ?? []
-              return (
-                <div key={type} className="border border-subtle rounded-lg overflow-hidden">
-                  <div className={`relative w-full h-48 bg-gradient-to-br ${img.placeholder}`}>
-                    {img.src && (
-                      <Image
-                        src={img.src}
-                        alt={info.name}
-                        fill
-                        className="object-cover opacity-80"
-                      />
-                    )}
-                  </div>
-                  <div className="p-8">
-                    <h3 className="text-2xl font-light mb-1">{info.name}</h3>
-                    <p className="text-muted text-sm mb-2">{info.description}</p>
-                    <p className="text-brand text-xs font-mono mb-1">✓ {info.highlight}</p>
-                    <p className="text-faint text-xs font-mono mb-6">✓ {info.receta}</p>
-                    <div className="grid grid-cols-2 gap-4 max-w-sm">
-                      {typePlans.map(plan => (
-                        <Link
-                          key={plan.id}
-                          href={`/checkout?plan=${plan.id}`}
-                          className="block border border-subtle hover:border-brand rounded p-4 text-center transition-colors group"
-                        >
-                          <p className="text-xs text-faint uppercase tracking-widest mb-2 font-mono">
-                            {PERIOD_LABELS[plan.period]}
-                          </p>
-                          <p className="text-2xl font-light mb-1">S/. {plan.price_soles}</p>
-                          {plan.period === 'quincenal' && (
-                            <p className="text-xs text-yellow-400 mt-1 font-mono">Ver aviso delivery</p>
-                          )}
-                          <p className="text-xs text-faint mt-3 group-hover:text-white transition-colors">
-                            Reservar →
-                          </p>
-                        </Link>
-                      ))}
-                    </div>
-                    {typePlans.some(p => p.period === 'quincenal') && (
-                      <p className="text-xs text-faint font-mono mt-4 max-w-md">
-                        Plan quincenal: el delivery (3-5 días hábiles) puede no completarse antes de tu salida.
-                        Si el producto no llega a tiempo, se reembolsa el costo del medicamento.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          <ConfiguradorTurista plans={(turistaPlans ?? []) as MembershipPlan[]} />
         </div>
 
         <p className="text-center text-xs text-faint mt-16 font-mono">
