@@ -38,9 +38,9 @@ export default function TablaConsultas() {
       </table>
       <p className="text-xs text-muted mt-3">Visita a domicilio: <span className="text-white">desde S/. 150</span> <span className="text-faint">(según distancia)</span></p>
       <p className="text-xs text-faint font-mono mt-2 leading-relaxed">
-        Cada reconsulta baja a la mitad hasta el piso. El descuento se aplica al reservar tu consulta;
-        reinicia si pasan 90 días sin volver. Miembro que acaba de pagar/renovar: su próxima consulta
-        arranca directo en el 2º escalón.
+        La reconsulta cuesta la mitad de la primera; de la 3ª consulta en adelante, el piso.
+        El descuento se aplica al reservar; reinicia si pasan 90 días sin volver.
+        Miembro que acaba de pagar/renovar: su próxima consulta arranca directo a mitad de precio.
       </p>
     </div>
   )
