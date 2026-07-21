@@ -7,6 +7,7 @@ import Image from 'next/image'
 const LINKS = [
   { href: '/planes', label: 'Planes' },
   { href: '/medicos', label: 'Médicos' },
+  { href: '/reservar', label: 'Agendar' },
   { href: '/consejeria', label: 'Consejería' },
   { href: '/login', label: 'Ingresar' },
 ]
