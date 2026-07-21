@@ -1,4 +1,5 @@
 import { DOCTORS } from '@/lib/doctors'
+import Nav from '@/app/components/Nav'
 import ReservaForm, { type ReservaDoctor } from './ReservaForm'
 
 export const metadata = {
@@ -15,8 +16,9 @@ export default function ReservarPage() {
   }))
 
   return (
-    <main className="min-h-screen bg-ink text-white px-6 py-12">
-      <div className="max-w-3xl mx-auto">
+    <main className="min-h-screen bg-ink text-white">
+      <Nav />
+      <div className="max-w-3xl mx-auto px-6 py-12">
         <p className="text-xs font-mono uppercase tracking-widest text-brand mb-1">Consulta médica</p>
         <h1 className="text-3xl font-light font-serif italic mb-2">Agendar consulta</h1>
         <p className="text-muted text-sm mb-10 max-w-xl">

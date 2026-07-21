@@ -65,26 +65,31 @@ export default function ReservaForm({ doctors }: { doctors: ReservaDoctor[] }) {
     if (!doctorSlug || !modality) return
     setLoading(true)
     setError(null)
-    const res = await fetch('/api/reservar/book', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        doctor_slug: doctorSlug,
-        modality,
-        slot_date: selectedDate ?? null,
-        slot_time: selectedTime ?? null,
-        patient_name: name,
-        patient_phone: phone,
-        patient_note: note || null,
-      }),
-    })
-    if (res.ok) {
-      const data = await res.json() as { booking_id: string }
-      setBookingId(data.booking_id)
-    } else {
-      setError('Error al guardar la solicitud. Intenta de nuevo.')
+    try {
+      const res = await fetch('/api/reservar/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          doctor_slug: doctorSlug,
+          modality,
+          slot_date: selectedDate ?? null,
+          slot_time: selectedTime ?? null,
+          patient_name: name,
+          patient_phone: phone,
+          patient_note: note || null,
+        }),
+      })
+      if (res.ok) {
+        const data = await res.json() as { booking_id: string }
+        setBookingId(data.booking_id)
+      } else {
+        setError('Error al guardar la solicitud. Intenta de nuevo.')
+      }
+    } catch {
+      setError('No se pudo conectar. Revisa tu internet e intenta de nuevo.')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   if (bookingId) {
