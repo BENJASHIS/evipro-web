@@ -2,9 +2,13 @@ import { describe, it, expect } from 'vitest'
 import {
   INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
   RENPUC_NOMBRE, HERO, PALABRAS_PROHIBIDAS, OTRAS_ESPECIALIDADES,
+  MEDICO, ESPECIALIDADES_PROXIMAS, WHATSAPP,
 } from '@/lib/home-content'
 
-/** Todo el texto que la portada imprime, en un solo string, para barrerlo. */
+/** Todo el texto que la portada imprime, en un solo string, para barrerlo.
+ *  Debe cubrir TODOS los exports que aparecen en la página: si alguien añade
+ *  una constante nueva, debe meterla aquí para que el barrido de palabras
+ *  prohibidas y precios la vigile. */
 function textoDeLaPortada(): string {
   return [
     HERO.etiqueta, HERO.titulo, HERO.titulo2, HERO.subtitulo, HERO.credenciales,
@@ -13,6 +17,9 @@ function textoDeLaPortada(): string {
     ...PREGUNTAS.flatMap(q => [q.p, q.r]),
     ...PASOS_PRIMERA_CONSULTA.flatMap(p => [p.titulo, p.texto]),
     ...OTRAS_ESPECIALIDADES,
+    MEDICO.nombre, MEDICO.especialidades, MEDICO.credenciales, MEDICO.direccion,
+    ...ESPECIALIDADES_PROXIMAS,
+    WHATSAPP,
   ].join(' ').toLowerCase()
 }
 
