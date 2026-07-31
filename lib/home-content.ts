@@ -133,7 +133,10 @@ export const MEDICO = {
   // ya lo dan las credenciales de abajo (CMP), y el nombre a secas se lee como
   // una presentación, no como un cargo. En el resto de la web sí va con Dr.
   nombre: 'Carlos Jara',
-  especialidades: 'Médico Cirujano · Especialista en Cannabinología · Medicina de Altura',
+  // Sin «Especialista» a propósito (2026-07-31): el CMP reserva ese título para
+  // quien está inscrito en el Registro Nacional de Especialistas. Describir el
+  // área de práctica dice lo mismo sin arrogarse un título que no consta.
+  especialidades: 'Médico Cirujano · Cannabis medicinal y medicina de altura',
   credenciales: 'CMP 82817 · RNA A10684',
   direccion: 'Av. Infancia 410, Consultorio 2 · Wanchaq, Cusco',
 }
