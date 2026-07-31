@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
+import Guia from './Guia'
 import type { PharmacyRequest } from '@/lib/types'
 
 const STATUS_LABELS: Record<PharmacyRequest['status'], string> = {
@@ -180,9 +181,7 @@ export default function RecetasPage() {
                   </span>
                 </div>
                 <p className="text-xs text-faint font-mono">📍 {req.shalom_address}</p>
-                {req.tracking_info && (
-                  <p className="text-xs text-muted font-mono mt-1">Guía: {req.tracking_info}</p>
-                )}
+                {req.tracking_info && <Guia codigo={req.tracking_info} />}
               </div>
             ))}
           </div>

@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { activateSubscription, dismissSubscription } from '@/app/admin/actions'
+import { activateSubscription, dismissSubscription, actualizarSolicitudFarmacia } from '@/app/admin/actions'
 import Link from 'next/link'
 
 type PendingSub = {
@@ -41,6 +41,20 @@ function PendingRow({ sub }: { sub: PendingSub }) {
   )
 }
 
+/** Supabase devuelve la relación como objeto o como lista de un elemento
+ *  según la consulta; esto lo deja en un nombre en los dos casos. */
+function nombreDe(profiles: unknown): string {
+  const p = Array.isArray(profiles) ? profiles[0] : profiles
+  return (p as { full_name?: string } | null)?.full_name ?? 'Miembro'
+}
+
+const ESTADO_FARMACIA: Record<string, string> = {
+  pending:     'Pendiente',
+  coordinated: 'Coordinado',
+  shipped:     'Enviado',
+  delivered:   'Entregado',
+}
+
 export default async function AdminPage({ searchParams }: { searchParams: Promise<{ ok?: string; dismissed?: string }> }) {
   const { ok, dismissed } = await searchParams
   const supabase = await createServerSupabaseClient()
@@ -53,8 +67,9 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         .eq('status', 'awaiting_payment').order('created_at', { ascending: false }),
       supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period)')
         .eq('status', 'active').order('created_at', { ascending: false }).limit(10),
-      supabase.from('pharmacy_requests').select('*, profiles(full_name)')
-        .eq('status', 'pending').order('created_at', { ascending: false }),
+      supabase.from('pharmacy_requests')
+        .select('id, product_notes, shalom_address, status, tracking_info, created_at, profiles(full_name)')
+        .neq('status', 'delivered').order('created_at', { ascending: false }).limit(50),
       supabase.from('counseling_bookings').select('*', { count: 'exact', head: true }),
     ])
 
@@ -125,16 +140,47 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       {recentRequests && recentRequests.length > 0 && (
         <div className="border border-yellow-400/20 rounded-lg p-6 mb-8">
           <p className="text-xs font-mono text-yellow-400 uppercase tracking-widest mb-4">
-            Solicitudes de farmacia pendientes ({recentRequests.length})
+            Solicitudes de farmacia en curso ({recentRequests.length})
           </p>
           <div className="space-y-3">
             {recentRequests.map(req => (
               <div key={req.id} className="border border-subtle rounded p-4">
-                <p className="text-sm font-light mb-1">
-                  {(req.profiles as Record<string, string>)?.full_name}
-                </p>
+                <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+                  <p className="text-sm font-light">
+                    {nombreDe(req.profiles)}
+                  </p>
+                  <span className="text-xs font-mono text-brand uppercase tracking-widest">
+                    {ESTADO_FARMACIA[req.status as string] ?? req.status}
+                  </span>
+                </div>
                 <p className="text-xs text-muted mb-1">{req.product_notes}</p>
-                <p className="text-xs text-faint font-mono">📍 {req.shalom_address}</p>
+                <p className="text-xs text-faint font-mono mb-3">📍 {req.shalom_address}</p>
+
+                {/* Avanzar estado + guía. Sin la guía escrita aquí, el paciente
+                    no tiene nada que rastrear: la columna existía y ninguna
+                    pantalla la escribía. */}
+                <form action={actualizarSolicitudFarmacia} className="flex flex-wrap items-center gap-2">
+                  <input type="hidden" name="id" value={req.id as string} />
+                  <select
+                    name="status"
+                    defaultValue={req.status as string}
+                    className="bg-white/5 border border-subtle rounded px-2 py-1.5 text-xs text-white font-mono"
+                  >
+                    {Object.entries(ESTADO_FARMACIA).map(([valor, etiqueta]) => (
+                      <option key={valor} value={valor} className="bg-ink">{etiqueta}</option>
+                    ))}
+                  </select>
+                  <input
+                    name="tracking_info"
+                    defaultValue={(req.tracking_info as string) ?? ''}
+                    placeholder="N° de guía Shalom"
+                    maxLength={60}
+                    className="bg-white/5 border border-subtle rounded px-2 py-1.5 text-xs text-white font-mono flex-1 min-w-[10rem]"
+                  />
+                  <button type="submit" className="bg-brand-deep hover:bg-brand-mid text-white text-xs font-mono px-3 py-1.5 rounded transition-colors">
+                    Guardar
+                  </button>
+                </form>
               </div>
             ))}
           </div>

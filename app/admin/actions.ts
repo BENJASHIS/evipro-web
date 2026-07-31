@@ -80,3 +80,34 @@ export async function cambiarEstadoPropuesta(formData: FormData) {
   if (error) throw new Error(`No se pudo actualizar: ${error.message}`)
   revalidatePath('/admin/propuestas')
 }
+
+
+const ESTADOS_FARMACIA = ['pending', 'coordinated', 'shipped', 'delivered'] as const
+
+/** Avanza una solicitud de farmacia y guarda el número de guía de Shalom.
+ *
+ *  La guía es un código del courier, no un dato clínico: se teclea aquí y el
+ *  paciente lo ve para rastrear en la web de Shalom. No hay integración con
+ *  terceros a propósito — no sale ningún dato del paciente hacia afuera. */
+export async function actualizarSolicitudFarmacia(formData: FormData) {
+  await requireAdmin()
+  const id = formData.get('id') as string
+  const status = formData.get('status') as string
+  const guia = ((formData.get('tracking_info') as string) || '').trim()
+
+  if (!ESTADOS_FARMACIA.includes(status as typeof ESTADOS_FARMACIA[number])) {
+    throw new Error('Estado invalido')
+  }
+  if (guia.length > 60) throw new Error('Numero de guia demasiado largo')
+
+  const { error } = await createServiceClient()
+    .from('pharmacy_requests')
+    .update({
+      status,
+      tracking_info: guia || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+  if (error) throw new Error(`No se pudo actualizar: ${error.message}`)
+  revalidatePath('/admin')
+}
