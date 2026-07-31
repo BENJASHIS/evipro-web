@@ -39,7 +39,7 @@ export default async function PlanesPage() {
             <div>
               <h2 className="text-xl font-light mb-1">Membresía Básica</h2>
               <p className="text-muted text-sm mb-2">Contenido + 1 ticket de sorteo. Para apoyar la página.</p>
-              <p className="text-xs text-muted">Consultas a precio regular: <LineaConsultas esMiembro={false} /></p>
+              <p className="text-xs text-muted">Tus consultas con descuento: <LineaConsultas tarifa="basica" /></p>
             </div>
             <div className="text-right shrink-0">
               <p className="text-2xl font-light mb-2">S/. {basica.price_soles}<span className="text-xs text-faint">/mes</span></p>
@@ -75,9 +75,10 @@ export default async function PlanesPage() {
         </div>
 
         <p className="text-xs text-faint font-mono mt-16 leading-relaxed max-w-2xl mx-auto text-center">
+          Sin membresía: <LineaConsultas tarifa="regular" />; cada membresía la abarata.
           La reconsulta cuesta la mitad de la primera; de la 3ª consulta en adelante, el piso.
-          Reinicia si pasan 90 días sin volver. Miembro que acaba de pagar/renovar: su próxima consulta arranca
-          directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia).
+          Reinicia si pasan 90 días sin volver. Miembro EVIPro que acaba de pagar/renovar: su próxima consulta
+          arranca directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia).
         </p>
         <Link href="/medicos" className="inline-block mt-3 text-sm font-mono text-brand underline hover:text-white">
           Agendar consulta sin membresía →

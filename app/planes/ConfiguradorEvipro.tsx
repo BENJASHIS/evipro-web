@@ -44,7 +44,7 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
       {/* Qué incluye EVIPro + precios de consulta de miembro */}
       {ref && (
         <div className="border border-subtle rounded p-4 mb-6 bg-white/[0.02]">
-          <p className="text-xs text-muted mb-3">Tus consultas como miembro: <LineaConsultas esMiembro={true} /></p>
+          <p className="text-xs text-muted mb-3">Tus consultas como miembro: <LineaConsultas tarifa="evipro" /></p>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono text-brand">
             {ref.includes_prescription && <span>✓ Receta incluida</span>}
             {ref.includes_renpuc_support && <span>✓ Apoyo RENPUC</span>}
