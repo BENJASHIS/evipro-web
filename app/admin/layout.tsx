@@ -14,10 +14,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .select('last_message_at, last_sender_role, member_last_read_at, admin_last_read_at')
   const unreadThreads = (convs ?? []).filter(c => hasUnread(c, 'admin')).length
 
+  const { count: propuestasNuevas } = await supabase
+    .from('partnership_proposals')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'nueva')
+
   const links = [
     { href: '/admin', label: 'Panel' },
     { href: '/admin/contenido', label: 'Contenido' },
     { href: '/admin/mensajes', label: 'Mensajes' },
+    { href: '/admin/propuestas', label: 'Propuestas' },
     { href: '/admin/consejeria', label: 'Consejería' },
   ]
 
@@ -33,6 +39,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               {link.href === '/admin/mensajes' && unreadThreads > 0 && (
                 <span className="absolute -top-2 -right-3 min-w-[1rem] h-4 px-1 rounded-full bg-brand text-[10px] text-white flex items-center justify-center">
                   {unreadThreads}
+                </span>
+              )}
+              {link.href === '/admin/propuestas' && (propuestasNuevas ?? 0) > 0 && (
+                <span className="absolute -top-2 -right-3 min-w-[1rem] h-4 px-1 rounded-full bg-brand text-[10px] text-white flex items-center justify-center">
+                  {propuestasNuevas}
                 </span>
               )}
             </Link>

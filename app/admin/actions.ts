@@ -63,3 +63,20 @@ export async function confirmBooking(formData: FormData) {
     .eq('id', id)
   revalidatePath('/admin/consejeria')
 }
+
+const ESTADOS_PROPUESTA = ['nueva', 'contestada', 'archivada'] as const
+
+export async function cambiarEstadoPropuesta(formData: FormData) {
+  await requireAdmin()
+  const id = formData.get('id') as string
+  const status = formData.get('status') as string
+  if (!ESTADOS_PROPUESTA.includes(status as typeof ESTADOS_PROPUESTA[number])) {
+    throw new Error('Estado invalido')
+  }
+  const { error } = await createServiceClient()
+    .from('partnership_proposals')
+    .update({ status })
+    .eq('id', id)
+  if (error) throw new Error(`No se pudo actualizar: ${error.message}`)
+  revalidatePath('/admin/propuestas')
+}

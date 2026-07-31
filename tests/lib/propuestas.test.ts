@@ -21,7 +21,8 @@ describe('validarPropuesta', () => {
   })
 
   it('la colegiatura es opcional', () => {
-    const { license: _omitida, ...sinLicencia } = valida
+    const { license, ...sinLicencia } = valida
+    expect(license).toBeTruthy()
     expect(validarPropuesta(sinLicencia).ok).toBe(true)
   })
 
