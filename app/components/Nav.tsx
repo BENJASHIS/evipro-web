@@ -4,11 +4,15 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
+// Orden = el camino que sigue alguien que llega de cero: primero a quién ve,
+// después cuánto cuesta seguir viniendo. La acción destacada es agendar, que es
+// la única que pide la portada; la cuenta solo hace falta para la membresía.
 const LINKS = [
-  { href: '/planes', label: 'Planes' },
   { href: '/medicos', label: 'Médicos' },
+  { href: '/planes', label: 'Planes' },
   { href: '/aliados', label: 'Aliados' },
   { href: '/login', label: 'Ingresar' },
+  { href: '/registro', label: 'Unirme' },
 ]
 
 export default function Nav() {
@@ -36,10 +40,10 @@ export default function Nav() {
             <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
           ))}
           <Link
-            href="/registro"
+            href="/medicos"
             className="border border-brand text-brand px-4 py-1.5 rounded hover:bg-brand hover:text-black transition-colors"
           >
-            Unirme
+            Agendar
           </Link>
         </div>
 
@@ -71,11 +75,11 @@ export default function Nav() {
             </Link>
           ))}
           <Link
-            href="/registro"
+            href="/medicos"
             onClick={() => setOpen(false)}
             className="mt-2 border border-brand text-brand px-4 py-2 rounded text-center hover:bg-brand hover:text-black transition-colors"
           >
-            Unirme
+            Agendar
           </Link>
         </div>
       )}
