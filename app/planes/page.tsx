@@ -76,9 +76,11 @@ export default async function PlanesPage() {
 
         <p className="text-xs text-faint font-mono mt-16 leading-relaxed max-w-2xl mx-auto text-center">
           Sin membresía: <LineaConsultas tarifa="regular" />; cada membresía la abarata.
-          La reconsulta cuesta la mitad de la primera; de la 3ª consulta en adelante, el piso.
-          Reinicia si pasan 90 días sin volver. Miembro EVIPro que acaba de pagar/renovar: su próxima consulta
-          arranca directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia).
+          Cada consulta de seguimiento cuesta la mitad de la anterior: la 2ª, la mitad de la 1ª; la 3ª,
+          la mitad de la 2ª. De la 3ª en adelante se queda en ese precio, que es el más bajo. Si pasan
+          90 días sin volver, la cuenta empieza de nuevo desde la 1ª. Miembro EVIPro que acaba de
+          pagar o renovar: su próxima consulta arranca directo a mitad de precio.
+          Visita a domicilio desde S/. 150 (según distancia).
         </p>
         <Link href="/medicos" className="inline-block mt-3 text-sm font-mono text-brand underline hover:text-white">
           Agendar consulta sin membresía →

@@ -1,3 +1,5 @@
+import { PRECIOS_CONSULTA, PRECIO_DOMICILIO } from '@/lib/consulta-pricing'
+
 export const metadata = { title: 'Términos y Condiciones · EVIPro' }
 
 export default function TerminosPage() {
@@ -6,7 +8,7 @@ export default function TerminosPage() {
       <div className="max-w-3xl mx-auto">
         <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">Legal</p>
         <h1 className="text-4xl font-light font-serif italic mb-2">Términos y Condiciones</h1>
-        <p className="text-faint text-xs font-mono mb-12">Última actualización: junio 2026</p>
+        <p className="text-faint text-xs font-mono mb-12">Última actualización: julio 2026</p>
 
         <div className="space-y-10 text-gray-300 text-sm leading-relaxed">
 
@@ -17,27 +19,38 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">2. Objeto y aceptación</h2>
-            <p>Estos Términos y Condiciones regulan el acceso y uso de la plataforma EVIPro, incluyendo la contratación de membresías de atención médica en Medicina Integral y Cannabis Medicinal. Al completar el proceso de registro y pago, el usuario acepta estos términos en su totalidad.</p>
+            <p>Estos Términos y Condiciones regulan el acceso y uso de la plataforma EVIPro: la contratación de membresías y el agendamiento de consultas médicas en cannabis medicinal, medicina de altura y las demás especialidades del equipo. Al completar el proceso de registro y pago, o al agendar una consulta, el usuario acepta estos términos en su totalidad.</p>
           </section>
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">3. Descripción del servicio</h2>
-            <p className="mb-3">EVIPro ofrece membresías médicas con acceso a consultas virtuales y/o presenciales con su equipo médico: el Dr. José Carlos Benjamín Jara Ovalle (CMP 82817), especialista en Medicina Integral y Cannabis Medicinal, y el Dr. Shinvert Enmanuel Vera Sanchez (CMP 099649), especialista en Gerontología y Cuidados Paliativos, con sede en Cusco, Perú. Los planes disponibles son:</p>
+            <p className="mb-3">EVIPro ofrece dos cosas distintas, que se contratan por separado: <strong className="text-white">consultas médicas</strong> y <strong className="text-white">membresías</strong>. El equipo médico lo forman el Dr. José Carlos Benjamín Jara Ovalle (CMP 82817, cannabis medicinal y medicina de altura) y el Dr. Shinvert Enmanuel Vera Sanchez (CMP 099649, gerontología y cuidados paliativos), con sede en Cusco, Perú.</p>
+
+            <h3 className="text-white font-light mb-2 mt-6">3.1 Consulta médica</h3>
+            <p className="mb-3">La consulta médica es un acto médico: historia clínica, evaluación de interacciones, diagnóstico y, cuando corresponde, receta e inscripción en el RENPUC. <strong className="text-white">No requiere membresía ni crear una cuenta</strong>: se agenda con nombre y teléfono. El pago de la consulta <strong className="text-white">no se cobra en línea</strong>; se realiza directamente al médico en el momento de la atención.</p>
+            <p className="mb-3">El precio depende de la modalidad y de cuántas veces ha venido el paciente. Cada consulta de seguimiento cuesta la mitad de la anterior hasta la tercera; de la tercera en adelante se mantiene ese precio, que es el más bajo. Si transcurren 90 días sin volver, la cuenta reinicia desde la primera consulta. Tarifas vigentes en soles (1ª · 2ª · 3ª en adelante):</p>
+            <ul className="list-disc list-inside space-y-1 ml-2 mb-3">
+              <li><strong className="text-white">Sin membresía:</strong> presencial {PRECIOS_CONSULTA.presencial.regular.join(' · ')} · virtual {PRECIOS_CONSULTA.virtual.regular.join(' · ')}</li>
+              <li><strong className="text-white">Con Membresía Básica:</strong> presencial {PRECIOS_CONSULTA.presencial.basica.join(' · ')} · virtual {PRECIOS_CONSULTA.virtual.basica.join(' · ')}</li>
+              <li><strong className="text-white">Con Membresía EVIPro:</strong> presencial {PRECIOS_CONSULTA.presencial.evipro.join(' · ')} · virtual {PRECIOS_CONSULTA.virtual.evipro.join(' · ')}. El miembro que acaba de pagar o renovar inicia directamente en el segundo escalón, una vez por pago.</li>
+              <li><strong className="text-white">Visita a domicilio:</strong> desde S/. {PRECIO_DOMICILIO}, según distancia. No aplica la escala de seguimiento.</li>
+            </ul>
+            <p className="mb-3">El médico puede no prescribir si clínicamente no está indicado; la consulta se cobra igual, porque el servicio prestado es la evaluación médica.</p>
+
+            <h3 className="text-white font-light mb-2 mt-6">3.2 Membresías</h3>
+            <p className="mb-3">La membresía no es la consulta: es acceso a contenido y condiciones preferentes. Los precios vigentes de cada membresía y de sus módulos opcionales son los publicados en <a href="/planes" className="text-brand hover:underline">evipro.pe/planes</a> al momento de la compra.</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li><strong className="text-white">Plan Axs</strong> (S/. 9.90/mes): Membresía de acceso por uso. Consultas virtuales y presenciales a tarifa reducida según duración, sin compromiso de permanencia.</li>
-              <li><strong className="text-white">Plan Express</strong> (S/. 10/mes): 1 consulta virtual de 15 minutos + receta digital.</li>
-              <li><strong className="text-white">Plan Esencial</strong> (S/. 29/mes): Consulta virtual de seguimiento, receta incluida y 1 ticket de sorteo mensual.</li>
-              <li><strong className="text-white">Plan Cannabis</strong> (desde S/. 49/mes): Consultas de seguimiento a precio preferencial, receta incluida, apoyo RENPUC, coordinación con farmacia magistral.</li>
-              <li><strong className="text-white">Plan Integral</strong> (desde S/. 79/mes): Consultas virtuales y presenciales a precio preferencial, todos los beneficios Cannabis más atención presencial.</li>
-              <li><strong className="text-white">Plan Especialistas</strong> (desde S/. 100/mes): Acceso a los especialistas en Cannabis Medicinal y Gerontología, con consejería y consultas a tarifa preferencial por duración.</li>
-              <li><strong className="text-white">Plan Turista Inicio</strong> (S/. 69 quincenal / S/. 119 mensual): Para visitantes nuevos en cannabis medicinal. Consulta virtual completa, receta, RENPUC nuevo candidato, farmacia.</li>
-              <li><strong className="text-white">Plan Turista Plus</strong> (S/. 49 quincenal / S/. 89 mensual): Para visitantes con tratamiento previo. Consulta express, revalidación de receta extranjera, RENPUC continuador, farmacia.</li>
+              <li><strong className="text-white">Membresía Básica:</strong> contenido para miembros, 1 ticket de sorteo y consultas a la tarifa Básica indicada arriba. Sin compromiso de permanencia.</li>
+              <li><strong className="text-white">Membresía EVIPro:</strong> incluye la atención en cannabis medicinal, receta, apoyo con el trámite RENPUC, coordinación con farmacia magistral y consultas a la tarifa EVIPro. Contratable por período mensual, trimestral o semestral.</li>
+              <li><strong className="text-white">Módulo de especialista (opcional, solo sobre EVIPro):</strong> añade la atención en gerontología, cuidados paliativos y enfermedades crónicas con el Dr. Vera.</li>
+              <li><strong className="text-white">Plan Turista Inicio:</strong> para visitantes nuevos en cannabis medicinal. Consulta virtual completa, receta, RENPUC nuevo candidato y coordinación de farmacia.</li>
+              <li><strong className="text-white">Plan Turista Plus:</strong> para visitantes con tratamiento previo. Consulta express, revalidación de receta extranjera, RENPUC continuador y coordinación de farmacia.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">4. Proceso de contratación y pago</h2>
-            <p>El pago se realiza mediante tarjeta de crédito o débito a través de la pasarela de pagos <strong className="text-white">Mercado Pago</strong>, certificada PCI-DSS. EVIPro no almacena ni procesa datos de tarjetas bancarias. Los cobros son recurrentes según el periodo seleccionado (quincenal, mensual, trimestral, semestral o anual). El usuario autoriza expresamente los cobros automáticos al contratar la membresía.</p>
+            <p>El pago <strong className="text-white">de las membresías</strong> se realiza mediante tarjeta de crédito o débito a través de la pasarela de pagos <strong className="text-white">Mercado Pago</strong>, certificada PCI-DSS. La consulta médica no se paga en línea: se abona directamente al médico. EVIPro no almacena ni procesa datos de tarjetas bancarias. Los cobros son recurrentes según el periodo seleccionado (quincenal, mensual, trimestral, semestral o anual). El usuario autoriza expresamente los cobros automáticos al contratar la membresía.</p>
           </section>
 
           <section>

@@ -5,16 +5,14 @@ import Link from 'next/link'
 // ponytail: sin precios hardcodeados — son identificadores de servicio para el reclamo;
 // los precios viven en membership_plans (Supabase) y aquí solo se desfasarían.
 const SERVICIOS = [
-  'Plan Express',
-  'Plan Esencial',
-  'Plan Cannabis',
-  'Plan Integral',
-  'Plan Axs',
-  'Plan Especialistas (Cannabis + Gerontología)',
+  'Membresía Básica',
+  'Membresía EVIPro',
+  'Módulo de especialista (Dr. Vera)',
   'Plan Turista Inicio',
   'Plan Turista Plus',
-  'Consulta virtual',
   'Consulta presencial',
+  'Consulta virtual',
+  'Visita a domicilio',
   'Coordinación de farmacia',
   'Otro',
 ]

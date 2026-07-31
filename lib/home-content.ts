@@ -129,7 +129,10 @@ export const OTRAS_ESPECIALIDADES = [
 export const ESPECIALIDADES_PROXIMAS = ['Cardiología', 'Pruebas de esfuerzo']
 
 export const MEDICO = {
-  nombre: 'Dr. Carlos Jara',
+  // Sin «Dr.» a propósito (Carlos, 2026-07-31): en «Quién te atiende» el título
+  // ya lo dan las credenciales de abajo (CMP), y el nombre a secas se lee como
+  // una presentación, no como un cargo. En el resto de la web sí va con Dr.
+  nombre: 'Carlos Jara',
   especialidades: 'Médico Cirujano · Especialista en Cannabinología · Medicina de Altura',
   credenciales: 'CMP 82817 · RNA A10684',
   direccion: 'Av. Infancia 410, Consultorio 2 · Wanchaq, Cusco',
