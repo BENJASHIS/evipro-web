@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
-import type { PharmacyRequest, Subscription } from '@/lib/types'
+import type { PharmacyRequest } from '@/lib/types'
 
 const STATUS_LABELS: Record<PharmacyRequest['status'], string> = {
   pending: 'Pendiente de coordinación',
@@ -10,52 +11,90 @@ const STATUS_LABELS: Record<PharmacyRequest['status'], string> = {
   delivered: 'Entregado',
 }
 
+type SolicitudPropia = Pick<PharmacyRequest,
+  'id' | 'product_notes' | 'shalom_address' | 'status' | 'tracking_info' | 'created_at'>
+
 export default function RecetasPage() {
-  const [requests, setRequests] = useState<PharmacyRequest[]>([])
-  const [subscription, setSubscription] = useState<Subscription | null>(null)
+  const [requests, setRequests] = useState<SolicitudPropia[]>([])
+  // null = todavía cargando; false = sin derecho; true = con derecho.
+  const [tieneFarmacia, setTieneFarmacia] = useState<boolean | null>(null)
   const [form, setForm] = useState({ product_notes: '', shalom_address: '' })
   const [sending, setSending] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function cargarSolicitudes(userId: string) {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from('pharmacy_requests')
+      .select('id, product_notes, shalom_address, status, tracking_info, created_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+    setRequests((data ?? []) as SolicitudPropia[])
+  }
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return
-      supabase.from('subscriptions').select('*').eq('user_id', user.id).eq('status', 'active').maybeSingle()
-        .then(({ data }) => setSubscription(data))
-      supabase.from('pharmacy_requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
-        .then(({ data }) => setRequests(data ?? []))
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) { setTieneFarmacia(false); return }
+      // El derecho se lee de la casilla del plan, no de su nombre: los nombres
+      // de plan cambian y el candado se queda apuntando a planes que ya no existen.
+      const { data: sub } = await supabase
+        .from('subscriptions')
+        .select('id, membership_plans(includes_pharmacy_coord)')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle()
+      const plan = Array.isArray(sub?.membership_plans) ? sub?.membership_plans[0] : sub?.membership_plans
+      setTieneFarmacia(Boolean(plan?.includes_pharmacy_coord))
+      await cargarSolicitudes(user.id)
     })
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!subscription) return
     setSending(true)
+    setError(null)
+    const res = await fetch('/api/farmacia', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    })
+    setSending(false)
+    if (!res.ok) {
+      const data = await res.json().catch(() => null) as { error?: string } | null
+      setError(data?.error ?? 'No se pudo enviar la solicitud.')
+      return
+    }
+    setSuccess(true)
+    setForm({ product_notes: '', shalom_address: '' })
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setSending(false); return }
-    await supabase.from('pharmacy_requests').insert({
-      user_id: user.id,
-      subscription_id: subscription.id,
-      product_notes: form.product_notes,
-      shalom_address: form.shalom_address,
-    })
-    setSuccess(true)
-    setSending(false)
-    setForm({ product_notes: '', shalom_address: '' })
-    // Actualizar lista
-    const { data } = await supabase.from('pharmacy_requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
-    setRequests(data ?? [])
+    if (user) await cargarSolicitudes(user.id)
   }
 
-  if (!subscription) {
+  const encabezado = (
+    <>
+      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Farmacia</p>
+      <h1 className="text-3xl font-light font-serif italic mb-4">Coordinación de farmacia</h1>
+    </>
+  )
+
+  if (tieneFarmacia === null) {
+    return <div>{encabezado}<p className="text-faint text-sm font-mono">Cargando…</p></div>
+  }
+
+  if (!tieneFarmacia) {
     return (
       <div>
-        <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Farmacia</p>
-        <h1 className="text-3xl font-light font-serif italic mb-8">Coordinación de farmacia</h1>
+        {encabezado}
         <div className="border border-subtle rounded-lg p-8 text-center">
-          <p className="text-muted text-sm">Necesitas una membresía Cannabis o Integral para acceder a este servicio.</p>
+          <p className="text-muted text-sm mb-3">
+            La coordinación de farmacia está incluida en la membresía EVIPro.
+          </p>
+          <Link href="/planes" className="text-brand text-sm font-mono hover:underline">
+            Ver planes →
+          </Link>
         </div>
       </div>
     )
@@ -63,8 +102,7 @@ export default function RecetasPage() {
 
   return (
     <div>
-      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Farmacia</p>
-      <h1 className="text-3xl font-light font-serif italic mb-4">Coordinación de farmacia</h1>
+      {encabezado}
       <p className="text-muted text-sm mb-8">
         Coordinamos con nuestra farmacia magistral aliada el envío de tu producto a la agencia Shalom más cercana.
         El costo de envío (S/. 8–15) y el producto son cobrados directamente por la farmacia.
@@ -79,23 +117,26 @@ export default function RecetasPage() {
       <form onSubmit={handleSubmit} className="border border-subtle rounded-lg p-6 mb-8 space-y-4">
         <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Nueva solicitud</p>
         <div>
-          <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Producto / notas de la receta *</label>
+          <label htmlFor="product_notes" className="block text-xs text-muted mb-1 uppercase tracking-widest">Producto / notas de la receta *</label>
           <textarea
+            id="product_notes"
             value={form.product_notes}
             onChange={e => setForm(prev => ({ ...prev, product_notes: e.target.value }))}
-            required rows={3} placeholder="Ej: Aceite CBD:THC 20:1, 30ml, según receta del Dr. Carlos"
+            required rows={3} maxLength={1000} placeholder="Ej: Aceite CBD:THC 20:1, 30ml, según receta del Dr. Carlos"
             className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand resize-none"
           />
         </div>
         <div>
-          <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Agencia Shalom de destino *</label>
+          <label htmlFor="shalom_address" className="block text-xs text-muted mb-1 uppercase tracking-widest">Agencia Shalom de destino *</label>
           <input
+            id="shalom_address"
             type="text" value={form.shalom_address}
             onChange={e => setForm(prev => ({ ...prev, shalom_address: e.target.value }))}
-            required placeholder="Ej: Shalom Sicuani, Cusco"
+            required maxLength={200} placeholder="Ej: Shalom Sicuani, Cusco"
             className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand"
           />
         </div>
+        {error && <p className="text-red-400 text-xs">{error}</p>}
         <button type="submit" disabled={sending}
           className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50">
           {sending ? 'Enviando...' : 'Solicitar coordinación'}
