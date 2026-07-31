@@ -160,6 +160,19 @@ export default function RecetasPage() {
             required maxLength={200} placeholder="Ej: Shalom Sicuani, Cusco"
             className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand"
           />
+          {/* Ayuda en el único momento en que se duda: al escribir la agencia.
+              No se repite en otras partes de la página. */}
+          <p className="text-xs text-faint mt-1">
+            ¿No sabes cuál te queda más cerca?{' '}
+            <a
+              href="https://shalom.com.pe/agencias"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand hover:underline"
+            >
+              Buscar agencia en Shalom →
+            </a>
+          </p>
         </div>
         {error && <p className="text-red-400 text-xs">{error}</p>}
         <button type="submit" disabled={sending}
