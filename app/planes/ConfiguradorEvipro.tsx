@@ -39,7 +39,7 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
         <h2 className="text-2xl font-light">Membresía EVIPro</h2>
         <span className="text-xs font-mono text-brand uppercase tracking-widest">Recomendado</span>
       </div>
-      <p className="text-muted text-sm mb-6">Receta, RENPUC y farmacia incluidos, y precios de consulta de miembro (ver tabla arriba). Suma los especialistas que necesites.</p>
+      <p className="text-muted text-sm mb-6">Incluye la atención en cannabis medicinal, receta, RENPUC y farmacia, y precios de consulta de miembro (ver tabla arriba). Si además necesitas otra especialidad, se suma abajo.</p>
 
       {/* Qué incluye EVIPro + precios de consulta de miembro */}
       {ref && (
