@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Nav from '@/app/components/Nav'
 import Badge from '@/app/components/ui/Badge'
 import Image from 'next/image'
+import PropuestaForm from './PropuestaForm'
 
 export const metadata: Metadata = {
   title: 'Aliados · EVIPro',
@@ -97,6 +98,17 @@ export default function AliadosPage() {
             </div>
           </div>
         </div>
+
+        {/* Puerta de propuestas */}
+        <section id="propuesta" className="mt-16 border-t border-subtle pt-12 scroll-mt-8">
+          <h2 className="text-2xl font-light font-serif italic mb-3">¿Quieres trabajar con nosotros?</h2>
+          <p className="text-muted text-sm mb-8 max-w-xl">
+            No hace falta ser médico ni tener consultorio: si haces algo que se cruza con lo que
+            hacemos y quieres proponer un trabajo conjunto, cuéntalo aquí. Tres preguntas concretas,
+            porque una idea sin qué aporta cada uno no se puede evaluar.
+          </p>
+          <PropuestaForm />
+        </section>
       </div>
     </main>
   )

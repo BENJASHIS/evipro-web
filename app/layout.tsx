@@ -102,6 +102,7 @@ gtag('config', '${GA_ID}');`}
             {/* Links legales */}
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs font-mono text-faint">
               <span>© {new Date().getFullYear()} EVIPro · RUC 10439904572</span>
+              <a href="/aliados#propuesta" className="hover:text-white transition-colors">Trabaja con nosotros</a>
               <a href="/terminos" className="hover:text-white transition-colors">Términos y Condiciones</a>
               <a href="/politica-devoluciones" className="hover:text-white transition-colors">Política de Cancelaciones</a>
               <a href="/libro-reclamaciones" className="hover:text-white transition-colors">Libro de Reclamaciones</a>
