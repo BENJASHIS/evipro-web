@@ -3,7 +3,7 @@ import { validarSolicitudFarmacia } from '../../lib/farmacia'
 
 const estado = vi.hoisted(() => ({
   user: { id: 'u1' } as { id: string } | null,
-  sub: null as unknown,
+  subs: [] as unknown[],
   insertado: null as Record<string, unknown> | null,
   errorInsert: null as { message: string } | null,
 }))
@@ -13,9 +13,9 @@ vi.mock('@/lib/supabase-server', () => ({
     auth: { getUser: async () => ({ data: { user: estado.user } }) },
     from: () => ({
       select: () => ({
-        eq: () => ({
-          eq: () => ({ maybeSingle: async () => ({ data: estado.sub }) }),
-        }),
+        // El usuario puede tener varias suscripciones activas: la consulta
+        // devuelve una lista, no una fila.
+        eq: () => ({ eq: async () => ({ data: estado.subs }) }),
       }),
     }),
   }),
@@ -46,7 +46,7 @@ const sinDerecho = { id: 's2', membership_plans: { includes_pharmacy_coord: fals
 
 beforeEach(() => {
   estado.user = { id: 'u1' }
-  estado.sub = conDerecho
+  estado.subs = [conDerecho]
   estado.insertado = null
   estado.errorInsert = null
 })
@@ -80,14 +80,14 @@ describe('POST /api/farmacia', () => {
   })
 
   it('rechaza a un miembro cuyo plan no incluye farmacia (el caso de la Básica)', async () => {
-    estado.sub = sinDerecho
+    estado.subs = [sinDerecho]
     const res = await POST(pedir(valida))
     expect(res.status).toBe(403)
     expect(estado.insertado).toBeNull()
   })
 
   it('rechaza a quien no tiene suscripción activa', async () => {
-    estado.sub = null
+    estado.subs = []
     const res = await POST(pedir(valida))
     expect(res.status).toBe(403)
     expect(estado.insertado).toBeNull()
@@ -97,6 +97,15 @@ describe('POST /api/farmacia', () => {
     await POST(pedir({ ...valida, status: 'delivered', user_id: 'otro' }))
     expect(estado.insertado).not.toHaveProperty('status')
     expect(estado.insertado).toMatchObject({ user_id: 'u1' })
+  })
+
+  it('con varias suscripciones activas basta que UNA incluya farmacia', async () => {
+    // El caso de Carlos: cuatro membresías activas a la vez. Pedir una sola
+    // fila devolvía error y se leía como "no tiene derecho".
+    estado.subs = [sinDerecho, conDerecho]
+    const res = await POST(pedir(valida))
+    expect(res.status).toBe(200)
+    expect(estado.insertado).toMatchObject({ subscription_id: 's1' })
   })
 
   it('ante fallo de base de datos responde genérico', async () => {
