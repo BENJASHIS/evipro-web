@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
   RENPUC_NOMBRE, HERO, PALABRAS_PROHIBIDAS, OTRAS_ESPECIALIDADES,
-  MEDICO, ESPECIALIDADES_PROXIMAS, WHATSAPP,
+  MEDICO, ESPECIALIDADES_PROXIMAS, WHATSAPP, MEMBRESIA,
 } from '@/lib/home-content'
 
 /** Todo el texto que la portada imprime, en un solo string, para barrerlo.
@@ -19,6 +19,7 @@ function textoDeLaPortada(): string {
     ...OTRAS_ESPECIALIDADES,
     MEDICO.nombre, MEDICO.especialidades, MEDICO.credenciales, MEDICO.direccion,
     ...ESPECIALIDADES_PROXIMAS,
+    MEMBRESIA.titulo, MEMBRESIA.texto, MEMBRESIA.cta,
     WHATSAPP,
   ].join(' ').toLowerCase()
 }

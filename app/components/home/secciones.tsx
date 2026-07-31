@@ -5,7 +5,7 @@ import Button from '@/app/components/ui/Button'
 import { escaleraReserva } from '@/lib/consulta-pricing'
 import {
   HERO, INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
-  OTRAS_ESPECIALIDADES, ESPECIALIDADES_PROXIMAS, MEDICO, RENPUC_NOMBRE, WHATSAPP,
+  OTRAS_ESPECIALIDADES, ESPECIALIDADES_PROXIMAS, MEDICO, RENPUC_NOMBRE, WHATSAPP, MEMBRESIA,
 } from '@/lib/home-content'
 
 const AGENDAR = '/medicos/dr-jara/agendar'
@@ -55,7 +55,7 @@ export function ParaQueSi() {
   return (
     <section className={SECCION}>
       <div className={CAJA}>
-        <p className={ROTULO}>Para qué sí</p>
+        <h2 className={ROTULO}>Para qué sí</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {INDICACIONES_PORTADA.map(i => (
             <div
@@ -88,11 +88,11 @@ export function Preguntas() {
   return (
     <section className={SECCION}>
       <div className={CAJA}>
-        <p className={ROTULO}>Lo que todos preguntan</p>
+        <h2 className={ROTULO}>Lo que todos preguntan</h2>
         <dl className="divide-y divide-subtle">
           {PREGUNTAS.map(q => (
             <div key={q.p} className="py-4">
-              <dt className="font-light mb-1">{q.p}</dt>
+              <dt className="font-light mb-1">{conAbbr(q.p)}</dt>
               <dd className="text-muted text-sm leading-relaxed">{q.r}</dd>
             </div>
           ))}
@@ -106,7 +106,7 @@ export function QuienTeAtiende() {
   return (
     <section className={SECCION}>
       <div className={CAJA}>
-        <p className={ROTULO}>Quién te atiende</p>
+        <h2 className={ROTULO}>Quién te atiende</h2>
         <h3 className="text-xl font-light mb-2">{MEDICO.nombre}</h3>
         <p className="text-muted text-sm leading-relaxed">
           {MEDICO.especialidades}<br />
@@ -122,12 +122,12 @@ export function PrimeraConsulta() {
   return (
     <section className={SECCION}>
       <div className={CAJA}>
-        <p className={ROTULO}>Cómo es la primera consulta</p>
+        <h2 className={ROTULO}>Cómo es la primera consulta</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {PASOS_PRIMERA_CONSULTA.map(p => (
             <div key={p.n} className="border border-subtle rounded-lg p-5">
               <h3 className="text-base font-light mb-1">
-                {p.n} · {p.titulo}
+                {p.n} · {conAbbr(p.titulo)}
               </h3>
               <p className="text-muted text-sm leading-relaxed">{conAbbr(p.texto)}</p>
             </div>
@@ -145,7 +145,7 @@ export function OtrasEspecialidades() {
   return (
     <section className={SECCION}>
       <div className={CAJA}>
-        <p className={ROTULO}>También atendemos</p>
+        <h2 className={ROTULO}>También atendemos</h2>
         <p className="text-muted leading-relaxed">
           {OTRAS_ESPECIALIDADES.join(' · ')}{' '}
           <span className="text-faint">
@@ -162,17 +162,17 @@ export function Membresia({ desde }: { desde: number | null }) {
     <section className={`${SECCION} bg-white/[0.02]`}>
       <div className={CAJA}>
         <h2 className="text-2xl font-light font-serif italic mb-3">
-          ¿Vas a venir más de una vez?
+          {MEMBRESIA.titulo}
         </h2>
         <p className="text-muted leading-relaxed max-w-2xl mb-6">
-          La membresía EVIPro abarata cada consulta y te da seguimiento entre visitas
+          {MEMBRESIA.texto}
           {desde !== null && <>, desde <span className="text-white">S/. {desde}</span> al mes</>}.
         </p>
         <Link
           href="/planes"
           className="inline-block border border-strong rounded px-6 py-2 font-mono text-sm hover:border-white/50 transition-colors"
         >
-          Ver planes →
+          {MEMBRESIA.cta} →
         </Link>
       </div>
     </section>

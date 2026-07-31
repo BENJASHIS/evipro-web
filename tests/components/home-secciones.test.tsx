@@ -52,6 +52,14 @@ describe('Preguntas', () => {
     render(<Preguntas />)
     expect(screen.getByText(new RegExp(RENPUC_NOMBRE.slice(0, 40)))).toBeTruthy()
   })
+
+  it('no hay ningún RENPUC fuera de un <abbr>', () => {
+    const { container } = render(<Preguntas />)
+    const clon = container.cloneNode(true) as HTMLElement
+    const abbrs = clon.querySelectorAll('abbr')
+    abbrs.forEach(abbr => abbr.remove())
+    expect(clon.textContent).not.toContain('RENPUC')
+  })
 })
 
 describe('PrimeraConsulta', () => {
@@ -78,6 +86,14 @@ describe('PrimeraConsulta', () => {
     expect(container.textContent).toContain(
       'El RENPUC es el registro que la ley exige',
     )
+  })
+
+  it('no hay ningún RENPUC fuera de un <abbr>', () => {
+    const { container } = render(<PrimeraConsulta />)
+    const clon = container.cloneNode(true) as HTMLElement
+    const abbrs = clon.querySelectorAll('abbr')
+    abbrs.forEach(abbr => abbr.remove())
+    expect(clon.textContent).not.toContain('RENPUC')
   })
 })
 

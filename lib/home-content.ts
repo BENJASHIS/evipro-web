@@ -136,3 +136,9 @@ export const MEDICO = {
   credenciales: 'CMP 82817 · RNA A10684',
   direccion: 'Av. Infancia 410, Consultorio 2 · Wanchaq, Cusco',
 }
+
+export const MEMBRESIA = {
+  titulo: '¿Vas a venir más de una vez?',
+  texto: 'La membresía EVIPro abarata cada consulta y te da seguimiento entre visitas',
+  cta: 'Ver planes',
+}
