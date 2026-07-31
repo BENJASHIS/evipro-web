@@ -76,6 +76,9 @@ export default function RecetasPage() {
     if (user) await cargarSolicitudes(user.id)
   }
 
+  // La más reciente: `cargarSolicitudes` ya las trae ordenadas por fecha desc.
+  const ultima = requests[0]
+
   const encabezado = (
     <>
       <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Farmacia</p>
@@ -107,8 +110,9 @@ export default function RecetasPage() {
     <div>
       {encabezado}
       <p className="text-muted text-sm mb-8">
-        Coordinamos con nuestra farmacia magistral aliada el envío de tu producto a la agencia Shalom más cercana.
-        El costo de envío (S/. 8–15) y el producto son cobrados directamente por la farmacia.
+        Coordinamos con nuestra farmacia magistral aliada el envío de tu producto a la agencia Shalom
+        más cercana. El producto y el envío los cobra la farmacia (envío S/. 25), y al recoger en Shalom
+        pagas <strong className="text-white">S/. 8–15 contra entrega</strong>. EVIPro no cobra nada por esto.
       </p>
 
       {success && (
@@ -119,6 +123,23 @@ export default function RecetasPage() {
 
       <form onSubmit={handleSubmit} className="border border-subtle rounded-lg p-6 mb-8 space-y-4">
         <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Nueva solicitud</p>
+
+        {/* La mayoría de solicitudes son repetición: el paciente continuador
+            pide lo mismo. Escribirlo de nuevo invita a equivocarse en la
+            concentración, así que se copia de la última en vez de teclearla. */}
+        {ultima && (
+          <button
+            type="button"
+            onClick={() => setForm(prev => ({
+              ...prev,
+              product_notes: `Continuador · lo mismo de la última vez: ${ultima.product_notes}`,
+            }))}
+            className="w-full text-left border border-subtle rounded px-3 py-2 text-xs text-muted hover:border-brand/50 hover:text-white transition-colors"
+          >
+            ↻ Lo mismo de la última vez · <span className="font-mono">{ultima.product_notes}</span>
+          </button>
+        )}
+
         <div>
           <label htmlFor="product_notes" className="block text-xs text-muted mb-1 uppercase tracking-widest">Producto / notas de la receta *</label>
           <textarea
