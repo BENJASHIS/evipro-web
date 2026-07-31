@@ -1,7 +1,11 @@
 'use client'
 import { useState } from 'react'
 
-const RASTREADOR_SHALOM = 'https://shalom.com.pe/rastrea-tu-envio'
+// URL verificada por Carlos en el navegador. Ojo si alguna vez hay que
+// cambiarla: la web de Shalom responde 200 en cualquier ruta (se arma en el
+// navegador), así que comprobarla con una petición NO sirve para saber si
+// existe — hay que abrirla.
+const RASTREADOR_SHALOM = 'https://shalom.com.pe/rastrea'
 
 /** Número de guía con copiar y enlace al rastreador de Shalom.
  *

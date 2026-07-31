@@ -7,7 +7,7 @@ describe('Guia de envío', () => {
     render(<Guia codigo="SH-123456" />)
     expect(screen.getByText('SH-123456')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /rastrear en Shalom/ }))
-      .toHaveAttribute('href', 'https://shalom.com.pe/rastrea-tu-envio')
+      .toHaveAttribute('href', 'https://shalom.com.pe/rastrea')
   })
 
   it('copia el código al portapapeles', async () => {
