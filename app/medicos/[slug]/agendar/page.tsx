@@ -15,7 +15,7 @@ export async function generateMetadata(
   const { slug } = await params
   const doctor = DOCTORS.find(d => d.slug === slug)
   if (!doctor) return {}
-  return { title: `Agendar cita con ${doctor.name} — EVIPro` }
+  return { title: `Agendar cita con ${doctor.name} · EVIPro` }
 }
 
 export default async function AgendarPage(

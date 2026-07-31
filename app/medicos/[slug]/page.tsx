@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const doctor = DOCTORS.find(d => d.slug === slug)
   if (!doctor) return {}
   return {
-    title: `${doctor.name} — EVIPro`,
+    title: `${doctor.name} · EVIPro`,
     description: doctor.bio.slice(0, 160),
   }
 }
@@ -80,7 +80,7 @@ export default async function DoctorPage({ params }: Props) {
                 {doctor.formation.map((f, i) => (
                   <li key={i} className="text-sm">
                     <span className="text-white">{f.title}</span>
-                    {' — '}
+                    {' · '}
                     <span className="text-faint">
                       {f.institution}{f.year ? ` (${f.year})` : ''}
                     </span>

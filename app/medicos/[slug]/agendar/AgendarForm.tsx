@@ -213,7 +213,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
           ))}
         </div>
         <p className="text-faint text-xs font-mono mt-2">
-          Precios de consulta sin membresía. Miembros EVIPro pagan menos — <Link href="/planes" className="underline hover:text-white">ver planes</Link>.
+          Precios de consulta sin membresía. Miembros EVIPro pagan menos: <Link href="/planes" className="underline hover:text-white">ver planes</Link>.
         </p>
       </div>
 

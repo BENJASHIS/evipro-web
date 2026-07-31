@@ -5,7 +5,7 @@ import Nav from '@/app/components/Nav'
 import Badge from '@/app/components/ui/Badge'
 
 export const metadata: Metadata = {
-  title: 'Equipo Médico — EVIPro',
+  title: 'Equipo Médico · EVIPro',
   description: 'Conoce a los especialistas de EVIPro en Cannabis Medicinal, Medicina de Altura, Gerontología y más.',
 }
 

@@ -32,7 +32,7 @@ export default async function ContenidoPage() {
 
       {!items.length ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
-          <p className="text-muted text-sm">Próximamente — estamos preparando contenido exclusivo para miembros.</p>
+          <p className="text-muted text-sm">Próximamente: estamos preparando contenido exclusivo para miembros.</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2">

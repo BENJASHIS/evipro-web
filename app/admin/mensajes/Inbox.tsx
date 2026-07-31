@@ -58,7 +58,7 @@ export default function Inbox() {
               <span className="text-sm text-white truncate">{c.email ?? c.user_id}</span>
               {c.unread && <span className="w-2 h-2 rounded-full bg-brand shrink-0 ml-2" />}
             </div>
-            <p className="text-xs text-faint truncate">{c.last_message_preview ?? '—'}</p>
+            <p className="text-xs text-faint truncate">{c.last_message_preview ?? '…'}</p>
           </button>
         ))}
       </div>

@@ -215,13 +215,13 @@ export default async function MiembrosPage() {
               <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Accesos rápidos</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Link
-                  href="/consejeria"
+                  href="/aliados"
                   className="flex items-center gap-3 p-4 border border-subtle rounded hover:border-brand/50 transition-colors group"
                 >
-                  <span className="text-2xl">💬</span>
+                  <span className="text-2xl">🤝</span>
                   <div>
-                    <p className="text-sm text-white group-hover:text-brand transition-colors">Consejería médica</p>
-                    <p className="text-xs text-faint font-mono">Agenda una sesión</p>
+                    <p className="text-sm text-white group-hover:text-brand transition-colors">Aliados</p>
+                    <p className="text-xs text-faint font-mono">Farmacia y centro aliados</p>
                   </div>
                 </Link>
                 <a

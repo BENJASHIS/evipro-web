@@ -73,7 +73,7 @@ export function describeMPError(err: unknown): string {
       : ''
     const base = e.message ?? e.error ?? 'Error de Mercado Pago'
     const status = e.status ? ` [${e.status}]` : ''
-    return `${base}${status}${causes ? ` — ${causes}` : ''}`
+    return `${base}${status}${causes ? ` · ${causes}` : ''}`
   }
   return 'Error procesando pago'
 }

@@ -42,7 +42,7 @@ describe('contenido de la portada — restricciones clínicas', () => {
     'Migraña',
     'Espasticidad · esclerosis múltiple',
     'Náuseas por quimioterapia',
-    'Epilepsia — solo síndromes concretos',
+    'Epilepsia: solo síndromes concretos',
   ]
 
   it('solo anuncia indicaciones con fuente registrada en el motor', () => {

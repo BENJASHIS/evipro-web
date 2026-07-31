@@ -94,11 +94,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         </Link>
       </div>
 
-      {/* Pagaron en MercadoPago — activar con confianza */}
+      {/* Pagaron en MercadoPago · activar con confianza */}
       {paidPending.length > 0 && (
         <div className="border border-brand/30 rounded-lg p-6 mb-8">
           <p className="text-xs font-mono text-brand uppercase tracking-widest mb-1">
-            ✓ Pagaron en MercadoPago — activar ({paidPending.length})
+            ✓ Pagaron en MercadoPago · activar ({paidPending.length})
           </p>
           <p className="text-xs text-faint mb-4">El pago está confirmado. Pulsa Activar para darles acceso.</p>
           <div className="space-y-3">
@@ -107,11 +107,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         </div>
       )}
 
-      {/* Solo registrados — sin pago */}
+      {/* Solo registrados · sin pago */}
       {unpaidPending.length > 0 && (
         <div className="border border-yellow-400/20 rounded-lg p-6 mb-8">
           <p className="text-xs font-mono text-yellow-400 uppercase tracking-widest mb-1">
-            Solo registrados — sin pago ({unpaidPending.length})
+            Solo registrados · sin pago ({unpaidPending.length})
           </p>
           <p className="text-xs text-faint mb-4">
             No hay pago en MercadoPago. Activa solo si confirmaste el pago por otra vía (Yape/transferencia); si no, Descártalos.

@@ -33,3 +33,10 @@ describe('getPaymentMethod', () => {
     expect(getPaymentMethod(3)).toBe('mercadopago')
   })
 })
+
+describe('consejería retirada del producto (2026-07-30)', () => {
+  it('ningún médico ofrece consejería', async () => {
+    const { DOCTORS } = await import('../../lib/doctors')
+    expect(DOCTORS.filter(d => d.counseling?.available)).toEqual([])
+  })
+})

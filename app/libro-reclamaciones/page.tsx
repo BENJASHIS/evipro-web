@@ -78,7 +78,7 @@ export default function LibroReclamacionesPage() {
       <div className="max-w-2xl mx-auto">
         <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">INDECOPI</p>
         <h1 className="text-4xl font-light font-serif italic mb-2">Libro de Reclamaciones</h1>
-        <p className="text-muted text-sm mb-2">Virtual — conforme a la Ley N.º 29571</p>
+        <p className="text-muted text-sm mb-2">Virtual, conforme a la Ley N.º 29571</p>
         <p className="text-faint text-xs font-mono mb-10">
           Proveedor: José Carlos Benjamín Jara Ovalle · RUC 10439904572 · Cusco, Perú
         </p>

@@ -27,7 +27,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "EVIPro — Medicina Integral y Cannabis Medicinal",
+  title: "EVIPro · Medicina Integral y Cannabis Medicinal",
   description: "Plataforma de membresías médicas en Medicina Integral y Cannabis Medicinal. Cusco, Perú.",
   icons: {
     icon: [
@@ -79,7 +79,7 @@ gtag('config', '${GA_ID}');`}
                 consulta@evipro.pe
               </a>
               <span className="text-faint">
-                Av. Infancia 410 Consultorio 2, Wanchaq — Cusco, Perú
+                Av. Infancia 410 Consultorio 2, Wanchaq · Cusco, Perú
               </span>
             </div>
             {/* Redes sociales */}

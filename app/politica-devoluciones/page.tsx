@@ -1,4 +1,4 @@
-export const metadata = { title: 'Política de Cancelaciones — EVIPro' }
+export const metadata = { title: 'Política de Cancelaciones · EVIPro' }
 
 export default function PoliticaDevolucionesPage() {
   return (

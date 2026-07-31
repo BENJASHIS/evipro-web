@@ -1,4 +1,4 @@
-export const metadata = { title: 'Términos y Condiciones — EVIPro' }
+export const metadata = { title: 'Términos y Condiciones · EVIPro' }
 
 export default function TerminosPage() {
   return (
@@ -56,7 +56,7 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-light text-lg mb-3">8. Plan Turista — Condiciones especiales</h2>
+            <h2 className="text-white font-light text-lg mb-3">8. Plan Turista: condiciones especiales</h2>
             <p className="mb-3">
               Los planes Turista Inicio y Turista Plus están diseñados para personas que visitan el territorio
               peruano. Aplican las siguientes condiciones especiales:

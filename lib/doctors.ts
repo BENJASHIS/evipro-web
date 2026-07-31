@@ -55,7 +55,10 @@ export const DOCTORS: Doctor[] = [
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-jara.jpeg',
     counseling: {
-      available: true,
+      // ponytail: consejería retirada del producto (decisión 2026-07-30) — un canal de S/5
+      // invita preguntas que exigen consulta médica. Se apaga el flag, no se borra la máquina
+      // de reservas; volver a true si alguna vez se reactiva.
+      available: false,
       description: 'Orientación sobre cannabis medicinal, preparación para consulta, dudas sobre medicina de altura y síntomas de salud mental.',
       modalities: ['video', 'whatsapp'],
       schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],
@@ -86,7 +89,7 @@ export const DOCTORS: Doctor[] = [
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-vera.jpeg',
     counseling: {
-      available: true,
+      available: false,
       description: 'Consejería para adulto mayor, cuidados paliativos, diabetes y enfermedades crónicas. Orientación para familias y cuidadores.',
       modalities: ['video', 'whatsapp'],
       schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],

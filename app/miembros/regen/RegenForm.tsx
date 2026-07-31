@@ -43,7 +43,7 @@ export function RegenForm({ ambitos }: { ambitos: Ambito[] }) {
           {RECURSOS_AYUDA.map((r, i) => (
             <li key={i} className="text-sm">
               <span className="font-medium text-white">{r.nombre}</span>
-              {' — '}<span className="font-mono text-brand">{r.contacto}</span>
+              {' · '}<span className="font-mono text-brand">{r.contacto}</span>
               <div className="text-xs text-faint">{r.detalle}</div>
             </li>
           ))}

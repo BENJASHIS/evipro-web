@@ -31,7 +31,7 @@ export const INDICACIONES_PORTADA: Indicacion[] = [
   {
     titulo: 'Dolor crónico y neuropático',
     matiz:
-      'Cuando lo de siempre ya no alcanza. Es donde hay más respaldo — y aun así ' +
+      'Cuando lo de siempre ya no alcanza. Es donde hay más respaldo, y aun así ' +
       'el efecto es moderado: te lo diremos en consulta.',
   },
   {
@@ -47,7 +47,7 @@ export const INDICACIONES_PORTADA: Indicacion[] = [
     matiz: 'Cuando lo habitual no controla. Segunda línea.',
   },
   {
-    titulo: 'Epilepsia — solo síndromes concretos',
+    titulo: 'Epilepsia: solo síndromes concretos',
     matiz:
       'Dravet, Lennox-Gastaut y complejo esclerosis tuberosa. Si tu epilepsia no es ' +
       'una de esas, el cannabis no es tu tratamiento y te lo diremos.',
@@ -59,7 +59,7 @@ export const PARA_QUE_NO = {
   titulo: '¿Vienes por ansiedad o insomnio?',
   texto:
     'Te lo decimos claro: ahí la evidencia del cannabis es muy baja. Se evalúa en ' +
-    'consulta y, si no corresponde, no se prescribe — se busca otra cosa. Preferimos ' +
+    'consulta y, si no corresponde, no se prescribe: se busca otra cosa. Preferimos ' +
     'no recetarte nada antes que recetarte algo que no te va a servir.',
 }
 
@@ -94,7 +94,7 @@ export const PASOS_PRIMERA_CONSULTA: Paso[] = [
   {
     n: 1,
     titulo: 'Agendas',
-    texto: 'Presencial o virtual. Solo nombre y teléfono — no hace falta crear cuenta.',
+    texto: 'Presencial o virtual. Solo nombre y teléfono, no hace falta crear cuenta.',
   },
   {
     n: 2,
@@ -106,7 +106,7 @@ export const PASOS_PRIMERA_CONSULTA: Paso[] = [
     titulo: 'Tu receta, del tipo que corresponda',
     texto:
       'Receta magistral simple si tu fórmula lleva menos de 1% de THC. Receta especial ' +
-      '—la oficial del MINSA, por triplicado— si llega o pasa el 1%. Sales sabiendo qué ' +
+      '(la oficial del MINSA, por triplicado) si llega o pasa el 1%. Sales sabiendo qué ' +
       'tomas, cuánto y a quién llamar.',
   },
   {
@@ -149,13 +149,13 @@ export const MEMBRESIA = {
  *  mí?».
  *
  *  El título lidera con lo que la gente sí teclea, añade la ciudad (búsqueda
- *  local que se puede ganar) y mete «legal, con receta médica» dentro del propio
- *  resultado de búsqueda, para desactivar la duda número uno antes del clic. Sin
- *  la marca a propósito: EVIPro todavía no lo busca nadie, así que esos
- *  caracteres no compran nada — la marca va en la página, no en el snippet.
- *  Longitudes pensadas para no ser truncadas: ~53 y ~155 caracteres. */
+ *  local que se puede ganar) y mete «con receta médica» dentro del propio
+ *  resultado de búsqueda, para desactivar la duda número uno antes del clic.
+ *  La marca va delante para que la pestaña del navegador diga quién eres aun
+ *  truncada; el resto del título sigue cargando la búsqueda.
+ *  Longitudes pensadas para no ser truncadas: ~55 y ~155 caracteres. */
 export const META_PORTADA = {
-  titulo: 'Cannabis medicinal en Cusco — legal, con receta médica',
+  titulo: 'EVIPro · Cannabis medicinal en Cusco, con receta médica',
   descripcion:
     'Tratamiento con cannabis medicinal para dolor crónico y neuropático, ' +
     'migraña y espasticidad. Con receta y seguimiento. Dr. Carlos Jara, ' +
