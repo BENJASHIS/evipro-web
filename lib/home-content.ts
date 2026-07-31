@@ -15,8 +15,6 @@ export const RENPUC_NOMBRE =
 // 🙋 Carlos: confirmar cuál de los dos números va en el hero antes de desplegar.
 export const WHATSAPP = '942185939'
 
-export const PALABRAS_PROHIBIDAS = ['cura', 'garantiz', 'milagro']
-
 export const HERO = {
   etiqueta: 'Cusco · Perú',
   titulo: 'El cannabis no sirve',

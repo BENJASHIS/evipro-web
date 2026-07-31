@@ -1,9 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import {
   INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
-  RENPUC_NOMBRE, HERO, PALABRAS_PROHIBIDAS, OTRAS_ESPECIALIDADES,
+  RENPUC_NOMBRE, HERO, OTRAS_ESPECIALIDADES,
   MEDICO, ESPECIALIDADES_PROXIMAS, WHATSAPP, MEMBRESIA,
 } from '@/lib/home-content'
+
+// Solo el test la usa: no tiene sitio en el bundle de producción.
+const PALABRAS_PROHIBIDAS = ['cura', 'garantiz', 'milagro']
 
 /** Todo el texto que la portada imprime, en un solo string, para barrerlo.
  *  Debe cubrir TODOS los exports que aparecen en la página: si alguien añade
@@ -25,16 +28,26 @@ function textoDeLaPortada(): string {
 }
 
 describe('contenido de la portada — restricciones clínicas', () => {
-  // Espejo de core/cannabinoide_indicaciones.py::INDICACIONES_AUTORIZADAS.
-  // Si esa tabla cambia en el motor, este test es el que debe fallar primero.
+  // Lista blanca de títulos EXACTOS, espejo de core/cannabinoide_indicaciones.py
+  // ::INDICACIONES_AUTORIZADAS. Ampliarla exige antes añadir la indicación al
+  // motor clínico con su fuente — no basta con escribirla aquí. Antes este test
+  // autorizaba por subcadena (t.includes('dolor'), t.includes('esclerosis')...),
+  // lo que dejaba pasar cualquier título que solo contuviera esas palabras: por
+  // ejemplo "Esclerosis lateral amiotrófica" o "Dolor agudo postoperatorio",
+  // ninguna autorizada, pasaban en verde. Con lista exacta, cualquier título que
+  // no esté aquí letra por letra hace fallar el test.
+  const TITULOS_AUTORIZADOS = [
+    'Dolor crónico y neuropático',
+    'Migraña',
+    'Espasticidad · esclerosis múltiple',
+    'Náuseas por quimioterapia',
+    'Epilepsia — solo síndromes concretos',
+  ]
+
   it('solo anuncia indicaciones con fuente registrada en el motor', () => {
-    const titulos = INDICACIONES_PORTADA.map(i => i.titulo.toLowerCase())
+    const titulos = INDICACIONES_PORTADA.map(i => i.titulo)
     for (const t of titulos) {
-      const autorizada =
-        t.includes('dolor') || t.includes('migraña') ||
-        t.includes('espasticidad') || t.includes('esclerosis') ||
-        t.includes('náuseas') || t.includes('epilepsia')
-      expect(autorizada, `"${t}" no está en INDICACIONES_AUTORIZADAS`).toBe(true)
+      expect(TITULOS_AUTORIZADOS, `"${t}" no está en INDICACIONES_AUTORIZADAS`).toContain(t)
     }
   })
 
@@ -68,7 +81,8 @@ describe('contenido de la portada — restricciones clínicas', () => {
   })
 
   it('no lleva ningún precio en el contenido', () => {
-    expect(textoDeLaPortada()).not.toMatch(/s\/\s?\d/)
+    // textoDeLaPortada() ya viene en minúsculas, de ahí la bandera `i`.
+    expect(textoDeLaPortada()).not.toMatch(/S\/\.?\s?\d/i)
   })
 })
 

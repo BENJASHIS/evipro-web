@@ -5,16 +5,17 @@ import {
   PrimeraConsulta, OtrasEspecialidades, Membresia,
 } from '@/app/components/home/secciones'
 
-/** Precio de entrada a la membresía, leído de la tabla en vez de escrito aquí.
- *  Si mañana cambia en Supabase, la portada cambia sola — que es justo lo que
- *  no pasaba cuando el precio en pantalla venía tecleado a mano y se
- *  desincronizaba del que cobraba la Básica en la tabla real. */
+/** Precio de entrada a la membresía EVIPro, leído de la tabla en vez de
+ *  escrito aquí. Filtra por type='evipro' a propósito: la frase que acompaña
+ *  este número (en MEMBRESIA.texto) dice que la membresía abarata cada
+ *  consulta, y esa es la EVIPro — la Básica tiene descuento 0% y no
+ *  incluye nada, así que su precio (más barato) nunca debe salir aquí. */
 async function precioDesde(): Promise<number | null> {
   const supabase = await createServerSupabaseClient()
   const { data } = await supabase
     .from('membership_plans')
     .select('price_soles')
-    .in('type', ['basica', 'evipro'])
+    .eq('type', 'evipro')
     .order('price_soles', { ascending: true })
     .limit(1)
   return data?.[0]?.price_soles ?? null

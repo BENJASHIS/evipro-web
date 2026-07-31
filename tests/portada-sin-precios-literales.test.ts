@@ -24,6 +24,19 @@ describe('la portada no tiene precios escritos a mano', () => {
     expect(fuente).toContain('price_soles')
   })
 
+  // El copy de MEMBRESIA dice que la membresía "abarata cada consulta". Eso es
+  // cierto de EVIPro (discount_virtual_pct=30, discount_presencial_pct=20) pero
+  // falso de la Básica (0% en ambos, sin receta ni RENPUC — ver migración
+  // 020_planes_base_addons.sql). precioDesde() debe filtrar por el tipo de
+  // plan del que habla el copy: si vuelve a incluir 'basica' en el filtro, el
+  // "desde" que se imprime en pantalla vuelve a ser el de un plan que no
+  // abarata nada, con el signo invertido del bug original de esta rama.
+  it('precioDesde() consulta el plan evipro, no la básica', () => {
+    const fuente = readFileSync(resolve(process.cwd(), 'app/page.tsx'), 'utf8')
+    expect(fuente).toContain("'evipro'")
+    expect(fuente).not.toContain("'basica'")
+  })
+
   // El spec exige UNA sola accion principal: el visitante frio no tiene que
   // elegir entre botones. "Ver planes" es secundario y va con borde, no primario.
   it('hay exactamente un CTA primario en toda la portada', () => {

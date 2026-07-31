@@ -20,7 +20,7 @@ describe('Hero', () => {
 
   it('no muestra ningún precio', () => {
     const { container } = render(<Hero />)
-    expect(container.textContent).not.toMatch(/S\/\s?\d/)
+    expect(container.textContent).not.toMatch(/S\/\.?\s?\d/)
   })
 })
 
@@ -105,7 +105,7 @@ describe('Membresia', () => {
 
   it('sin precio disponible, no inventa uno', () => {
     const { container } = render(<Membresia desde={null} />)
-    expect(container.textContent).not.toMatch(/S\/\s?\d/)
+    expect(container.textContent).not.toMatch(/S\/\.?\s?\d/)
     expect(screen.getByRole('link', { name: /ver planes/i })).toBeTruthy()
   })
 })
