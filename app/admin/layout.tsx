@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Marca from '@/app/components/ui/Marca'
 import { hasUnread } from '@/lib/messages'
 import { isAdminUser } from '@/lib/auth'
 
@@ -30,7 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-ink text-white">
       <nav className="border-b border-subtle px-6 py-4 flex items-center justify-between">
-        <Link href="/admin" className="font-serif italic text-lg text-white">EVIPro · Admin</Link>
+        <Marca sufijo="Admin" />
         <div className="flex items-center gap-6 flex-wrap">
           {links.map(link => (
             <Link key={link.href} href={link.href}

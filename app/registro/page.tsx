@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
-import Image from 'next/image'
+import Marca from '@/app/components/ui/Marca'
 import PasswordInput from '@/app/components/ui/PasswordInput'
 import type { DocType } from '@/lib/types'
 
@@ -86,12 +86,7 @@ export default function RegistroPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-ink py-12 px-4">
       <div className="w-full max-w-md p-8 border border-subtle rounded-lg">
-        <Link href="/" className="flex items-center gap-2 mb-6">
-          <Image src="/images/logo-evipro.png" alt="EVIPro" width={32} height={32} className="rounded-full" />
-          <span className="text-xl tracking-tight">
-            <span className="font-bold text-white">EVI</span><span className="font-serif italic text-brand">Pro</span>
-          </span>
-        </Link>
+        <div className="mb-6"><Marca /></div>
 
         <h1 className="text-2xl font-light text-white mb-2 font-serif italic">Crea tu cuenta</h1>
         <p className="text-sm text-muted mb-8">

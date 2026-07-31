@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import Marca from '@/app/components/ui/Marca'
 
 // Orden = el camino de quien llega de cero: primero lo que ve (con quién
 // trabajamos), después lo que cuesta, y al final las dos acciones de cuenta.
@@ -21,18 +21,7 @@ export default function Nav() {
   return (
     <nav className="relative max-w-5xl mx-auto px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between gap-3">
-        <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <Image
-            src="/images/logo-evipro.png"
-            alt="EVIPro"
-            width={32}
-            height={32}
-            className="rounded-full"
-          />
-          <span className="text-xl tracking-tight">
-            <span className="font-bold text-white">EVI</span><span className="font-serif italic text-brand">Pro</span>
-          </span>
-        </Link>
+        <Marca />
 
         {/* Enlaces en escritorio */}
         <div className="hidden md:flex items-center gap-6 text-xs font-mono text-muted">

@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Marca from '@/app/components/ui/Marca'
 import { hasUnread } from '@/lib/messages'
 
 export default async function MiembrosLayout({ children }: { children: React.ReactNode }) {
@@ -25,7 +26,7 @@ export default async function MiembrosLayout({ children }: { children: React.Rea
   return (
     <div className="min-h-screen bg-ink text-white">
       <nav className="border-b border-subtle px-6 py-4 flex items-center justify-between">
-        <Link href="/miembros" className="font-serif italic text-lg text-white">EVIPro</Link>
+        <Marca />
         <div className="flex items-center gap-6 flex-wrap">
           {[
             { href: '/miembros', label: 'Inicio' },
