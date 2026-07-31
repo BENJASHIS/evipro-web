@@ -140,3 +140,24 @@ export const MEMBRESIA = {
   texto: 'La membresía EVIPro abarata cada consulta y te da seguimiento entre visitas',
   cta: 'Ver planes',
 }
+
+/** Lo que ve alguien en Google ANTES de hacer clic — o sea, la primera línea de
+ *  verdad, antes que el hero. El layout traía «EVIPro — Medicina Integral y
+ *  Cannabis Medicinal» y «Plataforma de membresías médicas»: las dos cosas que
+ *  esta portada existe para dejar de decir. Nadie teclea «medicina integral», y
+ *  liderar con «membresías» pone el precio delante de la pregunta «¿esto es para
+ *  mí?».
+ *
+ *  El título lidera con lo que la gente sí teclea, añade la ciudad (búsqueda
+ *  local que se puede ganar) y mete «legal, con receta médica» dentro del propio
+ *  resultado de búsqueda, para desactivar la duda número uno antes del clic. Sin
+ *  la marca a propósito: EVIPro todavía no lo busca nadie, así que esos
+ *  caracteres no compran nada — la marca va en la página, no en el snippet.
+ *  Longitudes pensadas para no ser truncadas: ~53 y ~155 caracteres. */
+export const META_PORTADA = {
+  titulo: 'Cannabis medicinal en Cusco — legal, con receta médica',
+  descripcion:
+    'Tratamiento con cannabis medicinal para dolor crónico y neuropático, ' +
+    'migraña y espasticidad. Con receta y seguimiento. Dr. Carlos Jara, ' +
+    'CMP 82817 · Cusco.',
+}

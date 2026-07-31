@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
   RENPUC_NOMBRE, HERO, OTRAS_ESPECIALIDADES,
-  MEDICO, ESPECIALIDADES_PROXIMAS, WHATSAPP, MEMBRESIA,
+  MEDICO, ESPECIALIDADES_PROXIMAS, WHATSAPP, MEMBRESIA, META_PORTADA,
 } from '@/lib/home-content'
 
 // Solo el test la usa: no tiene sitio en el bundle de producción.
@@ -23,6 +23,7 @@ function textoDeLaPortada(): string {
     MEDICO.nombre, MEDICO.especialidades, MEDICO.credenciales, MEDICO.direccion,
     ...ESPECIALIDADES_PROXIMAS,
     MEMBRESIA.titulo, MEMBRESIA.texto, MEMBRESIA.cta,
+    META_PORTADA.titulo, META_PORTADA.descripcion,
     WHATSAPP,
   ].join(' ').toLowerCase()
 }

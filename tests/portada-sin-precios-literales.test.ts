@@ -1,12 +1,41 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { META_PORTADA } from '@/lib/home-content'
 
 const FUENTES = [
   'app/page.tsx',
   'app/components/home/secciones.tsx',
   'lib/home-content.ts',
 ]
+
+describe('lo que ve Google', () => {
+  // El layout traia "EVIPro — Medicina Integral y Cannabis Medicinal" y
+  // "Plataforma de membresias medicas": las dos cosas que esta portada existe
+  // para dejar de decir. Nadie teclea "medicina integral", y liderar con
+  // membresias pone el precio delante de "¿esto es para mi?". Como el snippet
+  // se lee ANTES que el hero, una regresion ahi deshace el trabajo entero sin
+  // que nada en pantalla se vea mal.
+  it('el titulo de la portada no vuelve al posicionamiento viejo', () => {
+    const meta = `${META_PORTADA.titulo} ${META_PORTADA.descripcion}`.toLowerCase()
+    expect(meta).not.toContain('medicina integral')
+    expect(meta).not.toContain('membresía')
+    expect(meta).not.toContain('membresias')
+    expect(META_PORTADA.titulo.toLowerCase()).toContain('cannabis medicinal')
+    expect(META_PORTADA.titulo.toLowerCase()).toContain('cusco')
+  })
+
+  it('el titulo y la descripcion caben en el snippet de Google', () => {
+    // Google corta alrededor de 60 y 160 caracteres.
+    expect(META_PORTADA.titulo.length).toBeLessThanOrEqual(60)
+    expect(META_PORTADA.descripcion.length).toBeLessThanOrEqual(160)
+  })
+
+  it('la portada declara su propio metadata, no hereda el del layout', () => {
+    const fuente = readFileSync(resolve(process.cwd(), 'app/page.tsx'), 'utf8')
+    expect(fuente).toContain('export const metadata')
+  })
+})
 
 describe('la portada no tiene precios escritos a mano', () => {
   // La portada decia "membresias desde S/. 59/mes" cuando la entrada real era
