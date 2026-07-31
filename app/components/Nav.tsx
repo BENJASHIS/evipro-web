@@ -4,15 +4,15 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-// Orden = el camino que sigue alguien que llega de cero: primero a quién ve,
-// después cuánto cuesta seguir viniendo. La acción destacada es agendar, que es
-// la única que pide la portada; la cuenta solo hace falta para la membresía.
+// Orden = el camino de quien llega de cero: primero lo que ve (con quién
+// trabajamos), después lo que cuesta, y al final las dos acciones de cuenta.
+// «Médicos» no está como enlace a propósito: el botón Agendar lleva ahí y
+// decirlo dos veces era la misma puerta repetida.
 const LINKS = [
-  { href: '/medicos', label: 'Médicos' },
-  { href: '/planes', label: 'Planes' },
   { href: '/aliados', label: 'Aliados' },
-  { href: '/login', label: 'Ingresar' },
+  { href: '/planes', label: 'Planes' },
   { href: '/registro', label: 'Unirme' },
+  { href: '/login', label: 'Ingresar' },
 ]
 
 export default function Nav() {
