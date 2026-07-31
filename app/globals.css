@@ -14,7 +14,11 @@
 
   /* Texto / bordes (alias semánticos) */
   --color-muted:   #9ca3af;
-  --color-faint:   #6b7280;
+  /* WCAG AA sobre --color-ink: el anterior (#6b7280) daba 4,11:1 y la norma
+     pide 4,5:1 para texto normal. Este da 4,91:1 con algo de margen, y sigue
+     por debajo de --color-muted (7,82:1), que es lo que mantiene la jerarquía.
+     Vigilado por tests/contraste.test.ts. */
+  --color-faint:   #787f89;
   --color-subtle:  rgb(255 255 255 / 0.08);
   --color-strong:  rgb(255 255 255 / 0.20);
 
