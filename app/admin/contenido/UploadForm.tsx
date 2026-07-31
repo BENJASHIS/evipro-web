@@ -56,10 +56,9 @@ export default function UploadForm() {
       <div>
         <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Plan mínimo</label>
         <select name="min_plan" defaultValue="" className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm">
-          <option value="">Todos los miembros</option>
-          <option value="express">Express o superior</option>
-          <option value="cannabis">Cannabis o Integral</option>
-          <option value="integral">Solo Integral</option>
+          <option value="">Abierto: lo ve cualquiera</option>
+          <option value="express">Cualquier miembro (Básica o EVIPro)</option>
+          <option value="integral">Solo miembros EVIPro</option>
         </select>
       </div>
       <label className="flex items-center gap-2 text-sm text-muted">

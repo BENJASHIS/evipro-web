@@ -6,10 +6,14 @@ import { resolve } from 'node:path'
 // texto legal se queda, el sitio ofrece por escrito algo que ya no existe —
 // que es exactamente el riesgo INDECOPI que ya nos mordió con el precio de la
 // portada. Este test falla si un nombre muerto reaparece.
+// Tambien las pantallas donde Carlos elige un plan: si el desplegable ofrece
+// un plan muerto, el contenido queda tras un candado que nadie puede abrir.
 const PAGINAS = [
   'app/terminos/page.tsx',
   'app/libro-reclamaciones/page.tsx',
   'app/politica-devoluciones/page.tsx',
+  'app/admin/contenido/UploadForm.tsx',
+  'app/miembros/recetas/page.tsx',
 ]
 
 const RETIRADOS = [
@@ -23,7 +27,7 @@ const RETIRADOS = [
   'consejería',
 ]
 
-describe('páginas legales al día', () => {
+describe('nombres de plan al día', () => {
   for (const pagina of PAGINAS) {
     it(`${pagina} no ofrece servicios retirados`, () => {
       const texto = readFileSync(resolve(process.cwd(), pagina), 'utf-8')
