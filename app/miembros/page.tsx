@@ -4,15 +4,29 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { bookingStatus, canPatientCancel, type BookingState } from '@/lib/bookings'
 import { MODALITY_LABELS } from '@/lib/counseling'
+import { precioConsulta, PRECIOS_CONSULTA, type TarifaConsulta } from '@/lib/consulta-pricing'
 import { CitaActions } from './CitaActions'
 
+// Los cuatro primeros son planes retirados: siguen aquí porque hay
+// suscripciones vivas compradas con esos nombres y el miembro tiene que
+// seguir leyendo el suyo.
 const PLAN_NAMES: Record<string, string> = {
+  basica:         'Membresía Básica',
+  evipro:         'Membresía EVIPro',
+  acceso:         'Membresía Básica',
   express:        'Plan Express',
   esencial:       'Plan Esencial',
   cannabis:       'Plan Cannabis',
   integral:       'Plan Integral',
   turista_inicio: 'Plan Turista Inicio',
   turista_plus:   'Plan Turista Plus',
+}
+
+/** Qué tarifa de consulta le toca a este plan. */
+function tarifaDe(planType: string | undefined): TarifaConsulta {
+  if (planType === 'evipro' || planType === 'cannabis' || planType === 'integral') return 'evipro'
+  if (planType === 'basica' || planType === 'acceso') return 'basica'
+  return 'regular'
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -64,14 +78,12 @@ export default async function MiembrosPage() {
   const isActive = subscription?.status === 'active'
   const planType = plan?.type as string | undefined
 
-  const hasCannabisEmergency = planType === 'cannabis' || planType === 'integral'
   const hasTickets = Number(plan?.tickets_qty ?? 0) > 0
-  const virtualPrice = Number(plan?.discount_virtual_pct ?? 0) > 0
-    ? Math.round(70 * (1 - Number(plan!.discount_virtual_pct) / 100))
-    : null
-  const presencialPrice = Number(plan?.discount_presencial_pct ?? 0) > 0
-    ? Math.round(100 * (1 - Number(plan!.discount_presencial_pct) / 100))
-    : null
+  // Los precios salen de la escalera (fuente única), no de un porcentaje
+  // guardado en la fila del plan sobre un 70/100 tecleado a mano.
+  const tarifa = tarifaDe(planType)
+  const virtualPrice = tarifa === 'regular' ? null : precioConsulta('virtual', tarifa, 1)
+  const presencialPrice = tarifa === 'regular' ? null : precioConsulta('presencial', tarifa, 1)
 
   return (
     <div>
@@ -84,7 +96,7 @@ export default async function MiembrosPage() {
       <section className="border border-subtle rounded-lg p-6 mb-6">
         <p className="text-xs font-mono uppercase tracking-widest text-muted mb-4">Mis citas</p>
         {(!citas || citas.length === 0) && (
-          <p className="text-faint text-sm font-mono">Aún no tienes citas. Reserva en Consejería.</p>
+          <p className="text-faint text-sm font-mono">Aún no tienes citas. Agenda con tu médico.</p>
         )}
         <div className="space-y-3">
           {(citas ?? []).map(c => {
@@ -189,19 +201,18 @@ export default async function MiembrosPage() {
                 {virtualPrice !== null && (
                   <li>✓ Consulta virtual de seguimiento:
                     <span className="text-white font-light ml-1">S/. {virtualPrice}</span>
-                    <span className="text-faint line-through ml-2 text-xs">S/. 70</span>
+                    <span className="text-faint line-through ml-2 text-xs">S/. {PRECIOS_CONSULTA.virtual.regular[0]}</span>
                   </li>
                 )}
                 {presencialPrice !== null && (
                   <li>✓ Consulta presencial:
                     <span className="text-white font-light ml-1">S/. {presencialPrice}</span>
-                    <span className="text-faint line-through ml-2 text-xs">S/. 100</span>
+                    <span className="text-faint line-through ml-2 text-xs">S/. {PRECIOS_CONSULTA.presencial.regular[0]}</span>
                   </li>
                 )}
                 {Boolean(plan.includes_prescription) && <li>✓ Receta digital incluida</li>}
                 {Boolean(plan.includes_renpuc_support) && <li>✓ Apoyo con registro RENPUC</li>}
                 {Boolean(plan.includes_pharmacy_coord) && <li>✓ Coordinación con farmacia magistral</li>}
-                {hasCannabisEmergency && <li>✓ Prioridad en emergencias cannábicas 24/7</li>}
                 {hasTickets && (
                   <li>✓ <span className="text-yellow-400">{Number(plan.tickets_qty)} ticket{Number(plan.tickets_qty) > 1 ? 's' : ''} de sorteo por periodo</span></li>
                 )}

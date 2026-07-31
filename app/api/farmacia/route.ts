@@ -28,15 +28,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Necesitas iniciar sesión.' }, { status: 401 })
   }
 
-  const { data: sub } = await supabase
+  // Un usuario puede tener MÁS DE UNA suscripción activa (pasa al probar, y
+  // pasaría con una renovación solapada). Pedir una sola fila devolvía error y
+  // el código lo leía como "no tiene derecho": con EVIPro activa te negaba la
+  // farmacia. Vale cualquier suscripción activa cuyo plan la incluya.
+  const { data: subs } = await supabase
     .from('subscriptions')
     .select('id, membership_plans(includes_pharmacy_coord)')
     .eq('user_id', user.id)
     .eq('status', 'active')
-    .maybeSingle()
 
-  const plan = Array.isArray(sub?.membership_plans) ? sub?.membership_plans[0] : sub?.membership_plans
-  if (!sub || !plan?.includes_pharmacy_coord) {
+  const conDerecho = (subs ?? []).find(s => {
+    const plan = Array.isArray(s.membership_plans) ? s.membership_plans[0] : s.membership_plans
+    return plan?.includes_pharmacy_coord
+  })
+  if (!conDerecho) {
     return NextResponse.json(
       { error: 'Tu membresía no incluye coordinación de farmacia.' },
       { status: 403 },
@@ -47,7 +53,7 @@ export async function POST(req: Request) {
     .from('pharmacy_requests')
     .insert({
       user_id: user.id,
-      subscription_id: sub.id,
+      subscription_id: conDerecho.id,
       ...validada.data,
     })
 

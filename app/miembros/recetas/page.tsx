@@ -39,14 +39,17 @@ export default function RecetasPage() {
       if (!user) { setTieneFarmacia(false); return }
       // El derecho se lee de la casilla del plan, no de su nombre: los nombres
       // de plan cambian y el candado se queda apuntando a planes que ya no existen.
-      const { data: sub } = await supabase
+      // Puede haber más de una suscripción activa: basta con que UNA incluya
+      // farmacia. Pedir una sola fila devolvía error y negaba el derecho.
+      const { data: subs } = await supabase
         .from('subscriptions')
         .select('id, membership_plans(includes_pharmacy_coord)')
         .eq('user_id', user.id)
         .eq('status', 'active')
-        .maybeSingle()
-      const plan = Array.isArray(sub?.membership_plans) ? sub?.membership_plans[0] : sub?.membership_plans
-      setTieneFarmacia(Boolean(plan?.includes_pharmacy_coord))
+      setTieneFarmacia((subs ?? []).some(s => {
+        const plan = Array.isArray(s.membership_plans) ? s.membership_plans[0] : s.membership_plans
+        return Boolean(plan?.includes_pharmacy_coord)
+      }))
       await cargarSolicitudes(user.id)
     })
   }, [])
