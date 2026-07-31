@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { Doctor } from '@/lib/doctors'
 import { MODALITY_LABELS, MODALITY_DURATION, getPrice, type Modality } from '@/lib/counseling'
-import { CONSULTA_MODALITY_LABELS, escaleraReserva, type ModalidadReserva } from '@/lib/consulta-pricing'
+import { CONSULTA_MODALITY_LABELS, escaleraReserva, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
 
 type AnyModality = Modality | ModalidadReserva
 const CONSULTA_MODS: ModalidadReserva[] = ['presencial', 'virtual', 'domicilio']
@@ -206,15 +206,41 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
               }`}
             >
               <div className="flex justify-between items-center gap-4">
-                <p className="text-white text-sm">{CONSULTA_MODALITY_LABELS[m]}</p>
-                <p className="text-gray-300 text-xs font-mono shrink-0">{escaleraReserva(m)}</p>
+                <div>
+                  <p className="text-white text-sm">{CONSULTA_MODALITY_LABELS[m]}</p>
+                  <p className="text-faint text-xs font-mono mt-0.5">
+                    {m === 'domicilio' ? 'según distancia' : 'primera consulta'}
+                  </p>
+                </div>
+                <p className="text-gray-300 text-sm font-mono shrink-0">
+                  {m === 'domicilio' ? 'desde ' : ''}S/. {precioReferencia(m)}
+                </p>
               </div>
             </button>
           ))}
         </div>
-        <p className="text-faint text-xs font-mono mt-2">
-          Precios de consulta sin membresía. Miembros EVIPro pagan menos: <Link href="/planes" className="underline hover:text-white">ver planes</Link>.
-        </p>
+
+        {/* La escalera completa cabía mal en una línea y en el móvil se cortaba:
+            la tarjeta muestra un solo precio y el detalle vive aquí, plegado. */}
+        <details className="mt-3 text-xs">
+          <summary className="text-faint font-mono cursor-pointer hover:text-white">
+            ¿Y si vuelvo? Cómo baja el precio
+          </summary>
+          <div className="mt-2 space-y-1 text-muted leading-relaxed">
+            {CONSULTA_MODS.filter(m => m !== 'domicilio').map(m => (
+              <p key={m}>
+                <span className="text-white">{CONSULTA_MODALITY_LABELS[m]}:</span>{' '}
+                <span className="font-mono">{escaleraReserva(m)}</span>
+              </p>
+            ))}
+            <p>
+              Cada consulta de seguimiento cuesta la mitad de la anterior hasta la 3ª; de ahí en
+              adelante se mantiene ese precio. Si pasan 90 días sin volver, la cuenta empieza otra vez.
+              Estos son los precios sin membresía: los miembros pagan menos,{' '}
+              <Link href="/planes" className="underline hover:text-white">ver planes</Link>.
+            </p>
+          </div>
+        </details>
       </div>
 
       {/* Paso 2: horario (solo modalidades con slot) */}
