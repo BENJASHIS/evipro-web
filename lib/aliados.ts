@@ -120,7 +120,10 @@ export const ALIADOS: Aliado[] = [
     nombre: 'Centro Cultural Pukllasunchis',
     logo: '/images/aliados/centroculturalpukllasunchis.png',
     rol: 'Centro cultural',
-    // Sin descripción hasta que confirmen qué ofrecen a quien llega desde aquí.
+    // Es la SEDE donde ocurren las charlas y talleres, no un servicio clínico:
+    // por eso la tarjeta habla del lugar y el enlace es "cómo llegar".
+    descripcion:
+      'El lugar donde damos las charlas y los talleres. También acoge otras actividades culturales.',
     enlaces: [
       {
         etiqueta: 'Cómo llegar',
