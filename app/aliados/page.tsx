@@ -7,7 +7,7 @@ import { ALIADOS } from '@/lib/aliados'
 
 export const metadata: Metadata = {
   title: 'Aliados · EVIPro',
-  description: 'Farmacia magistral y centro de rehabilitación aliados de EVIPro en Cusco.',
+  description: 'Farmacias, centros, asociaciones y proyectos con los que trabaja EVIPro en Cusco.',
 }
 
 export default function AliadosPage() {
@@ -20,8 +20,9 @@ export default function AliadosPage() {
           Con quiénes trabajamos
         </h1>
         <p className="text-muted mb-12 max-w-xl text-sm">
-          Lugares de confianza para preparar lo que tu médico indica y para acompañar tu
-          tratamiento. Cada uno es independiente de EVIPro: tú eliges dónde atenderte.
+          Farmacias, centros, asociaciones y proyectos de confianza: para preparar lo que tu
+          médico indica, para acompañar tu tratamiento y para informarte bien. Cada uno es
+          independiente de EVIPro y no te cobramos ni nos pagan por estar aquí: tú eliges.
         </p>
 
         <div className="space-y-6">

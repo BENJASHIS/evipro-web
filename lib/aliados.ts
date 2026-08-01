@@ -73,6 +73,9 @@ export const ALIADOS: Aliado[] = [
     logo: '/images/aliados/cannabislibreclub.png',
     // Sin rol ni descripción hasta que se confirme qué son y qué ofrecen.
     enlaces: [
+      // La web primero: es suya, no exige cuenta a nadie y no se cae si cambian
+      // de red social.
+      { etiqueta: 'Ver su web', url: 'https://www.cannabislibre.club/pe/' },
       { etiqueta: 'Instagram', url: 'https://www.instagram.com/cannabislibreclub/' },
     ],
   },
@@ -96,9 +99,28 @@ export const ALIADOS: Aliado[] = [
     slug: 'dosis-de-ciencia',
     nombre: 'Dosis de Ciencia',
     logo: '/images/aliados/dosisdeciencia.png',
-    // Sin rol ni descripción: falta que Carlos confirme qué son y qué ofrecen.
+    rol: 'Divulgación e investigación',
+    descripcion:
+      'Comparten y divulgan lo que la investigación dice sobre cannabis: evidencia, no mitos.',
     enlaces: [
       { etiqueta: 'Instagram', url: 'https://www.instagram.com/dosis_de_ciencia/' },
+    ],
+  },
+  {
+    slug: 'centro-cultural-pukllasunchis',
+    nombre: 'Centro Cultural Pukllasunchis',
+    logo: '/images/aliados/centroculturalpukllasunchis.png',
+    rol: 'Centro cultural',
+    // Sin descripción hasta que confirmen qué ofrecen a quien llega desde aquí.
+    enlaces: [
+      {
+        etiqueta: 'Cómo llegar',
+        // Formato oficial de enlace de Maps (api=1), no el de una búsqueda: el
+        // que llegó era una URL de resultados con la sesión de Carlos dentro
+        // (sca_esv, fbs, ved, ictx). 🙋 Si consigues el enlace del LUGAR, mejor:
+        // apunta a la ficha exacta y no a lo que devuelva el buscador ese día.
+        url: 'https://www.google.com/maps/search/?api=1&query=Centro+Cultural+Pukllasunchis+Cusco',
+      },
     ],
   },
 ]

@@ -27,7 +27,8 @@ describe('aliados', () => {
     // campaña con que ese enlace llegó a Carlos.
     for (const a of ALIADOS) {
       for (const e of a.enlaces) {
-        expect(e.url, `${a.nombre}: ${e.url}`).not.toMatch(/fbclid|utm_|[?&](entry|g_ep)=/)
+        expect(e.url, `${a.nombre}: ${e.url}`)
+          .not.toMatch(/fbclid|utm_|[?&](entry|g_ep|sca_esv|fbs|ved|ictx)=/)
       }
     }
   })
