@@ -77,6 +77,22 @@ export const ALIADOS: Aliado[] = [
     ],
   },
   {
+    slug: 'mayac',
+    nombre: 'MAYAC · Cusco',
+    logo: '/images/aliados/mayac.png',
+    // Sin rol ni descripción: hoy MAYAC aparece con tres identidades distintas
+    // — el logo dice "Fundación", el Instagram es "mayac.consultorio" y la
+    // ficha de Google se llama "Aceite de Cannabis Medicinal". Hasta saber cuál
+    // es, la tarjeta no lo afirma.
+    enlaces: [
+      {
+        etiqueta: 'Cómo llegar',
+        url: 'https://www.google.com/maps/place/Aceite+de+Cannabis+Medicinal+-+Cusco+-+Mayac/@-13.5279142,-71.9450962,17z/data=!3m1!4b1!4m6!3m5!1s0x916e7ffe3f02fd93:0x951df7d2836316d0!8m2!3d-13.5279142!4d-71.9425213!16s%2Fg%2F11vdzpqd5f',
+      },
+      { etiqueta: 'Instagram', url: 'https://www.instagram.com/mayac.consultorio/' },
+    ],
+  },
+  {
     slug: 'dosis-de-ciencia',
     nombre: 'Dosis de Ciencia',
     logo: '/images/aliados/dosisdeciencia.png',

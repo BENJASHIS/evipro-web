@@ -22,11 +22,12 @@ describe('aliados', () => {
   })
 
   it('los enlaces no llevan parámetros de seguimiento', () => {
-    // El de ASCAMED llegó con fbclid y utm_*: reenviarlos publica los
-    // identificadores de una campaña ajena en nuestra web.
+    // El de ASCAMED llegó con fbclid y utm_*, y el de Maps con entry/g_ep:
+    // reenviarlos publica en nuestra web los identificadores de la sesión o la
+    // campaña con que ese enlace llegó a Carlos.
     for (const a of ALIADOS) {
       for (const e of a.enlaces) {
-        expect(e.url, `${a.nombre}: ${e.url}`).not.toMatch(/fbclid|utm_/)
+        expect(e.url, `${a.nombre}: ${e.url}`).not.toMatch(/fbclid|utm_|[?&](entry|g_ep)=/)
       }
     }
   })
