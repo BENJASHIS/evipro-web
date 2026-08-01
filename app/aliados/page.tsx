@@ -3,6 +3,7 @@ import Nav from '@/app/components/Nav'
 import Badge from '@/app/components/ui/Badge'
 import Image from 'next/image'
 import PropuestaForm from './PropuestaForm'
+import { ALIADOS } from '@/lib/aliados'
 
 export const metadata: Metadata = {
   title: 'Aliados · EVIPro',
@@ -23,80 +24,49 @@ export default function AliadosPage() {
           tratamiento. Cada uno es independiente de EVIPro: tú eliges dónde atenderte.
         </p>
 
-        {/* Farmacia aliada */}
-        <div className="border border-subtle rounded-lg p-6 flex flex-col sm:flex-row items-center gap-5">
-          <div className="bg-white rounded-lg p-4 shrink-0">
-            <Image
-              src="/images/aliados/cannavital.png"
-              alt="Cannavital Farmacia"
-              width={120}
-              height={120}
-              className="w-28 h-auto object-contain"
-            />
-          </div>
-          <div className="flex-1 text-center sm:text-left">
-            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-1">Farmacia aliada</p>
-            <h2 className="text-white text-lg font-light mb-1">Cannavital · Farmacia magistral</h2>
-            <p className="text-muted text-sm mb-3">
-              Farmacia magistral aliada para preparar las fórmulas indicadas por tu médico.
-            </p>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center sm:justify-start">
-              <a
-                href="https://cannavital.pe/farmacia-magistral/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-mono text-brand hover:underline"
-              >
-                Ver farmacia magistral →
-              </a>
-              <a
-                href="https://www.instagram.com/cannavital.farmacia/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-mono text-brand hover:underline"
-              >
-                Instagram →
-              </a>
+        <div className="space-y-6">
+          {ALIADOS.map(aliado => (
+            <div
+              key={aliado.slug}
+              className="border border-subtle rounded-lg p-6 flex flex-col sm:flex-row items-center gap-5"
+            >
+              {/* Fondo blanco: varios logos vienen con fondo blanco y otros con
+                  transparencia, y sobre el tema oscuro se leerían distinto. */}
+              <div className="bg-white rounded-lg p-4 shrink-0">
+                <Image
+                  src={aliado.logo}
+                  alt={aliado.nombre}
+                  width={120}
+                  height={120}
+                  className="w-28 h-auto object-contain"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                {aliado.rol && (
+                  <p className="text-xs font-mono uppercase tracking-widest text-brand mb-1">
+                    {aliado.rol}
+                  </p>
+                )}
+                <h2 className="text-white text-lg font-light mb-1">{aliado.nombre}</h2>
+                {aliado.descripcion && (
+                  <p className="text-muted text-sm mb-3">{aliado.descripcion}</p>
+                )}
+                <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center sm:justify-start">
+                  {aliado.enlaces.map(enlace => (
+                    <a
+                      key={enlace.url}
+                      href={enlace.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-mono text-brand hover:underline"
+                    >
+                      {enlace.etiqueta} →
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Centro aliado */}
-        <div className="mt-6 border border-subtle rounded-lg p-6 flex flex-col sm:flex-row items-center gap-5">
-          <div className="bg-white rounded-lg p-4 shrink-0">
-            <Image
-              src="/images/aliados/fisioimperium.png"
-              alt="FisioImperium"
-              width={120}
-              height={120}
-              className="w-28 h-auto object-contain"
-            />
-          </div>
-          <div className="flex-1 text-center sm:text-left">
-            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-1">Centro aliado</p>
-            <h2 className="text-white text-lg font-light mb-1">FisioImperium · Centro médico integral</h2>
-            <p className="text-muted text-sm mb-3">
-              Centro aliado de fisioterapia y rehabilitación para complementar tu tratamiento.
-            </p>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center sm:justify-start">
-              <a
-                href="https://www.facebook.com/fisioimperium"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-mono text-brand hover:underline"
-              >
-                Ver en Facebook →
-              </a>
-              <a
-                href="https://www.google.com/maps/place/FisioImperium/@-13.5252192,-71.9712776,17z/data=!3m1!4b1!4m6!3m5!1s0x916dd5e3b6d1316f:0xee13937c3020a575!8m2!3d-13.5252192!4d-71.9687027!16s%2Fg%2F11qh0zx6gd"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-mono text-brand hover:underline"
-              >
-                Cómo llegar →
-              </a>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Puerta de propuestas */}
