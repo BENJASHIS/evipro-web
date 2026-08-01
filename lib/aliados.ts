@@ -72,11 +72,12 @@ export const ALIADOS: Aliado[] = [
     nombre: 'Cannabis Libre Club',
     logo: '/images/aliados/cannabislibreclub.png',
     rol: 'Plataforma de orientación',
-    // Se dice que ORIENTAN, no que vendan ni que EVIPro dirija a nadie ahí:
-    // la web sostiene que no vende producto, y la vía legal empieza por la
-    // receta de tu médico. Es lo que ellos mismos le dijeron a Carlos.
+    // El énfasis va en el PROCEDIMIENTO, no en el producto (corrección de
+    // Carlos): "conseguir" apunta a la compra y la web sostiene que no vende
+    // producto; lo que ellos hacen es acompañar el trámite. No se enumeran los
+    // pasos (receta, RENPUC…) porque eso no está confirmado con ellos.
     descripcion:
-      'Plataforma que te guía para conseguir productos de cannabis por la vía legal.',
+      'Te orientan en el procedimiento para tener tu producto legalmente, paso a paso.',
     enlaces: [
       // La web primero: es suya, no exige cuenta a nadie y no se cae si cambian
       // de red social.
