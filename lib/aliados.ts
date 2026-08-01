@@ -71,7 +71,12 @@ export const ALIADOS: Aliado[] = [
     slug: 'cannabis-libre-club',
     nombre: 'Cannabis Libre Club',
     logo: '/images/aliados/cannabislibreclub.png',
-    // Sin rol ni descripción hasta que se confirme qué son y qué ofrecen.
+    rol: 'Plataforma de orientación',
+    // Se dice que ORIENTAN, no que vendan ni que EVIPro dirija a nadie ahí:
+    // la web sostiene que no vende producto, y la vía legal empieza por la
+    // receta de tu médico. Es lo que ellos mismos le dijeron a Carlos.
+    descripcion:
+      'Plataforma que te guía para conseguir productos de cannabis por la vía legal.',
     enlaces: [
       // La web primero: es suya, no exige cuenta a nadie y no se cae si cambian
       // de red social.
