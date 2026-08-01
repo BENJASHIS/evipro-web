@@ -90,11 +90,11 @@ export const ALIADOS: Aliado[] = [
     nombre: 'MAYAC · Cusco',
     logo: '/images/aliados/mayac.png',
     rol: 'Fundación',
-    // Fundación, confirmado por Carlos (2026-08-01), que es lo que dice su
-    // propio logo. NO se etiqueta como farmacia magistral aunque su ficha de
-    // Google se llame "Aceite de Cannabis Medicinal": esa etiqueta mandaría
-    // pacientes a preparar una fórmula donde quizá no la preparan.
-    // Falta la línea de qué ofrecen.
+    // Fundación multidisciplinaria; lo que colabora con EVIPro es su farmacia
+    // (Carlos, 2026-08-01). Se dice "por ahora" porque es el estado del acuerdo
+    // hoy, no la descripción de todo lo que hace la fundación.
+    descripcion:
+      'Fundación multidisciplinaria. Por ahora trabajamos con su farmacia.',
     enlaces: [
       {
         etiqueta: 'Cómo llegar',
