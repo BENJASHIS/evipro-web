@@ -55,11 +55,13 @@ export const DOCTORS: Doctor[] = [
       { title: 'Diplomado en Auditoría Médica', institution: 'UNSAAC · Facultad de Medicina Humana', year: 2021 },
       { title: 'Diplomado en Salud Mental y Psiquiatría', institution: 'UNSAAC · Facultad de Medicina Humana', year: 2026 },
       { title: 'Seminario de Endomedicina · Cannabis y terapias complementarias', institution: 'U. de Antioquia y U. del Cauca, Colombia', year: 2019 },
-      // Los tres niveles en una línea, no en tres: el avanzado ya implica los
-      // anteriores, y el rango de años se lee como una progresión sostenida en
-      // vez de como tres cursos sueltos repitiendo el mismo título.
-      { title: 'Inteligencia Artificial en Salud · niveles básico a avanzado',
-        institution: 'INSN San Borja · 2023-2025' },
+      // Los niveles en una línea, no en tres: el rango se lee como una
+      // progresión sostenida en vez de tres cursos repitiendo el mismo título.
+      // El avanzado va como "en curso" y NO como terminado: a agosto de 2026
+      // faltan dos clases y esperan que reabran. Darlo por completado sería
+      // declarar una credencial que aún no existe.
+      { title: 'Inteligencia Artificial en Salud · introductorio e intermedio, avanzado en curso',
+        institution: 'INSN San Borja · 2024-2025' },
     ],
     languages: [
       { name: 'Español', level: 'Nativo' },
