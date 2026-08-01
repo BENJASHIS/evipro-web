@@ -11,6 +11,8 @@
 -- La etiqueta se lee de la BD y se pinta en el configurador de /planes, así que
 -- corregir el seed de la 020 no cambia nada: hace falta este update.
 
-update plan_addons
-   set name = 'Gerontología / adulto mayor (Dr. Vera)'
+-- La columna es `label`, no `name` (ver el create table de la 020): es la que
+-- pinta el configurador en app/planes/ConfiguradorEvipro.tsx.
+update public.plan_addons
+   set label = 'Gerontología / adulto mayor (Dr. Vera)'
  where slug = 'especialista_vera';
