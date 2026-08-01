@@ -56,7 +56,7 @@ export const ALIADOS: Aliado[] = [
   },
   {
     slug: 'ascamed',
-    nombre: 'ASCAMED Perú',
+    nombre: 'ASCAMED · Asociación de Cannabis Medicinal del Cusco',
     logo: '/images/aliados/ascamed.png',
     rol: 'Asociación',
     // Sin descripción hasta que ASCAMED confirme cómo quiere describirse.
