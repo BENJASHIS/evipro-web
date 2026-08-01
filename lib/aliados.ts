@@ -88,10 +88,12 @@ export const ALIADOS: Aliado[] = [
     slug: 'mayac',
     nombre: 'MAYAC · Cusco',
     logo: '/images/aliados/mayac.png',
-    // Sin rol ni descripción: hoy MAYAC aparece con tres identidades distintas
-    // — el logo dice "Fundación", el Instagram es "mayac.consultorio" y la
-    // ficha de Google se llama "Aceite de Cannabis Medicinal". Hasta saber cuál
-    // es, la tarjeta no lo afirma.
+    rol: 'Fundación',
+    // Fundación, confirmado por Carlos (2026-08-01), que es lo que dice su
+    // propio logo. NO se etiqueta como farmacia magistral aunque su ficha de
+    // Google se llame "Aceite de Cannabis Medicinal": esa etiqueta mandaría
+    // pacientes a preparar una fórmula donde quizá no la preparan.
+    // Falta la línea de qué ofrecen.
     enlaces: [
       {
         etiqueta: 'Cómo llegar',
@@ -105,8 +107,10 @@ export const ALIADOS: Aliado[] = [
     nombre: 'Dosis de Ciencia',
     logo: '/images/aliados/dosisdeciencia.png',
     rol: 'Divulgación e investigación',
+    // Divulgan ciencia en general, no solo cannabis (aclaración de Carlos).
+    // Se nombra el cannabis como ejemplo, no como su tema único.
     descripcion:
-      'Comparten y divulgan lo que la investigación dice sobre cannabis: evidencia, no mitos.',
+      'Divulgan e investigan ciencia, el cannabis entre otros temas: evidencia, no mitos.',
     enlaces: [
       { etiqueta: 'Instagram', url: 'https://www.instagram.com/dosis_de_ciencia/' },
     ],
