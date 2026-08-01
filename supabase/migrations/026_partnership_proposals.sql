@@ -24,6 +24,9 @@ create table if not exists public.partnership_proposals (
 alter table public.partnership_proposals enable row level security;
 
 -- Sin política de insert público: nadie escribe desde el navegador.
+-- El `drop` va delante porque `create policy` no admite `if not exists`: sin
+-- esto, re-ejecutar la migración aborta con 42710 y deja dudando si se aplicó.
+drop policy if exists "partnership_proposals_admin_all" on public.partnership_proposals;
 create policy "partnership_proposals_admin_all" on public.partnership_proposals
   for all using (public.is_admin());
 

@@ -11,6 +11,8 @@
 -- de plan ya cambiaron una vez y dejaron el candado apuntando a planes muertos.
 -- ═══════════════════════════════════════════════════════════════
 drop policy if exists "pharmacy_insert_own" on public.pharmacy_requests;
+-- También la nueva, para que re-ejecutar no aborte con 42710.
+drop policy if exists "pharmacy_insert_con_derecho" on public.pharmacy_requests;
 
 create policy "pharmacy_insert_con_derecho" on public.pharmacy_requests
   for insert with check (
