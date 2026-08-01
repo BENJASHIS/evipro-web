@@ -38,24 +38,30 @@ export const DOCTORS: Doctor[] = [
     cmp: '82817',
     rna: 'A10684',
     specialties: ['Cannabis Medicinal', 'Medicina de Altura', 'Salud Mental'],
-    bio: 'Médico especialista en Cannabis Medicinal y Medicina de Altura, con formación en la Universidad Peruana Cayetano Heredia y auditoría médica en la UNSAAC. Atiende desde Cusco con enfoque basado en evidencia científica, integrando la realidad andina y el contexto peruano en cada consulta. Pionero en telemedicina médica cannábica en la región.',
+    // No dice "médico especialista": el CMP reserva ese título para quien consta
+    // en el Registro Nacional de Especialistas (mismo motivo por el que se quitó
+    // "Especialista en Cannabinología" de la portada, 2026-07-31).
+    bio: 'Médico cirujano con formación en uso medicinal del cannabis por la Universidad Peruana Cayetano Heredia y auditoría médica por la UNSAAC. Atiende en Cusco desde 2023 con enfoque basado en evidencia, integrando la realidad andina y el contexto peruano en cada consulta. Médico auditor y asesor de la Asociación de Cannabis Medicinal del Cusco desde 2021, y médico deportivo del Club Cienciano (división reserva) entre 2023 y 2024.',
     formation: [
-      { title: 'Especialización', institution: 'UPCH Cayetano Heredia' },
-      { title: 'Auditoría Médica', institution: 'UNSAAC' },
+      { title: 'Médico Cirujano', institution: 'Univ. de Aquino Bolivia · convalidado ante el CMP' },
+      { title: 'Especialización en Uso Medicinal del Cannabis', institution: 'UPCH Cayetano Heredia' },
+      { title: 'Diplomado en Auditoría Médica', institution: 'UNSAAC' },
+      { title: 'Seminario de Endomedicina · Cannabis y terapias complementarias', institution: 'U. de Antioquia y U. del Cauca, Colombia', year: 2019 },
+      { title: 'Inteligencia Artificial en Salud · nivel intermedio', institution: 'INSN San Borja', year: 2025 },
     ],
     languages: [
       { name: 'Español', level: 'Nativo' },
-      { name: 'Inglés', level: 'Intermedio' },
+      { name: 'Inglés', level: 'Básico' },
       { name: 'Quechua', level: 'Básico' },
     ],
     location: 'Cusco, Perú',
     modality: 'Teleconsulta y presencial',
-    plans: ['Plan Express', 'Plan Cannabis', 'Plan Integral', 'Plan Turista Inicio', 'Plan Turista Plus'],
+    plans: ['Membresía Básica', 'Membresía EVIPro', 'Plan Turista Inicio', 'Plan Turista Plus'],
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-jara.jpeg',
     counseling: {
-      // ponytail: consejería retirada del producto (decisión 2026-07-30) — un canal de S/5
+      // ponytail: este canal se retiró del producto (decisión 2026-07-30) — uno de S/5
       // invita preguntas que exigen consulta médica. Se apaga el flag, no se borra la máquina
       // de reservas; volver a true si alguna vez se reactiva.
       available: false,
@@ -84,13 +90,15 @@ export const DOCTORS: Doctor[] = [
     ],
     location: 'Abancay, Apurímac',
     modality: 'Virtual',
-    plans: ['Plan Express', 'Plan Integral', 'Plan Turista Inicio', 'Plan Turista Plus'],
+    // Su atención es el módulo de especialista que se suma a EVIPro (migración 025).
+    plans: ['Módulo de especialista sobre Membresía EVIPro'],
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-vera.jpeg',
     counseling: {
       available: false,
-      description: 'Consejería para adulto mayor, cuidados paliativos, diabetes y enfermedades crónicas. Orientación para familias y cuidadores.',
+      // Texto inerte mientras `available` sea false; se deja el canal, no la oferta.
+      description: 'Orientación para adulto mayor, cuidados paliativos, diabetes y enfermedades crónicas, y para familias y cuidadores.',
       modalities: ['video', 'whatsapp'],
       schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],
     },

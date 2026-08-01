@@ -14,6 +14,9 @@ const PAGINAS = [
   'app/politica-devoluciones/page.tsx',
   'app/admin/contenido/UploadForm.tsx',
   'app/miembros/recetas/page.tsx',
+  // La ficha del médico lista "Planes que atiende": ofrecía Express, Cannabis
+  // e Integral, que ya no existen. Nadie la vigilaba.
+  'lib/doctors.ts',
 ]
 
 const RETIRADOS = [
