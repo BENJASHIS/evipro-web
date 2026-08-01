@@ -49,7 +49,9 @@ export const DOCTORS: Doctor[] = [
       // peruana autorizada, no del Colegio.
       { title: 'Médico Cirujano', institution: 'Colegiatura · Colegio Médico del Perú' },
       { title: 'Especialización en Uso Medicinal del Cannabis', institution: 'UPCH Cayetano Heredia' },
-      { title: 'Diplomado en Auditoría Médica', institution: 'UNSAAC' },
+      // 🙋 Sin año: el CV no se lo pone y no he visto el diploma. Cuando Carlos
+      // lo diga, entra como `year` igual que el de Salud Mental.
+      { title: 'Diplomado en Auditoría Médica', institution: 'UNSAAC · Facultad de Medicina Humana' },
       { title: 'Diplomado en Salud Mental y Psiquiatría', institution: 'UNSAAC · Facultad de Medicina Humana', year: 2026 },
       { title: 'Seminario de Endomedicina · Cannabis y terapias complementarias', institution: 'U. de Antioquia y U. del Cauca, Colombia', year: 2019 },
       { title: 'Inteligencia Artificial en Salud · nivel avanzado', institution: 'INSN San Borja', year: 2025 },
