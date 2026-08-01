@@ -43,7 +43,11 @@ export const DOCTORS: Doctor[] = [
     // "Especialista en Cannabinología" de la portada, 2026-07-31).
     bio: 'Médico cirujano con formación en uso medicinal del cannabis por la Universidad Peruana Cayetano Heredia y auditoría médica por la UNSAAC. Atiende en Cusco desde 2023 con enfoque basado en evidencia, integrando la realidad andina y el contexto peruano en cada consulta. Médico auditor y asesor de la Asociación de Cannabis Medicinal del Cusco desde 2021, y médico deportivo del Club Cienciano (división reserva) entre 2023 y 2024.',
     formation: [
-      { title: 'Médico Cirujano', institution: 'Univ. de Aquino Bolivia · convalidado ante el CMP' },
+      // Sin la universidad de origen (decisión de Carlos). Y no dice
+      // "convalidación": lo que otorga el CMP es la COLEGIATURA. Revalidar o
+      // reconocer un título extranjero es de SUNEDU o de una universidad
+      // peruana autorizada, no del Colegio.
+      { title: 'Médico Cirujano', institution: 'Colegiatura · Colegio Médico del Perú' },
       { title: 'Especialización en Uso Medicinal del Cannabis', institution: 'UPCH Cayetano Heredia' },
       { title: 'Diplomado en Auditoría Médica', institution: 'UNSAAC' },
       { title: 'Diplomado en Salud Mental y Psiquiatría', institution: 'UNSAAC · Facultad de Medicina Humana', year: 2026 },
