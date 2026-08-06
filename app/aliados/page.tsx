@@ -33,13 +33,18 @@ export default function AliadosPage() {
             >
               {/* Fondo blanco: varios logos vienen con fondo blanco y otros con
                   transparencia, y sobre el tema oscuro se leerían distinto. */}
-              <div className="bg-white rounded-lg p-4 shrink-0">
+              <div className="bg-white rounded-lg p-4 shrink-0 w-36 h-36 flex items-center justify-center overflow-hidden">
                 <Image
                   src={aliado.logo}
                   alt={aliado.nombre}
                   width={120}
                   height={120}
-                  className="w-28 h-auto object-contain"
+                  className="w-full h-full object-contain"
+                  style={
+                    aliado.slug === 'mayac'
+                      ? { clipPath: 'inset(0 2px 2px 0)' }
+                      : undefined
+                  }
                 />
               </div>
               <div className="flex-1 text-center sm:text-left">
