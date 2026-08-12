@@ -66,16 +66,31 @@ export default function RegistroPage() {
     if (signUpError) { setError(signUpError.message); setLoading(false); return }
 
     if (data.user) {
-      const { error: profileError } = await supabase.from('profiles').upsert({
-        id: data.user.id,
-        full_name: form.full_name,
-        phone: form.phone || null,
-        city: form.city || null,
-        dni_encrypted: form.doc_number || null,
-        doc_type: form.doc_type,
-        country_origin: form.country_origin || null,
+      const profileRes = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {}),
+        },
+        body: JSON.stringify({
+          full_name: form.full_name,
+          phone: form.phone || null,
+          city: form.city || null,
+          doc_type: form.doc_type,
+          doc_number: form.doc_number,
+          country_origin: form.country_origin || null,
+        }),
       })
-      if (profileError) { setError('Error al crear perfil: ' + profileError.message); setLoading(false); return }
+      if (!profileRes.ok) {
+        const profileError = await profileRes.json().catch(() => null) as { error?: string } | null
+        setError(
+          profileRes.status === 401
+            ? 'Cuenta creada. Inicia sesión para completar tu perfil.'
+            : profileError?.error ?? 'Error al crear perfil.',
+        )
+        setLoading(false)
+        return
+      }
     }
 
     router.push('/planes')

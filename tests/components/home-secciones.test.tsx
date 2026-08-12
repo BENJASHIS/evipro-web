@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import {
   Hero, ParaQueSi, ParaQueNo, Preguntas, PrimeraConsulta, Membresia,
+  EvidenciaLimites,
 } from '@/app/components/home/secciones'
 import { RENPUC_NOMBRE } from '@/lib/home-content'
 
@@ -44,6 +45,23 @@ describe('ParaQueNo', () => {
     expect(t).toContain('ansiedad')
     expect(t).toContain('insomnio')
     expect(t).toContain('no recetarte nada')
+  })
+})
+
+describe('EvidenciaLimites', () => {
+  it('muestra fuentes clínicas y regulatorias como enlaces externos', () => {
+    render(<EvidenciaLimites />)
+    expect(screen.getByText(/Evidencia y límites/i)).toBeTruthy()
+    expect(screen.getByRole('link', { name: /AHRQ 2024/i })).toHaveAttribute('href', expect.stringContaining('ahrq.gov'))
+    expect(screen.getAllByRole('link', { name: /NICE NG144/i })[0]).toHaveAttribute('href', expect.stringContaining('nice.org.uk'))
+    expect(screen.getByRole('link', { name: /DIGEMID/i })).toHaveAttribute('href', expect.stringContaining('digemid.minsa.gob.pe'))
+  })
+
+  it('no presenta la evidencia como promesa de resultado', () => {
+    const { container } = render(<EvidenciaLimites />)
+    const t = container.textContent!.toLowerCase()
+    expect(t).toContain('no todo paciente necesita cannabis')
+    expect(t).toContain('beneficios pequeños')
   })
 })
 

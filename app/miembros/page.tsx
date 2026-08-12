@@ -50,10 +50,10 @@ export default async function MiembrosPage() {
   if (!user) redirect('/login')
 
   const [{ data: profile }, { data: subscription }, { data: citas }, { data: credits }] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', user.id).single(),
+    supabase.from('profiles').select('full_name').eq('id', user.id).single(),
     supabase
       .from('subscriptions')
-      .select('*, membership_plans(*)')
+      .select('id, status, period_end, membership_plans(type, period, price_soles, tickets_qty, includes_prescription, includes_renpuc_support, includes_pharmacy_coord)')
       .eq('user_id', user.id)
       .in('status', ['active', 'pending', 'awaiting_payment'])
       .order('created_at', { ascending: false })

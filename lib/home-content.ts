@@ -63,6 +63,48 @@ export const PARA_QUE_NO = {
     'no recetarte nada antes que recetarte algo que no te va a servir.',
 }
 
+export type EvidenciaPublica = {
+  titulo: string
+  resumen: string
+  fuente: string
+  url: string
+}
+
+export const EVIDENCIA_PUBLICA: EvidenciaPublica[] = [
+  {
+    titulo: 'Dolor crónico y neuropático',
+    resumen:
+      'La evidencia sugiere beneficios pequeños y de corto plazo en algunos pacientes, ' +
+      'sobre todo dolor neuropático. También se vigilan mareo, sedación, náuseas e interacciones.',
+    fuente: 'AHRQ 2024 · ACP 2025',
+    url: 'https://effectivehealthcare.ahrq.gov/products/plant-based-chronic-pain-treatment/living-review',
+  },
+  {
+    titulo: 'Espasticidad y náuseas por quimioterapia',
+    resumen:
+      'Las guías separan indicaciones acotadas: espasticidad por esclerosis múltiple y náuseas ' +
+      'persistentes por quimioterapia cuando el manejo habitual no alcanza.',
+    fuente: 'NICE NG144',
+    url: 'https://www.nice.org.uk/guidance/ng144/chapter/Recommendations',
+  },
+  {
+    titulo: 'Epilepsia',
+    resumen:
+      'El CBD farmacéutico se limita a síndromes concretos como Dravet, Lennox-Gastaut y complejo ' +
+      'esclerosis tuberosa. No se presenta como tratamiento general para cualquier epilepsia.',
+    fuente: 'FDA · NICE NG144',
+    url: 'https://www.fda.gov/consumers/consumer-updates/what-you-need-know-and-what-were-working-find-out-about-products-containing-cannabis-or-cannabis',
+  },
+  {
+    titulo: 'Acceso legal en Perú',
+    resumen:
+      'El procedimiento formal exige evaluación médica, receta cuando corresponde, registro RENPUC ' +
+      'y dispensación por establecimiento farmacéutico autorizado. EVIPro no vende cannabis.',
+    fuente: 'DIGEMID · Perú',
+    url: 'https://www.digemid.minsa.gob.pe/webDigemid/uso-medicinal-del-cannabis-y-sus-derivados/',
+  },
+]
+
 export type Pregunta = { p: string; r: string }
 
 export const PREGUNTAS: Pregunta[] = [

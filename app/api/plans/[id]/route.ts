@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { MEMBERSHIP_PLAN_PUBLIC_COLUMNS } from '@/lib/db-columns'
 
 export async function GET(
   _req: NextRequest,
@@ -9,7 +10,7 @@ export async function GET(
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
     .from('membership_plans')
-    .select('*')
+    .select(MEMBERSHIP_PLAN_PUBLIC_COLUMNS)
     .eq('id', id)
     .single()
 

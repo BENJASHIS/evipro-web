@@ -3,6 +3,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 import { buildCartItems, computeCartTotal } from '@/lib/billing'
 import { PLAN_DISPLAY_NAMES } from '@/lib/types'
+import { MEMBERSHIP_PLAN_PUBLIC_COLUMNS } from '@/lib/db-columns'
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
 
   const { data: plan } = await supabase
     .from('membership_plans')
-    .select('*')
+    .select(MEMBERSHIP_PLAN_PUBLIC_COLUMNS)
     .eq('id', plan_id)
     .single()
   if (!plan) return NextResponse.json({ error: 'Plan no encontrado' }, { status: 404 })

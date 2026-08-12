@@ -1,5 +1,7 @@
+import type { Metadata } from 'next'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { MembershipPlan, PlanAddon } from '@/lib/types'
+import { MEMBERSHIP_PLAN_PUBLIC_COLUMNS, PLAN_ADDON_PUBLIC_COLUMNS } from '@/lib/db-columns'
 import Link from 'next/link'
 import Nav from '@/app/components/Nav'
 import Badge from '@/app/components/ui/Badge'
@@ -8,17 +10,23 @@ import ConfiguradorTurista from './ConfiguradorTurista'
 import PlanCTA from './PlanCTA'
 import LineaConsultas from './LineaConsultas'
 
+export const metadata: Metadata = {
+  title: 'Planes de consulta y membresía en cannabis medicinal · EVIPro',
+  description:
+    'Consulta médica de cannabis medicinal en Perú: evaluación, receta si corresponde, apoyo RENPUC y coordinación documentaria con farmacia autorizada. EVIPro no vende productos.',
+}
+
 export default async function PlanesPage() {
   const supabase = await createServerSupabaseClient()
   const { data: basePlans } = await supabase
-    .from('membership_plans').select('*')
+    .from('membership_plans').select(MEMBERSHIP_PLAN_PUBLIC_COLUMNS)
     .in('type', ['basica', 'evipro'])
     .order('price_soles', { ascending: true })
   const { data: addons } = await supabase
-    .from('plan_addons').select('*').eq('active', true)
+    .from('plan_addons').select(PLAN_ADDON_PUBLIC_COLUMNS).eq('active', true)
     .order('price_soles', { ascending: true })
   const { data: turistaPlans } = await supabase
-    .from('membership_plans').select('*')
+    .from('membership_plans').select(MEMBERSHIP_PLAN_PUBLIC_COLUMNS)
     .in('type', ['turista_inicio', 'turista_plus'])
     .order('price_soles', { ascending: true })
 

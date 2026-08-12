@@ -8,7 +8,7 @@ export default function TerminosPage() {
       <div className="max-w-3xl mx-auto">
         <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">Legal</p>
         <h1 className="text-4xl font-light font-serif italic mb-2">Términos y Condiciones</h1>
-        <p className="text-faint text-xs font-mono mb-12">Última actualización: julio 2026</p>
+        <p className="text-faint text-xs font-mono mb-12">Última actualización: agosto 2026</p>
 
         <div className="space-y-10 text-gray-300 text-sm leading-relaxed">
 
@@ -65,7 +65,7 @@ export default function TerminosPage() {
 
           <section>
             <h2 className="text-white font-light text-lg mb-3">7. Protección de datos personales</h2>
-            <p>El tratamiento de datos personales se rige por la <strong className="text-white">Ley N.º 29733</strong> (Ley de Protección de Datos Personales del Perú). Los datos recopilados son utilizados exclusivamente para la prestación del servicio médico. Los datos sensibles (DNI, historia clínica) se almacenan de forma encriptada y solo son accesibles por el médico titular. El usuario puede solicitar acceso, rectificación, cancelación u oposición de sus datos escribiendo a <a href="mailto:consulta@evipro.pe" className="text-brand hover:underline">consulta@evipro.pe</a>.</p>
+            <p>El tratamiento de datos personales se rige por la <strong className="text-white">Ley N.º 29733</strong> (Ley de Protección de Datos Personales del Perú). Los datos recopilados son utilizados exclusivamente para la prestación del servicio médico. Los documentos de identidad registrados desde la plataforma se cifran en servidor y el sitio solo muestra una pista enmascarada; la información clínica se protege mediante controles de acceso y uso limitado al equipo autorizado. El usuario puede solicitar acceso, rectificación, cancelación u oposición de sus datos escribiendo a <a href="mailto:consulta@evipro.pe" className="text-brand hover:underline">consulta@evipro.pe</a>.</p>
           </section>
 
           <section>

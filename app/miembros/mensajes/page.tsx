@@ -6,19 +6,14 @@ import type { Message } from '@/lib/types'
 const SUGERENCIA_PREFIX = '💡 Sugerencia de contenido: '
 
 export default function MensajesPage() {
+  const searchParams = useSearchParams()
+  const sugerirContenido = searchParams.get('sugerir') === '1'
   const [messages, setMessages] = useState<Message[]>([])
-  const [body, setBody] = useState('')
+  const [body, setBody] = useState(() => (sugerirContenido ? SUGERENCIA_PREFIX : ''))
   const [sending, setSending] = useState(false)
   const [blocked, setBlocked] = useState(false)
   const [adminPreview, setAdminPreview] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    if (searchParams.get('sugerir') === '1') {
-      setBody(prev => (prev ? prev : SUGERENCIA_PREFIX))
-    }
-  }, [searchParams])
 
   async function load() {
     const res = await fetch('/api/messages')

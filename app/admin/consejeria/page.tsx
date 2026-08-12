@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { COUNSELING_BOOKING_ADMIN_COLUMNS } from '@/lib/db-columns'
 import { confirmBooking } from '@/app/admin/actions'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
@@ -9,7 +10,7 @@ export default async function AdminConsejeriaPage() {
 
   const { data: bookings } = await supabase
     .from('counseling_bookings')
-    .select('*')
+    .select(COUNSELING_BOOKING_ADMIN_COLUMNS)
     .order('created_at', { ascending: false })
     .limit(100)
 

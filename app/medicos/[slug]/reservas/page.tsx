@@ -1,4 +1,5 @@
 import { createServiceClient } from '@/lib/supabase-server'
+import { COUNSELING_BOOKING_PORTAL_COLUMNS } from '@/lib/db-columns'
 import { DOCTORS } from '@/lib/doctors'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
@@ -63,7 +64,7 @@ export default async function ReservasPage({
 
   const { data: upcoming } = await supabase
     .from('counseling_bookings')
-    .select('*')
+    .select(COUNSELING_BOOKING_PORTAL_COLUMNS)
     .eq('doctor_slug', slug)
     .is('cancelled_at', null)
     .gte('slot_date', today)
@@ -72,7 +73,7 @@ export default async function ReservasPage({
 
   const { data: messagingPending } = await supabase
     .from('counseling_bookings')
-    .select('*')
+    .select(COUNSELING_BOOKING_PORTAL_COLUMNS)
     .eq('doctor_slug', slug)
     // domicilio es una consulta sin horario fijo (slot_date null), igual que messaging/whatsapp:
     // no aparece en `upcoming` (que filtra por slot_date), así que debe listarse aquí.
@@ -84,7 +85,7 @@ export default async function ReservasPage({
 
   const { data: recent } = await supabase
     .from('counseling_bookings')
-    .select('*')
+    .select(COUNSELING_BOOKING_PORTAL_COLUMNS)
     .eq('doctor_slug', slug)
     .order('created_at', { ascending: false })
     .limit(5)

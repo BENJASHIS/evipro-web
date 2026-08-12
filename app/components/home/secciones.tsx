@@ -6,6 +6,7 @@ import { escaleraReserva } from '@/lib/consulta-pricing'
 import {
   HERO, INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
   OTRAS_ESPECIALIDADES, ESPECIALIDADES_PROXIMAS, MEDICO, RENPUC_NOMBRE, WHATSAPP, MEMBRESIA,
+  EVIDENCIA_PUBLICA,
 } from '@/lib/home-content'
 
 const AGENDAR = '/medicos/dr-jara/agendar'
@@ -79,6 +80,39 @@ export function ParaQueNo() {
         <p className={ROTULO}>Para qué no</p>
         <h2 className="text-2xl font-light font-serif italic mb-3">{PARA_QUE_NO.titulo}</h2>
         <p className="text-muted leading-relaxed max-w-2xl">{PARA_QUE_NO.texto}</p>
+      </div>
+    </section>
+  )
+}
+
+export function EvidenciaLimites() {
+  return (
+    <section className={SECCION}>
+      <div className={CAJA}>
+        <p className={ROTULO}>Evidencia y límites</p>
+        <h2 className="text-2xl font-light font-serif italic mb-3">
+          No todo paciente necesita cannabis.
+        </h2>
+        <p className="text-muted leading-relaxed max-w-2xl mb-8">
+          La consulta decide si corresponde, qué riesgos revisar y cuándo buscar otra ruta.
+          Estas fuentes públicas orientan el criterio clínico.
+        </p>
+        <div className="grid md:grid-cols-2 gap-4">
+          {EVIDENCIA_PUBLICA.map(item => (
+            <article key={item.titulo} className="border border-subtle rounded-lg p-5">
+              <h3 className="text-base font-light mb-1">{item.titulo}</h3>
+              <p className="text-muted text-sm leading-relaxed mb-3">{item.resumen}</p>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono text-brand hover:text-white transition-colors"
+              >
+                {item.fuente} →
+              </a>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -3,6 +3,7 @@ import {
   INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
   RENPUC_NOMBRE, HERO, OTRAS_ESPECIALIDADES,
   MEDICO, ESPECIALIDADES_PROXIMAS, WHATSAPP, MEMBRESIA, META_PORTADA,
+  EVIDENCIA_PUBLICA,
 } from '@/lib/home-content'
 
 // Solo el test la usa: no tiene sitio en el bundle de producción.
@@ -18,6 +19,7 @@ function textoDeLaPortada(): string {
     PARA_QUE_NO.titulo, PARA_QUE_NO.texto,
     ...INDICACIONES_PORTADA.flatMap(i => [i.titulo, i.matiz]),
     ...PREGUNTAS.flatMap(q => [q.p, q.r]),
+    ...EVIDENCIA_PUBLICA.flatMap(e => [e.titulo, e.resumen, e.fuente, e.url]),
     ...PASOS_PRIMERA_CONSULTA.flatMap(p => [p.titulo, p.texto]),
     ...OTRAS_ESPECIALIDADES,
     MEDICO.nombre, MEDICO.especialidades, MEDICO.credenciales, MEDICO.direccion,
@@ -84,6 +86,16 @@ describe('contenido de la portada — restricciones clínicas', () => {
   it('no lleva ningún precio en el contenido', () => {
     // textoDeLaPortada() ya viene en minúsculas, de ahí la bandera `i`.
     expect(textoDeLaPortada()).not.toMatch(/S\/\.?\s?\d/i)
+  })
+
+  it('la sección de evidencia cita fuentes públicas y mantiene el límite legal', () => {
+    expect(EVIDENCIA_PUBLICA.length).toBeGreaterThanOrEqual(4)
+    expect(EVIDENCIA_PUBLICA.map(e => e.fuente).join(' ')).toContain('DIGEMID')
+    expect(EVIDENCIA_PUBLICA.map(e => e.resumen).join(' ').toLowerCase()).toContain('evipro no vende')
+    for (const item of EVIDENCIA_PUBLICA) {
+      expect(item.url).toMatch(/^https:\/\//)
+      expect(item.resumen.length).toBeGreaterThan(80)
+    }
   })
 })
 

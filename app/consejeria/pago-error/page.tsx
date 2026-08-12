@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 // Retorno de Mercado Pago cuando el pago de la consejería no se aprueba.
 export default function ConsejeriaPagoErrorPage() {
   return (
@@ -9,12 +11,12 @@ export default function ConsejeriaPagoErrorPage() {
         <p className="text-muted text-sm mb-8 leading-relaxed">
           No se realizó ningún cargo. Puedes volver a reservar tu cita e intentarlo de nuevo.
         </p>
-        <a
+        <Link
           href="/consejeria"
           className="block w-full py-3 bg-brand-deep hover:bg-brand-mid text-white rounded transition-colors text-sm"
         >
           Volver a consejería →
-        </a>
+        </Link>
         <p className="text-center text-xs text-faint mt-4 font-mono">
           ¿Dudas? consulta@evipro.pe
         </p>

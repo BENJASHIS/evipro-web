@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { META_PORTADA } from '@/lib/home-content'
 import {
   Hero, ParaQueSi, ParaQueNo, Preguntas, QuienTeAtiende,
-  PrimeraConsulta, OtrasEspecialidades, Membresia,
+  PrimeraConsulta, OtrasEspecialidades, Membresia, EvidenciaLimites,
 } from '@/app/components/home/secciones'
 
 /** Solo para «/». El layout mantiene su título para el resto del sitio: cambiarlo
@@ -38,6 +38,7 @@ export default async function Home() {
       <Hero />
       <ParaQueSi />
       <ParaQueNo />
+      <EvidenciaLimites />
       <Preguntas />
       <QuienTeAtiende />
       <PrimeraConsulta />

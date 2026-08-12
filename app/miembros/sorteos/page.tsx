@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { RAFFLE_PUBLIC_COLUMNS, RAFFLE_TICKET_MEMBER_COLUMNS } from '@/lib/db-columns'
 import { redirect } from 'next/navigation'
 
 export default async function SorteosPage() {
@@ -7,8 +8,16 @@ export default async function SorteosPage() {
   if (!user) redirect('/login')
 
   const [{ data: tickets }, { data: raffles }] = await Promise.all([
-    supabase.from('raffle_tickets').select('*').eq('user_id', user.id).order('issued_at', { ascending: false }),
-    supabase.from('raffles').select('*').order('draw_date', { ascending: false }).limit(10),
+    supabase
+      .from('raffle_tickets')
+      .select(RAFFLE_TICKET_MEMBER_COLUMNS)
+      .eq('user_id', user.id)
+      .order('issued_at', { ascending: false }),
+    supabase
+      .from('raffles')
+      .select(RAFFLE_PUBLIC_COLUMNS)
+      .order('draw_date', { ascending: false })
+      .limit(10),
   ])
 
   const upcoming = raffles?.filter(r => r.status === 'upcoming') ?? []
