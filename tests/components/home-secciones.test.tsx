@@ -53,7 +53,7 @@ describe('EvidenciaLimites', () => {
     render(<EvidenciaLimites />)
     expect(screen.getByText(/Evidencia y límites/i)).toBeTruthy()
     expect(screen.getByRole('link', { name: /AHRQ 2024/i })).toHaveAttribute('href', expect.stringContaining('ahrq.gov'))
-    expect(screen.getAllByRole('link', { name: /NICE NG144/i })[0]).toHaveAttribute('href', expect.stringContaining('nice.org.uk'))
+    expect(screen.getAllByRole('link', { name: /NICE NG144/i })[0]).toHaveAttribute('href', expect.stringContaining('ncbi.nlm.nih.gov'))
     expect(screen.getByRole('link', { name: /DIGEMID/i })).toHaveAttribute('href', expect.stringContaining('digemid.minsa.gob.pe'))
   })
 

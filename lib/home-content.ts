@@ -84,8 +84,8 @@ export const EVIDENCIA_PUBLICA: EvidenciaPublica[] = [
     resumen:
       'Las guías separan indicaciones acotadas: espasticidad por esclerosis múltiple y náuseas ' +
       'persistentes por quimioterapia cuando el manejo habitual no alcanza.',
-    fuente: 'NICE NG144',
-    url: 'https://www.nice.org.uk/guidance/ng144/chapter/Recommendations',
+    fuente: 'NICE NG144 · NCBI Bookshelf',
+    url: 'https://www.ncbi.nlm.nih.gov/books/NBK552187/',
   },
   {
     titulo: 'Epilepsia',
