@@ -28,6 +28,15 @@ export interface Aliado {
 
 export const ALIADOS: Aliado[] = [
   {
+    slug: 'centro-estudios-cannabis-peru',
+    nombre: 'Centro de Estudios del Cannabis Perú',
+    logo: '/images/aliados/centro-estudios-cannabis-peru.png',
+    rol: 'Centro colaborador',
+    enlaces: [
+      { etiqueta: 'Facebook', url: 'https://www.facebook.com/CentroEstudiosCannabiPeru' },
+    ],
+  },
+  {
     slug: 'cannavital',
     nombre: 'Cannavital · Farmacia magistral',
     logo: '/images/aliados/cannavital.png',

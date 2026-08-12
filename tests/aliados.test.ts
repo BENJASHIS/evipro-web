@@ -37,4 +37,10 @@ describe('aliados', () => {
     const slugs = ALIADOS.map(a => a.slug)
     expect(new Set(slugs).size).toBe(slugs.length)
   })
+
+  it('muestra el Centro de Estudios del Cannabis Peru antes de Cannavital', () => {
+    const slugs = ALIADOS.map(a => a.slug)
+    expect(slugs.indexOf('centro-estudios-cannabis-peru'))
+      .toBeLessThan(slugs.indexOf('cannavital'))
+  })
 })
