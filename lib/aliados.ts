@@ -31,7 +31,9 @@ export const ALIADOS: Aliado[] = [
     slug: 'centro-estudios-cannabis-peru',
     nombre: 'Centro de Estudios del Cannabis Perú',
     logo: '/images/aliados/centro-estudios-cannabis-peru.png',
-    rol: 'Centro colaborador',
+    rol: 'Centro de estudios',
+    descripcion:
+      'Profesionales de la salud y áreas relacionadas orientados al estudio académico de las propiedades terapéuticas y medicinales de Cannabis sativa.',
     enlaces: [
       { etiqueta: 'Facebook', url: 'https://www.facebook.com/CentroEstudiosCannabiPeru' },
     ],
