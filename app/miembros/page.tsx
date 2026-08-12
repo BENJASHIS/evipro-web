@@ -210,9 +210,9 @@ export default async function MiembrosPage() {
                     <span className="text-faint line-through ml-2 text-xs">S/. {PRECIOS_CONSULTA.presencial.regular[0]}</span>
                   </li>
                 )}
-                {Boolean(plan.includes_prescription) && <li>✓ Receta digital incluida</li>}
+                {Boolean(plan.includes_prescription) && <li>✓ Receta si corresponde</li>}
                 {Boolean(plan.includes_renpuc_support) && <li>✓ Apoyo con registro RENPUC</li>}
-                {Boolean(plan.includes_pharmacy_coord) && <li>✓ Coordinación con farmacia magistral</li>}
+                {Boolean(plan.includes_pharmacy_coord) && <li>✓ Coordinación documentaria con farmacia autorizada</li>}
                 {hasTickets && (
                   <li>✓ <span className="text-yellow-400">{Number(plan.tickets_qty)} ticket{Number(plan.tickets_qty) > 1 ? 's' : ''} de sorteo por periodo</span></li>
                 )}

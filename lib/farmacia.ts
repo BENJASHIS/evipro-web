@@ -20,7 +20,7 @@ export function validarSolicitudFarmacia(input: unknown): SolicitudValida | Soli
   const notas = typeof crudo.product_notes === 'string' ? crudo.product_notes.trim() : ''
   const direccion = typeof crudo.shalom_address === 'string' ? crudo.shalom_address.trim() : ''
 
-  if (!notas) return { ok: false, error: 'Falta el producto o las notas de la receta.' }
+  if (!notas) return { ok: false, error: 'Faltan las notas de la receta.' }
   if (notas.length > MAX_NOTAS) {
     return { ok: false, error: `Las notas son demasiado largas (máximo ${MAX_NOTAS}).` }
   }

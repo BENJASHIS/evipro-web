@@ -80,7 +80,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     p: '¿Dónde lo compro?',
-    r: 'En cualquier farmacia autorizada. No vendemos el producto.',
+    r: 'En una farmacia autorizada. EVIPro no vende, almacena ni dispensa productos de cannabis.',
   },
   {
     p: '¿Qué es el RENPUC?',

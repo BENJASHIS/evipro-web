@@ -159,9 +159,9 @@ function CheckoutForm() {
       {isQuincenal && (
         <div className="border border-yellow-400/20 bg-yellow-400/5 rounded p-3 mb-4">
           <p className="text-yellow-400 text-xs font-mono leading-relaxed">
-            ⚠️ Con plan quincenal el delivery (3-5 días hábiles) puede no completarse antes de tu salida.
-            Si el producto no llega a tiempo, se reembolsa el costo del medicamento. La coordinación
-            de farmacia (S/. 25) es discrecional según la causa del retraso.
+            Atención: con plan quincenal, la preparación y dispensación por la farmacia autorizada
+            puede no completarse antes de tu salida. EVIPro coordina el procedimiento, pero no vende
+            ni dispensa productos de cannabis.
           </p>
         </div>
       )}
@@ -175,9 +175,10 @@ function CheckoutForm() {
             className="mt-0.5 accent-brand"
           />
           <span className="text-xs text-muted leading-relaxed">
-            Entiendo que EVIPro opera dentro del territorio peruano. El uso o transporte del
-            producto fuera del Perú es de mi exclusiva responsabilidad, conforme a la legislación
-            de mi país de destino.
+            Entiendo que EVIPro opera dentro del territorio peruano y no vende, dispensa ni
+            transporta productos de cannabis. Cualquier adquisición en farmacia autorizada y eventual
+            traslado fuera del Perú es de mi exclusiva responsabilidad, conforme a la legislación
+            aplicable.
           </span>
         </label>
       )}

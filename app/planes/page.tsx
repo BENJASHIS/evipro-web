@@ -65,9 +65,10 @@ export default async function PlanesPage() {
           {/* Aviso legal territorial */}
           <div className="border border-yellow-400/20 bg-yellow-400/5 rounded-lg p-4 mb-8 max-w-2xl">
             <p className="text-yellow-400 text-xs font-mono leading-relaxed">
-              EVIPro opera exclusivamente en territorio peruano. Podemos orientarte sobre restricciones
-              en tu país de destino si lo solicitas, pero el transporte del producto fuera del Perú
-              es responsabilidad exclusiva del viajero conforme a las leyes de su país.
+              EVIPro opera exclusivamente en territorio peruano y no vende, almacena ni dispensa
+              productos de cannabis. La adquisición corresponde a farmacias autorizadas; cualquier
+              traslado fuera del Perú es responsabilidad exclusiva del viajero conforme a las leyes
+              aplicables.
             </p>
           </div>
 

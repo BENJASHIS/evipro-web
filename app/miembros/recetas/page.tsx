@@ -111,9 +111,9 @@ export default function RecetasPage() {
     <div>
       {encabezado}
       <p className="text-muted text-sm mb-8">
-        Coordinamos con nuestra farmacia magistral aliada el envío de tu producto a la agencia Shalom
-        más cercana. El producto y el envío los cobra la farmacia (envío S/. 25), y al recoger en Shalom
-        pagas <strong className="text-white">S/. 8–15 contra entrega</strong>. EVIPro no cobra nada por esto.
+        Coordinamos la información y documentación necesaria con una farmacia magistral autorizada.
+        La preparación, dispensación, pago y entrega corresponden a la farmacia según sus propios
+        procedimientos. EVIPro no vende, almacena ni dispensa productos de cannabis.
       </p>
 
       {success && (
@@ -142,7 +142,7 @@ export default function RecetasPage() {
         )}
 
         <div>
-          <label htmlFor="product_notes" className="block text-xs text-muted mb-1 uppercase tracking-widest">Producto / notas de la receta *</label>
+          <label htmlFor="product_notes" className="block text-xs text-muted mb-1 uppercase tracking-widest">Notas de la receta *</label>
           <textarea
             id="product_notes"
             value={form.product_notes}

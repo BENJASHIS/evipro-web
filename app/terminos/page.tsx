@@ -41,10 +41,10 @@ export default function TerminosPage() {
             <p className="mb-3">La membresía no es la consulta: es acceso a contenido y condiciones preferentes. Los precios vigentes de cada membresía y de sus módulos opcionales son los publicados en <a href="/planes" className="text-brand hover:underline">evipro.pe/planes</a> al momento de la compra.</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li><strong className="text-white">Membresía Básica:</strong> contenido para miembros, 1 ticket de sorteo y consultas a la tarifa Básica indicada arriba. Sin compromiso de permanencia.</li>
-              <li><strong className="text-white">Membresía EVIPro:</strong> incluye la atención en cannabis medicinal, receta, apoyo con el trámite RENPUC, coordinación con farmacia magistral y consultas a la tarifa EVIPro. Contratable por período mensual, trimestral o semestral.</li>
+              <li><strong className="text-white">Membresía EVIPro:</strong> incluye evaluación y seguimiento en cannabis medicinal, receta solo si corresponde, apoyo con el trámite RENPUC, coordinación documentaria con farmacia autorizada y consultas a la tarifa EVIPro. Contratable por período mensual, trimestral o semestral.</li>
               <li><strong className="text-white">Módulo de especialista (opcional, solo sobre EVIPro):</strong> añade la atención en gerontología, cuidados paliativos y enfermedades crónicas con el Dr. Vera.</li>
-              <li><strong className="text-white">Plan Turista Inicio:</strong> para visitantes nuevos en cannabis medicinal. Consulta virtual completa, receta, RENPUC nuevo candidato y coordinación de farmacia.</li>
-              <li><strong className="text-white">Plan Turista Plus:</strong> para visitantes con tratamiento previo. Consulta express, revalidación de receta extranjera, RENPUC continuador y coordinación de farmacia.</li>
+              <li><strong className="text-white">Plan Turista Inicio:</strong> para visitantes nuevos en cannabis medicinal. Consulta virtual, receta solo si corresponde, apoyo RENPUC y coordinación documentaria con farmacia autorizada.</li>
+              <li><strong className="text-white">Plan Turista Plus:</strong> para visitantes con tratamiento previo. Evaluación virtual de continuidad terapéutica, receta peruana solo si corresponde, apoyo RENPUC y coordinación documentaria con farmacia autorizada.</li>
             </ul>
           </section>
 
@@ -75,9 +75,10 @@ export default function TerminosPage() {
               peruano. Aplican las siguientes condiciones especiales:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li><strong className="text-white">Ámbito territorial:</strong> EVIPro opera exclusivamente dentro del territorio peruano. La atención médica, receta y coordinación de farmacia se realizan conforme a la legislación peruana.</li>
-              <li><strong className="text-white">Transporte internacional:</strong> El transporte o uso del producto fuera del Perú es responsabilidad exclusiva del paciente, conforme a las leyes de su país de destino. EVIPro puede orientar sobre restricciones si se solicita, sin asumir responsabilidad legal por el resultado.</li>
-              <li><strong className="text-white">Reembolso plan quincenal (15 días):</strong> Si el producto farmacéutico no es entregado antes de la fecha de salida del paciente, se reembolsa el costo del medicamento. La coordinación de farmacia (S/. 25) es discrecional: se reembolsa si el retraso fue por causas imputables a EVIPro; no se reembolsa si el paciente desistió. La consulta médica y receta no son reembolsables una vez prestado el servicio.</li>
+              <li><strong className="text-white">Ámbito territorial:</strong> EVIPro opera exclusivamente dentro del territorio peruano. La atención médica, receta si corresponde y coordinación documentaria se realizan conforme a la legislación peruana.</li>
+              <li><strong className="text-white">Farmacia autorizada:</strong> EVIPro no vende, almacena, transporta ni dispensa productos de cannabis. La preparación, dispensación, pago y entrega corresponden a farmacias autorizadas, según sus propios procedimientos.</li>
+              <li><strong className="text-white">Transporte internacional:</strong> Cualquier traslado o uso de productos fuera del Perú es responsabilidad exclusiva del paciente, conforme a las leyes aplicables. EVIPro puede brindar orientación general si se solicita, sin asumir responsabilidad legal por el resultado.</li>
+              <li><strong className="text-white">Plan quincenal (15 días):</strong> La preparación y dispensación por farmacia autorizada puede no completarse antes de la fecha de salida del paciente. Si EVIPro no puede prestar un componente del servicio contratado por causa imputable a EVIPro, aplica la política de reembolso sobre ese componente. No se reembolsan productos o servicios pagados directamente a terceros.</li>
               <li><strong className="text-white">Reserva pre-llegada:</strong> El paciente puede contratar el plan y agendar la consulta virtual desde su país de origen antes de viajar a Cusco.</li>
             </ul>
           </section>

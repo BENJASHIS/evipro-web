@@ -30,7 +30,10 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
         <h3 className="text-2xl font-light">Plan Turista</h3>
         <span className="text-xs font-mono text-faint uppercase tracking-widest">100% virtual</span>
       </div>
-      <p className="text-muted text-sm mb-6">Reserva desde tu país. Consulta virtual, RENPUC y coordinación con farmacia magistral.</p>
+      <p className="text-muted text-sm mb-6">
+        Inicia el procedimiento antes de viajar: consulta virtual, apoyo RENPUC y coordinación
+        documentaria con farmacia autorizada. EVIPro no vende ni dispensa productos de cannabis.
+      </p>
 
       {/* Tipo */}
       <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">1 · ¿Tu situación?</p>
@@ -78,8 +81,9 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
 
       {period === 'quincenal' && plan && (
         <p className="text-xs text-yellow-400 font-mono mt-4 leading-relaxed">
-          Plan quincenal: el delivery (3-5 días hábiles) puede no completarse antes de tu salida.
-          Si el producto no llega a tiempo, se reembolsa el costo del medicamento.
+          Plan quincenal: la preparación y dispensación dependen de la farmacia autorizada y
+          pueden no completarse antes de tu salida. Recomendamos iniciar el procedimiento con
+          anticipación.
         </p>
       )}
     </div>

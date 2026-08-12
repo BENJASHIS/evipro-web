@@ -88,7 +88,7 @@ export const ALIADOS: Aliado[] = [
     // producto; lo que ellos hacen es acompañar el trámite. No se enumeran los
     // pasos (receta, RENPUC…) porque eso no está confirmado con ellos.
     descripcion:
-      'Te orientan en el procedimiento para tener tu producto legalmente, paso a paso.',
+      'Te orientan en el procedimiento legal de acceso, paso a paso.',
     enlaces: [
       // La web primero: es suya, no exige cuenta a nadie y no se cae si cambian
       // de red social.
