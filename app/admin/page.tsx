@@ -5,6 +5,9 @@ import Link from 'next/link'
 type PendingSub = {
   id: string
   mp_payment_id: string | null
+  started_at: string | null
+  period_start: string | null
+  period_end: string | null
   profiles: Record<string, string> | null
   membership_plans: Record<string, string> | null
 }
@@ -12,6 +15,8 @@ type PendingSub = {
 function PendingRow({ sub }: { sub: PendingSub }) {
   const profile = sub.profiles
   const plan = sub.membership_plans
+  const formatDate = (iso: string | null | undefined) =>
+    iso ? new Date(iso).toLocaleDateString('es-PE') : '—'
   return (
     <div className="border border-subtle rounded p-4 flex items-center justify-between gap-4">
       <div className="min-w-0">
@@ -20,6 +25,11 @@ function PendingRow({ sub }: { sub: PendingSub }) {
         <p className="text-xs text-muted font-mono mt-0.5 capitalize">
           {plan?.type} · {plan?.period} · S/. {plan?.price_soles}
         </p>
+        {sub.period_end && (
+          <p className="text-xs text-faint font-mono mt-1">
+            {sub.started_at ? `Activado: ${formatDate(sub.started_at)} · ` : ''}Vence: {formatDate(sub.period_end)}
+          </p>
+        )}
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <form action={activateSubscription}>
@@ -63,9 +73,9 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
     await Promise.all([
       supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
       supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'awaiting_payment'),
-      supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period, price_soles)')
+      supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period, price_soles), started_at, period_start, period_end')
         .eq('status', 'awaiting_payment').order('created_at', { ascending: false }),
-      supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period)')
+      supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period), started_at, period_start, period_end')
         .eq('status', 'active').order('created_at', { ascending: false }).limit(10),
       supabase.from('pharmacy_requests')
         .select('id, product_notes, shalom_address, status, tracking_info, created_at, profiles(full_name)')
@@ -199,13 +209,23 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           {(recentSubs ?? []).map(sub => {
             const profile = sub.profiles as Record<string, string>
             const plan = sub.membership_plans as Record<string, string>
+            const formatDate = (iso: string | null | undefined) =>
+              iso ? new Date(iso).toLocaleDateString('es-PE') : '—'
+            const isExpired = sub.period_end && new Date(sub.period_end) < new Date()
             return (
               <div key={sub.id} className="flex items-center justify-between border-b border-subtle pb-3">
                 <div>
                   <p className="text-sm">{profile?.full_name}</p>
                   <p className="text-xs text-faint font-mono">{profile?.city} · {profile?.phone}</p>
+                  {sub.period_end && (
+                    <p className={`text-xs font-mono mt-1 ${
+                      isExpired ? 'text-red-400' : 'text-brand'
+                    }`}>
+                      {isExpired ? '❌ Vencida' : '✓ Activa'}: {formatDate(sub.period_end)}
+                    </p>
+                  )}
                 </div>
-                <span className="text-xs font-mono text-brand capitalize">
+                <span className="text-xs font-mono text-muted capitalize">
                   {plan?.type} · {plan?.period}
                 </span>
               </div>
