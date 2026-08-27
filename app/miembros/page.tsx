@@ -221,7 +221,7 @@ export default async function MiembrosPage() {
               <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Herramientas</p>
               <p className="text-sm text-white group-hover:text-brand transition-colors">Panel de herramientas para miembros</p>
               <p className="text-xs text-faint font-mono mt-1">
-                Regen ya está disponible; la calculadora cannabinoide entra aquí como siguiente herramienta.
+                Regen y calculadora cannabinoide disponibles para miembros activos.
               </p>
             </Link>
           )}
