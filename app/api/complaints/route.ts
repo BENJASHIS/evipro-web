@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { validateComplaint } from '@/lib/complaints'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
+import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
 
 function generateCode(): string {
   const year = new Date().getFullYear()
@@ -23,6 +24,11 @@ export async function POST(req: Request) {
   const trampa = (body as Record<string, unknown> | null)?.website
   if (typeof trampa === 'string' && trampa.trim() !== '') {
     return NextResponse.json({ ok: true })
+  }
+
+  const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
+  if (!turnstile.ok) {
+    return NextResponse.json({ error: turnstile.error }, { status: 403 })
   }
 
   const validada = validateComplaint(body)

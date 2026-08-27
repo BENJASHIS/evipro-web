@@ -1,8 +1,9 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 
-// ponytail: sin precios hardcodeados — son identificadores de servicio para el reclamo;
+// Sin precios hardcodeados: son identificadores de servicio para el reclamo;
 // los precios viven en membership_plans (Supabase) y aquí solo se desfasarían.
 const SERVICIOS = [
   'Membresía Básica',
@@ -31,6 +32,8 @@ export default function LibroReclamacionesPage() {
   const [loading, setLoading] = useState(false)
   const [code, setCode] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -40,13 +43,17 @@ export default function LibroReclamacionesPage() {
     e.preventDefault()
     const trampa = new FormData(e.currentTarget).get('website')
     if (typeof trampa === 'string' && trampa.trim()) return
+    if (TURNSTILE_CLIENT_ENABLED && !turnstileToken) {
+      setError('Completa la verificación anti-bot.')
+      return
+    }
     setLoading(true)
     setError(null)
 
     const res = await fetch('/api/complaints', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, website: trampa }),
+      body: JSON.stringify({ ...form, website: trampa, turnstile_token: turnstileToken }),
     })
 
     if (res.ok) {
@@ -55,6 +62,8 @@ export default function LibroReclamacionesPage() {
     } else {
       const data = await res.json()
       setError(data.error ?? 'Error al enviar. Intenta de nuevo.')
+      setTurnstileToken('')
+      setTurnstileReset(prev => prev + 1)
     }
     setLoading(false)
   }
@@ -157,9 +166,15 @@ export default function LibroReclamacionesPage() {
               className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand resize-none" />
           </div>
 
+          <Turnstile
+            action="reclamaciones"
+            resetSignal={turnstileReset}
+            onVerify={setTurnstileToken}
+          />
+
           {error && <p className="text-red-400 text-xs">{error}</p>}
 
-          <button type="submit" disabled={loading}
+          <button type="submit" disabled={loading || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
             className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50">
             {loading ? 'Registrando...' : 'Registrar reclamación'}
           </button>

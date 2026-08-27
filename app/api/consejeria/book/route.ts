@@ -5,6 +5,7 @@ import { MODALITY_LABELS, MODALITY_PRICES, getPrice, getPaymentMethod } from '@/
 import { validateBookingInput } from '@/lib/booking-validation'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
+import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
 
 interface BookingBody {
   doctor_slug: string
@@ -35,6 +36,10 @@ export async function POST(req: NextRequest) {
   }
   const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note })
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
+  const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
+  if (!turnstile.ok) {
+    return NextResponse.json({ error: turnstile.error }, { status: 403 })
+  }
 
   // Frontera de confianza: el precio, el método y el estado de pago se DERIVAN en
   // el servidor. Nunca se aceptan del cliente (si no, cualquiera reserva "pagado

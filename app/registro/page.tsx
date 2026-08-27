@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
 import Marca from '@/app/components/ui/Marca'
 import PasswordInput from '@/app/components/ui/PasswordInput'
+import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 import type { DocType } from '@/lib/types'
 
 const DOC_TYPES: { value: DocType; label: string }[] = [
@@ -43,6 +44,8 @@ export default function RegistroPage() {
   })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
   const router = useRouter()
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
@@ -51,8 +54,7 @@ export default function RegistroPage() {
 
   async function handleRegistro(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    // ponytail: trampa para bots — un campo que un humano nunca ve ni llena.
-    // Si aparece spam real de verdad, encima de esto va Turnstile.
+    // Trampa para bots: un campo que un humano nunca ve ni llena.
     if ((new FormData(e.currentTarget).get('website') as string)?.trim()) return
     setError(null)
     if (form.password.length < MIN_PASSWORD) {
@@ -63,16 +65,29 @@ export default function RegistroPage() {
       setError('Las contraseñas no coinciden.')
       return
     }
+    if (TURNSTILE_CLIENT_ENABLED && !turnstileToken) {
+      setError('Completa la verificación anti-bot.')
+      return
+    }
     setLoading(true)
     const supabase = createClient()
 
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-      options: { emailRedirectTo: `${location.origin}/miembros` },
+      options: {
+        emailRedirectTo: `${location.origin}/miembros`,
+        ...(turnstileToken ? { captchaToken: turnstileToken } : {}),
+      },
     })
 
-    if (signUpError) { setError(signUpError.message); setLoading(false); return }
+    if (signUpError) {
+      setTurnstileToken('')
+      setTurnstileReset(prev => prev + 1)
+      setError(signUpError.message)
+      setLoading(false)
+      return
+    }
 
     if (data.user) {
       const profileRes = await fetch('/api/profile', {
@@ -273,11 +288,18 @@ export default function RegistroPage() {
             ))}
           </fieldset>
 
+          <Turnstile
+            action="registro"
+            resetSignal={turnstileReset}
+            onVerify={setTurnstileToken}
+            className="pt-1"
+          />
+
           {error && <p className="text-red-400 text-xs">{error}</p>}
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
             className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50"
           >
             {loading ? 'Creando cuenta...' : 'Crear cuenta'}

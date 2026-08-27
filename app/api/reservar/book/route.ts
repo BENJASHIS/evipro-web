@@ -3,6 +3,7 @@ import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-
 import { precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
 import { validateBookingInput } from '@/lib/booking-validation'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
+import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
 
 interface ReservaBody {
   doctor_slug: string
@@ -33,6 +34,10 @@ export async function POST(req: NextRequest) {
   }
   const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note })
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
+  const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
+  if (!turnstile.ok) {
+    return NextResponse.json({ error: turnstile.error }, { status: 403 })
+  }
 
   // Frontera de confianza: el precio se DERIVA en el servidor (nominal de referencia).
   // Cobro manual: paid=false, payment_method='manual' — el médico cobra y aplica la escalera.

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 import { PLAN_DISPLAY_NAMES, PERIOD_LABELS, type MembershipPlan, type PlanAddon } from '@/lib/types'
 
 // Modal que corta el pago cuando el usuario no está autenticado (401 del server).
@@ -64,6 +65,8 @@ function CheckoutForm() {
   const [error, setError] = useState<string | null>(null)
   const [legalAccepted, setLegalAccepted] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
 
   const isTurista = plan?.type === 'turista_inicio' || plan?.type === 'turista_plus'
   const isQuincenal = plan?.period === 'quincenal'
@@ -88,6 +91,10 @@ function CheckoutForm() {
 
   async function handlePagar() {
     if (!plan) return
+    if (TURNSTILE_CLIENT_ENABLED && !turnstileToken) {
+      setError('Completa la verificación anti-bot.')
+      return
+    }
     setLoading(true)
     setError(null)
 
@@ -95,11 +102,13 @@ function CheckoutForm() {
       const res = await fetch('/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan_id: plan.id, addon_ids: addonIds }),
+        body: JSON.stringify({ plan_id: plan.id, addon_ids: addonIds, turnstile_token: turnstileToken }),
       })
       if (res.status === 401) {
         // No autenticado: no se inicia el pago, se pide crear cuenta / iniciar sesión.
         setShowAuthModal(true)
+        setTurnstileToken('')
+        setTurnstileReset(prev => prev + 1)
         setLoading(false)
         return
       }
@@ -109,10 +118,14 @@ function CheckoutForm() {
         window.location.href = data.init_point
       } else {
         setError(data.error ?? 'Error al procesar el pago.')
+        setTurnstileToken('')
+        setTurnstileReset(prev => prev + 1)
         setLoading(false)
       }
     } catch {
       setError('Error de red. Intenta de nuevo.')
+      setTurnstileToken('')
+      setTurnstileReset(prev => prev + 1)
       setLoading(false)
     }
   }
@@ -183,9 +196,16 @@ function CheckoutForm() {
         </label>
       )}
 
+      <Turnstile
+        action="checkout"
+        resetSignal={turnstileReset}
+        onVerify={setTurnstileToken}
+        className="mb-4"
+      />
+
       <button
         onClick={handlePagar}
-        disabled={loading || (isTurista && !legalAccepted)}
+        disabled={loading || (isTurista && !legalAccepted) || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
         className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white rounded transition-colors disabled:opacity-50 text-sm"
       >
         {loading ? 'Redirigiendo...' : 'Pagar con Mercado Pago'}

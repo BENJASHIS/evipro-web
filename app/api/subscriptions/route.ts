@@ -5,6 +5,7 @@ import { buildCartItems, computeCartTotal } from '@/lib/billing'
 import { PLAN_DISPLAY_NAMES } from '@/lib/types'
 import { MEMBERSHIP_PLAN_PUBLIC_COLUMNS } from '@/lib/db-columns'
 import { checkRateLimitForKey, rateLimitResponse } from '@/lib/rate-limit'
+import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
@@ -25,6 +26,10 @@ export async function POST(req: NextRequest) {
   }
   if (addon_ids != null && (!Array.isArray(addon_ids) || addon_ids.some(id => typeof id !== 'string'))) {
     return NextResponse.json({ error: 'Módulos inválidos' }, { status: 400 })
+  }
+  const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
+  if (!turnstile.ok) {
+    return NextResponse.json({ error: turnstile.error }, { status: 403 })
   }
   const addonIds: string[] = Array.isArray(addon_ids) ? addon_ids : []
 

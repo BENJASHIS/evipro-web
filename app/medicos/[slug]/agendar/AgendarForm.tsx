@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 import type { Doctor } from '@/lib/doctors'
 import { MODALITY_LABELS, MODALITY_DURATION, getPrice, type Modality } from '@/lib/counseling'
 import { CONSULTA_MODALITY_LABELS, escaleraReserva, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
@@ -43,6 +44,8 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const [bookingId, setBookingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [bookedSlots, setBookedSlots] = useState<Set<string>>(new Set())
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
 
   const SCHEDULE = doctor.counseling?.schedule ?? ['09:00', '10:00', '11:00', '14:00', '15:00', '17:00']
   const weekdays = getWeekdays(7)
@@ -73,6 +76,10 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
 
   async function submit() {
     if (!modality) return
+    if (TURNSTILE_CLIENT_ENABLED && !turnstileToken) {
+      setError('Completa la verificación anti-bot.')
+      return
+    }
     setLoading(true)
     setError(null)
     try {
@@ -88,12 +95,15 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             patient_name: name,
             patient_phone: phone,
             patient_note: note || null,
+            turnstile_token: turnstileToken,
           }),
         })
         if (res.ok) setBookingId(((await res.json()) as { booking_id: string }).booking_id)
         else {
           const data = await res.json().catch(() => null) as { error?: string } | null
           setError(data?.error ?? 'Error al guardar la solicitud. Intenta de nuevo.')
+          setTurnstileToken('')
+          setTurnstileReset(prev => prev + 1)
         }
       } else {
         const res = await fetch('/api/consejeria/book', {
@@ -111,6 +121,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             price_soles: price ?? 0,
             paid: true,
             payment_method: 'mercadopago',
+            turnstile_token: turnstileToken,
           }),
         })
         if (res.ok) {
@@ -120,10 +131,14 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
         } else {
           const err = await res.json().catch(() => null) as { error?: string } | null
           setError(err?.error ?? 'Error al guardar la reserva. Intenta de nuevo.')
+          setTurnstileToken('')
+          setTurnstileReset(prev => prev + 1)
         }
       }
     } catch {
       setError('No se pudo conectar. Revisa tu internet e intenta de nuevo.')
+      setTurnstileToken('')
+      setTurnstileReset(prev => prev + 1)
     } finally {
       setLoading(false)
     }
@@ -159,7 +174,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
 
   const slotOk = !modality || !needsSlot(modality) || (selectedDate !== null && selectedTime !== null)
   const showData = modality !== null && slotOk
-  const canSubmit = showData && name.trim() !== '' && phone.trim() !== ''
+  const canSubmit = showData && name.trim() !== '' && phone.trim() !== '' && (!TURNSTILE_CLIENT_ENABLED || turnstileToken)
   const submitLabel = modality && isConsulta(modality)
     ? 'Solicitar consulta →'
     : price !== null ? `Pagar S/. ${price} →` : 'Solicitar →'
@@ -303,13 +318,21 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
       {error && <p className="text-red-400 text-xs font-mono">{error}</p>}
 
       {showData && (
-        <button
-          disabled={!canSubmit || loading}
-          onClick={submit}
-          className="w-full py-2.5 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-40 font-mono"
-        >
-          {loading ? 'Enviando...' : submitLabel}
-        </button>
+        <>
+          <Turnstile
+            action="agendar"
+            resetSignal={turnstileReset}
+            onVerify={setTurnstileToken}
+          />
+
+          <button
+            disabled={!canSubmit || loading}
+            onClick={submit}
+            className="w-full py-2.5 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-40 font-mono"
+          >
+            {loading ? 'Enviando...' : submitLabel}
+          </button>
+        </>
       )}
 
       <p className="text-xs text-faint font-mono">
