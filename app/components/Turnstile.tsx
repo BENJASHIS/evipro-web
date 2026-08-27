@@ -3,6 +3,8 @@
 import Script from 'next/script'
 import { useEffect, useRef, useState } from 'react'
 
+type TurnstileAppearance = 'always' | 'execute' | 'interaction-only'
+
 type TurnstileApi = {
   render: (
     container: HTMLElement,
@@ -12,6 +14,7 @@ type TurnstileApi = {
       size?: 'normal' | 'compact' | 'flexible'
       language?: string
       action?: string
+      appearance?: TurnstileAppearance
       callback?: (token: string) => void
       'expired-callback'?: () => void
       'error-callback'?: () => void
@@ -29,6 +32,7 @@ declare global {
 
 interface TurnstileProps {
   action: string
+  appearance?: TurnstileAppearance
   className?: string
   onVerify: (token: string) => void
   onError?: () => void
@@ -41,6 +45,7 @@ export const TURNSTILE_CLIENT_ENABLED = TURNSTILE_SITE_KEY.trim().length > 0
 
 export default function Turnstile({
   action,
+  appearance = 'interaction-only',
   className,
   onVerify,
   onError,
@@ -67,6 +72,7 @@ export default function Turnstile({
       size: 'flexible',
       language: 'es',
       action,
+      appearance,
       callback: token => callbacksRef.current.onVerify(token),
       'expired-callback': () => {
         callbacksRef.current.onVerify('')
@@ -84,7 +90,7 @@ export default function Turnstile({
         widgetIdRef.current = null
       }
     }
-  }, [action, scriptReady])
+  }, [action, appearance, scriptReady])
 
   useEffect(() => {
     if (!resetSignal || !widgetIdRef.current || !window.turnstile) return
@@ -101,7 +107,7 @@ export default function Turnstile({
         strategy="afterInteractive"
         onReady={() => setScriptReady(true)}
       />
-      <div ref={containerRef} className="min-h-[65px]" />
+      <div ref={containerRef} className={appearance === 'always' ? 'min-h-[65px]' : undefined} />
     </div>
   )
 }
