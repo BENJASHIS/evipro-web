@@ -4,7 +4,8 @@ import { useId, useMemo, useState, type ReactNode } from 'react'
 import {
   calculateInhalationMetrics,
   calculateOilMetrics,
-  type CannabinoidInputMode,
+  type InhalationInputMode,
+  type OilInputMode,
 } from '@/lib/cannabinoid-calculator'
 
 type ProductKind = 'oil' | 'inhalation'
@@ -12,16 +13,26 @@ type ProductKind = 'oil' | 'inhalation'
 const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand'
 const LABEL = 'block text-xs text-muted mb-1 uppercase tracking-widest'
 
-const INPUT_MODE_OPTIONS: { value: CannabinoidInputMode; label: string; suffix: string }[] = [
-  { value: 'total_mg', label: 'mg total en el envase', suffix: 'mg' },
-  { value: 'mg_per_ml', label: 'mg por ml', suffix: 'mg/ml' },
+const OIL_INPUT_MODE_OPTIONS: { value: OilInputMode; label: string; suffix: string }[] = [
   { value: 'percent_weight_volume', label: '% p/v peso/volumen', suffix: '%' },
+  { value: 'mg_per_ml', label: 'mg por ml', suffix: 'mg/ml' },
+  { value: 'total_mg', label: 'mg total en el envase', suffix: 'mg' },
 ]
 
-const MODE_HELP: Record<CannabinoidInputMode, string> = {
-  total_mg: 'mg/ml = mg total ÷ volumen del envase',
-  mg_per_ml: 'mg total = mg/ml × volumen del envase',
-  percent_weight_volume: '1% p/v equivale a 10 mg/ml',
+const INHALATION_INPUT_MODE_OPTIONS: { value: InhalationInputMode; label: string; suffix: string }[] = [
+  { value: 'percent_of_product', label: '% del producto', suffix: '%' },
+  { value: 'total_mg', label: 'mg total declarado', suffix: 'mg' },
+]
+
+const OIL_HELP: Record<OilInputMode, string> = {
+  percent_weight_volume: '% p/v significa peso/volumen: gramos de CBD o THC por cada 100 ml. Ej.: 10% p/v = 100 mg/ml.',
+  mg_per_ml: 'Con mg/ml, el total sale multiplicando concentración por volumen del frasco.',
+  total_mg: 'Con mg total, la concentración sale dividiendo el contenido entre el volumen del frasco.',
+}
+
+const INHALATION_HELP: Record<InhalationInputMode, string> = {
+  percent_of_product: 'Para inhalables, 66%, 68% o 70% suele significar porcentaje del producto, no p/v. Ej.: 70% en 1 g = 700 mg totales.',
+  total_mg: 'Usa mg total si la etiqueta declara directamente cuántos miligramos trae el cartucho o extracto.',
 }
 
 function numberFrom(value: string) {
@@ -74,6 +85,7 @@ function Field({
   onChange,
   step = '0.01',
   min = '0',
+  placeholder,
   suffix,
 }: {
   label: string
@@ -81,6 +93,7 @@ function Field({
   onChange: (value: string) => void
   step?: string
   min?: string
+  placeholder?: string
   suffix?: string
 }) {
   const id = useId()
@@ -95,6 +108,7 @@ function Field({
           inputMode="decimal"
           min={min}
           step={step}
+          placeholder={placeholder}
           value={value}
           onChange={e => onChange(e.target.value)}
           className={`${INPUT} ${suffix ? 'pr-16' : ''}`}
@@ -129,31 +143,41 @@ function PrimaryResult({ label, value }: { label: string; value: string }) {
 
 export default function CannabinoidCalculator() {
   const [productKind, setProductKind] = useState<ProductKind>('oil')
-  const [inputMode, setInputMode] = useState<CannabinoidInputMode>('total_mg')
-  const [volumeMl, setVolumeMl] = useState('30')
-  const [cbdValue, setCbdValue] = useState('1500')
-  const [thcValue, setThcValue] = useState('0')
+  const [oilInputMode, setOilInputMode] = useState<OilInputMode>('percent_weight_volume')
+  const [oilVolumeMl, setOilVolumeMl] = useState('10')
+  const [oilCbdValue, setOilCbdValue] = useState('10')
+  const [oilThcValue, setOilThcValue] = useState('0')
   const [dropsPerMl, setDropsPerMl] = useState('20')
-  const [dropsPerDose, setDropsPerDose] = useState('2')
-  const [dosesPerDay, setDosesPerDay] = useState('2')
+  const [dropsPerDose, setDropsPerDose] = useState('1')
+  const [dosesPerDay, setDosesPerDay] = useState('1')
+  const [inhalationInputMode, setInhalationInputMode] = useState<InhalationInputMode>('percent_of_product')
+  const [productGrams, setProductGrams] = useState('1')
+  const [inhalationCbdValue, setInhalationCbdValue] = useState('0')
+  const [inhalationThcValue, setInhalationThcValue] = useState('70')
   const [expectedInhalations, setExpectedInhalations] = useState('100')
 
-  const numeric = useMemo(() => ({
-    volumeMl: numberFrom(volumeMl),
-    cbdValue: numberFrom(cbdValue),
-    thcValue: numberFrom(thcValue),
+  const oilInput = useMemo(() => ({
+    inputMode: oilInputMode,
+    volumeMl: numberFrom(oilVolumeMl),
+    cbdValue: numberFrom(oilCbdValue),
+    thcValue: numberFrom(oilThcValue),
     dropsPerMl: numberFrom(dropsPerMl),
     dropsPerDose: numberFrom(dropsPerDose),
     dosesPerDay: numberFrom(dosesPerDay),
-    expectedInhalations: numberFrom(expectedInhalations),
-  }), [volumeMl, cbdValue, thcValue, dropsPerMl, dropsPerDose, dosesPerDay, expectedInhalations])
+  }), [oilInputMode, oilVolumeMl, oilCbdValue, oilThcValue, dropsPerMl, dropsPerDose, dosesPerDay])
 
-  const oil = useMemo(() => calculateOilMetrics({ inputMode, ...numeric }), [inputMode, numeric])
-  const inhalation = useMemo(() => calculateInhalationMetrics({ inputMode, ...numeric }), [inputMode, numeric])
-  const active = productKind === 'oil' ? oil : inhalation
-  const inputModeOption = INPUT_MODE_OPTIONS.find(option => option.value === inputMode) ?? INPUT_MODE_OPTIONS[0]
-  const cbdPercentEquivalent = active.cbdMgPerMl / 10
-  const thcPercentEquivalent = active.thcMgPerMl / 10
+  const inhalationInput = useMemo(() => ({
+    inputMode: inhalationInputMode,
+    productGrams: numberFrom(productGrams),
+    cbdValue: numberFrom(inhalationCbdValue),
+    thcValue: numberFrom(inhalationThcValue),
+    expectedInhalations: numberFrom(expectedInhalations),
+  }), [inhalationInputMode, productGrams, inhalationCbdValue, inhalationThcValue, expectedInhalations])
+
+  const oil = useMemo(() => calculateOilMetrics(oilInput), [oilInput])
+  const inhalation = useMemo(() => calculateInhalationMetrics(inhalationInput), [inhalationInput])
+  const oilInputModeOption = OIL_INPUT_MODE_OPTIONS.find(option => option.value === oilInputMode) ?? OIL_INPUT_MODE_OPTIONS[0]
+  const inhalationInputModeOption = INHALATION_INPUT_MODE_OPTIONS.find(option => option.value === inhalationInputMode) ?? INHALATION_INPUT_MODE_OPTIONS[0]
 
   return (
     <div className="space-y-6">
@@ -164,30 +188,45 @@ export default function CannabinoidCalculator() {
           <div className="grid gap-4 sm:grid-cols-2 mb-5">
             <SelectField label="Tipo de producto" value={productKind} onChange={value => setProductKind(value as ProductKind)}>
               <option value="oil" className="bg-ink">Aceite / gotas</option>
-              <option value="inhalation" className="bg-ink">Inhalaciones</option>
+              <option value="inhalation" className="bg-ink">Inhalable / cartucho</option>
             </SelectField>
 
-            <SelectField label="La etiqueta muestra" value={inputMode} onChange={value => setInputMode(value as CannabinoidInputMode)}>
-              {INPUT_MODE_OPTIONS.map(option => (
-                <option key={option.value} value={option.value} className="bg-ink">{option.label}</option>
-              ))}
-            </SelectField>
+            {productKind === 'oil' ? (
+              <SelectField label="La etiqueta muestra" value={oilInputMode} onChange={value => setOilInputMode(value as OilInputMode)}>
+                {OIL_INPUT_MODE_OPTIONS.map(option => (
+                  <option key={option.value} value={option.value} className="bg-ink">{option.label}</option>
+                ))}
+              </SelectField>
+            ) : (
+              <SelectField label="La etiqueta muestra" value={inhalationInputMode} onChange={value => setInhalationInputMode(value as InhalationInputMode)}>
+                {INHALATION_INPUT_MODE_OPTIONS.map(option => (
+                  <option key={option.value} value={option.value} className="bg-ink">{option.label}</option>
+                ))}
+              </SelectField>
+            )}
           </div>
 
-          <p className="text-xs text-faint font-mono mb-5">{MODE_HELP[inputMode]}</p>
+          <p className="text-xs leading-5 text-faint mb-5">
+            {productKind === 'oil' ? OIL_HELP[oilInputMode] : INHALATION_HELP[inhalationInputMode]}
+          </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Volumen del envase" value={volumeMl} onChange={setVolumeMl} suffix="ml" />
-            <Field label="CBD declarado" value={cbdValue} onChange={setCbdValue} suffix={inputModeOption.suffix} />
-            <Field label="THC declarado" value={thcValue} onChange={setThcValue} suffix={inputModeOption.suffix} />
             {productKind === 'oil' ? (
               <>
+                <Field label="Volumen del frasco" value={oilVolumeMl} onChange={setOilVolumeMl} placeholder="10" suffix="ml" />
+                <Field label="CBD declarado" value={oilCbdValue} onChange={setOilCbdValue} placeholder="10" suffix={oilInputModeOption.suffix} />
+                <Field label="THC declarado" value={oilThcValue} onChange={setOilThcValue} placeholder="0" suffix={oilInputModeOption.suffix} />
                 <Field label="Gotas por ml" value={dropsPerMl} onChange={setDropsPerMl} step="1" suffix="gotas" />
                 <Field label="Gotas por toma" value={dropsPerDose} onChange={setDropsPerDose} step="1" suffix="gotas" />
                 <Field label="Tomas por día" value={dosesPerDay} onChange={setDosesPerDay} step="0.5" suffix="x día" />
               </>
             ) : (
-              <Field label="Inhalaciones estimadas" value={expectedInhalations} onChange={setExpectedInhalations} step="1" suffix="inh." />
+              <>
+                <Field label="Contenido del producto" value={productGrams} onChange={setProductGrams} step="0.1" placeholder="1" suffix="g" />
+                <Field label="CBD declarado" value={inhalationCbdValue} onChange={setInhalationCbdValue} placeholder="0" suffix={inhalationInputModeOption.suffix} />
+                <Field label="THC declarado" value={inhalationThcValue} onChange={setInhalationThcValue} placeholder="70" suffix={inhalationInputModeOption.suffix} />
+                <Field label="Inhalaciones estimadas" value={expectedInhalations} onChange={setExpectedInhalations} step="1" placeholder="100" suffix="inh." />
+              </>
             )}
           </div>
         </section>
@@ -196,21 +235,40 @@ export default function CannabinoidCalculator() {
           <p className="text-xs font-mono uppercase tracking-widest text-brand mb-5">Resultado</p>
 
           <div className="space-y-4 mb-5">
-            <PrimaryResult
-              label="Concentración equivalente"
-              value={formatPair(active.cbdMgPerMl, active.thcMgPerMl, 'mg/ml')}
-            />
-            <PrimaryResult
-              label="Porcentaje equivalente"
-              value={formatPair(cbdPercentEquivalent, thcPercentEquivalent, '% p/v')}
-            />
-            <PrimaryResult
-              label="Total del envase"
-              value={formatPair(active.cbdTotalMg, active.thcTotalMg, 'mg')}
-            />
+            {productKind === 'oil' ? (
+              <>
+                <PrimaryResult
+                  label="Concentración"
+                  value={formatPair(oil.cbdMgPerMl, oil.thcMgPerMl, 'mg/ml')}
+                />
+                <PrimaryResult
+                  label="% p/v equivalente"
+                  value={formatPair(oil.cbdPercentWeightVolume, oil.thcPercentWeightVolume, '% p/v')}
+                />
+                <PrimaryResult
+                  label="Total del frasco"
+                  value={formatPair(oil.cbdTotalMg, oil.thcTotalMg, 'mg')}
+                />
+              </>
+            ) : (
+              <>
+                <PrimaryResult
+                  label="Contenido estimado"
+                  value={formatPair(inhalation.cbdTotalMg, inhalation.thcTotalMg, 'mg')}
+                />
+                <PrimaryResult
+                  label="% del producto"
+                  value={formatPair(inhalation.cbdPercentOfProduct, inhalation.thcPercentOfProduct, '%')}
+                />
+                <PrimaryResult
+                  label="Por inhalación teórica"
+                  value={formatPair(inhalation.cbdMgPerInhalation, inhalation.thcMgPerInhalation, 'mg', 3)}
+                />
+              </>
+            )}
           </div>
 
-          <ResultRow label="Relación" value={active.ratio} />
+          <ResultRow label="Relación" value={productKind === 'oil' ? oil.ratio : inhalation.ratio} />
 
           {productKind === 'oil' ? (
             <>
@@ -220,7 +278,7 @@ export default function CannabinoidCalculator() {
             </>
           ) : (
             <>
-              <ResultRow label="Por inhalación" value={formatPair(inhalation.cbdMgPerInhalation, inhalation.thcMgPerInhalation, 'mg', 3)} />
+              <ResultRow label="Producto" value={format(inhalation.productGrams, 'g', 2)} />
               <ResultRow label="Inhalaciones" value={format(inhalation.expectedInhalations, 'estimadas', 0)} />
             </>
           )}
@@ -230,8 +288,8 @@ export default function CannabinoidCalculator() {
       <section className="border border-yellow-400/30 bg-yellow-400/5 rounded-lg p-5">
         <p className="text-xs font-mono uppercase tracking-widest text-yellow-300 mb-2">Uso seguro</p>
         <p className="text-sm leading-6 text-yellow-50">
-          Esta calculadora solo convierte unidades declaradas en la etiqueta. No define dosis, frecuencia, absorción real ni cambios de tratamiento.
-          Si la etiqueta solo dice porcentaje sin indicar p/v, confirma el dato del producto antes de interpretarlo como mg/ml.
+          Esta calculadora solo convierte datos de etiqueta. En aceites, % p/v es peso/volumen; en inhalables, el porcentaje suele ser del producto.
+          No calcula absorción real, dosis clínica ni cambios de tratamiento.
         </p>
       </section>
     </div>

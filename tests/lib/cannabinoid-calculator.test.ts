@@ -4,6 +4,7 @@ import {
   calculateOilMetrics,
   cannabinoidRatio,
   concentrationFromInput,
+  inhalationTotalFromInput,
 } from '../../lib/cannabinoid-calculator'
 
 describe('cannabinoid calculator', () => {
@@ -15,38 +16,46 @@ describe('cannabinoid calculator', () => {
     expect(concentrationFromInput('percent_weight_volume', 10, 30)).toBe(100)
   })
 
-  it('calcula gotas, toma y duración aproximada para aceite', () => {
-    const result = calculateOilMetrics({
-      inputMode: 'total_mg',
-      volumeMl: 30,
-      cbdValue: 1500,
-      thcValue: 0,
-      dropsPerMl: 20,
-      dropsPerDose: 4,
-      dosesPerDay: 2,
-    })
-
-    expect(result.cbdMgPerMl).toBe(50)
-    expect(result.cbdMgPerDrop).toBe(2.5)
-    expect(result.cbdMgPerDose).toBe(10)
-    expect(result.totalDrops).toBe(600)
-    expect(result.dosesPerBottle).toBe(150)
-    expect(result.estimatedDays).toBe(75)
+  it('convierte porcentaje de inhalable a mg totales del producto', () => {
+    expect(inhalationTotalFromInput('percent_of_product', 70, 1)).toBe(700)
+    expect(inhalationTotalFromInput('percent_of_product', 66, 0.5)).toBe(330)
   })
 
-  it('calcula mg teóricos por inhalación desde volumen e inhalaciones estimadas', () => {
+  it('calcula gotas, toma y duración aproximada para aceite', () => {
+    const result = calculateOilMetrics({
+      inputMode: 'percent_weight_volume',
+      volumeMl: 10,
+      cbdValue: 10,
+      thcValue: 0,
+      dropsPerMl: 20,
+      dropsPerDose: 1,
+      dosesPerDay: 1,
+    })
+
+    expect(result.cbdMgPerMl).toBe(100)
+    expect(result.cbdPercentWeightVolume).toBe(10)
+    expect(result.cbdMgPerDrop).toBe(5)
+    expect(result.cbdMgPerDose).toBe(5)
+    expect(result.totalDrops).toBe(200)
+    expect(result.dosesPerBottle).toBe(200)
+    expect(result.estimatedDays).toBe(200)
+  })
+
+  it('calcula mg teóricos por inhalación desde porcentaje de producto', () => {
     const result = calculateInhalationMetrics({
-      inputMode: 'mg_per_ml',
-      volumeMl: 0.5,
-      cbdValue: 50,
-      thcValue: 10,
+      inputMode: 'percent_of_product',
+      productGrams: 1,
+      cbdValue: 0,
+      thcValue: 70,
       expectedInhalations: 100,
     })
 
-    expect(result.cbdTotalMg).toBe(25)
-    expect(result.thcTotalMg).toBe(5)
-    expect(result.cbdMgPerInhalation).toBe(0.25)
-    expect(result.thcMgPerInhalation).toBe(0.05)
+    expect(result.cbdTotalMg).toBe(0)
+    expect(result.thcTotalMg).toBe(700)
+    expect(result.cbdPercentOfProduct).toBe(0)
+    expect(result.thcPercentOfProduct).toBe(70)
+    expect(result.cbdMgPerInhalation).toBe(0)
+    expect(result.thcMgPerInhalation).toBe(7)
   })
 
   it('expresa la relación CBD:THC de forma legible', () => {

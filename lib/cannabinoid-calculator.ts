@@ -1,7 +1,9 @@
-export type CannabinoidInputMode = 'mg_per_ml' | 'total_mg' | 'percent_weight_volume'
+export type OilInputMode = 'mg_per_ml' | 'total_mg' | 'percent_weight_volume'
+export type CannabinoidInputMode = OilInputMode
+export type InhalationInputMode = 'percent_of_product' | 'total_mg'
 
 export type OilCalculatorInput = {
-  inputMode: CannabinoidInputMode
+  inputMode: OilInputMode
   volumeMl: number
   cbdValue: number
   thcValue: number
@@ -11,8 +13,8 @@ export type OilCalculatorInput = {
 }
 
 export type InhalationCalculatorInput = {
-  inputMode: CannabinoidInputMode
-  volumeMl: number
+  inputMode: InhalationInputMode
+  productGrams: number
   cbdValue: number
   thcValue: number
   expectedInhalations: number
@@ -30,7 +32,7 @@ export function roundTo(value: number, decimals = 2) {
 }
 
 export function concentrationFromInput(
-  mode: CannabinoidInputMode,
+  mode: OilInputMode,
   value: number,
   volumeMl: number,
 ) {
@@ -41,6 +43,30 @@ export function concentrationFromInput(
   if (mode === 'percent_weight_volume') return safeValue * 10
   if (!safeVolume) return 0
   return safeValue / safeVolume
+}
+
+export function percentWeightVolumeFromConcentration(mgPerMl: number) {
+  return positive(mgPerMl) / 10
+}
+
+export function inhalationTotalFromInput(
+  mode: InhalationInputMode,
+  value: number,
+  productGrams: number,
+) {
+  const safeValue = positive(value)
+  const safeGrams = positive(productGrams)
+
+  if (mode === 'percent_of_product') return safeGrams * 1000 * (safeValue / 100)
+  return safeValue
+}
+
+export function percentOfProductFromTotal(totalMg: number, productGrams: number) {
+  const safeTotal = positive(totalMg)
+  const safeGrams = positive(productGrams)
+
+  if (!safeGrams) return 0
+  return (safeTotal / (safeGrams * 1000)) * 100
 }
 
 export function cannabinoidRatio(cbdMgPerMl: number, thcMgPerMl: number) {
@@ -89,6 +115,8 @@ export function calculateOilMetrics(input: OilCalculatorInput) {
     thcMgPerDose: roundTo(thcMgPerDrop * dropsPerDose, 3),
     cbdTotalMg: roundTo(cbdMgPerMl * volumeMl),
     thcTotalMg: roundTo(thcMgPerMl * volumeMl),
+    cbdPercentWeightVolume: roundTo(percentWeightVolumeFromConcentration(cbdMgPerMl), 2),
+    thcPercentWeightVolume: roundTo(percentWeightVolumeFromConcentration(thcMgPerMl), 2),
     totalDrops: roundTo(totalDrops),
     dosesPerBottle: roundTo(dosesPerBottle),
     estimatedDays: roundTo(dosesPerBottle && dosesPerDay ? dosesPerBottle / dosesPerDay : 0),
@@ -97,21 +125,22 @@ export function calculateOilMetrics(input: OilCalculatorInput) {
 }
 
 export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
-  const volumeMl = positive(input.volumeMl)
+  const productGrams = positive(input.productGrams)
   const expectedInhalations = positive(input.expectedInhalations)
-  const cbdMgPerMl = concentrationFromInput(input.inputMode, input.cbdValue, volumeMl)
-  const thcMgPerMl = concentrationFromInput(input.inputMode, input.thcValue, volumeMl)
-  const cbdTotalMg = cbdMgPerMl * volumeMl
-  const thcTotalMg = thcMgPerMl * volumeMl
+  const cbdTotalMg = inhalationTotalFromInput(input.inputMode, input.cbdValue, productGrams)
+  const thcTotalMg = inhalationTotalFromInput(input.inputMode, input.thcValue, productGrams)
+  const cbdPercentOfProduct = percentOfProductFromTotal(cbdTotalMg, productGrams)
+  const thcPercentOfProduct = percentOfProductFromTotal(thcTotalMg, productGrams)
 
   return {
-    cbdMgPerMl: roundTo(cbdMgPerMl),
-    thcMgPerMl: roundTo(thcMgPerMl),
     cbdTotalMg: roundTo(cbdTotalMg),
     thcTotalMg: roundTo(thcTotalMg),
+    cbdPercentOfProduct: roundTo(cbdPercentOfProduct, 2),
+    thcPercentOfProduct: roundTo(thcPercentOfProduct, 2),
     cbdMgPerInhalation: roundTo(expectedInhalations ? cbdTotalMg / expectedInhalations : 0, 3),
     thcMgPerInhalation: roundTo(expectedInhalations ? thcTotalMg / expectedInhalations : 0, 3),
     expectedInhalations: roundTo(expectedInhalations),
-    ratio: cannabinoidRatio(cbdMgPerMl, thcMgPerMl),
+    productGrams: roundTo(productGrams, 3),
+    ratio: cannabinoidRatio(cbdTotalMg, thcTotalMg),
   }
 }
