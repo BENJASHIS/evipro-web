@@ -185,8 +185,9 @@ export const MEDICO = {
 
 export const MEMBRESIA = {
   titulo: '¿Vas a venir más de una vez?',
-  texto: 'La membresía EVIPro abarata cada consulta y te da seguimiento entre visitas',
-  cta: 'Ver planes',
+  texto:
+    'La membresía EVIPro abre tu panel de seguimiento, herramientas para miembros y mejores tarifas entre visitas',
+  cta: 'Ver membresía y herramientas',
 }
 
 /** Lo que ve alguien en Google ANTES de hacer clic — o sea, la primera línea de

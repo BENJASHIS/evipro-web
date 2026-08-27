@@ -40,9 +40,9 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
         <span className="text-xs font-mono text-brand uppercase tracking-widest">Recomendado</span>
       </div>
       <p className="text-muted text-sm mb-6">
-        Incluye evaluación y seguimiento en cannabis medicinal; receta solo si corresponde,
-        apoyo RENPUC y coordinación documentaria con farmacia autorizada. EVIPro no vende,
-        almacena ni dispensa productos de cannabis.
+        Activa el panel de seguimiento para pacientes continuadores: herramientas para miembros,
+        mensajes, biblioteca, sorteos y condiciones preferentes para consultas. Si corresponde,
+        incluye apoyo RENPUC, receta y coordinación documentaria con farmacia autorizada.
       </p>
 
       {/* Qué incluye EVIPro + precios de consulta de miembro */}
@@ -50,6 +50,8 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
         <div className="border border-subtle rounded p-4 mb-6 bg-white/[0.02]">
           <p className="text-xs text-muted mb-3">Tus consultas como miembro: <LineaConsultas tarifa="evipro" /></p>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono text-brand">
+            <span>✓ Herramientas para miembros</span>
+            <span>✓ Biblioteca y sorteos</span>
             {ref.includes_prescription && <span>✓ Receta si corresponde</span>}
             {ref.includes_renpuc_support && <span>✓ Apoyo RENPUC</span>}
             {ref.includes_pharmacy_coord && <span>✓ Coordinación con farmacia autorizada</span>}
@@ -102,7 +104,7 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
       {plan && (
         <div className="mt-4">
           <PlanCTA href={`/checkout?plan=${plan.id}${addonIds ? `&addons=${addonIds}` : ''}`} variant="primary">
-            Suscribirme →
+            Activar EVIPro →
           </PlanCTA>
         </div>
       )}

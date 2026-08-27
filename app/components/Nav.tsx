@@ -11,6 +11,7 @@ import Marca from '@/app/components/ui/Marca'
 const LINKS = [
   { href: '/aliados', label: 'Aliados' },
   { href: '/planes', label: 'Planes' },
+  { href: '/planes#turista', label: 'Turistas' },
   { href: '/registro', label: 'Unirme' },
   { href: '/login', label: 'Ingresar' },
 ]

@@ -25,14 +25,14 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
   const plan = useMemo(() => tipoPlans.find(p => p.period === period), [tipoPlans, period])
 
   return (
-    <div className="border border-subtle rounded-lg p-6 bg-white/[0.02]">
+    <div className="border border-yellow-400/40 rounded-lg p-6 bg-yellow-400/5">
       <div className="flex items-baseline justify-between mb-1">
         <h3 className="text-2xl font-light">Plan Turista</h3>
-        <span className="text-xs font-mono text-faint uppercase tracking-widest">100% virtual</span>
+        <span className="text-xs font-mono text-yellow-400 uppercase tracking-widest">100% virtual</span>
       </div>
       <p className="text-muted text-sm mb-6">
-        Inicia el procedimiento antes de viajar: consulta virtual, apoyo RENPUC y coordinación
-        documentaria con farmacia autorizada. EVIPro no vende ni dispensa productos de cannabis.
+        Inicia el procedimiento con anticipación. Elige la ruta según tu experiencia previa,
+        define la duración y pasa al checkout con las condiciones legales visibles.
       </p>
 
       {/* Tipo */}
@@ -44,7 +44,7 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
             <button
               key={t.key}
               onClick={() => setTipo(t.key)}
-              className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand ${tipo === t.key ? 'border-brand text-white' : 'border-subtle text-muted hover:border-white/40'}`}
+              className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-400 ${tipo === t.key ? 'border-yellow-400 text-white bg-yellow-400/10' : 'border-subtle text-muted hover:border-yellow-400/50'}`}
             >
               {t.label}
             </button>
@@ -59,7 +59,7 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
           <button
             key={p}
             onClick={() => setPeriod(p)}
-            className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand ${period === p ? 'border-brand text-white' : 'border-subtle text-muted hover:border-white/40'}`}
+            className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-400 ${period === p ? 'border-yellow-400 text-white bg-yellow-400/10' : 'border-subtle text-muted hover:border-yellow-400/50'}`}
           >
             {PERIOD_LABELS[p]}
           </button>
@@ -75,7 +75,7 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
       </div>
       {plan && (
         <div className="mt-4">
-          <PlanCTA href={`/checkout?plan=${plan.id}`} variant="secondary">Reservar →</PlanCTA>
+          <PlanCTA href={`/checkout?plan=${plan.id}`} variant="turista">Preparar mi viaje →</PlanCTA>
         </div>
       )}
 

@@ -124,6 +124,6 @@ describe('Membresia', () => {
   it('sin precio disponible, no inventa uno', () => {
     const { container } = render(<Membresia desde={null} />)
     expect(container.textContent).not.toMatch(/S\/\.?\s?\d/)
-    expect(screen.getByRole('link', { name: /ver planes/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /membresía y herramientas/i })).toBeTruthy()
   })
 })
