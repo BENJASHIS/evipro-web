@@ -198,6 +198,7 @@ function CheckoutForm() {
 
       <Turnstile
         action="checkout"
+        appearance="always"
         resetSignal={turnstileReset}
         onVerify={setTurnstileToken}
         className="mb-4"

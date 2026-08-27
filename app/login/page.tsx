@@ -81,6 +81,7 @@ export default function LoginPage() {
 
           <Turnstile
             action="login"
+            appearance="always"
             resetSignal={turnstileReset}
             onVerify={setTurnstileToken}
           />

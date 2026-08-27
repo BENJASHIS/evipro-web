@@ -290,6 +290,7 @@ export default function RegistroPage() {
 
           <Turnstile
             action="registro"
+            appearance="always"
             resetSignal={turnstileReset}
             onVerify={setTurnstileToken}
             className="pt-1"

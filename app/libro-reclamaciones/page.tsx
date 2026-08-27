@@ -168,6 +168,7 @@ export default function LibroReclamacionesPage() {
 
           <Turnstile
             action="reclamaciones"
+            appearance="always"
             resetSignal={turnstileReset}
             onVerify={setTurnstileToken}
           />
