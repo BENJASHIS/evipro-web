@@ -40,7 +40,7 @@ export default async function CalculadoraCannabinoidePage() {
       <p className="text-xs font-mono uppercase tracking-widest text-brand mt-6 mb-2">Herramienta para miembros</p>
       <h1 className="text-3xl font-light mb-3">Calculadora cannabinoide</h1>
       <p className="max-w-2xl text-sm leading-6 text-faint mb-8">
-        Convierte etiquetas de aceites a mg/ml y gotas; y etiquetas de inhalables a mg totales y contenido teórico por inhalación.
+        Convierte etiquetas de aceites, cartuchos, extractos y flor vaporizada a mg teóricos fáciles de leer.
       </p>
 
       <CannabinoidCalculator />

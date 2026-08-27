@@ -20,6 +20,13 @@ export type InhalationCalculatorInput = {
   expectedInhalations: number
 }
 
+export type FlowerCalculatorInput = {
+  flowerGrams: number
+  cbdPercent: number
+  thcPercent: number
+  expectedInhalations: number
+}
+
 export const DEFAULT_DROPS_PER_ML = 20
 
 function positive(value: number) {
@@ -141,6 +148,25 @@ export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
     thcMgPerInhalation: roundTo(expectedInhalations ? thcTotalMg / expectedInhalations : 0, 3),
     expectedInhalations: roundTo(expectedInhalations),
     productGrams: roundTo(productGrams, 3),
+    ratio: cannabinoidRatio(cbdTotalMg, thcTotalMg),
+  }
+}
+
+export function calculateFlowerMetrics(input: FlowerCalculatorInput) {
+  const flowerGrams = positive(input.flowerGrams)
+  const expectedInhalations = positive(input.expectedInhalations)
+  const cbdTotalMg = inhalationTotalFromInput('percent_of_product', input.cbdPercent, flowerGrams)
+  const thcTotalMg = inhalationTotalFromInput('percent_of_product', input.thcPercent, flowerGrams)
+
+  return {
+    flowerGrams: roundTo(flowerGrams, 3),
+    cbdTotalMg: roundTo(cbdTotalMg),
+    thcTotalMg: roundTo(thcTotalMg),
+    cbdPercentOfFlower: roundTo(positive(input.cbdPercent), 2),
+    thcPercentOfFlower: roundTo(positive(input.thcPercent), 2),
+    cbdMgPerInhalation: roundTo(expectedInhalations ? cbdTotalMg / expectedInhalations : 0, 3),
+    thcMgPerInhalation: roundTo(expectedInhalations ? thcTotalMg / expectedInhalations : 0, 3),
+    expectedInhalations: roundTo(expectedInhalations),
     ratio: cannabinoidRatio(cbdTotalMg, thcTotalMg),
   }
 }

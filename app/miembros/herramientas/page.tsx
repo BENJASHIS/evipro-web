@@ -15,8 +15,15 @@ const TOOLS = [
     title: 'Calculadora cannabinoide',
     eyebrow: 'Disponible',
     href: '/miembros/herramientas/calculadora-cannabinoide',
-    body: 'Conversor orientativo de concentración, mg por ml, mg por gota y duración del frasco.',
+    body: 'Conversor orientativo para aceite, cartucho, extracto y flor vaporizada.',
     action: 'Abrir',
+  },
+  {
+    title: 'Bitácora de hábitos',
+    eyebrow: 'Próximo',
+    href: null,
+    body: 'Alcohol, agua, sueño, fármacos y comidas con registros simples y alertas prudentes.',
+    action: 'En diseño',
   },
   {
     title: 'Cuestionarios educativos',

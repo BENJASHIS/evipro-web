@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  calculateFlowerMetrics,
   calculateInhalationMetrics,
   calculateOilMetrics,
   cannabinoidRatio,
@@ -56,6 +57,20 @@ describe('cannabinoid calculator', () => {
     expect(result.thcPercentOfProduct).toBe(70)
     expect(result.cbdMgPerInhalation).toBe(0)
     expect(result.thcMgPerInhalation).toBe(7)
+  })
+
+  it('calcula contenido teórico de flor vaporizada por carga', () => {
+    const result = calculateFlowerMetrics({
+      flowerGrams: 0.1,
+      cbdPercent: 0,
+      thcPercent: 10,
+      expectedInhalations: 5,
+    })
+
+    expect(result.cbdTotalMg).toBe(0)
+    expect(result.thcTotalMg).toBe(10)
+    expect(result.thcPercentOfFlower).toBe(10)
+    expect(result.thcMgPerInhalation).toBe(2)
   })
 
   it('expresa la relación CBD:THC de forma legible', () => {

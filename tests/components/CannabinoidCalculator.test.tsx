@@ -48,4 +48,16 @@ describe('CannabinoidCalculator', () => {
     expect(screen.getByText('CBD 0 % · THC 68 %')).toBeInTheDocument()
     expect(screen.queryByText('% p/v equivalente')).not.toBeInTheDocument()
   })
+
+  it('calcula flor vaporizada por carga e inhalación teórica', () => {
+    render(<CannabinoidCalculator />)
+
+    fireEvent.change(screen.getByLabelText(/tipo de producto/i), { target: { value: 'flower' } })
+
+    expect(screen.getByText('Contenido por carga')).toBeInTheDocument()
+    expect(screen.getByText('CBD 0 mg · THC 10 mg')).toBeInTheDocument()
+    expect(screen.getByText('CBD 0 % · THC 10 %')).toBeInTheDocument()
+    expect(screen.getByText('CBD 0 mg · THC 2 mg')).toBeInTheDocument()
+    expect(screen.getByText('5 estimadas')).toBeInTheDocument()
+  })
 })

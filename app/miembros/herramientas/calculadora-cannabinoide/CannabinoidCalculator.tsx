@@ -2,13 +2,14 @@
 
 import { useId, useMemo, useState, type ReactNode } from 'react'
 import {
+  calculateFlowerMetrics,
   calculateInhalationMetrics,
   calculateOilMetrics,
   type InhalationInputMode,
   type OilInputMode,
 } from '@/lib/cannabinoid-calculator'
 
-type ProductKind = 'oil' | 'inhalation'
+type ProductKind = 'oil' | 'inhalation' | 'flower'
 
 const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand'
 const LABEL = 'block text-xs text-muted mb-1 uppercase tracking-widest'
@@ -85,6 +86,7 @@ function Field({
   onChange,
   step = '0.01',
   min = '0',
+  max,
   placeholder,
   suffix,
 }: {
@@ -93,6 +95,7 @@ function Field({
   onChange: (value: string) => void
   step?: string
   min?: string
+  max?: string
   placeholder?: string
   suffix?: string
 }) {
@@ -107,6 +110,7 @@ function Field({
           type="number"
           inputMode="decimal"
           min={min}
+          max={max}
           step={step}
           placeholder={placeholder}
           value={value}
@@ -155,6 +159,10 @@ export default function CannabinoidCalculator() {
   const [inhalationCbdValue, setInhalationCbdValue] = useState('0')
   const [inhalationThcValue, setInhalationThcValue] = useState('70')
   const [expectedInhalations, setExpectedInhalations] = useState('100')
+  const [flowerGrams, setFlowerGrams] = useState('0.1')
+  const [flowerCbdPercent, setFlowerCbdPercent] = useState('0')
+  const [flowerThcPercent, setFlowerThcPercent] = useState('10')
+  const [flowerInhalations, setFlowerInhalations] = useState('5')
 
   const oilInput = useMemo(() => ({
     inputMode: oilInputMode,
@@ -174,8 +182,16 @@ export default function CannabinoidCalculator() {
     expectedInhalations: numberFrom(expectedInhalations),
   }), [inhalationInputMode, productGrams, inhalationCbdValue, inhalationThcValue, expectedInhalations])
 
+  const flowerInput = useMemo(() => ({
+    flowerGrams: numberFrom(flowerGrams),
+    cbdPercent: numberFrom(flowerCbdPercent),
+    thcPercent: numberFrom(flowerThcPercent),
+    expectedInhalations: numberFrom(flowerInhalations),
+  }), [flowerGrams, flowerCbdPercent, flowerThcPercent, flowerInhalations])
+
   const oil = useMemo(() => calculateOilMetrics(oilInput), [oilInput])
   const inhalation = useMemo(() => calculateInhalationMetrics(inhalationInput), [inhalationInput])
+  const flower = useMemo(() => calculateFlowerMetrics(flowerInput), [flowerInput])
   const oilInputModeOption = OIL_INPUT_MODE_OPTIONS.find(option => option.value === oilInputMode) ?? OIL_INPUT_MODE_OPTIONS[0]
   const inhalationInputModeOption = INHALATION_INPUT_MODE_OPTIONS.find(option => option.value === inhalationInputMode) ?? INHALATION_INPUT_MODE_OPTIONS[0]
 
@@ -188,16 +204,19 @@ export default function CannabinoidCalculator() {
           <div className="grid gap-4 sm:grid-cols-2 mb-5">
             <SelectField label="Tipo de producto" value={productKind} onChange={value => setProductKind(value as ProductKind)}>
               <option value="oil" className="bg-ink">Aceite / gotas</option>
-              <option value="inhalation" className="bg-ink">Inhalable / cartucho</option>
+              <option value="inhalation" className="bg-ink">Cartucho / extracto</option>
+              <option value="flower" className="bg-ink">Flor vaporizada</option>
             </SelectField>
 
-            {productKind === 'oil' ? (
+            {productKind === 'oil' && (
               <SelectField label="La etiqueta muestra" value={oilInputMode} onChange={value => setOilInputMode(value as OilInputMode)}>
                 {OIL_INPUT_MODE_OPTIONS.map(option => (
                   <option key={option.value} value={option.value} className="bg-ink">{option.label}</option>
                 ))}
               </SelectField>
-            ) : (
+            )}
+
+            {productKind === 'inhalation' && (
               <SelectField label="La etiqueta muestra" value={inhalationInputMode} onChange={value => setInhalationInputMode(value as InhalationInputMode)}>
                 {INHALATION_INPUT_MODE_OPTIONS.map(option => (
                   <option key={option.value} value={option.value} className="bg-ink">{option.label}</option>
@@ -207,25 +226,34 @@ export default function CannabinoidCalculator() {
           </div>
 
           <p className="text-xs leading-5 text-faint mb-5">
-            {productKind === 'oil' ? OIL_HELP[oilInputMode] : INHALATION_HELP[inhalationInputMode]}
+            {productKind === 'oil' && OIL_HELP[oilInputMode]}
+            {productKind === 'inhalation' && INHALATION_HELP[inhalationInputMode]}
+            {productKind === 'flower' && 'Para flor vaporizada, usa el porcentaje de cannabinoides de la etiqueta y la cantidad de flor cargada. Ej.: 10% en 0.1 g = 10 mg totales teóricos.'}
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
             {productKind === 'oil' ? (
               <>
                 <Field label="Volumen del frasco" value={oilVolumeMl} onChange={setOilVolumeMl} placeholder="10" suffix="ml" />
-                <Field label="CBD declarado" value={oilCbdValue} onChange={setOilCbdValue} placeholder="10" suffix={oilInputModeOption.suffix} />
-                <Field label="THC declarado" value={oilThcValue} onChange={setOilThcValue} placeholder="0" suffix={oilInputModeOption.suffix} />
+                <Field label="CBD declarado" value={oilCbdValue} onChange={setOilCbdValue} max={oilInputMode === 'percent_weight_volume' ? '100' : undefined} placeholder="10" suffix={oilInputModeOption.suffix} />
+                <Field label="THC declarado" value={oilThcValue} onChange={setOilThcValue} max={oilInputMode === 'percent_weight_volume' ? '100' : undefined} placeholder="0" suffix={oilInputModeOption.suffix} />
                 <Field label="Gotas por ml" value={dropsPerMl} onChange={setDropsPerMl} step="1" suffix="gotas" />
                 <Field label="Gotas por toma" value={dropsPerDose} onChange={setDropsPerDose} step="1" suffix="gotas" />
                 <Field label="Tomas por día" value={dosesPerDay} onChange={setDosesPerDay} step="0.5" suffix="x día" />
               </>
-            ) : (
+            ) : productKind === 'inhalation' ? (
               <>
                 <Field label="Contenido del producto" value={productGrams} onChange={setProductGrams} step="0.1" placeholder="1" suffix="g" />
-                <Field label="CBD declarado" value={inhalationCbdValue} onChange={setInhalationCbdValue} placeholder="0" suffix={inhalationInputModeOption.suffix} />
-                <Field label="THC declarado" value={inhalationThcValue} onChange={setInhalationThcValue} placeholder="70" suffix={inhalationInputModeOption.suffix} />
+                <Field label="CBD declarado" value={inhalationCbdValue} onChange={setInhalationCbdValue} max={inhalationInputMode === 'percent_of_product' ? '100' : undefined} placeholder="0" suffix={inhalationInputModeOption.suffix} />
+                <Field label="THC declarado" value={inhalationThcValue} onChange={setInhalationThcValue} max={inhalationInputMode === 'percent_of_product' ? '100' : undefined} placeholder="70" suffix={inhalationInputModeOption.suffix} />
                 <Field label="Inhalaciones estimadas" value={expectedInhalations} onChange={setExpectedInhalations} step="1" placeholder="100" suffix="inh." />
+              </>
+            ) : (
+              <>
+                <Field label="Flor por carga" value={flowerGrams} onChange={setFlowerGrams} step="0.01" placeholder="0.1" suffix="g" />
+                <Field label="CBD en etiqueta" value={flowerCbdPercent} onChange={setFlowerCbdPercent} max="100" placeholder="0" suffix="%" />
+                <Field label="THC en etiqueta" value={flowerThcPercent} onChange={setFlowerThcPercent} max="100" placeholder="10" suffix="%" />
+                <Field label="Inhalaciones por carga" value={flowerInhalations} onChange={setFlowerInhalations} step="1" placeholder="5" suffix="inh." />
               </>
             )}
           </div>
@@ -250,7 +278,7 @@ export default function CannabinoidCalculator() {
                   value={formatPair(oil.cbdTotalMg, oil.thcTotalMg, 'mg')}
                 />
               </>
-            ) : (
+            ) : productKind === 'inhalation' ? (
               <>
                 <PrimaryResult
                   label="Contenido estimado"
@@ -265,10 +293,25 @@ export default function CannabinoidCalculator() {
                   value={formatPair(inhalation.cbdMgPerInhalation, inhalation.thcMgPerInhalation, 'mg', 3)}
                 />
               </>
+            ) : (
+              <>
+                <PrimaryResult
+                  label="Contenido por carga"
+                  value={formatPair(flower.cbdTotalMg, flower.thcTotalMg, 'mg')}
+                />
+                <PrimaryResult
+                  label="% en flor"
+                  value={formatPair(flower.cbdPercentOfFlower, flower.thcPercentOfFlower, '%')}
+                />
+                <PrimaryResult
+                  label="Por inhalación teórica"
+                  value={formatPair(flower.cbdMgPerInhalation, flower.thcMgPerInhalation, 'mg', 3)}
+                />
+              </>
             )}
           </div>
 
-          <ResultRow label="Relación" value={productKind === 'oil' ? oil.ratio : inhalation.ratio} />
+          <ResultRow label="Relación" value={productKind === 'oil' ? oil.ratio : productKind === 'inhalation' ? inhalation.ratio : flower.ratio} />
 
           {productKind === 'oil' ? (
             <>
@@ -276,10 +319,15 @@ export default function CannabinoidCalculator() {
               <ResultRow label="Por toma" value={formatPair(oil.cbdMgPerDose, oil.thcMgPerDose, 'mg', 3)} />
               <ResultRow label="Envase alcanza" value={`${format(oil.dosesPerBottle, 'tomas', 1)} · ${oil.estimatedDays ? format(oil.estimatedDays, 'días', 1) : 'sin tomas/día'}`} />
             </>
-          ) : (
+          ) : productKind === 'inhalation' ? (
             <>
               <ResultRow label="Producto" value={format(inhalation.productGrams, 'g', 2)} />
               <ResultRow label="Inhalaciones" value={format(inhalation.expectedInhalations, 'estimadas', 0)} />
+            </>
+          ) : (
+            <>
+              <ResultRow label="Flor por carga" value={format(flower.flowerGrams, 'g', 2)} />
+              <ResultRow label="Inhalaciones" value={format(flower.expectedInhalations, 'estimadas', 0)} />
             </>
           )}
         </aside>
@@ -288,8 +336,8 @@ export default function CannabinoidCalculator() {
       <section className="border border-yellow-400/30 bg-yellow-400/5 rounded-lg p-5">
         <p className="text-xs font-mono uppercase tracking-widest text-yellow-300 mb-2">Uso seguro</p>
         <p className="text-sm leading-6 text-yellow-50">
-          Esta calculadora solo convierte datos de etiqueta. En aceites, % p/v es peso/volumen; en inhalables, el porcentaje suele ser del producto.
-          No calcula absorción real, dosis clínica ni cambios de tratamiento.
+          Esta calculadora solo convierte datos de etiqueta. En aceites, % p/v es peso/volumen; en cartuchos y flor, el porcentaje suele ser del producto.
+          No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.
         </p>
       </section>
     </div>
