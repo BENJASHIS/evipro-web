@@ -20,10 +20,10 @@ const TOOLS = [
   },
   {
     title: 'Bitácora de hábitos',
-    eyebrow: 'Próximo',
-    href: null,
+    eyebrow: 'Disponible',
+    href: '/miembros/herramientas/habitos',
     body: 'Alcohol, agua, sueño, fármacos y comidas con registros simples y alertas prudentes.',
-    action: 'En diseño',
+    action: 'Abrir',
   },
   {
     title: 'Cuestionarios educativos',
