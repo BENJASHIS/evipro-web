@@ -7,6 +7,17 @@ import Marca from '@/app/components/ui/Marca'
 import PasswordInput from '@/app/components/ui/PasswordInput'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 
+function loginErrorMessage(error: { message?: string; code?: string }) {
+  const details = `${error.code ?? ''} ${error.message ?? ''}`.toLowerCase()
+  if (details.includes('captcha')) {
+    return 'No pudimos completar la verificación anti-bot. Recarga la página e intenta otra vez.'
+  }
+  if (details.includes('email_not_confirmed') || details.includes('email not confirmed')) {
+    return 'Confirma tu correo antes de ingresar.'
+  }
+  return 'Correo o contraseña incorrectos. Si ya tenías cuenta, recupera tu contraseña.'
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,7 +44,7 @@ export default function LoginPage() {
     if (error) {
       setTurnstileToken('')
       setTurnstileReset(prev => prev + 1)
-      setError('Correo o contraseña incorrectos.')
+      setError(loginErrorMessage(error))
       setLoading(false)
       return
     }
@@ -86,6 +97,12 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-xs text-faint mt-6">
+          <Link href="/recuperar-contrasena" className="text-brand hover:underline">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
+
+        <p className="text-center text-xs text-faint mt-3">
           ¿No tienes membresía?{' '}
           <Link href="/planes" className="text-brand hover:underline">Ver planes</Link>
         </p>

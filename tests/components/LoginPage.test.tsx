@@ -44,13 +44,23 @@ describe('LoginPage', () => {
     expect(mocks.refresh).toHaveBeenCalled()
   })
 
-  it('muestra un mensaje neutro cuando falla el login', async () => {
+  it('muestra un mensaje neutro cuando falla el login por credenciales', async () => {
     mocks.signInWithPassword.mockResolvedValueOnce({ error: new Error('invalid_credentials') })
     render(<LoginPage />)
     completarLogin()
 
     fireEvent.click(screen.getByRole('button', { name: /ingresar/i }))
 
-    expect(await screen.findByText('Correo o contraseña incorrectos.')).toBeInTheDocument()
+    expect(await screen.findByText(/correo o contraseña incorrectos/i)).toBeInTheDocument()
+  })
+
+  it('distingue un fallo de captcha del error de credenciales', async () => {
+    mocks.signInWithPassword.mockResolvedValueOnce({ error: new Error('captcha protection: request disallowed') })
+    render(<LoginPage />)
+    completarLogin()
+
+    fireEvent.click(screen.getByRole('button', { name: /ingresar/i }))
+
+    expect(await screen.findByText(/verificación anti-bot/i)).toBeInTheDocument()
   })
 })
