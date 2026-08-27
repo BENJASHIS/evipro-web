@@ -5,21 +5,34 @@ import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
 import Marca from '@/app/components/ui/Marca'
 import PasswordInput from '@/app/components/ui/PasswordInput'
+import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileReset, setTurnstileReset] = useState(0)
   const router = useRouter()
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+    if (TURNSTILE_CLIENT_ENABLED && !turnstileToken) {
+      setError('Completa la verificación anti-bot.')
+      return
+    }
     setLoading(true)
     setError(null)
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      ...(turnstileToken ? { options: { captchaToken: turnstileToken } } : {}),
+    })
     if (error) {
+      setTurnstileToken('')
+      setTurnstileReset(prev => prev + 1)
       setError('Correo o contraseña incorrectos.')
       setLoading(false)
       return
@@ -36,8 +49,9 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Correo</label>
+            <label htmlFor="email" className="block text-xs text-muted mb-1 uppercase tracking-widest">Correo</label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
@@ -54,11 +68,17 @@ export default function LoginPage() {
             />
           </div>
 
+          <Turnstile
+            action="login"
+            resetSignal={turnstileReset}
+            onVerify={setTurnstileToken}
+          />
+
           {error && <p className="text-red-400 text-xs">{error}</p>}
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
             className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50"
           >
             {loading ? 'Ingresando...' : 'Ingresar'}
