@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import { parseRespuestas, evaluate, REGEN_VERSION, type Resultado } from '@/lib/regen'
+import { canUseMemberTools, getMemberAccess } from '@/lib/member-access'
 
 type SaveResult = { ok: true; resultado: Resultado } | { ok: false; error: string }
 
@@ -10,6 +11,10 @@ export async function saveRegenEvaluacion(raw: unknown): Promise<SaveResult> {
   const authClient = await createServerSupabaseClient()
   const { data: { user } } = await authClient.auth.getUser()
   if (!user) return { ok: false, error: 'No autenticado' }
+  const access = await getMemberAccess(authClient, user)
+  if (!canUseMemberTools(access)) {
+    return { ok: false, error: 'Necesitas una membresía activa para guardar esta evaluación.' }
+  }
 
   // Frontera de confianza: validar y RE-CALCULAR en el servidor. Nunca puntuar con
   // números que manda el cliente.

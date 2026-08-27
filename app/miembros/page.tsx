@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { bookingStatus, canPatientCancel, type BookingState } from '@/lib/bookings'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import { precioConsulta, PRECIOS_CONSULTA, type TarifaConsulta } from '@/lib/consulta-pricing'
+import { canUseMemberTools } from '@/lib/member-access'
 import { CitaActions } from './CitaActions'
 
 // Los cuatro primeros son planes retirados: siguen aquí porque hay
@@ -76,6 +77,10 @@ export default async function MiembrosPage() {
   const isAdmin = isAdminUser(user)
   const plan = subscription?.membership_plans as Record<string, unknown> | undefined
   const isActive = subscription?.status === 'active'
+  const memberToolsEnabled = canUseMemberTools({
+    hasActiveMembership: isActive,
+    adminPreview: isAdmin && !isActive,
+  })
   const planType = plan?.type as string | undefined
 
   const hasTickets = Number(plan?.tickets_qty ?? 0) > 0
@@ -138,18 +143,6 @@ export default async function MiembrosPage() {
           </div>
         </section>
       )}
-
-      {/* Regen: regulador de entorno */}
-      <Link
-        href="/miembros/regen"
-        className="block border border-subtle rounded-lg p-6 mb-6 hover:border-brand/50 transition-colors group"
-      >
-        <p className="text-xs font-mono uppercase tracking-widest text-muted mb-2">Bienestar</p>
-        <p className="text-sm text-white group-hover:text-brand transition-colors">¿Cómo está tu entorno?</p>
-        <p className="text-xs text-faint font-mono mt-1">
-          Evalúa el clima de tus 4 ámbitos (hogar, trabajo, familia, círculo social) y recibe consejos concretos.
-        </p>
-      </Link>
 
       {!subscription && !isAdmin ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
@@ -220,8 +213,21 @@ export default async function MiembrosPage() {
             </div>
           )}
 
+          {memberToolsEnabled && (
+            <Link
+              href="/miembros/herramientas"
+              className="block border border-brand/30 bg-brand/5 rounded-lg p-6 hover:border-brand/60 transition-colors group"
+            >
+              <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Herramientas</p>
+              <p className="text-sm text-white group-hover:text-brand transition-colors">Panel de herramientas para miembros</p>
+              <p className="text-xs text-faint font-mono mt-1">
+                Regen ya está disponible; la calculadora cannabinoide entra aquí como siguiente herramienta.
+              </p>
+            </Link>
+          )}
+
           {/* Accesos rápidos */}
-          {(isActive || isAdmin) && (
+          {memberToolsEnabled && (
             <div className="border border-subtle rounded-lg p-6">
               <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Accesos rápidos</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

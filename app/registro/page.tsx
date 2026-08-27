@@ -36,6 +36,7 @@ export default function RegistroPage() {
     phone: '',
     city: '',
     password: '',
+    password_confirm: '',
     doc_type: 'dni' as DocType,
     doc_number: '',
     country_origin: '',
@@ -53,8 +54,16 @@ export default function RegistroPage() {
     // ponytail: trampa para bots — un campo que un humano nunca ve ni llena.
     // Si aparece spam real de verdad, encima de esto va Turnstile.
     if ((new FormData(e.currentTarget).get('website') as string)?.trim()) return
-    setLoading(true)
     setError(null)
+    if (form.password.length < MIN_PASSWORD) {
+      setError(`La contraseña debe tener al menos ${MIN_PASSWORD} caracteres.`)
+      return
+    }
+    if (form.password !== form.password_confirm) {
+      setError('Las contraseñas no coinciden.')
+      return
+    }
+    setLoading(true)
     const supabase = createClient()
 
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -99,18 +108,43 @@ export default function RegistroPage() {
   const isForeign = form.doc_type !== 'dni'
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-ink py-12 px-4">
-      <div className="w-full max-w-md p-8 border border-subtle rounded-lg">
-        <div className="mb-6"><Marca /></div>
+    <main className="min-h-screen bg-ink px-4 py-10 sm:px-6">
+      <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+        <aside className="pt-2 lg:sticky lg:top-8">
+          <div className="mb-10"><Marca /></div>
+          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3">Registro EVIPro</p>
+          <h1 className="max-w-xl text-4xl font-light text-white mb-4">
+            Tu acceso a herramientas, beneficios y seguimiento.
+          </h1>
+          <p className="max-w-lg text-sm leading-6 text-muted mb-6">
+            Crea una cuenta para activar membresía, usar herramientas para miembros y mantener tus datos de contacto ordenados.
+            Para agendar una consulta suelta no necesitas cuenta.
+          </p>
+          <div className="grid gap-3 text-sm">
+            <Link
+              href="/planes#turista"
+              className="flex items-center justify-between border border-yellow-400/30 bg-yellow-400/5 rounded px-4 py-3 text-yellow-100 hover:border-yellow-400/60 transition-colors"
+            >
+              <span>Plan Turista</span>
+              <span className="font-mono text-xs text-yellow-300">Antes de viajar</span>
+            </Link>
+            <Link
+              href="/medicos"
+              className="flex items-center justify-between border border-subtle rounded px-4 py-3 text-muted hover:border-brand/50 hover:text-white transition-colors"
+            >
+              <span>Consulta sin cuenta</span>
+              <span className="font-mono text-xs text-brand">Agendar</span>
+            </Link>
+          </div>
+        </aside>
 
-        <h1 className="text-2xl font-light text-white mb-2 font-serif italic">Crea tu cuenta</h1>
-        <p className="text-sm text-muted mb-8">
-          La cuenta es para la membresía y tu área de miembro.{' '}
-          <Link href="/medicos" className="text-brand hover:underline">Agendar una consulta</Link>{' '}
-          no necesita cuenta: basta tu nombre y teléfono.
-        </p>
+        <section className="w-full border border-subtle rounded-lg p-6 sm:p-8">
+          <h2 className="text-2xl font-light text-white mb-2">Crea tu cuenta</h2>
+          <p className="text-sm text-muted mb-8">
+            Usa un correo al que tengas acceso; ahí recibirás la confirmación de cuenta.
+          </p>
 
-        <form onSubmit={handleRegistro} className="space-y-6">
+          <form onSubmit={handleRegistro} className="space-y-6">
           {/* Trampa para bots: oculta a la vista y al lector de pantalla. */}
           <input
             type="text"
@@ -151,6 +185,21 @@ export default function RegistroPage() {
                 minLength={MIN_PASSWORD}
               />
               <p className="text-xs text-faint mt-1">Mínimo {MIN_PASSWORD} caracteres.</p>
+            </div>
+
+            <div>
+              <label htmlFor="password_confirm" className={LABEL}>Repite tu contraseña *</label>
+              <PasswordInput
+                id="password_confirm"
+                name="password_confirm"
+                value={form.password_confirm}
+                onChange={handleChange}
+                autoComplete="new-password"
+                minLength={MIN_PASSWORD}
+              />
+              {form.password_confirm && form.password !== form.password_confirm && (
+                <p className="text-xs text-red-400 mt-1">Todavía no coincide.</p>
+              )}
             </div>
           </fieldset>
 
@@ -239,6 +288,7 @@ export default function RegistroPage() {
           ¿Ya tienes cuenta?{' '}
           <Link href="/login" className="text-brand hover:underline">Ingresar</Link>
         </p>
+        </section>
       </div>
     </main>
   )

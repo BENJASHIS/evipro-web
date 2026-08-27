@@ -3,8 +3,7 @@ import { useState } from 'react'
 
 const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 pr-12 text-white text-sm focus:outline-none focus:border-brand'
 
-/** Campo de contraseña con ojo para verla. Un solo campo (no repetido): con el
- *  ojo, confirmar la contraseña estorba más de lo que evita. */
+/** Campo de contraseña con control para verla sin enviar el formulario. */
 export default function PasswordInput({
   id = 'password',
   name = 'password',
