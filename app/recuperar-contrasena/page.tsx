@@ -89,7 +89,6 @@ export default function RecuperarContrasenaPage() {
 
           <Turnstile
             action="password-reset"
-            appearance="always"
             resetSignal={turnstileReset}
             onVerify={setTurnstileToken}
           />

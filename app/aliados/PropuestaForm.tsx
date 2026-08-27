@@ -108,7 +108,6 @@ export default function PropuestaForm() {
 
       <Turnstile
         action="propuesta"
-        appearance="always"
         resetSignal={turnstileReset}
         onVerify={setTurnstileToken}
       />

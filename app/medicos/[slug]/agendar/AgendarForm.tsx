@@ -321,7 +321,6 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
         <>
           <Turnstile
             action="agendar"
-            appearance="always"
             resetSignal={turnstileReset}
             onVerify={setTurnstileToken}
           />
