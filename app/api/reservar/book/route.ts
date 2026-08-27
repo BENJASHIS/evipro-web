@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import { precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
 import { validateBookingInput } from '@/lib/booking-validation'
+import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 
 interface ReservaBody {
   doctor_slug: string
@@ -16,7 +17,15 @@ interface ReservaBody {
 const MODALIDADES: ModalidadReserva[] = ['presencial', 'virtual', 'domicilio']
 
 export async function POST(req: NextRequest) {
-  const body = await req.json() as ReservaBody
+  const limit = checkRateLimit(req, { namespace: 'api:reservar-book', limit: 8, windowMs: 10 * 60 * 1000 })
+  if (!limit.ok) return rateLimitResponse(limit)
+
+  let body: ReservaBody
+  try {
+    body = await req.json() as ReservaBody
+  } catch {
+    return NextResponse.json({ error: 'Solicitud inválida' }, { status: 400 })
+  }
   const { doctor_slug, modality, patient_name, patient_phone } = body
 
   if (!modality || !MODALIDADES.includes(modality)) {

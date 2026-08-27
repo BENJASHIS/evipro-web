@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { validarPropuesta } from '@/lib/propuestas'
+import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 
 export async function POST(req: Request) {
+  const limit = checkRateLimit(req, { namespace: 'api:propuestas', limit: 12, windowMs: 10 * 60 * 1000 })
+  if (!limit.ok) return rateLimitResponse(limit)
+
   let body: unknown
   try {
     body = await req.json()

@@ -4,6 +4,7 @@ import type { Modality } from '@/lib/counseling'
 import { MODALITY_LABELS, MODALITY_PRICES, getPrice, getPaymentMethod } from '@/lib/counseling'
 import { validateBookingInput } from '@/lib/booking-validation'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
+import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 
 interface BookingBody {
   doctor_slug: string
@@ -18,7 +19,15 @@ interface BookingBody {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json() as BookingBody
+  const limit = checkRateLimit(req, { namespace: 'api:consejeria-book', limit: 8, windowMs: 10 * 60 * 1000 })
+  if (!limit.ok) return rateLimitResponse(limit)
+
+  let body: BookingBody
+  try {
+    body = await req.json() as BookingBody
+  } catch {
+    return NextResponse.json({ error: 'Solicitud inválida' }, { status: 400 })
+  }
   const { doctor_slug, modality, patient_name, patient_phone, is_first_session } = body
 
   if (!modality || !(modality in MODALITY_PRICES)) {

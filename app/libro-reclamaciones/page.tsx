@@ -36,15 +36,17 @@ export default function LibroReclamacionesPage() {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    const trampa = new FormData(e.currentTarget).get('website')
+    if (typeof trampa === 'string' && trampa.trim()) return
     setLoading(true)
     setError(null)
 
     const res = await fetch('/api/complaints', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, website: trampa }),
     })
 
     if (res.ok) {
@@ -88,6 +90,8 @@ export default function LibroReclamacionesPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+
           {/* Tipo */}
           <div>
             <label className="block text-xs text-muted mb-2 uppercase tracking-widest">Tipo *</label>

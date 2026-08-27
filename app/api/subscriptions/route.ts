@@ -4,14 +4,28 @@ import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 import { buildCartItems, computeCartTotal } from '@/lib/billing'
 import { PLAN_DISPLAY_NAMES } from '@/lib/types'
 import { MEMBERSHIP_PLAN_PUBLIC_COLUMNS } from '@/lib/db-columns'
+import { checkRateLimitForKey, rateLimitResponse } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+  const limit = checkRateLimitForKey(user.id, { namespace: 'api:subscriptions', limit: 6, windowMs: 10 * 60 * 1000 })
+  if (!limit.ok) return rateLimitResponse(limit)
 
-  const { plan_id, addon_ids } = await req.json()
-  if (!plan_id) return NextResponse.json({ error: 'Faltan datos' }, { status: 400 })
+  let body: { plan_id?: string; addon_ids?: unknown }
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Solicitud inválida' }, { status: 400 })
+  }
+  const { plan_id, addon_ids } = body
+  if (typeof plan_id !== 'string' || !plan_id.trim()) {
+    return NextResponse.json({ error: 'Faltan datos' }, { status: 400 })
+  }
+  if (addon_ids != null && (!Array.isArray(addon_ids) || addon_ids.some(id => typeof id !== 'string'))) {
+    return NextResponse.json({ error: 'Módulos inválidos' }, { status: 400 })
+  }
   const addonIds: string[] = Array.isArray(addon_ids) ? addon_ids : []
 
   const { data: plan } = await supabase
