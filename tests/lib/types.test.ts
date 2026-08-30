@@ -19,6 +19,7 @@ describe('types', () => {
       tickets_qty: 3,
       mp_plan_id: null,
       created_at: new Date().toISOString(),
+      allows_addons: false,
     }
     expect(plan.type).toBe('cannabis')
     expect(plan.price_soles).toBe(49)

@@ -65,22 +65,29 @@ const ESTADO_FARMACIA: Record<string, string> = {
   delivered:   'Entregado',
 }
 
+const SUBSCRIPTION_COUNT_COLUMNS = 'id'
+const PENDING_SUBSCRIPTION_COLUMNS =
+  'id, mp_payment_id, started_at, period_start, period_end, created_at, profiles(full_name, phone, city), membership_plans(type, period, price_soles)'
+const RECENT_SUBSCRIPTION_COLUMNS =
+  'id, started_at, period_start, period_end, created_at, profiles(full_name, phone, city), membership_plans(type, period)'
+const COUNSELING_COUNT_COLUMNS = 'id'
+
 export default async function AdminPage({ searchParams }: { searchParams: Promise<{ ok?: string; dismissed?: string }> }) {
   const { ok, dismissed } = await searchParams
   const supabase = await createServerSupabaseClient()
 
   const [{ count: totalActive }, { count: totalPending }, { data: pendingSubs }, { data: recentSubs }, { data: recentRequests }, { count: totalCounseling }] =
     await Promise.all([
-      supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-      supabase.from('subscriptions').select('*', { count: 'exact', head: true }).eq('status', 'awaiting_payment'),
-      supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period, price_soles), started_at, period_start, period_end')
+      supabase.from('subscriptions').select(SUBSCRIPTION_COUNT_COLUMNS, { count: 'exact', head: true }).eq('status', 'active'),
+      supabase.from('subscriptions').select(SUBSCRIPTION_COUNT_COLUMNS, { count: 'exact', head: true }).eq('status', 'awaiting_payment'),
+      supabase.from('subscriptions').select(PENDING_SUBSCRIPTION_COLUMNS)
         .eq('status', 'awaiting_payment').order('created_at', { ascending: false }),
-      supabase.from('subscriptions').select('*, profiles(full_name, phone, city), membership_plans(type, period), started_at, period_start, period_end')
+      supabase.from('subscriptions').select(RECENT_SUBSCRIPTION_COLUMNS)
         .eq('status', 'active').order('created_at', { ascending: false }).limit(10),
       supabase.from('pharmacy_requests')
         .select('id, product_notes, shalom_address, status, tracking_info, created_at, profiles(full_name)')
         .neq('status', 'delivered').order('created_at', { ascending: false }).limit(50),
-      supabase.from('counseling_bookings').select('*', { count: 'exact', head: true }),
+      supabase.from('counseling_bookings').select(COUNSELING_COUNT_COLUMNS, { count: 'exact', head: true }),
     ])
 
   const pending = (pendingSubs ?? []) as unknown as PendingSub[]
@@ -207,8 +214,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Suscriptores activos recientes</p>
         <div className="space-y-3">
           {(recentSubs ?? []).map(sub => {
-            const profile = sub.profiles as Record<string, string>
-            const plan = sub.membership_plans as Record<string, string>
+            const profile = Array.isArray(sub.profiles) ? sub.profiles[0] : sub.profiles
+            const plan = Array.isArray(sub.membership_plans) ? sub.membership_plans[0] : sub.membership_plans
             const formatDate = (iso: string | null | undefined) =>
               iso ? new Date(iso).toLocaleDateString('es-PE') : '—'
             const isExpired = sub.period_end && new Date(sub.period_end) < new Date()
