@@ -4,6 +4,9 @@ import { Analytics } from '@vercel/analytics/next';
 import Script from 'next/script';
 import { SITE_URL } from '@/lib/seo';
 import "./globals.css";
+import { getLocale } from '@/lib/locale-server';
+import { translate } from '@/lib/i18n';
+import { LanguageProvider, LanguageSelect, T } from '@/app/components/Language';
 
 // GA4 (Google Ads / Analytics). El measurement ID es público: viaja en el HTML del cliente.
 // ponytail: snippet oficial de Google vía next/script; GA4 "medición mejorada" cubre la
@@ -27,7 +30,7 @@ const lora = Lora({
   style: ["normal", "italic"],
 });
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "EVIPro · Consulta de cannabis medicinal en Cusco y online",
   description: "Evaluación médica presencial en Cusco y por teleconsulta en Perú. Conoce al médico, las modalidades y los precios de consulta en EVIPro.",
@@ -40,17 +43,28 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return {
+    ...baseMetadata,
+    title: translate(locale, String(baseMetadata.title)),
+    description: translate(locale, baseMetadata.description ?? ''),
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
     <html
-      lang="es"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-white font-sans">
+        <LanguageProvider locale={locale}>
         {children}
         <Analytics />
         {process.env.NODE_ENV === 'production' && (
@@ -68,6 +82,7 @@ gtag('config', '${GA_ID}');`}
           </>
         )}
         <footer className="border-t border-subtle bg-ink py-10 px-6">
+          <div className="flex justify-center mb-6"><LanguageSelect /></div>
           <div className="max-w-4xl mx-auto space-y-4">
             {/* Contacto */}
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs font-mono text-muted">
@@ -80,9 +95,7 @@ gtag('config', '${GA_ID}');`}
               <a href="mailto:consulta@evipro.pe" className="hover:text-white transition-colors">
                 consulta@evipro.pe
               </a>
-              <span className="text-faint">
-                Av. Infancia 410 Consultorio 2, Wanchaq · Cusco, Perú
-              </span>
+              <span className="text-faint"><T>{"Av. Infancia 410 Consultorio 2, Wanchaq · Cusco, Perú"}</T></span>
             </div>
             {/* Redes sociales */}
             <div className="flex justify-center gap-6">
@@ -104,13 +117,14 @@ gtag('config', '${GA_ID}');`}
             {/* Links legales */}
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs font-mono text-faint">
               <span>© {new Date().getFullYear()} EVIPro · RUC 10439904572</span>
-              <a href="/aliados#propuesta" className="hover:text-white transition-colors">Trabaja con nosotros</a>
-              <a href="/terminos" className="hover:text-white transition-colors">Términos y Condiciones</a>
-              <a href="/politica-devoluciones" className="hover:text-white transition-colors">Política de Cancelaciones</a>
-              <a href="/libro-reclamaciones" className="hover:text-white transition-colors">Libro de Reclamaciones</a>
+              <a href="/aliados#propuesta" className="hover:text-white transition-colors"><T>{"Trabaja con nosotros"}</T></a>
+              <a href="/terminos" className="hover:text-white transition-colors"><T>{"Términos y Condiciones"}</T></a>
+              <a href="/politica-devoluciones" className="hover:text-white transition-colors"><T>{"Política de Cancelaciones"}</T></a>
+              <a href="/libro-reclamaciones" className="hover:text-white transition-colors"><T>{"Libro de Reclamaciones"}</T></a>
             </div>
           </div>
         </footer>
+        </LanguageProvider>
       </body>
     </html>
   );

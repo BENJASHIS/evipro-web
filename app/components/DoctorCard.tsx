@@ -1,3 +1,4 @@
+import { T } from '@/app/components/Language'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Doctor } from '@/lib/doctors'
@@ -22,21 +23,17 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
         <div className="flex flex-wrap gap-2 mb-3">
           {doctor.specialties.map(s => (
             <span key={s} className="bg-brand/10 text-brand text-xs px-2 py-0.5 rounded">
-              {s}
+              <T>{s}</T>
             </span>
           ))}
         </div>
         <p className="text-faint text-xs font-mono mb-4">
-          {doctor.location} · {doctor.modality}
+          <T>{doctor.location}</T> · <T>{doctor.modality}</T>
         </p>
         <div className="flex items-center justify-between">
-          <span className="text-brand text-xs font-mono group-hover:underline">
-            Ver perfil completo →
-          </span>
+          <span className="text-brand text-xs font-mono group-hover:underline"><T>{"Ver perfil completo →"}</T></span>
           {doctor.counseling?.available && (
-            <span className="text-xs font-mono bg-brand/10 text-brand px-2 py-0.5 rounded">
-              Consejería
-            </span>
+            <span className="text-xs font-mono bg-brand/10 text-brand px-2 py-0.5 rounded"><T>{"Consejería"}</T></span>
           )}
         </div>
       </div>

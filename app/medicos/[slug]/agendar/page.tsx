@@ -1,9 +1,11 @@
+import { T } from '@/app/components/Language'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Nav from '@/app/components/Nav'
 import { DOCTORS } from '@/lib/doctors'
 import AgendarForm from './AgendarForm'
+import { getLocale } from '@/lib/locale-server'
 
 export function generateStaticParams() {
   return DOCTORS.map(d => ({ slug: d.slug }))
@@ -15,7 +17,8 @@ export async function generateMetadata(
   const { slug } = await params
   const doctor = DOCTORS.find(d => d.slug === slug)
   if (!doctor) return {}
-  return { title: `Agendar cita con ${doctor.name} · EVIPro` }
+  const locale = await getLocale()
+  return { title: `${locale === 'en' ? 'Book an appointment with' : 'Agendar cita con'} ${doctor.name} · EVIPro` }
 }
 
 export default async function AgendarPage(
@@ -34,7 +37,7 @@ export default async function AgendarPage(
             <Image src={doctor.photo} alt={doctor.name} fill className="object-cover object-top" />
           </div>
           <div>
-            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-0.5">Agendar cita</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-0.5"><T>{"Agendar cita"}</T></p>
             <h1 className="text-2xl font-light">{doctor.name}</h1>
             <p className="text-faint text-xs font-mono">CMP {doctor.cmp}</p>
           </div>

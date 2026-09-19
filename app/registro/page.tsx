@@ -1,4 +1,5 @@
 'use client'
+import { T, useLanguage } from '@/app/components/Language'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
@@ -31,6 +32,7 @@ const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 text-whi
 const LABEL = 'block text-xs text-muted mb-1 uppercase tracking-widest'
 
 export default function RegistroPage() {
+  const { t } = useLanguage()
   const [form, setForm] = useState({
     full_name: '',
     email: '',
@@ -127,37 +129,30 @@ export default function RegistroPage() {
       <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
         <aside className="pt-2 lg:sticky lg:top-8">
           <div className="mb-10"><Marca /></div>
-          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3">Registro EVIPro</p>
-          <h1 className="max-w-xl text-4xl font-light text-white mb-4">
-            Tu acceso a herramientas, beneficios y seguimiento.
-          </h1>
-          <p className="max-w-lg text-sm leading-6 text-muted mb-6">
-            Crea una cuenta para activar membresía, usar herramientas para miembros y mantener tus datos de contacto ordenados.
-            Para agendar una consulta suelta no necesitas cuenta.
-          </p>
+          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"Registro EVIPro"}</T></p>
+          <h1 className="max-w-xl text-4xl font-light text-white mb-4"><T>{"Tu acceso a herramientas, beneficios y seguimiento."}</T></h1>
+          <p className="max-w-lg text-sm leading-6 text-muted mb-6"><T>{"Crea una cuenta para activar membresía, usar herramientas para miembros y mantener tus datos de contacto ordenados. Para agendar una consulta suelta no necesitas cuenta."}</T></p>
           <div className="grid gap-3 text-sm">
             <Link
               href="/planes#turista"
               className="flex items-center justify-between border border-yellow-400/30 bg-yellow-400/5 rounded px-4 py-3 text-yellow-100 hover:border-yellow-400/60 transition-colors"
             >
-              <span>Plan Turista</span>
-              <span className="font-mono text-xs text-yellow-300">Antes de viajar</span>
+              <span><T>{"Plan Turista"}</T></span>
+              <span className="font-mono text-xs text-yellow-300"><T>{"Antes de viajar"}</T></span>
             </Link>
             <Link
               href="/medicos"
               className="flex items-center justify-between border border-subtle rounded px-4 py-3 text-muted hover:border-brand/50 hover:text-white transition-colors"
             >
-              <span>Consulta sin cuenta</span>
-              <span className="font-mono text-xs text-brand">Agendar</span>
+              <span><T>{"Consulta sin cuenta"}</T></span>
+              <span className="font-mono text-xs text-brand"><T>{"Agendar"}</T></span>
             </Link>
           </div>
         </aside>
 
         <section className="w-full border border-subtle rounded-lg p-6 sm:p-8">
-          <h2 className="text-2xl font-light text-white mb-2">Crea tu cuenta</h2>
-          <p className="text-sm text-muted mb-8">
-            Usa un correo al que tengas acceso; ahí recibirás la confirmación de cuenta.
-          </p>
+          <h2 className="text-2xl font-light text-white mb-2"><T>{"Crea tu cuenta"}</T></h2>
+          <p className="text-sm text-muted mb-8"><T>{"Usa un correo al que tengas acceso; ahí recibirás la confirmación de cuenta."}</T></p>
 
           <form onSubmit={handleRegistro} className="space-y-6">
           {/* Trampa para bots: oculta a la vista y al lector de pantalla. */}
@@ -171,12 +166,12 @@ export default function RegistroPage() {
           />
 
           <fieldset className="space-y-4">
-            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3">1 · Tu cuenta</legend>
+            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"1 · Tu cuenta"}</T></legend>
 
             {CAMPOS_CUENTA.map(field => (
               <div key={field.name}>
                 <label htmlFor={field.name} className={LABEL}>
-                  {field.label}{field.required && ' *'}
+                  <T>{field.label}</T>{field.required && ' *'}
                 </label>
                 <input
                   id={field.name}
@@ -192,18 +187,18 @@ export default function RegistroPage() {
             ))}
 
             <div>
-              <label htmlFor="password" className={LABEL}>Contraseña *</label>
+              <label htmlFor="password" className={LABEL}><T>{"Contraseña *"}</T></label>
               <PasswordInput
                 value={form.password}
                 onChange={handleChange}
                 autoComplete="new-password"
                 minLength={MIN_PASSWORD}
               />
-              <p className="text-xs text-faint mt-1">Mínimo {MIN_PASSWORD} caracteres.</p>
+              <p className="text-xs text-faint mt-1"><T>{"Mínimo "}</T>{MIN_PASSWORD}<T>{" caracteres."}</T></p>
             </div>
 
             <div>
-              <label htmlFor="password_confirm" className={LABEL}>Repite tu contraseña *</label>
+              <label htmlFor="password_confirm" className={LABEL}><T>{"Repite tu contraseña *"}</T></label>
               <PasswordInput
                 id="password_confirm"
                 name="password_confirm"
@@ -213,16 +208,16 @@ export default function RegistroPage() {
                 minLength={MIN_PASSWORD}
               />
               {form.password_confirm && form.password !== form.password_confirm && (
-                <p className="text-xs text-red-400 mt-1">Todavía no coincide.</p>
+                <p className="text-xs text-red-400 mt-1"><T>{"Todavía no coincide."}</T></p>
               )}
             </div>
           </fieldset>
 
           <fieldset className="space-y-4">
-            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3">2 · Tu documento</legend>
+            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"2 · Tu documento"}</T></legend>
 
             <div>
-              <label htmlFor="doc_type" className={LABEL}>Tipo de documento *</label>
+              <label htmlFor="doc_type" className={LABEL}><T>{"Tipo de documento *"}</T></label>
               <select
                 id="doc_type"
                 name="doc_type"
@@ -231,13 +226,13 @@ export default function RegistroPage() {
                 className={INPUT}
               >
                 {DOC_TYPES.map(d => (
-                  <option key={d.value} value={d.value} className="bg-ink">{d.label}</option>
+                  <option key={d.value} value={d.value} className="bg-ink"><T>{d.label}</T></option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label htmlFor="doc_number" className={LABEL}>Número de documento *</label>
+              <label htmlFor="doc_number" className={LABEL}><T>{"Número de documento *"}</T></label>
               <input
                 id="doc_number"
                 type="text"
@@ -253,7 +248,7 @@ export default function RegistroPage() {
 
             {isForeign && (
               <div>
-                <label htmlFor="country_origin" className={LABEL}>País de origen *</label>
+                <label htmlFor="country_origin" className={LABEL}><T>{"País de origen *"}</T></label>
                 <input
                   id="country_origin"
                   type="text"
@@ -262,7 +257,7 @@ export default function RegistroPage() {
                   value={form.country_origin}
                   onChange={handleChange}
                   required={isForeign}
-                  placeholder="Colombia, Argentina, España..."
+                  placeholder={t('Colombia, Argentina, España...')}
                   className={INPUT}
                 />
               </div>
@@ -270,11 +265,11 @@ export default function RegistroPage() {
           </fieldset>
 
           <fieldset className="space-y-4">
-            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3">3 · Cómo te ubicamos (opcional)</legend>
+            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"3 · Cómo te ubicamos (opcional)"}</T></legend>
 
             {CAMPOS_CONTACTO.map(field => (
               <div key={field.name}>
-                <label htmlFor={field.name} className={LABEL}>{field.label}</label>
+                <label htmlFor={field.name} className={LABEL}><T>{field.label}</T></label>
                 <input
                   id={field.name}
                   type={field.type}
@@ -295,20 +290,19 @@ export default function RegistroPage() {
             className="pt-1"
           />
 
-          {error && <p className="text-red-400 text-xs">{error}</p>}
+          {error && <p className="text-red-400 text-xs"><T>{error}</T></p>}
 
           <button
             type="submit"
             disabled={loading || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
             className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50"
           >
-            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+            <T>{loading ? 'Creando cuenta...' : 'Crear cuenta'}</T>
           </button>
         </form>
 
-        <p className="text-center text-xs text-faint mt-6">
-          ¿Ya tienes cuenta?{' '}
-          <Link href="/login" className="text-brand hover:underline">Ingresar</Link>
+        <p className="text-center text-xs text-faint mt-6"><T>{"¿Ya tienes cuenta?"}</T>{' '}
+          <Link href="/login" className="text-brand hover:underline"><T>{"Ingresar"}</T></Link>
         </p>
         </section>
       </div>

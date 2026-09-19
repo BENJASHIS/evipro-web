@@ -1,10 +1,13 @@
+import { T } from '@/app/components/Language'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { DOCTORS } from '@/lib/doctors'
 import Nav from '@/app/components/Nav'
-import { publicMetadata } from '@/lib/seo'
+import { localizedMetadata } from '@/lib/localized-metadata'
+import { getLocale } from '@/lib/locale-server'
+import { translate } from '@/lib/i18n'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -16,7 +19,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const doctor = DOCTORS.find(d => d.slug === slug)
   if (!doctor) return {}
-  return publicMetadata(`/medicos/${doctor.slug}`, `${doctor.name} · EVIPro`, doctor.bio.slice(0, 160))
+  const locale = await getLocale()
+  return localizedMetadata(`/medicos/${doctor.slug}`, `${doctor.name} · EVIPro`, translate(locale, doctor.bio).slice(0, 160))
 }
 
 export default async function DoctorPage({ params }: Props) {
@@ -31,9 +35,7 @@ export default async function DoctorPage({ params }: Props) {
         <Link
           href="/medicos"
           className="text-xs font-mono text-faint hover:text-white transition-colors mb-10 block"
-        >
-          ← Equipo médico
-        </Link>
+        ><T>{"← Equipo médico"}</T></Link>
 
         {/* Header */}
         <div className="flex gap-6 items-start mb-10 pb-10 border-b border-subtle">
@@ -53,7 +55,7 @@ export default async function DoctorPage({ params }: Props) {
             <div className="flex flex-wrap gap-2">
               {doctor.specialties.map(s => (
                 <span key={s} className="bg-brand/10 text-brand text-xs px-3 py-1 rounded">
-                  {s}
+                  <T>{s}</T>
                 </span>
               ))}
             </div>
@@ -64,23 +66,19 @@ export default async function DoctorPage({ params }: Props) {
           {/* Columna principal */}
           <div className="md:col-span-2 space-y-10">
             <section>
-              <h2 className="text-xs font-mono uppercase tracking-widest text-brand mb-4">
-                Sobre el Dr.
-              </h2>
-              <p className="text-gray-300 leading-relaxed text-sm">{doctor.bio}</p>
+              <h2 className="text-xs font-mono uppercase tracking-widest text-brand mb-4"><T>{"Sobre el Dr."}</T></h2>
+              <p className="text-gray-300 leading-relaxed text-sm"><T>{doctor.bio}</T></p>
             </section>
 
             <section>
-              <h2 className="text-xs font-mono uppercase tracking-widest text-brand mb-4">
-                Formación
-              </h2>
+              <h2 className="text-xs font-mono uppercase tracking-widest text-brand mb-4"><T>{"Formación"}</T></h2>
               <ul className="space-y-2">
                 {doctor.formation.map((f, i) => (
                   <li key={i} className="text-sm">
-                    <span className="text-white">{f.title}</span>
+                    <span className="text-white"><T>{f.title}</T></span>
                     {' · '}
                     <span className="text-faint">
-                      {f.institution}{f.year ? ` (${f.year})` : ''}
+                      <T>{f.institution}</T>{f.year ? ` (${f.year})` : ''}
                     </span>
                   </li>
                 ))}
@@ -88,15 +86,13 @@ export default async function DoctorPage({ params }: Props) {
             </section>
 
             <section>
-              <h2 className="text-xs font-mono uppercase tracking-widest text-brand mb-3">
-                Idiomas
-              </h2>
+              <h2 className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"Idiomas"}</T></h2>
               <div className="flex flex-wrap gap-2">
                 {doctor.languages.map(lang => (
                   <span key={lang.name} className="text-xs bg-white/5 px-3 py-1 rounded text-gray-300">
-                    {lang.name}{' '}
+                    <T>{lang.name}</T>{' '}
                     <span className={lang.level === 'Nativo' ? 'text-brand' : 'text-faint'}>
-                      · {lang.level}
+                      · <T>{lang.level}</T>
                     </span>
                   </span>
                 ))}
@@ -107,22 +103,18 @@ export default async function DoctorPage({ params }: Props) {
           {/* Sidebar */}
           <div className="space-y-4">
             <div className="public-panel border border-subtle rounded-lg p-5">
-              <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3">
-                Disponibilidad
-              </p>
-              <p className="text-gray-300 text-sm">{doctor.availability}</p>
+              <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"Disponibilidad"}</T></p>
+              <p className="text-gray-300 text-sm"><T>{doctor.availability}</T></p>
               <p className="text-faint text-xs mt-1">
-                {doctor.modality} · {doctor.location}
+                <T>{doctor.modality}</T> · <T>{doctor.location}</T>
               </p>
             </div>
 
             <div className="public-panel border border-subtle rounded-lg p-5">
-              <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3">
-                Planes que atiende
-              </p>
+              <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"Planes que atiende"}</T></p>
               <ul className="space-y-1">
                 {doctor.plans.map(plan => (
-                  <li key={plan} className="text-gray-300 text-sm">{plan}</li>
+                  <li key={plan} className="text-gray-300 text-sm"><T>{plan}</T></li>
                 ))}
               </ul>
             </div>
@@ -130,25 +122,19 @@ export default async function DoctorPage({ params }: Props) {
             <Link
               href={`/medicos/${doctor.slug}/agendar`}
               className="block w-full text-center bg-brand text-black py-3 rounded font-mono text-sm hover:bg-brand-hover transition-colors"
-            >
-              Agendar cita →
-            </Link>
+            ><T>{"Agendar cita →"}</T></Link>
 
             <Link
               href="/planes"
               className="block w-full text-center border border-strong text-white py-3 rounded font-mono text-sm hover:border-white/40 transition-colors"
-            >
-              Ver planes →
-            </Link>
+            ><T>{"Ver planes →"}</T></Link>
 
             <a
               href={`https://wa.me/${doctor.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full text-center border border-brand/40 text-brand py-3 rounded font-mono text-sm hover:border-brand transition-colors"
-            >
-              Consultar por WhatsApp
-            </a>
+            ><T>{"Consultar por WhatsApp"}</T></a>
           </div>
         </div>
       </div>

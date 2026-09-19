@@ -1,4 +1,5 @@
 'use client'
+import { T, useLanguage } from '@/app/components/Language'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
@@ -25,14 +26,15 @@ function getWeekdays(count: number): Date[] {
   }
   return days
 }
-function formatDate(d: Date): string {
-  return d.toLocaleDateString('es-PE', { weekday: 'short', day: 'numeric', month: 'short' })
+function formatDate(d: Date, locale: string): string {
+  return d.toLocaleDateString(locale === 'en' ? 'en-GB' : 'es-PE', { weekday: 'short', day: 'numeric', month: 'short' })
 }
 function toISODate(d: Date): string {
   return d.toISOString().split('T')[0]
 }
 
 export default function AgendarForm({ doctor }: { doctor: Doctor }) {
+  const { locale, t } = useLanguage()
   const [modality, setModality] = useState<AnyModality | null>(null)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
@@ -146,28 +148,24 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
 
   if (bookingId) {
     const waMsg = encodeURIComponent(
-      `Hola, solicité una cita.\n` +
+      `${t('Hola, solicité una cita.')}\n` +
       `Ref: ${bookingId.slice(0, 8)}\n` +
-      `Nombre: ${name}\n` +
-      `Modalidad: ${modality ? labelOf(modality) : ''}\n` +
-      (selectedDate ? `Fecha: ${selectedDate} ${selectedTime ?? ''}\n` : '') +
-      (note ? `Motivo: ${note}` : '')
+      `${t('Nombre')}: ${name}\n` +
+      `${t('Modalidad')}: ${modality ? t(labelOf(modality)) : ''}\n` +
+      (selectedDate ? `${t('Fecha')}: ${selectedDate} ${selectedTime ?? ''}\n` : '') +
+      (note ? `${t('Motivo')}: ${note}` : '')
     )
     return (
       <div className="text-center py-16">
         <p className="text-brand text-5xl mb-6">✓</p>
-        <h2 className="text-2xl font-light mb-2">Solicitud registrada</h2>
-        <p className="text-muted text-sm mb-8 max-w-sm mx-auto">
-          El médico confirmará tu cita y el precio por WhatsApp.
-        </p>
+        <h2 className="text-2xl font-light mb-2"><T>{"Solicitud registrada"}</T></h2>
+        <p className="text-muted text-sm mb-8 max-w-sm mx-auto"><T>{"El médico confirmará tu cita y el precio por WhatsApp."}</T></p>
         <a
           href={`https://wa.me/${doctor.whatsapp}?text=${waMsg}`}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-brand text-black px-8 py-3 rounded font-mono text-sm hover:bg-brand-hover transition-colors"
-        >
-          Enviar datos al médico →
-        </a>
+        ><T>{"Enviar datos al médico →"}</T></a>
       </div>
     )
   }
@@ -177,17 +175,17 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const canSubmit = showData && name.trim() !== '' && phone.trim() !== '' && (!TURNSTILE_CLIENT_ENABLED || turnstileToken)
   const submitLabel = modality && isConsulta(modality)
     ? 'Solicitar consulta →'
-    : price !== null ? `Pagar S/. ${price} →` : 'Solicitar →'
+    : price !== null ? `${t('Pagar')} S/. ${price} →` : 'Solicitar →'
 
   return (
     <div className="space-y-10 max-w-2xl">
       {/* Paso 1: modalidad */}
       <div>
-        <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3">1 · Modalidad</p>
+        <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"1 · Modalidad"}</T></p>
 
         {consejeriaMods.length > 0 && (
           <>
-            <p className="text-faint text-xs font-mono mb-2">Consejería (apoyo, pago online)</p>
+            <p className="text-faint text-xs font-mono mb-2"><T>{"Consejería (apoyo, pago online)"}</T></p>
             <div className="space-y-2 mb-5">
               {consejeriaMods.map(m => (
                 <button
@@ -199,8 +197,8 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
                 >
                   <div className="flex justify-between items-center gap-4">
                     <div>
-                      <p className="text-white text-sm">{MODALITY_LABELS[m]}</p>
-                      <p className="text-faint text-xs font-mono mt-0.5">{MODALITY_DURATION[m]}</p>
+                      <p className="text-white text-sm"><T>{MODALITY_LABELS[m]}</T></p>
+                      <p className="text-faint text-xs font-mono mt-0.5"><T>{MODALITY_DURATION[m]}</T></p>
                     </div>
                     <p className="text-gray-300 text-sm font-mono shrink-0">S/. {getPrice(m, false)}</p>
                   </div>
@@ -210,7 +208,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
           </>
         )}
 
-        <p className="text-faint text-xs font-mono mb-2">Consulta médica (cobro al atender)</p>
+        <p className="text-faint text-xs font-mono mb-2"><T>{"Consulta médica (cobro al atender)"}</T></p>
         <div className="space-y-2">
           {CONSULTA_MODS.map(m => (
             <button
@@ -222,13 +220,13 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             >
               <div className="flex justify-between items-center gap-4">
                 <div>
-                  <p className="text-white text-sm">{CONSULTA_MODALITY_LABELS[m]}</p>
+                  <p className="text-white text-sm"><T>{CONSULTA_MODALITY_LABELS[m]}</T></p>
                   <p className="text-faint text-xs font-mono mt-0.5">
-                    {m === 'domicilio' ? 'según distancia' : 'primera consulta'}
+                    <T>{m === 'domicilio' ? 'según distancia' : 'primera consulta'}</T>
                   </p>
                 </div>
                 <p className="text-gray-300 text-sm font-mono shrink-0">
-                  {m === 'domicilio' ? 'desde ' : ''}S/. {precioReferencia(m)}
+                  <T>{m === 'domicilio' ? 'desde ' : ''}</T>S/. {precioReferencia(m)}
                 </p>
               </div>
             </button>
@@ -238,21 +236,16 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
         {/* La escalera completa cabía mal en una línea y en el móvil se cortaba:
             la tarjeta muestra un solo precio y el detalle vive aquí, plegado. */}
         <details className="mt-3 text-xs">
-          <summary className="text-faint font-mono cursor-pointer hover:text-white">
-            ¿Y si vuelvo? Cómo baja el precio
-          </summary>
+          <summary className="text-faint font-mono cursor-pointer hover:text-white"><T>{"¿Y si vuelvo? Cómo baja el precio"}</T></summary>
           <div className="mt-2 space-y-1 text-muted leading-relaxed">
             {CONSULTA_MODS.filter(m => m !== 'domicilio').map(m => (
               <p key={m}>
-                <span className="text-white">{CONSULTA_MODALITY_LABELS[m]}:</span>{' '}
-                <span className="font-mono">{escaleraReserva(m)}</span>
+                <span className="text-white"><T>{CONSULTA_MODALITY_LABELS[m]}</T>:</span>{' '}
+                <span className="font-mono">{escaleraReserva(m, locale)}</span>
               </p>
             ))}
-            <p>
-              Cada consulta de seguimiento cuesta la mitad de la anterior hasta la 3ª; de ahí en
-              adelante se mantiene ese precio. Si pasan 90 días sin volver, la cuenta empieza otra vez.
-              Estos son los precios sin membresía: los miembros pagan menos,{' '}
-              <Link href="/planes" className="underline hover:text-white">ver planes</Link>.
+            <p><T>{"Cada consulta de seguimiento cuesta la mitad de la anterior hasta la 3ª; de ahí en adelante se mantiene ese precio. Si pasan 90 días sin volver, la cuenta empieza otra vez. Estos son los precios sin membresía: los miembros pagan menos,"}</T>{' '}
+              <Link href="/planes" className="underline hover:text-white"><T>{"ver planes"}</T></Link>.
             </p>
           </div>
         </details>
@@ -261,11 +254,11 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
       {/* Paso 2: horario (solo modalidades con slot) */}
       {modality && needsSlot(modality) && (
         <div>
-          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3">2 · Horario</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"2 · Horario"}</T></p>
           <div className="space-y-5">
             {weekdays.map(day => (
               <div key={toISODate(day)}>
-                <p className="text-xs text-faint font-mono mb-2 capitalize">{formatDate(day)}</p>
+                <p className="text-xs text-faint font-mono mb-2 capitalize">{formatDate(day, locale)}</p>
                 <div className="flex flex-wrap gap-2">
                   {SCHEDULE.map(time => {
                     const active = selectedDate === toISODate(day) && selectedTime === time
@@ -294,20 +287,20 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
       {/* Paso 3: datos */}
       {showData && (
         <div>
-          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3">3 · Tus datos</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"3 · Tus datos"}</T></p>
           <div className="space-y-3">
             <div>
-              <label htmlFor="ag-nombre" className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono">Nombre completo *</label>
+              <label htmlFor="ag-nombre" className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono"><T>{"Nombre completo *"}</T></label>
               <input id="ag-nombre" type="text" value={name} onChange={e => setName(e.target.value)}
                 className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand" />
             </div>
             <div>
-              <label htmlFor="ag-tel" className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono">WhatsApp / Teléfono *</label>
+              <label htmlFor="ag-tel" className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono"><T>{"WhatsApp / Teléfono *"}</T></label>
               <input id="ag-tel" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="9XXXXXXXX"
                 className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand" />
             </div>
             <div>
-              <label htmlFor="ag-motivo" className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono">Motivo (opcional)</label>
+              <label htmlFor="ag-motivo" className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono"><T>{"Motivo (opcional)"}</T></label>
               <input id="ag-motivo" type="text" value={note} onChange={e => setNote(e.target.value)}
                 className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand" />
             </div>
@@ -315,7 +308,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
         </div>
       )}
 
-      {error && <p className="text-red-400 text-xs font-mono">{error}</p>}
+      {error && <p className="text-red-400 text-xs font-mono"><T>{error}</T></p>}
 
       {showData && (
         <>
@@ -330,14 +323,12 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             onClick={submit}
             className="w-full py-2.5 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-40 font-mono"
           >
-            {loading ? 'Enviando...' : submitLabel}
+            <T>{loading ? 'Enviando...' : submitLabel}</T>
           </button>
         </>
       )}
 
-      <p className="text-xs text-faint font-mono">
-        Consulta médica: es una solicitud, el médico confirma y cobra al atender. Consejería: se paga online al reservar.
-      </p>
+      <p className="text-xs text-faint font-mono"><T>{"Consulta médica: es una solicitud, el médico confirma y cobra al atender. Consejería: se paga online al reservar."}</T></p>
     </div>
   )
 }

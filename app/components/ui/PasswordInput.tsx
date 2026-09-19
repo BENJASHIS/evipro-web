@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useLanguage } from '@/app/components/Language'
 
 const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 pr-12 text-white text-sm focus:outline-none focus:border-brand'
 
@@ -20,6 +21,7 @@ export default function PasswordInput({
   minLength?: number
 }) {
   const [visible, setVisible] = useState(false)
+  const { t } = useLanguage()
 
   return (
     <div className="relative">
@@ -37,7 +39,7 @@ export default function PasswordInput({
       <button
         type="button"
         onClick={() => setVisible(v => !v)}
-        aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+        aria-label={t(visible ? 'Ocultar contraseña' : 'Mostrar contraseña')}
         aria-pressed={visible}
         className="absolute inset-y-0 right-0 px-3 text-faint hover:text-white transition-colors"
       >

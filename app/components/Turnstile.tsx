@@ -2,6 +2,7 @@
 
 import Script from 'next/script'
 import { useEffect, useRef, useState } from 'react'
+import { useLanguage } from './Language'
 
 type TurnstileAppearance = 'always' | 'execute' | 'interaction-only'
 
@@ -52,6 +53,7 @@ export default function Turnstile({
   onExpire,
   resetSignal = 0,
 }: TurnstileProps) {
+  const { locale } = useLanguage()
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
   const callbacksRef = useRef({ onVerify, onError, onExpire })
@@ -70,7 +72,7 @@ export default function Turnstile({
       sitekey: TURNSTILE_SITE_KEY,
       theme: 'dark',
       size: 'flexible',
-      language: 'es',
+      language: locale,
       action,
       appearance,
       callback: token => callbacksRef.current.onVerify(token),
@@ -90,7 +92,7 @@ export default function Turnstile({
         widgetIdRef.current = null
       }
     }
-  }, [action, appearance, scriptReady])
+  }, [action, appearance, scriptReady, locale])
 
   useEffect(() => {
     if (!resetSignal || !widgetIdRef.current || !window.turnstile) return

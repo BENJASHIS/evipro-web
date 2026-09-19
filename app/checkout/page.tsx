@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
@@ -25,30 +26,21 @@ function AuthRequiredModal({ onClose }: { onClose: () => void }) {
         className="w-full max-w-sm rounded-lg border border-subtle bg-ink p-6"
         onClick={e => e.stopPropagation()}
       >
-        <h2 id="auth-modal-title" className="text-xl font-light text-white mb-2">Debes crear una cuenta</h2>
-        <p className="text-muted text-sm leading-relaxed mb-6">
-          Para realizar un pago es necesario crear una cuenta o iniciar sesión. Esto nos permite
-          asociar tu compra, mantener tu historial de pedidos y brindarte soporte.
-        </p>
+        <h2 id="auth-modal-title" className="text-xl font-light text-white mb-2"><T>{"Debes crear una cuenta"}</T></h2>
+        <p className="text-muted text-sm leading-relaxed mb-6"><T>{"Para realizar un pago es necesario crear una cuenta o iniciar sesión. Esto nos permite asociar tu compra, mantener tu historial de pedidos y brindarte soporte."}</T></p>
         <div className="flex flex-col gap-3">
           <a
             href="/registro"
             className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white text-center rounded transition-colors text-sm"
-          >
-            Crear cuenta
-          </a>
+          ><T>{"Crear cuenta"}</T></a>
           <a
             href="/login"
             className="w-full py-3 border border-subtle hover:border-brand text-white text-center rounded transition-colors text-sm"
-          >
-            Iniciar sesión
-          </a>
+          ><T>{"Iniciar sesión"}</T></a>
           <button
             onClick={onClose}
             className="text-xs text-faint hover:text-white font-mono mt-1 transition-colors"
-          >
-            Cancelar
-          </button>
+          ><T>{"Cancelar"}</T></button>
         </div>
       </div>
     </div>
@@ -133,30 +125,30 @@ function CheckoutForm() {
   if (!planId) {
     return (
       <div className="text-center">
-        <p className="text-muted mb-4">No se especificó un plan.</p>
-        <a href="/planes" className="text-brand underline text-sm">Ver planes →</a>
+        <p className="text-muted mb-4"><T>{"No se especificó un plan."}</T></p>
+        <a href="/planes" className="text-brand underline text-sm"><T>{"Ver planes →"}</T></a>
       </div>
     )
   }
 
   if (!plan) {
-    return <div className="text-muted text-center py-8">Cargando plan...</div>
+    return <div className="text-muted text-center py-8"><T>{"Cargando plan..."}</T></div>
   }
 
   return (
     <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
-      <p className="text-xs text-brand font-mono uppercase tracking-widest mb-2">Resumen del pedido</p>
-      <h2 className="text-2xl font-light text-white mb-1">{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</h2>
+      <p className="text-xs text-brand font-mono uppercase tracking-widest mb-2"><T>{"Resumen del pedido"}</T></p>
+      <h2 className="text-2xl font-light text-white mb-1"><T>{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</T></h2>
       <p className="text-muted text-sm mb-6">{PERIOD_LABELS[plan.period] ?? plan.period}</p>
 
       {addons.length > 0 && (
         <div className="border-t border-subtle pt-4 mb-2 space-y-1">
           <p className="text-muted text-sm flex justify-between">
-            <span>{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</span><span>S/. {plan.price_soles}</span>
+            <span><T>{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</T></span><span>S/. {plan.price_soles}</span>
           </p>
           {addons.map(a => (
             <p key={a.id} className="text-muted text-sm flex justify-between">
-              <span>+ {a.label}</span><span>S/. {a.price_soles}</span>
+              <span>+ <T>{a.label}</T></span><span>S/. {a.price_soles}</span>
             </p>
           ))}
         </div>
@@ -167,15 +159,11 @@ function CheckoutForm() {
         <span className="text-3xl font-light text-white">S/. {total}</span>
       </div>
 
-      {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
+      {error && <p className="text-red-400 text-xs mb-4"><T>{error}</T></p>}
 
       {isQuincenal && (
         <div className="border border-yellow-400/20 bg-yellow-400/5 rounded p-3 mb-4">
-          <p className="text-yellow-400 text-xs font-mono leading-relaxed">
-            Atención: con plan quincenal, la preparación y dispensación por la farmacia autorizada
-            puede no completarse antes de tu salida. EVIPro coordina el procedimiento, pero no vende
-            ni dispensa productos de cannabis.
-          </p>
+          <p className="text-yellow-400 text-xs font-mono leading-relaxed"><T>{"Atención: con plan quincenal, la preparación y dispensación por la farmacia autorizada puede no completarse antes de tu salida. EVIPro coordina el procedimiento, pero no vende ni dispensa productos de cannabis."}</T></p>
         </div>
       )}
 
@@ -187,12 +175,7 @@ function CheckoutForm() {
             onChange={e => setLegalAccepted(e.target.checked)}
             className="mt-0.5 accent-brand"
           />
-          <span className="text-xs text-muted leading-relaxed">
-            Entiendo que EVIPro opera dentro del territorio peruano y no vende, dispensa ni
-            transporta productos de cannabis. Cualquier adquisición en farmacia autorizada y eventual
-            traslado fuera del Perú es de mi exclusiva responsabilidad, conforme a la legislación
-            aplicable.
-          </span>
+          <span className="text-xs text-muted leading-relaxed"><T>{"Entiendo que EVIPro opera dentro del territorio peruano y no vende, dispensa ni transporta productos de cannabis. Cualquier adquisición en farmacia autorizada y eventual traslado fuera del Perú es de mi exclusiva responsabilidad, conforme a la legislación aplicable."}</T></span>
         </label>
       )}
 
@@ -208,10 +191,10 @@ function CheckoutForm() {
         disabled={loading || (isTurista && !legalAccepted) || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
         className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white rounded transition-colors disabled:opacity-50 text-sm"
       >
-        {loading ? 'Redirigiendo...' : 'Pagar con Mercado Pago'}
+        <T>{loading ? 'Redirigiendo...' : 'Pagar con Mercado Pago'}</T>
       </button>
 
-      <p className="text-center text-xs text-faint mt-4 font-mono">Pago seguro con Mercado Pago · PCI-DSS</p>
+      <p className="text-center text-xs text-faint mt-4 font-mono"><T>{"Pago seguro con Mercado Pago · PCI-DSS"}</T></p>
 
       {showAuthModal && <AuthRequiredModal onClose={() => setShowAuthModal(false)} />}
     </div>
@@ -221,7 +204,7 @@ function CheckoutForm() {
 export default function CheckoutPage() {
   return (
     <main className="public-page min-h-screen flex items-center justify-center bg-ink text-white">
-      <Suspense fallback={<div className="text-muted">Cargando...</div>}>
+      <Suspense fallback={<div className="text-muted"><T>{"Cargando..."}</T></div>}>
         <CheckoutForm />
       </Suspense>
     </main>

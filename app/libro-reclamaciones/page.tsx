@@ -1,4 +1,5 @@
 'use client'
+import { T, useLanguage } from '@/app/components/Language'
 import { useState } from 'react'
 import Link from 'next/link'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
@@ -19,6 +20,7 @@ const SERVICIOS = [
 ]
 
 export default function LibroReclamacionesPage() {
+  const { t: translate } = useLanguage()
   const [form, setForm] = useState({
     tipo: 'reclamo',
     full_name: '',
@@ -72,11 +74,11 @@ export default function LibroReclamacionesPage() {
     return (
       <main className="public-page min-h-screen bg-ink text-white flex items-center justify-center px-4">
         <div className="max-w-md w-full border border-brand/30 rounded-lg p-8 text-center">
-          <p className="text-brand text-xs font-mono uppercase tracking-widest mb-4">Reclamación registrada</p>
-          <p className="text-gray-300 text-sm mb-6">Tu reclamación ha sido registrada exitosamente. Guarda este código de seguimiento:</p>
+          <p className="text-brand text-xs font-mono uppercase tracking-widest mb-4"><T>{"Reclamación registrada"}</T></p>
+          <p className="text-gray-300 text-sm mb-6"><T>{"Tu reclamación ha sido registrada exitosamente. Guarda este código de seguimiento:"}</T></p>
           <p className="text-3xl font-mono font-light text-white border border-subtle rounded px-6 py-4 mb-6">{code}</p>
-          <p className="text-faint text-xs mb-8">Recibirás respuesta en <strong className="text-white">30 días calendario</strong> al correo <strong className="text-white">{form.email}</strong>. Para consultas escribe a <a href="mailto:reclamaciones@evipro.pe" className="text-brand">reclamaciones@evipro.pe</a> indicando tu código.</p>
-          <Link href="/" className="text-xs font-mono text-faint hover:text-white transition-colors">← Volver al inicio</Link>
+          <p className="text-faint text-xs mb-8"><T>{"Recibirás respuesta en "}</T><strong className="text-white"><T>{"30 días calendario"}</T></strong><T>{" al correo "}</T><strong className="text-white">{form.email}</strong><T>{". Para consultas escribe a "}</T><a href="mailto:reclamaciones@evipro.pe" className="text-brand">reclamaciones@evipro.pe</a><T>{" indicando tu código."}</T></p>
+          <Link href="/" className="text-xs font-mono text-faint hover:text-white transition-colors"><T>{"← Volver al inicio"}</T></Link>
         </div>
       </main>
     )
@@ -86,16 +88,12 @@ export default function LibroReclamacionesPage() {
     <main className="public-page min-h-screen bg-ink text-white py-20 px-4">
       <div className="max-w-2xl mx-auto">
         <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">INDECOPI</p>
-        <h1 className="text-4xl font-light font-serif italic mb-2">Libro de Reclamaciones</h1>
-        <p className="text-muted text-sm mb-2">Virtual, conforme a la Ley N.º 29571</p>
-        <p className="text-faint text-xs font-mono mb-10">
-          Proveedor: José Carlos Benjamín Jara Ovalle · RUC 10439904572 · Cusco, Perú
-        </p>
+        <h1 className="text-4xl font-light font-serif italic mb-2"><T>{"Libro de Reclamaciones"}</T></h1>
+        <p className="text-muted text-sm mb-2"><T>{"Virtual, conforme a la Ley N.º 29571"}</T></p>
+        <p className="text-faint text-xs font-mono mb-10"><T>{"Proveedor: José Carlos Benjamín Jara Ovalle · RUC 10439904572 · Cusco, Perú"}</T></p>
 
         <div className="border border-yellow-400/20 bg-yellow-400/5 rounded-lg p-4 mb-8">
-          <p className="text-yellow-400 text-xs font-mono leading-relaxed">
-            ⚠️ La formulación de una queja o reclamo no impide acudir a otras vías de solución de controversias, incluyendo el INDECOPI (indecopi.gob.pe).
-          </p>
+          <p className="text-yellow-400 text-xs font-mono leading-relaxed"><T>{"⚠️ La formulación de una queja o reclamo no impide acudir a otras vías de solución de controversias, incluyendo el INDECOPI (indecopi.gob.pe)."}</T></p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -103,15 +101,15 @@ export default function LibroReclamacionesPage() {
 
           {/* Tipo */}
           <div>
-            <label className="block text-xs text-muted mb-2 uppercase tracking-widest">Tipo *</label>
+            <label className="block text-xs text-muted mb-2 uppercase tracking-widest"><T>{"Tipo *"}</T></label>
             <div className="flex gap-4">
               {(['reclamo', 'queja'] as const).map(t => (
                 <label key={t} className="flex items-center gap-2 cursor-pointer">
                   <input type="radio" name="tipo" value={t} checked={form.tipo === t} onChange={handleChange}
                     className="accent-brand" />
-                  <span className="text-sm capitalize text-gray-300">{t}</span>
+                  <span className="text-sm capitalize text-gray-300"><T>{t}</T></span>
                   <span className="text-xs text-faint">
-                    {t === 'reclamo' ? '(disconformidad con servicio)' : '(malestar sin pedido de compensación)'}
+                    <T>{t === 'reclamo' ? '(disconformidad con servicio)' : '(malestar sin pedido de compensación)'}</T>
                   </span>
                 </label>
               ))}
@@ -127,7 +125,7 @@ export default function LibroReclamacionesPage() {
               { name: 'phone', label: 'Teléfono', type: 'tel', required: false },
             ].map(field => (
               <div key={field.name}>
-                <label className="block text-xs text-muted mb-1 uppercase tracking-widest">{field.label}</label>
+                <label className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{field.label}</T></label>
                 <input
                   type={field.type}
                   name={field.name}
@@ -142,27 +140,27 @@ export default function LibroReclamacionesPage() {
 
           {/* Servicio */}
           <div>
-            <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Bien o servicio contratado *</label>
+            <label className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"Bien o servicio contratado *"}</T></label>
             <select name="servicio" value={form.servicio} onChange={handleChange} required
               className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand">
-              <option value="" disabled>Selecciona...</option>
-              {SERVICIOS.map(s => <option key={s} value={s}>{s}</option>)}
+              <option value="" disabled><T>{"Selecciona..."}</T></option>
+              {SERVICIOS.map(s => <option key={s} value={s}><T>{s}</T></option>)}
             </select>
           </div>
 
           {/* Descripción */}
           <div>
-            <label className="block text-xs text-muted mb-1 uppercase tracking-widest">Descripción del reclamo / queja *</label>
+            <label className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"Descripción del reclamo / queja *"}</T></label>
             <textarea name="descripcion" value={form.descripcion} onChange={handleChange} required rows={4}
-              placeholder="Describe detalladamente lo ocurrido..."
+              placeholder={translate('Describe detalladamente lo ocurrido...')}
               className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand resize-none" />
           </div>
 
           {/* Pretensión */}
           <div>
-            <label className="block text-xs text-muted mb-1 uppercase tracking-widest">¿Qué solución solicitas? *</label>
+            <label className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"¿Qué solución solicitas? *"}</T></label>
             <textarea name="pretension" value={form.pretension} onChange={handleChange} required rows={3}
-              placeholder="Ej: reembolso, reprogramación de consulta, disculpa formal..."
+              placeholder={translate('Ej: reembolso, reprogramación de consulta, disculpa formal...')}
               className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand resize-none" />
           </div>
 
@@ -172,15 +170,14 @@ export default function LibroReclamacionesPage() {
             onVerify={setTurnstileToken}
           />
 
-          {error && <p className="text-red-400 text-xs">{error}</p>}
+          {error && <p className="text-red-400 text-xs"><T>{error}</T></p>}
 
           <button type="submit" disabled={loading || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
             className="w-full py-3 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50">
-            {loading ? 'Registrando...' : 'Registrar reclamación'}
+            <T>{loading ? 'Registrando...' : 'Registrar reclamación'}</T>
           </button>
 
-          <p className="text-xs text-faint text-center font-mono">
-            Al enviar aceptas que tus datos sean utilizados para gestionar tu reclamación · <a href="/terminos" className="hover:text-white">Términos</a>
+          <p className="text-xs text-faint text-center font-mono"><T>{"Al enviar aceptas que tus datos sean utilizados para gestionar tu reclamación · "}</T><a href="/terminos" className="hover:text-white"><T>{"Términos"}</T></a>
           </p>
         </form>
       </div>

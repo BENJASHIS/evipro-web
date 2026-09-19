@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -87,29 +88,25 @@ export default function ActualizarContrasenaPage() {
     <main className="public-page min-h-screen flex items-center justify-center bg-ink px-4">
       <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
         <div className="mb-2"><Marca size={36} /></div>
-        <p className="text-sm text-muted mb-8">Crea una nueva contraseña</p>
+        <p className="text-sm text-muted mb-8"><T>{"Crea una nueva contraseña"}</T></p>
 
         {checking ? (
-          <p className="text-sm text-muted">Validando enlace...</p>
+          <p className="text-sm text-muted"><T>{"Validando enlace..."}</T></p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="password" className="block text-xs text-muted mb-1 uppercase tracking-widest">
-                Nueva contraseña
-              </label>
+              <label htmlFor="password" className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"Nueva contraseña"}</T></label>
               <PasswordInput
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 autoComplete="new-password"
                 minLength={MIN_PASSWORD}
               />
-              <p className="text-xs text-faint mt-1">Mínimo {MIN_PASSWORD} caracteres.</p>
+              <p className="text-xs text-faint mt-1"><T>{"Mínimo "}</T>{MIN_PASSWORD}<T>{" caracteres."}</T></p>
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-xs text-muted mb-1 uppercase tracking-widest">
-                Repite tu nueva contraseña
-              </label>
+              <label htmlFor="confirmPassword" className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"Repite tu nueva contraseña"}</T></label>
               <PasswordInput
                 id="confirmPassword"
                 name="confirmPassword"
@@ -120,11 +117,9 @@ export default function ActualizarContrasenaPage() {
               />
             </div>
 
-            {error && <p className="text-red-400 text-xs leading-5">{error}</p>}
+            {error && <p className="text-red-400 text-xs leading-5"><T>{error}</T></p>}
             {success && (
-              <p className="text-brand text-xs leading-5">
-                Contraseña actualizada. Ya puedes entrar a tu área de miembro.
-              </p>
+              <p className="text-brand text-xs leading-5"><T>{"Contraseña actualizada. Ya puedes entrar a tu área de miembro."}</T></p>
             )}
 
             <button
@@ -132,16 +127,16 @@ export default function ActualizarContrasenaPage() {
               disabled={!ready || loading || success}
               className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50"
             >
-              {loading ? 'Actualizando...' : 'Actualizar contraseña'}
+              <T>{loading ? 'Actualizando...' : 'Actualizar contraseña'}</T>
             </button>
           </form>
         )}
 
         <p className="text-center text-xs text-faint mt-6">
           {success ? (
-            <Link href="/miembros" className="text-brand hover:underline">Ir a miembros</Link>
+            <Link href="/miembros" className="text-brand hover:underline"><T>{"Ir a miembros"}</T></Link>
           ) : (
-            <Link href="/recuperar-contrasena" className="text-brand hover:underline">Solicitar nuevo enlace</Link>
+            <Link href="/recuperar-contrasena" className="text-brand hover:underline"><T>{"Solicitar nuevo enlace"}</T></Link>
           )}
         </p>
       </div>

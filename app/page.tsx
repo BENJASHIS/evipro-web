@@ -1,8 +1,7 @@
-import type { Metadata } from 'next'
+import { localizedMetadata } from '@/lib/localized-metadata'
 import Nav from '@/app/components/Nav'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { META_PORTADA } from '@/lib/home-content'
-import { publicMetadata } from '@/lib/seo'
 import {
   Modalidades, CierreConsulta, Hero, Participar, QuienTeAtiende,
   OtrasEspecialidades, Membresia,
@@ -10,7 +9,7 @@ import {
 
 /** Solo para «/». El layout mantiene su título para el resto del sitio: cambiarlo
  *  ahí afectaría a páginas que no se rediseñaron en este trabajo. */
-export const metadata: Metadata = publicMetadata('/', META_PORTADA.titulo, META_PORTADA.descripcion)
+export const generateMetadata = () => localizedMetadata('/', META_PORTADA.titulo, META_PORTADA.descripcion)
 
 /** Los precios de cada membresía se leen por separado del catálogo público. */
 async function preciosMembresia(): Promise<{ evipro: number | null; basica: number | null }> {

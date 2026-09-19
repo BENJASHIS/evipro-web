@@ -33,7 +33,7 @@ describe('lo que ve Google', () => {
 
   it('la portada declara su propio metadata, no hereda el del layout', () => {
     const fuente = readFileSync(resolve(process.cwd(), 'app/page.tsx'), 'utf8')
-    expect(fuente).toContain('export const metadata')
+    expect(fuente).toContain('export const generateMetadata')
   })
 })
 

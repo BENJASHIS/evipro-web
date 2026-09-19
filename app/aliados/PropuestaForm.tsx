@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 import { useState } from 'react'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 
@@ -47,10 +48,7 @@ export default function PropuestaForm() {
 
   if (enviada) {
     return (
-      <p className="text-muted text-sm">
-        La recibimos. Si encaja con lo que hacemos, te escribimos por WhatsApp o correo.
-        No respondemos todas: preferimos decirlo antes que dejarte esperando.
-      </p>
+      <p className="text-muted text-sm"><T>{"La recibimos. Si encaja con lo que hacemos, te escribimos por WhatsApp o correo. No respondemos todas: preferimos decirlo antes que dejarte esperando."}</T></p>
     )
   }
 
@@ -59,49 +57,49 @@ export default function PropuestaForm() {
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
       <fieldset className="grid sm:grid-cols-3 gap-4">
-        <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3">1 · Quién eres</legend>
+        <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"1 · Quién eres"}</T></legend>
         <div>
-          <label htmlFor="full_name" className={LABEL}>Nombre *</label>
+          <label htmlFor="full_name" className={LABEL}><T>{"Nombre *"}</T></label>
           <input id="full_name" name="full_name" value={form.full_name} onChange={cambiar} required maxLength={120} autoComplete="name" className={INPUT} />
         </div>
         <div>
-          <label htmlFor="phone" className={LABEL}>WhatsApp *</label>
+          <label htmlFor="phone" className={LABEL}><T>{"WhatsApp *"}</T></label>
           <input id="phone" name="phone" type="tel" value={form.phone} onChange={cambiar} required maxLength={20} autoComplete="tel" className={INPUT} />
         </div>
         <div>
-          <label htmlFor="email" className={LABEL}>Correo *</label>
+          <label htmlFor="email" className={LABEL}><T>{"Correo *"}</T></label>
           <input id="email" name="email" type="email" value={form.email} onChange={cambiar} required maxLength={120} autoComplete="email" className={INPUT} />
         </div>
       </fieldset>
 
       <fieldset className="grid sm:grid-cols-3 gap-4">
-        <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3">2 · Qué haces</legend>
+        <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"2 · Qué haces"}</T></legend>
         <div>
-          <label htmlFor="occupation" className={LABEL}>Profesión u oficio *</label>
+          <label htmlFor="occupation" className={LABEL}><T>{"Profesión u oficio *"}</T></label>
           <input id="occupation" name="occupation" value={form.occupation} onChange={cambiar} required maxLength={120} className={INPUT} />
         </div>
         <div>
-          <label htmlFor="license" className={LABEL}>Colegiatura o registro</label>
+          <label htmlFor="license" className={LABEL}><T>{"Colegiatura o registro"}</T></label>
           <input id="license" name="license" value={form.license} onChange={cambiar} maxLength={60} className={INPUT} />
         </div>
         <div>
-          <label htmlFor="city" className={LABEL}>Ciudad *</label>
+          <label htmlFor="city" className={LABEL}><T>{"Ciudad *"}</T></label>
           <input id="city" name="city" value={form.city} onChange={cambiar} required maxLength={80} autoComplete="address-level2" className={INPUT} />
         </div>
       </fieldset>
 
       <fieldset className="space-y-4">
-        <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3">3 · Qué propones</legend>
+        <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"3 · Qué propones"}</T></legend>
         <div>
-          <label htmlFor="proposal" className={LABEL}>Qué quieres hacer con EVIPro *</label>
+          <label htmlFor="proposal" className={LABEL}><T>{"Qué quieres hacer con EVIPro *"}</T></label>
           <textarea id="proposal" name="proposal" value={form.proposal} onChange={cambiar} required maxLength={1500} rows={4} className={INPUT} />
         </div>
         <div>
-          <label htmlFor="contribution" className={LABEL}>Qué pones tú *</label>
+          <label htmlFor="contribution" className={LABEL}><T>{"Qué pones tú *"}</T></label>
           <textarea id="contribution" name="contribution" value={form.contribution} onChange={cambiar} required maxLength={1000} rows={3} className={INPUT} />
         </div>
         <div>
-          <label htmlFor="needs" className={LABEL}>Qué necesitas de EVIPro *</label>
+          <label htmlFor="needs" className={LABEL}><T>{"Qué necesitas de EVIPro *"}</T></label>
           <textarea id="needs" name="needs" value={form.needs} onChange={cambiar} required maxLength={1000} rows={3} className={INPUT} />
         </div>
       </fieldset>
@@ -112,14 +110,14 @@ export default function PropuestaForm() {
         onVerify={setTurnstileToken}
       />
 
-      {error && <p className="text-red-400 text-xs">{error}</p>}
+      {error && <p className="text-red-400 text-xs"><T>{error}</T></p>}
 
       <button
         type="submit"
         disabled={enviando || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
         className="py-2 px-6 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50"
       >
-        {enviando ? 'Enviando...' : 'Enviar propuesta'}
+        <T>{enviando ? 'Enviando...' : 'Enviar propuesta'}</T>
       </button>
     </form>
   )

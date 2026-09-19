@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Marca from '@/app/components/ui/Marca'
+import { LanguageSelect, T, useLanguage } from './Language'
 
 // Atención, equipo y comunidad, seguidos de las opciones de cuenta y reserva.
 const LINKS = [
@@ -15,30 +16,30 @@ const LINKS = [
 ]
 
 export default function Nav() {
+  const { t } = useLanguage()
   const [open, setOpen] = useState(false)
 
   return (
     <nav className="relative max-w-5xl mx-auto px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between gap-3">
         <Marca />
+        <LanguageSelect />
 
         {/* Enlaces en escritorio */}
         <div className="hidden lg:flex items-center gap-4 text-xs font-mono text-muted">
           {LINKS.map(l => (
-            <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
+            <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{t(l.label)}</Link>
           ))}
           <Link
             href="/medicos"
             className="border border-brand text-brand px-4 py-1.5 rounded hover:bg-brand hover:text-black transition-colors"
-          >
-            Agendar
-          </Link>
+          ><T>{"Agendar"}</T></Link>
         </div>
 
         {/* Botón hamburguesa en móvil */}
         <button
           type="button"
-          aria-label="Menú"
+          aria-label={t('Menú')}
           aria-expanded={open}
           onClick={() => setOpen(v => !v)}
           className="lg:hidden flex flex-col items-center justify-center gap-1.5 w-11 h-11 shrink-0"
@@ -59,16 +60,14 @@ export default function Nav() {
               onClick={() => setOpen(false)}
               className="py-2 hover:text-white transition-colors"
             >
-              {l.label}
+              {t(l.label)}
             </Link>
           ))}
           <Link
             href="/medicos"
             onClick={() => setOpen(false)}
             className="mt-2 border border-brand text-brand px-4 py-2 rounded text-center hover:bg-brand hover:text-black transition-colors"
-          >
-            Agendar
-          </Link>
+          ><T>{"Agendar"}</T></Link>
         </div>
       )}
     </nav>

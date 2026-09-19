@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 import { useMemo, useState } from 'react'
 import type { MembershipPlan, PlanAddon, PlanPeriod } from '@/lib/types'
 import { PERIOD_LABELS } from '@/lib/types'
@@ -36,31 +37,27 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
   return (
     <div className="border border-brand/40 rounded-lg p-6 bg-white/[0.02]">
       <div className="flex items-baseline justify-between mb-1">
-        <h2 className="text-2xl font-light">Membresía EVIPro</h2>
-        <span className="text-xs font-mono text-brand uppercase tracking-widest">Recomendado</span>
+        <h2 className="text-2xl font-light"><T>{"Membresía EVIPro"}</T></h2>
+        <span className="text-xs font-mono text-brand uppercase tracking-widest"><T>{"Recomendado"}</T></span>
       </div>
-      <p className="text-muted text-sm mb-6">
-        Activa el panel de seguimiento para pacientes continuadores: herramientas para miembros,
-        mensajes, biblioteca, sorteos y condiciones preferentes para consultas. Si corresponde,
-        incluye apoyo RENPUC, receta y coordinación documentaria con farmacia autorizada.
-      </p>
+      <p className="text-muted text-sm mb-6"><T>{"Activa el panel de seguimiento para pacientes continuadores: herramientas para miembros, mensajes, biblioteca, sorteos y condiciones preferentes para consultas. Si corresponde, incluye apoyo RENPUC, receta y coordinación documentaria con farmacia autorizada."}</T></p>
 
       {/* Qué incluye EVIPro + precios de consulta de miembro */}
       {ref && (
         <div className="border border-subtle rounded p-4 mb-6 bg-white/[0.02]">
-          <p className="text-xs text-muted mb-3">Tus consultas como miembro: <LineaConsultas tarifa="evipro" /></p>
+          <p className="text-xs text-muted mb-3"><T>{"Tus consultas como miembro: "}</T><LineaConsultas tarifa="evipro" /></p>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono text-brand">
-            <span>✓ Herramientas para miembros</span>
-            <span>✓ Biblioteca y sorteos</span>
-            {ref.includes_prescription && <span>✓ Receta si corresponde</span>}
-            {ref.includes_renpuc_support && <span>✓ Apoyo RENPUC</span>}
-            {ref.includes_pharmacy_coord && <span>✓ Coordinación con farmacia autorizada</span>}
+            <span><T>{"✓ Herramientas para miembros"}</T></span>
+            <span><T>{"✓ Biblioteca y sorteos"}</T></span>
+            {ref.includes_prescription && <span><T>{"✓ Receta si corresponde"}</T></span>}
+            {ref.includes_renpuc_support && <span><T>{"✓ Apoyo RENPUC"}</T></span>}
+            {ref.includes_pharmacy_coord && <span><T>{"✓ Coordinación con farmacia autorizada"}</T></span>}
           </div>
         </div>
       )}
 
       {/* Duración */}
-      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">1 · Duración</p>
+      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"1 · Duración"}</T></p>
       <div className="flex flex-wrap gap-3 mb-6">
         {PERIODS.map(p => {
           if (!plans.some(pl => pl.period === p)) return null
@@ -70,7 +67,7 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
               onClick={() => setPeriod(p)}
               className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand ${period === p ? 'border-brand text-white' : 'border-subtle text-muted hover:border-white/40'}`}
             >
-              {PERIOD_LABELS[p]}
+              <T>{PERIOD_LABELS[p]}</T>
             </button>
           )
         })}
@@ -79,13 +76,13 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
       {/* Módulos */}
       {periodAddons.length > 0 && (
         <>
-          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">2 · Especialistas (opcional)</p>
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"2 · Especialistas (opcional)"}</T></p>
           <div className="grid gap-3 mb-6">
             {periodAddons.map(a => (
               <label key={a.id} className="flex items-center justify-between border border-subtle rounded p-3 cursor-pointer hover:border-white/40">
                 <span className="flex items-center gap-3 text-sm">
                   <input type="checkbox" checked={selected.has(a.slug)} onChange={() => toggle(a.slug)} />
-                  {a.label}
+                  <T>{a.label}</T>
                 </span>
                 <span className="text-white">+ S/. {a.price_soles}</span>
               </label>
@@ -96,16 +93,14 @@ export default function ConfiguradorEvipro({ plans, addons }: { plans: Membershi
 
       {/* Total + CTA */}
       <div className="flex items-center justify-between border-t border-subtle pt-4">
-        <span className="text-sm text-muted">Total {PERIOD_LABELS[period].toLowerCase()}</span>
+        <span className="text-sm text-muted">Total <T>{PERIOD_LABELS[period].toLowerCase()}</T></span>
         {plan
           ? <span className="text-3xl font-light">S/. {total}</span>
-          : <span className="text-sm text-faint">No disponible por ahora</span>}
+          : <span className="text-sm text-faint"><T>{"No disponible por ahora"}</T></span>}
       </div>
       {plan && (
         <div className="mt-4">
-          <PlanCTA href={`/checkout?plan=${plan.id}${addonIds ? `&addons=${addonIds}` : ''}`} variant="primary">
-            Activar EVIPro →
-          </PlanCTA>
+          <PlanCTA href={`/checkout?plan=${plan.id}${addonIds ? `&addons=${addonIds}` : ''}`} variant="primary"><T>{"Activar EVIPro →"}</T></PlanCTA>
         </div>
       )}
     </div>

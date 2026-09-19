@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -62,7 +63,7 @@ export default function RecuperarContrasenaPage() {
     <main className="public-page min-h-screen flex items-center justify-center bg-ink px-4">
       <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
         <div className="mb-2"><Marca size={36} /></div>
-        <p className="text-sm text-muted mb-8">Recupera tu acceso</p>
+        <p className="text-sm text-muted mb-8"><T>{"Recupera tu acceso"}</T></p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -75,7 +76,7 @@ export default function RecuperarContrasenaPage() {
           />
 
           <div>
-            <label htmlFor="email" className={LABEL}>Correo</label>
+            <label htmlFor="email" className={LABEL}><T>{"Correo"}</T></label>
             <input
               id="email"
               type="email"
@@ -93,11 +94,9 @@ export default function RecuperarContrasenaPage() {
             onVerify={setTurnstileToken}
           />
 
-          {error && <p className="text-red-400 text-xs leading-5">{error}</p>}
+          {error && <p className="text-red-400 text-xs leading-5"><T>{error}</T></p>}
           {sent && (
-            <p className="text-brand text-xs leading-5">
-              Si el correo está registrado, recibirás un enlace para crear una nueva contraseña.
-            </p>
+            <p className="text-brand text-xs leading-5"><T>{"Si el correo está registrado, recibirás un enlace para crear una nueva contraseña."}</T></p>
           )}
 
           <button
@@ -105,12 +104,12 @@ export default function RecuperarContrasenaPage() {
             disabled={loading || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
             className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50"
           >
-            {loading ? 'Enviando...' : 'Enviar enlace'}
+            <T>{loading ? 'Enviando...' : 'Enviar enlace'}</T>
           </button>
         </form>
 
         <p className="text-center text-xs text-faint mt-6">
-          <Link href="/login" className="text-brand hover:underline">Volver a ingresar</Link>
+          <Link href="/login" className="text-brand hover:underline"><T>{"Volver a ingresar"}</T></Link>
         </p>
       </div>
     </main>

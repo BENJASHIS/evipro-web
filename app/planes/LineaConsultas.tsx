@@ -1,3 +1,4 @@
+import { T } from '@/app/components/Language'
 import { PRECIOS_CONSULTA, type TarifaConsulta } from '@/lib/consulta-pricing'
 
 /** Precio de 1ª consulta (presencial/virtual) para una tarjeta de plan, con pista
@@ -7,8 +8,8 @@ export default function LineaConsultas({ tarifa }: { tarifa: TarifaConsulta }) {
   const virtual = PRECIOS_CONSULTA.virtual[tarifa][0]
   return (
     <span className="text-muted">
-      <span className="font-mono text-white">Presencial S/. {presencial} · Virtual S/. {virtual}</span>{' '}
-      <span className="text-faint">(reconsulta a mitad)</span>
+      <span className="font-mono text-white"><T>{"Presencial S/. "}</T>{presencial}<T>{" · Virtual S/. "}</T>{virtual}</span>{' '}
+      <span className="text-faint"><T>{"(reconsulta a mitad)"}</T></span>
     </span>
   )
 }

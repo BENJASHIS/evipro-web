@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
@@ -56,11 +57,11 @@ export default function LoginPage() {
     <main className="public-page min-h-screen flex items-center justify-center bg-ink">
       <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
         <div className="mb-2"><Marca size={36} /></div>
-        <p className="text-sm text-muted mb-8">Ingresa a tu membresía</p>
+        <p className="text-sm text-muted mb-8"><T>{"Ingresa a tu membresía"}</T></p>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-xs text-muted mb-1 uppercase tracking-widest">Correo</label>
+            <label htmlFor="email" className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"Correo"}</T></label>
             <input
               id="email"
               type="email"
@@ -71,7 +72,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-xs text-muted mb-1 uppercase tracking-widest">Contraseña</label>
+            <label htmlFor="password" className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"Contraseña"}</T></label>
             <PasswordInput
               value={password}
               onChange={e => setPassword(e.target.value)}
@@ -85,26 +86,23 @@ export default function LoginPage() {
             onVerify={setTurnstileToken}
           />
 
-          {error && <p className="text-red-400 text-xs">{error}</p>}
+          {error && <p className="text-red-400 text-xs"><T>{error}</T></p>}
 
           <button
             type="submit"
             disabled={loading || (TURNSTILE_CLIENT_ENABLED && !turnstileToken)}
             className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50"
           >
-            {loading ? 'Ingresando...' : 'Ingresar'}
+            <T>{loading ? 'Ingresando...' : 'Ingresar'}</T>
           </button>
         </form>
 
         <p className="text-center text-xs text-faint mt-6">
-          <Link href="/recuperar-contrasena" className="text-brand hover:underline">
-            ¿Olvidaste tu contraseña?
-          </Link>
+          <Link href="/recuperar-contrasena" className="text-brand hover:underline"><T>{"¿Olvidaste tu contraseña?"}</T></Link>
         </p>
 
-        <p className="text-center text-xs text-faint mt-3">
-          ¿No tienes membresía?{' '}
-          <Link href="/planes" className="text-brand hover:underline">Ver planes</Link>
+        <p className="text-center text-xs text-faint mt-3"><T>{"¿No tienes membresía?"}</T>{' '}
+          <Link href="/planes" className="text-brand hover:underline"><T>{"Ver planes"}</T></Link>
         </p>
       </div>
     </main>

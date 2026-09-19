@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 import { useMemo, useState } from 'react'
 import type { MembershipPlan, PlanPeriod } from '@/lib/types'
 import { PERIOD_LABELS } from '@/lib/types'
@@ -27,16 +28,13 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
   return (
     <div className="border border-yellow-400/40 rounded-lg p-6 bg-yellow-400/5">
       <div className="flex items-baseline justify-between mb-1">
-        <h3 className="text-2xl font-light">Plan Turista</h3>
-        <span className="text-xs font-mono text-yellow-400 uppercase tracking-widest">100% virtual</span>
+        <h3 className="text-2xl font-light"><T>{"Plan Turista"}</T></h3>
+        <span className="text-xs font-mono text-yellow-400 uppercase tracking-widest"><T>{"100% virtual"}</T></span>
       </div>
-      <p className="text-muted text-sm mb-6">
-        Inicia el procedimiento con anticipación. Elige la ruta según tu experiencia previa,
-        define la duración y pasa al checkout con las condiciones legales visibles.
-      </p>
+      <p className="text-muted text-sm mb-6"><T>{"Inicia el procedimiento con anticipación. Elige la ruta según tu experiencia previa, define la duración y pasa al checkout con las condiciones legales visibles."}</T></p>
 
       {/* Tipo */}
-      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">1 · ¿Tu situación?</p>
+      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"1 · ¿Tu situación?"}</T></p>
       <div className="flex flex-wrap gap-3 mb-6">
         {TIPOS.map(t => {
           if (!plans.some(p => p.type === t.key)) return null
@@ -46,14 +44,14 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
               onClick={() => setTipo(t.key)}
               className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-400 ${tipo === t.key ? 'border-yellow-400 text-white bg-yellow-400/10' : 'border-subtle text-muted hover:border-yellow-400/50'}`}
             >
-              {t.label}
+              <T>{t.label}</T>
             </button>
           )
         })}
       </div>
 
       {/* Duración */}
-      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3">2 · Duración</p>
+      <p className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"2 · Duración"}</T></p>
       <div className="flex flex-wrap gap-3 mb-6">
         {periods.map(p => (
           <button
@@ -61,7 +59,7 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
             onClick={() => setPeriod(p)}
             className={`border rounded px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-400 ${period === p ? 'border-yellow-400 text-white bg-yellow-400/10' : 'border-subtle text-muted hover:border-yellow-400/50'}`}
           >
-            {PERIOD_LABELS[p]}
+            <T>{PERIOD_LABELS[p]}</T>
           </button>
         ))}
       </div>
@@ -71,20 +69,16 @@ export default function ConfiguradorTurista({ plans }: { plans: MembershipPlan[]
         <span className="text-sm text-muted">Total</span>
         {plan
           ? <span className="text-3xl font-light">S/. {plan.price_soles}</span>
-          : <span className="text-sm text-faint">No disponible para esta duración</span>}
+          : <span className="text-sm text-faint"><T>{"No disponible para esta duración"}</T></span>}
       </div>
       {plan && (
         <div className="mt-4">
-          <PlanCTA href={`/checkout?plan=${plan.id}`} variant="turista">Preparar mi viaje →</PlanCTA>
+          <PlanCTA href={`/checkout?plan=${plan.id}`} variant="turista"><T>{"Preparar mi viaje →"}</T></PlanCTA>
         </div>
       )}
 
       {period === 'quincenal' && plan && (
-        <p className="text-xs text-yellow-400 font-mono mt-4 leading-relaxed">
-          Plan quincenal: la preparación y dispensación dependen de la farmacia autorizada y
-          pueden no completarse antes de tu salida. Recomendamos iniciar el procedimiento con
-          anticipación.
-        </p>
+        <p className="text-xs text-yellow-400 font-mono mt-4 leading-relaxed"><T>{"Plan quincenal: la preparación y dispensación dependen de la farmacia autorizada y pueden no completarse antes de tu salida. Recomendamos iniciar el procedimiento con anticipación."}</T></p>
       )}
     </div>
   )

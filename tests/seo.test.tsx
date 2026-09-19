@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import sitemap from '@/app/sitemap'
 import robots from '@/app/robots'
@@ -6,6 +6,8 @@ import config from '../next.config'
 import ConsultaPage from '@/app/consulta-cannabis-medicinal/page'
 import { publicMetadata, SITE_URL, CONSULTA_PATH } from '@/lib/seo'
 import { precioConsulta } from '@/lib/consulta-pricing'
+
+vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh: vi.fn() }) }))
 
 describe('descubrimiento público sin indexar áreas operativas', () => {
   it('publica URLs únicas sin tokens, formularios ni redirects', () => {
