@@ -33,11 +33,6 @@ export default function AliadosPage() {
                   width={120}
                   height={120}
                   className="w-full h-full object-contain"
-                  style={
-                    aliado.slug === 'mayac'
-                      ? { clipPath: 'inset(0 2px 2px 0)' }
-                      : undefined
-                  }
                 />
               </div>
               <div className="flex-1 text-center sm:text-left">

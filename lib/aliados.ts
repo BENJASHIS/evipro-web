@@ -97,24 +97,6 @@ export const ALIADOS: Aliado[] = [
     ],
   },
   {
-    slug: 'mayac',
-    // "MAYAC" a secas, no "MAYAC · Cusco": son de Arequipa y Cusco es su
-    // sucursal, así que atarlos a una ciudad en el nombre los describe mal.
-    nombre: 'MAYAC',
-    logo: '/images/aliados/mayac.png',
-    rol: 'Fundación',
-    descripcion: 'Fundación multidisciplinaria.',
-    enlaces: [
-      {
-        // Se rotula la ciudad porque no es su única sede, y va la de Cusco
-        // porque es la que le sirve al paciente que entra desde aquí.
-        etiqueta: 'Cómo llegar · Cusco',
-        url: 'https://www.google.com/maps/place/Aceite+de+Cannabis+Medicinal+-+Cusco+-+Mayac/@-13.5279142,-71.9450962,17z/data=!3m1!4b1!4m6!3m5!1s0x916e7ffe3f02fd93:0x951df7d2836316d0!8m2!3d-13.5279142!4d-71.9425213!16s%2Fg%2F11vdzpqd5f',
-      },
-      { etiqueta: 'Instagram', url: 'https://www.instagram.com/mayac.consultorio/' },
-    ],
-  },
-  {
     slug: 'dosis-de-ciencia',
     nombre: 'Dosis de Ciencia',
     logo: '/images/aliados/dosisdeciencia.png',
