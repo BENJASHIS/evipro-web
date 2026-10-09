@@ -56,15 +56,20 @@ export function Hero() {
           <p className="text-brand text-xs font-mono tracking-widest uppercase mb-5"><T>{"El equipo detrás de EVIPro"}</T></p>
           <div className="grid grid-cols-2 gap-4">
             {DOCTORS.map(doctor => (
-              <Link key={doctor.slug} href={`/medicos/${doctor.slug}`} className="group min-w-0">
-                <div className="relative aspect-[3/4] overflow-hidden rounded-t-[5rem] bg-white/5">
-                  <Image src={doctor.photo} alt={doctor.name} fill priority sizes="(min-width: 1024px) 220px, 45vw" className="object-cover object-[center_18%]" />
-                </div>
-                <h2 className="text-base mt-4 leading-snug group-hover:text-brand">{doctor.name}</h2>
-                <p className="text-brand text-xs font-mono mt-2">CMP {doctor.cmp}</p>
-                <p className="text-muted text-xs mt-2"><T>{doctor.location}</T> · <T>{doctor.modality}</T></p>
-                <span className="inline-block text-sm mt-3 underline underline-offset-4"><T>{"Ver perfil →"}</T></span>
-              </Link>
+              <div key={doctor.slug} className="min-w-0">
+                <Link href={`/medicos/${doctor.slug}`} className="group block">
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-t-[5rem] bg-white/5">
+                    <Image src={doctor.photo} alt={doctor.name} fill priority sizes="(min-width: 1024px) 220px, 45vw" className="object-cover object-[center_18%]" />
+                  </div>
+                  <h2 className="text-base mt-4 leading-snug group-hover:text-brand">{doctor.name}</h2>
+                  <p className="text-brand text-xs font-mono mt-2">CMP {doctor.cmp}</p>
+                  <p className="text-muted text-xs mt-2"><T>{doctor.location}</T> · <T>{doctor.modality}</T></p>
+                  <span className="inline-block text-sm mt-3 underline underline-offset-4"><T>{"Ver perfil →"}</T></span>
+                </Link>
+                {doctor.slug === 'dr-jara' && (
+                  <Link href="/medicos/dr-jara#publicaciones" className="inline-block text-sm text-brand mt-2 underline underline-offset-4"><T>{"Ver publicaciones →"}</T></Link>
+                )}
+              </div>
             ))}
           </div>
         </div>

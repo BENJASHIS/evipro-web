@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { DOCTORS } from '@/lib/doctors'
 import Nav from '@/app/components/Nav'
+import ProfessionalPost from '@/app/components/ProfessionalPost'
 import { localizedMetadata } from '@/lib/localized-metadata'
 import { getLocale } from '@/lib/locale-server'
 import { translate } from '@/lib/i18n'
@@ -98,6 +99,8 @@ export default async function DoctorPage({ params }: Props) {
                 ))}
               </div>
             </section>
+
+            {doctor.slug === 'dr-jara' && <ProfessionalPost />}
           </div>
 
           {/* Sidebar */}
