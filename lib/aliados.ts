@@ -51,21 +51,6 @@ export const ALIADOS: Aliado[] = [
     ],
   },
   {
-    slug: 'fisioimperium',
-    nombre: 'FisioImperium · Centro médico integral',
-    logo: '/images/aliados/fisioimperium.png',
-    rol: 'Centro aliado',
-    descripcion:
-      'Centro aliado de fisioterapia y rehabilitación para complementar tu tratamiento.',
-    enlaces: [
-      { etiqueta: 'Ver en Facebook', url: 'https://www.facebook.com/fisioimperium' },
-      {
-        etiqueta: 'Cómo llegar',
-        url: 'https://www.google.com/maps/place/FisioImperium/@-13.5252192,-71.9712776,17z/data=!3m1!4b1!4m6!3m5!1s0x916dd5e3b6d1316f:0xee13937c3020a575!8m2!3d-13.5252192!4d-71.9687027!16s%2Fg%2F11qh0zx6gd',
-      },
-    ],
-  },
-  {
     slug: 'ascamed',
     nombre: 'ASCAMED · Asociación de Cannabis Medicinal del Cusco',
     logo: '/images/aliados/ascamed.png',
