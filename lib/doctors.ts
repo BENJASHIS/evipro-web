@@ -49,12 +49,8 @@ export const DOCTORS: Doctor[] = [
       // peruana autorizada, no del Colegio.
       { title: 'Médico Cirujano', institution: 'Colegiatura · Colegio Médico del Perú' },
       { title: 'Especialización en Uso Medicinal del Cannabis', institution: 'UPCH Cayetano Heredia' },
-      // Año de TÉRMINO, no de entrega del título (este se entregó en marzo de
-      // 2022). Misma regla que el de Salud Mental, que terminó en enero de 2026:
-      // en formación se declara cuándo se cursó, no cuándo llegó el papel.
-      { title: 'Diplomado en Auditoría Médica', institution: 'UNSAAC · Facultad de Medicina Humana', year: 2021 },
+      // Orden por año de formación, no por fecha de entrega del título.
       { title: 'Diplomado en Salud Mental y Psiquiatría', institution: 'UNSAAC · Facultad de Medicina Humana', year: 2026 },
-      { title: 'Seminario de Endomedicina · Cannabis y terapias complementarias', institution: 'U. de Antioquia y U. del Cauca, Colombia', year: 2019 },
       // Los niveles en una línea, no en tres: el rango se lee como una
       // progresión sostenida en vez de tres cursos repitiendo el mismo título.
       // El avanzado va como "en curso" y NO como terminado: a agosto de 2026
@@ -62,6 +58,8 @@ export const DOCTORS: Doctor[] = [
       // declarar una credencial que aún no existe.
       { title: 'Inteligencia Artificial en Salud · introductorio e intermedio, avanzado en curso',
         institution: 'INSN San Borja · 2024-2025' },
+      { title: 'Diplomado en Auditoría Médica', institution: 'UNSAAC · Facultad de Medicina Humana', year: 2021 },
+      { title: 'Seminario de Endomedicina · Cannabis y terapias complementarias', institution: 'U. de Antioquia y U. del Cauca, Colombia', year: 2019 },
     ],
     languages: [
       { name: 'Español', level: 'Nativo' },
