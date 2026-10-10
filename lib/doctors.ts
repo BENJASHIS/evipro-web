@@ -28,6 +28,8 @@ export interface Doctor {
   availability: string
   whatsapp: string
   photo: string
+  photoWidth: number
+  photoHeight: number
   counseling?: DoctorCounseling
 }
 
@@ -72,6 +74,8 @@ export const DOCTORS: Doctor[] = [
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-jara.jpeg',
+    photoWidth: 1268,
+    photoHeight: 1241,
     counseling: {
       // ponytail: este canal se retiró del producto (decisión 2026-07-30) — uno de S/5
       // invita preguntas que exigen consulta médica. Se apaga el flag, no se borra la máquina
@@ -107,6 +111,8 @@ export const DOCTORS: Doctor[] = [
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',
     photo: '/images/medicos/dr-vera.jpeg',
+    photoWidth: 1254,
+    photoHeight: 1254,
     counseling: {
       available: false,
       // Texto inerte mientras `available` sea false; se deja el canal, no la oferta.

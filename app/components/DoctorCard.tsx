@@ -7,18 +7,19 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
   return (
     <Link
       href={`/medicos/${doctor.slug}`}
-      className="public-panel block border border-subtle rounded-lg overflow-hidden hover:border-brand/50 transition-colors group"
+      className="public-panel flex h-full flex-col border border-subtle rounded-xl overflow-hidden hover:border-brand/50 transition-colors group"
     >
-      <div className="relative aspect-[4/5] bg-surface">
+      <div>
         <Image
           src={doctor.photo}
           alt={doctor.name}
-          fill
-          sizes="(min-width: 768px) 480px, calc(100vw - 32px)"
-          className="object-contain object-center"
+          width={doctor.photoWidth}
+          height={doctor.photoHeight}
+          sizes="(min-width: 768px) 368px, (min-width: 416px) 384px, calc(100vw - 32px)"
+          className="block w-full h-auto"
         />
       </div>
-      <div className="p-6">
+      <div className="p-6 flex flex-1 flex-col">
         <h2 className="text-lg font-light mb-1">{doctor.name}</h2>
         <p className="text-brand text-xs font-mono mb-3">CMP {doctor.cmp}</p>
         <div className="flex flex-wrap gap-2 mb-3">
@@ -31,7 +32,7 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
         <p className="text-faint text-xs font-mono mb-4">
           <T>{doctor.location}</T> · <T>{doctor.modality}</T>
         </p>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-auto pt-2">
           <span className="text-brand text-xs font-mono group-hover:underline"><T>{"Ver perfil completo →"}</T></span>
           {doctor.counseling?.available && (
             <span className="text-xs font-mono bg-brand/10 text-brand px-2 py-0.5 rounded"><T>{"Consejería"}</T></span>
