@@ -40,12 +40,13 @@ export default async function DoctorPage({ params }: Props) {
 
         {/* Header */}
         <div className="flex gap-6 items-start mb-10 pb-10 border-b border-subtle">
-          <div className="relative w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-brand/30">
+          <div className="relative w-24 h-30 rounded-lg overflow-hidden flex-shrink-0 border-2 border-brand/30">
             <Image
               src={doctor.photo}
               alt={doctor.name}
               fill
-              className="object-cover object-top"
+              sizes="96px"
+              className="object-contain object-center"
             />
           </div>
           <div>

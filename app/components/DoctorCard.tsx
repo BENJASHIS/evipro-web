@@ -9,12 +9,13 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
       href={`/medicos/${doctor.slug}`}
       className="public-panel block border border-subtle rounded-lg overflow-hidden hover:border-brand/50 transition-colors group"
     >
-      <div className="relative h-48 bg-gradient-to-br from-surface to-ink">
+      <div className="relative aspect-[4/5] bg-surface">
         <Image
           src={doctor.photo}
           alt={doctor.name}
           fill
-          className="object-cover object-top opacity-90 group-hover:opacity-100 transition-opacity"
+          sizes="(min-width: 768px) 480px, calc(100vw - 32px)"
+          className="object-contain object-center"
         />
       </div>
       <div className="p-6">

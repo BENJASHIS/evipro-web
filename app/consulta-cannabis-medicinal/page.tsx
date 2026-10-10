@@ -92,7 +92,7 @@ export default function ConsultaCannabisPage() {
         </section>
 
         <section className="border-t border-subtle py-10 flex flex-col sm:flex-row gap-6 items-start">
-          <Image src={doctor.photo} alt={doctor.name} width={112} height={112} sizes="112px" className="w-28 h-28 rounded-lg object-cover object-top" />
+          <Image src={doctor.photo} alt={doctor.name} width={112} height={112} sizes="112px" className="w-28 h-35 rounded-lg object-contain object-center" />
           <div>
             <h2 className="text-2xl font-serif mb-3"><T>{"Quién te atiende"}</T></h2>
             <p className="mb-2">{doctor.name}</p>

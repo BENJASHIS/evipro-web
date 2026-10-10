@@ -56,8 +56,8 @@ export function Hero() {
             {DOCTORS.map(doctor => (
               <div key={doctor.slug} className="min-w-0">
                 <Link href={`/medicos/${doctor.slug}`} className="group block">
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-t-[5rem] bg-white/5">
-                    <Image src={doctor.photo} alt={doctor.name} fill priority sizes="(min-width: 1024px) 220px, 45vw" className="object-cover object-[center_18%]" />
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-white/5">
+                    <Image src={doctor.photo} alt={doctor.name} fill priority sizes="(min-width: 1024px) 220px, 45vw" className="object-contain object-center" />
                   </div>
                   <h2 className="text-base mt-4 leading-snug group-hover:text-brand">{doctor.name}</h2>
                   <p className="text-brand text-xs font-mono mt-2">CMP {doctor.cmp}</p>
