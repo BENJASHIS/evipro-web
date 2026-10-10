@@ -3,7 +3,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { T } from '@/app/components/Language'
 
-const POST_URL = 'https://www.facebook.com/Behashis/posts/pfbid02J5Hy2sEbSD7huSq7cbrxKJxtYxFPUvkAVbyvBsEaUxSms1Qr5bzn92ND6vtuPbW5l'
+const POSTS = [
+  {
+    url: 'https://www.facebook.com/Behashis/posts/pfbid026MMM8HtsF9tvH9oekjz6cZ32G8vYSg7BAfySpfSKPW6bRj3ewc3hUkUtWu51uv9xl',
+    title: 'Publicación del Dr. Carlos Jara',
+    height: 780,
+  },
+  {
+    url: 'https://www.facebook.com/Behashis/posts/pfbid02J5Hy2sEbSD7huSq7cbrxKJxtYxFPUvkAVbyvBsEaUxSms1Qr5bzn92ND6vtuPbW5l',
+    title: 'Altura, oxígeno y cognición',
+    height: 800,
+  },
+]
 
 export default function ProfessionalPost() {
   const container = useRef<HTMLDivElement>(null)
@@ -23,22 +34,26 @@ export default function ProfessionalPost() {
     <section id="publicaciones" className="scroll-mt-24">
       <h2 className="text-xs font-mono uppercase tracking-widest text-brand mb-4"><T>{"Publicaciones y actividad profesional"}</T></h2>
       <p className="text-sm text-muted mb-4"><T>{"Contenido educativo seleccionado por el Dr. Carlos Jara. No reemplaza una evaluación médica."}</T></p>
-      <h3 className="text-lg mb-4">Altura, oxígeno y cognición</h3>
-      <div ref={container} className="w-full max-w-[500px]">
-        {width > 0 && (
+      <div ref={container} className="w-full max-w-[500px] space-y-8">
+        {POSTS.map((post) => (
+          <div key={post.url}>
+          {post.title !== 'Publicación del Dr. Carlos Jara' && <h3 className="text-lg mb-4">{post.title}</h3>}
+          {width > 0 && (
           <iframe
-            title="Publicación del Dr. Carlos Jara: altura, oxígeno y cognición"
-            src={`https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(POST_URL)}&show_text=true&width=${width}`}
+            title={post.title}
+            src={`https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(post.url)}&show_text=true&width=${width}`}
             width={width}
-            height={800}
+            height={post.height}
             className="block max-w-full border-0"
             loading="lazy"
             allow="encrypted-media; picture-in-picture; web-share"
             allowFullScreen
           />
-        )}
+          )}
+          <a href={post.url} target="_blank" rel="noopener noreferrer" className="inline-block text-sm text-brand underline underline-offset-4 mt-4"><T>{"Ver publicación en Facebook →"}</T></a>
+          </div>
+        ))}
       </div>
-      <a href={POST_URL} target="_blank" rel="noopener noreferrer" className="inline-block text-sm text-brand underline underline-offset-4 mt-4"><T>{"Ver publicación en Facebook →"}</T></a>
     </section>
   )
 }
