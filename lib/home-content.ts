@@ -20,8 +20,7 @@ export const HERO = {
   titulo: 'Cuidarnos mejor.',
   titulo2: 'Crecer en comunidad.',
   subtitulo:
-    'Consultas médicas, membresías y un espacio para quienes quieren aportar. ' +
-    'Desde Cusco y por atención online, con un equipo médico detrás.',
+    'Consultas médicas, membresías y un espacio para quienes quieren aportar. Teleconsulta desde cualquier lugar del Perú, con un equipo médico detrás.',
   credenciales: 'Dr. Carlos Jara · Médico Cirujano · CMP 82817 · RNA A10684',
   // Dos puertas, no dos acciones iguales: el paciente local es la base del
   // negocio (membresía, seguimiento, referidos) y el viajero el crecimiento.
@@ -196,7 +195,8 @@ export const MEDICO = {
   // área de práctica dice lo mismo sin arrogarse un título que no consta.
   especialidades: 'Médico Cirujano · Cannabis medicinal y medicina de altura',
   credenciales: 'CMP 82817 · RNA A10684',
-  direccion: 'Av. Infancia 410, Consultorio 2 · Wanchaq, Cusco',
+  direccion: 'Av. Micaela Bastidas 829 · Frente al IPD, Cusco',
+  presencialNota: 'Atención presencial solo con cita programada y confirmación previa del consultorio.',
   // Misma ruta que la ficha de `lib/doctors.ts`. Escrita a mano aquí para no
   // acoplar el contenido de la portada al catálogo de médicos; el candado
   // contra la desincronización es un test, no un import.
@@ -226,6 +226,5 @@ export const MEMBRESIA = {
 export const META_PORTADA = {
   titulo: 'Cannabis medicinal en Cusco y online | EVIPro',
   descripcion:
-    'Consulta de cannabis medicinal presencial en Cusco y online en Perú. ' +
-    'Dr. Carlos Jara, CMP 82817. Evaluación, seguimiento y receta solo si corresponde.',
+    'Consulta de cannabis medicinal online en todo el Perú y presencial con cita en Cusco. Dr. Carlos Jara, CMP 82817. Receta solo si corresponde.',
 }

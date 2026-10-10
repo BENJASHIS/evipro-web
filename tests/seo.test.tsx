@@ -50,7 +50,7 @@ describe('servicio que se ofrece y reserva', () => {
       .toHaveAttribute('href', '/medicos/dr-jara/agendar')
     const schema = JSON.parse(container.querySelector('script[type="application/ld+json"]')!.textContent!)
     expect(schema.offers.map((offer: { price: number }) => offer.price))
-      .toEqual([precioConsulta('presencial', 'regular', 1), precioConsulta('virtual', 'regular', 1)])
+      .toEqual([precioConsulta('virtual', 'regular', 1), precioConsulta('presencial', 'regular', 1)])
     for (const modalidad of ['presencial', 'virtual'] as const) {
       expect(screen.getByText(`S/${precioConsulta(modalidad, 'regular', 1)}`)).toBeVisible()
     }

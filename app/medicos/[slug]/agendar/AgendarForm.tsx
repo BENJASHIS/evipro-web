@@ -3,12 +3,13 @@ import { T, useLanguage } from '@/app/components/Language'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
+import { MEDICO } from '@/lib/home-content'
 import type { Doctor } from '@/lib/doctors'
 import { MODALITY_LABELS, MODALITY_DURATION, getPrice, type Modality } from '@/lib/counseling'
 import { CONSULTA_MODALITY_LABELS, escaleraReserva, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
 
 type AnyModality = Modality | ModalidadReserva
-const CONSULTA_MODS: ModalidadReserva[] = ['presencial', 'virtual', 'domicilio']
+const CONSULTA_MODS: ModalidadReserva[] = ['virtual', 'presencial', 'domicilio']
 const SLOT_MODS: AnyModality[] = ['video', 'presencial', 'virtual']
 const isConsulta = (m: AnyModality): m is ModalidadReserva => (CONSULTA_MODS as string[]).includes(m)
 const needsSlot = (m: AnyModality) => (SLOT_MODS as string[]).includes(m)
@@ -232,6 +233,12 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             </button>
           ))}
         </div>
+
+        {doctor.slug === 'dr-jara' && (
+          <p className="text-sm text-muted mt-4">
+            {modality === 'presencial' ? <><T>{MEDICO.direccion}</T>{' '}<T>{MEDICO.presencialNota}</T></> : <T>{"Teleconsulta desde cualquier lugar del Perú."}</T>}
+          </p>
+        )}
 
         {/* La escalera completa cabía mal en una línea y en el móvil se cortaba:
             la tarjeta muestra un solo precio y el detalle vive aquí, plegado. */}

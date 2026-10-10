@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
 import Script from 'next/script';
+import { MEDICO } from '@/lib/home-content';
 import { SITE_URL } from '@/lib/seo';
 import "./globals.css";
 import { getLocale } from '@/lib/locale-server';
@@ -95,8 +96,9 @@ gtag('config', '${GA_ID}');`}
               <a href="mailto:consulta@evipro.pe" className="hover:text-white transition-colors">
                 consulta@evipro.pe
               </a>
-              <span className="text-faint"><T>{"Av. Infancia 410 Consultorio 2, Wanchaq · Cusco, Perú"}</T></span>
+              <span className="text-faint"><T>{MEDICO.direccion}</T></span>
             </div>
+            <p className="text-center text-xs text-muted"><T>{"Teleconsulta desde cualquier lugar del Perú."}</T>{' '}<T>{MEDICO.presencialNota}</T></p>
             {/* Redes sociales */}
             <div className="flex justify-center gap-6">
               <a href="https://www.instagram.com/eviproia" target="_blank" rel="noopener noreferrer"

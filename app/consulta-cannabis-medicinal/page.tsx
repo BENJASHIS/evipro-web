@@ -19,8 +19,8 @@ export default function ConsultaCannabisPage() {
   const doctor = DOCTORS.find(d => d.slug === 'dr-jara')!
   const agendar = `/medicos/${doctor.slug}/agendar`
   const modalidades = [
+    { id: 'virtual' as const, nombre: 'Consulta online en Perú', detalle: 'Teleconsulta desde cualquier lugar del Perú.' },
     { id: 'presencial' as const, nombre: 'Consulta presencial en Cusco', detalle: MEDICO.direccion },
-    { id: 'virtual' as const, nombre: 'Consulta online en Perú', detalle: 'Teleconsulta con el médico. Coordina la fecha y el horario al reservar.' },
   ]
   // Describe únicamente la oferta visible. No declara eficacia, estrellas,
   // especialidades acreditadas ni horarios que no estén verificados.
@@ -49,6 +49,7 @@ export default function ConsultaCannabisPage() {
         <p className="text-brand text-xs font-mono uppercase tracking-widest mb-5"><T>{"Evaluación médica · Cusco y Perú"}</T></p>
         <h1 className="text-3xl md:text-5xl font-serif font-light leading-tight max-w-3xl mb-6"><T>{"Consulta de cannabis medicinal en Cusco y online"}</T></h1>
         <p className="text-muted text-lg leading-relaxed max-w-2xl mb-8"><T>{"Conversa con el médico sobre tu motivo de consulta, los tratamientos que utilizas y tus dudas. La evaluación determina si el cannabis medicinal corresponde a tu caso; reservar una consulta no garantiza una receta."}</T></p>
+        <p className="text-brand text-sm leading-relaxed mb-8"><T>{"Priorizamos la teleconsulta en todo el Perú. La atención presencial en Cusco se coordina con cita programada."}</T></p>
         <div className="flex flex-wrap gap-4 mb-14">
           <Button variant="primary" href={agendar}><T>{"Reservar con el Dr. Jara →"}</T></Button>
           <Button variant="outline" href="#modalidades"><T>{"Ver modalidades y precios"}</T></Button>
@@ -64,6 +65,7 @@ export default function ConsultaCannabisPage() {
                 <p className="text-3xl mb-2">S/{precioConsulta(m.id, 'regular', 1)} <span className="text-sm text-muted"><T>{"primera consulta"}</T></span></p>
                 <p className="text-muted text-sm mb-3"><T>{"Reconsulta: S/"}</T>{precioConsulta(m.id, 'regular', 2)}<T>{" · Desde la tercera: S/"}</T>{precioConsulta(m.id, 'regular', 3)}</p>
                 <p className="text-sm text-muted leading-relaxed"><T>{m.detalle}</T></p>
+                {m.id === 'presencial' && <p className="text-sm text-muted leading-relaxed mt-2"><T>{MEDICO.presencialNota}</T></p>}
               </div>
             ))}
           </div>
@@ -95,7 +97,7 @@ export default function ConsultaCannabisPage() {
             <h2 className="text-2xl font-serif mb-3"><T>{"Quién te atiende"}</T></h2>
             <p className="mb-2">{doctor.name}</p>
             <p className="text-brand text-sm font-mono mb-3"><T>{"Médico Cirujano · CMP "}</T>{doctor.cmp}{doctor.rna ? ` · RNA ${doctor.rna}` : ''}</p>
-            <p className="text-muted text-sm mb-4"><T>{"Atención presencial en Wanchaq, Cusco, y por teleconsulta."}</T></p>
+            <p className="text-muted text-sm mb-4"><T>{"Priorizamos la teleconsulta en todo el Perú. La atención presencial en Cusco se coordina con cita programada."}</T></p>
             <Link href={`/medicos/${doctor.slug}`} className="text-brand underline"><T>{"Ver formación y perfil del médico →"}</T></Link>
           </div>
         </section>

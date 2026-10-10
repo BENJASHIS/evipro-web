@@ -67,7 +67,7 @@ export const DOCTORS: Doctor[] = [
       { name: 'Quechua', level: 'Básico' },
     ],
     location: 'Cusco, Perú',
-    modality: 'Teleconsulta y presencial',
+    modality: 'Teleconsulta en todo el Perú · Presencial en Cusco con cita programada',
     plans: ['Membresía Básica', 'Membresía EVIPro', 'Plan Turista Inicio', 'Plan Turista Plus'],
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',

@@ -241,17 +241,18 @@ export function Modalidades() {
       <div className={CAJA}>
         <p className="text-xs font-mono uppercase tracking-widest mb-5"><T>{"Atención médica"}</T></p>
         <div className="grid md:grid-cols-2 gap-6 mb-12 items-end">
-          <h2 id="modalidades-titulo" className="text-3xl md:text-5xl font-serif leading-tight"><T>{"En Cusco."}</T><br /><T>{"O desde donde estés."}</T></h2>
+          <h2 id="modalidades-titulo" className="text-3xl md:text-5xl font-serif leading-tight"><T>{"Desde cualquier lugar del Perú."}</T></h2>
           <p className="leading-relaxed max-w-md"><T>{"Consulta de cannabis medicinal con evaluación individual. La prescripción depende del criterio médico y de tu situación clínica."}</T></p>
         </div>
         <div className="grid md:grid-cols-2 gap-10">
-          {(['presencial', 'virtual'] as const).map(modalidad => (
+          {(['virtual', 'presencial'] as const).map(modalidad => (
             <article key={modalidad} className="border-t border-current/25 pt-6">
               <div className="flex flex-wrap justify-between items-start gap-4">
                 <h3 className="text-2xl"><T>{modalidad === 'presencial' ? 'Consulta presencial' : 'Consulta online'}</T></h3>
                 <p className="text-3xl font-serif">S/{precioReferencia(modalidad)}</p>
               </div>
-              <p className="text-sm mt-3 mb-6"><T>{modalidad === 'presencial' ? MEDICO.direccion : 'Teleconsulta para pacientes en Perú.'}</T></p>
+              <p className="text-sm mt-3 mb-6"><T>{modalidad === 'presencial' ? MEDICO.direccion : 'Teleconsulta desde cualquier lugar del Perú.'}</T></p>
+              <p className="text-sm mb-6"><T>{modalidad === 'presencial' ? MEDICO.presencialNota : 'Atención prioritaria por teleconsulta.'}</T></p>
               <p className="text-xs mb-6"><T>{"Primera consulta · tarifa regular, sin membresía"}</T></p>
               <Link href={AGENDAR} className="inline-flex min-h-12 items-center border border-current rounded-full px-6 text-sm hover:bg-black/5"><T>{"Agendar "}</T><T>{modalidad === 'presencial' ? 'en Cusco' : 'online'}</T> <span aria-hidden="true" className="ml-6">↗</span></Link>
             </article>
