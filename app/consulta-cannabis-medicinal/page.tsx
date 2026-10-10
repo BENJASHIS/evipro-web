@@ -40,8 +40,8 @@ export default function ConsultaCannabisPage() {
   }
 
   return (
-    <main className="public-page min-h-screen bg-ink text-white">
-      <Nav />
+    <main className="public-page min-h-screen pb-24 bg-ink text-white">
+      <Nav contact />
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
       }} />
@@ -105,6 +105,10 @@ export default function ConsultaCannabisPage() {
         <section className="border-t border-subtle py-10">
           <h2 className="text-2xl font-serif mb-6"><T>{"Antes de reservar"}</T></h2>
           <div className="space-y-6 max-w-3xl text-muted leading-relaxed">
+<div><h3 className="text-white mb-2"><T>{"¿Puedo atenderme desde otra ciudad?"}</T></h3><p><T>{"Sí. Priorizamos la teleconsulta desde cualquier lugar del Perú. Si necesitas atención presencial, coordinamos la disponibilidad del consultorio en Cusco."}</T></p></div>
+<div><h3 className="text-white mb-2"><T>{"¿Cómo coordino y confirmo mi cita?"}</T></h3><p><T>{"Escríbenos por WhatsApp para consultar horarios o utiliza el formulario de reserva. La cita queda confirmada cuando recibas la confirmación del equipo; enviar un mensaje no reserva automáticamente un horario."}</T></p></div>
+<div><h3 className="text-white mb-2"><T>{"¿Qué preparo para la teleconsulta?"}</T></h3><p><T>{"Ten disponibles tus informes médicos, la lista de medicamentos que utilizas y tus preguntas. Busca un lugar privado con conexión estable. Evita enviar información clínica sensible en el primer mensaje de WhatsApp."}</T></p></div>
+
             <div><h3 className="text-white mb-2"><T>{"¿La consulta incluye el producto?"}</T></h3><p><T>{"No. EVIPro ofrece atención médica y no vende cannabis ni derivados. La adquisición del producto, si se prescribe, es independiente."}</T></p></div>
             <div><h3 className="text-white mb-2"><T>{"¿Necesito membresía?"}</T></h3><p><T>{"Puedes reservar a tarifa regular. Las membresías son una opción adicional; consulta sus condiciones antes de elegir."}</T></p></div>
             <div><h3 className="text-white mb-2"><T>{"¿Estoy reservando una consulta o comprando una receta?"}</T></h3><p><T>{"Una consulta médica. La receta se emite solo si corresponde tras la evaluación del profesional."}</T></p></div>

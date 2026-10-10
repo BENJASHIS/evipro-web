@@ -10,8 +10,8 @@ export const generateMetadata = () => localizedMetadata('/medicos', 'Equipo méd
 
 export default function MedicosPage() {
   return (
-    <main className="public-page min-h-screen bg-ink text-white">
-      <Nav />
+    <main className="public-page min-h-screen pb-24 bg-ink text-white">
+      <Nav contact />
       <div className="max-w-5xl mx-auto px-4 py-16">
         <Badge className="mb-4"><T>{"Equipo Médico"}</T></Badge>
         <h1 className="text-4xl font-light font-serif italic mb-4"><T>{"Especialistas a tu lado"}</T></h1>

@@ -21,18 +21,18 @@ describe('Hero — marca, membresías y equipo', () => {
     expect(local?.getAttribute('href')).not.toBe(viaje?.getAttribute('href'))
   })
 
-  it('la membresía es primaria y la consulta sigue accesible', () => {
+  it('la teleconsulta es primaria y la membresía sigue accesible', () => {
     // Dos puertas no son dos acciones iguales: el paciente local es la base.
     render(<Hero />)
-    expect(screen.getByText('Conocer las membresías →').className).toContain('bg-brand')
+    expect(screen.getByText('Coordinar teleconsulta por WhatsApp').className).toContain('bg-brand')
     expect(screen.getByText('Buscar una consulta →').className).not.toContain('bg-brand')
   })
 
   it('WhatsApp es un botón con el número real, no un texto suelto', () => {
     render(<Hero />)
     const wa = screen.getByText(/WhatsApp/).closest('a')
-    expect(wa?.getAttribute('href')).toBe(`https://wa.me/51${WHATSAPP}`)
-    expect(wa?.className).toContain('border')
+    expect(wa?.getAttribute('href')).toBe(`https://wa.me/51${WHATSAPP}?text=${encodeURIComponent('Hola, quisiera coordinar una teleconsulta. ¿Qué horarios tienen disponibles?')}`)
+    expect(wa?.getAttribute('rel')).toContain('noopener')
   })
 
   it('presenta a ambos médicos con sus perfiles y credenciales del catálogo', () => {

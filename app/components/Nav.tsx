@@ -1,5 +1,6 @@
 'use client'
 
+import WhatsAppContact from './WhatsAppContact'
 import { useState } from 'react'
 import Link from 'next/link'
 import Marca from '@/app/components/ui/Marca'
@@ -15,11 +16,12 @@ const LINKS = [
   { href: '/login', label: 'Ingresar' },
 ]
 
-export default function Nav() {
+export default function Nav({ contact = false }: { contact?: boolean }) {
   const { t } = useLanguage()
   const [open, setOpen] = useState(false)
 
   return (
+    <>
     <nav className="relative max-w-5xl mx-auto px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between gap-3">
         <Marca />
@@ -71,5 +73,7 @@ export default function Nav() {
         </div>
       )}
     </nav>
+    {contact && <WhatsAppContact fixed />}
+    </>
   )
 }

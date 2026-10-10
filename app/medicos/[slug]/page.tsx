@@ -30,8 +30,8 @@ export default async function DoctorPage({ params }: Props) {
   if (!doctor) notFound()
 
   return (
-    <main className="public-page min-h-screen bg-ink text-white">
-      <Nav />
+    <main className="public-page min-h-screen pb-24 bg-ink text-white">
+      <Nav contact />
       <div className="max-w-5xl mx-auto px-4 py-16">
         <Link
           href="/medicos"

@@ -124,25 +124,25 @@ export type Pregunta = { p: string; r: string }
 
 export const PREGUNTAS: Pregunta[] = [
   {
-    p: '¿Es legal?',
-    r: 'Sí. Ley 30681 y D.S. 004-2023-SA. Siempre con receta médica.',
+    "p": "¿Puedo atenderme desde otra ciudad?",
+    "r": "Sí. Priorizamos la teleconsulta desde cualquier lugar del Perú. Si necesitas atención presencial, coordinamos la disponibilidad del consultorio en Cusco."
   },
   {
-    p: '¿Me va a drogar?',
-    r: 'La mayoría de los tratamientos son de CBD, que no produce ese efecto.',
+    "p": "¿Cómo coordino y confirmo mi cita?",
+    "r": "Escríbenos por WhatsApp para consultar horarios o utiliza el formulario de reserva. La cita queda confirmada cuando recibas la confirmación del equipo; enviar un mensaje no reserva automáticamente un horario."
   },
   {
-    p: '¿Puedo manejar?',
-    r: 'Si tu fórmula lleva THC, no. Va escrito en tu receta.',
+    "p": "¿Qué preparo para la teleconsulta?",
+    "r": "Ten disponibles tus informes médicos, la lista de medicamentos que utilizas y tus preguntas. Busca un lugar privado con conexión estable. Evita enviar información clínica sensible en el primer mensaje de WhatsApp."
   },
   {
-    p: '¿Dónde lo compro?',
-    r: 'En una farmacia autorizada. EVIPro no vende, almacena ni dispensa productos de cannabis.',
+    "p": "¿Necesito una membresía?",
+    "r": "No. Puedes reservar una consulta a tarifa regular. Las membresías son opcionales."
   },
   {
-    p: '¿Qué es el RENPUC?',
-    r: `El ${RENPUC_NOMBRE}. Es el padrón oficial: sin estar inscrito no puedes acceder al tratamiento.`,
-  },
+    "p": "¿La consulta incluye productos o garantiza una receta?",
+    "r": "No. El pago corresponde a la evaluación médica. La receta se emite solo si el profesional la considera indicada. EVIPro no vende, almacena ni dispensa productos de cannabis."
+  }
 ]
 
 export type Paso = { n: number; titulo: string; texto: string }

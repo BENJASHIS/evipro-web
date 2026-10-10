@@ -1,3 +1,4 @@
+import WhatsAppContact from '@/app/components/WhatsAppContact'
 import { T } from '@/app/components/Language'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -8,7 +9,7 @@ import Button from '@/app/components/ui/Button'
 import { escaleraReserva, precioReferencia } from '@/lib/consulta-pricing'
 import {
   HERO, INDICACIONES_PORTADA, PARA_QUE_NO, PREGUNTAS, PASOS_PRIMERA_CONSULTA,
-  OTRAS_ESPECIALIDADES, ESPECIALIDADES_PROXIMAS, MEDICO, RENPUC_NOMBRE, WHATSAPP, MEMBRESIA,
+  OTRAS_ESPECIALIDADES, ESPECIALIDADES_PROXIMAS, MEDICO, RENPUC_NOMBRE, MEMBRESIA,
   EVIDENCIA_PUBLICA,
 } from '@/lib/home-content'
 
@@ -42,14 +43,11 @@ export function Hero() {
           <h1 className="home-title font-light font-serif mb-6"><T>{HERO.titulo}</T><br /><T>{HERO.titulo2}</T></h1>
           <p className="text-muted text-lg leading-relaxed max-w-xl mb-8"><T>{HERO.subtitulo}</T></p>
           <div className="flex flex-wrap gap-3">
-            <Button variant="primary" href="/planes#membresias"><T>{"Conocer las membresías →"}</T></Button>
+            <WhatsAppContact />
             <Button variant="outline" href="/medicos"><T>{"Buscar una consulta →"}</T></Button>
           </div>
           <p className="text-muted text-sm mt-5"><T>{"Puedes consultar sin membresía o apoyar sin ser paciente."}</T></p>
-          <div className="flex flex-wrap items-center gap-4 mt-6">
-            <span className="text-muted text-sm"><T>{HERO.escribir}</T></span>
-            <Button variant="outline" href={`https://wa.me/51${WHATSAPP}`} className="px-5 py-2">WhatsApp</Button>
-          </div>
+          <Link href="/planes#membresias" className="inline-block text-sm text-brand mt-5 underline"><T>{"Conocer las membresías →"}</T></Link>
           <Link href="/planes#turista" className="inline-block text-sm text-brand mt-6 underline"><T>{"¿Visitas Perú? Conoce el Plan Turista →"}</T></Link>
         </div>
         <div className="lg:col-span-5">
@@ -147,8 +145,8 @@ export function Preguntas() {
         <dl className="divide-y divide-subtle">
           {PREGUNTAS.map(q => (
             <div key={q.p} className="py-4">
-              <dt className="font-light mb-1">{conAbbr(q.p)}</dt>
-              <dd className="text-muted text-sm leading-relaxed">{q.r}</dd>
+              <dt className="font-light mb-1"><T>{q.p}</T></dt>
+              <dd className="text-muted text-sm leading-relaxed"><T>{q.r}</T></dd>
             </div>
           ))}
         </dl>

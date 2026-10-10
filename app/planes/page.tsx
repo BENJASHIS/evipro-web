@@ -82,8 +82,8 @@ export default async function PlanesPage() {
   const eviproPlans = (basePlans ?? []).filter(p => p.type === 'evipro') as MembershipPlan[]
 
   return (
-    <main className="public-page min-h-screen bg-ink text-white">
-      <Nav />
+    <main className="public-page min-h-screen pb-24 bg-ink text-white">
+      <Nav contact />
       <header className="max-w-5xl mx-auto px-4 pt-16 pb-10">
         <Badge className="mb-4"><T>{"Planes y herramientas"}</T></Badge>
         <h1 className="text-4xl md:text-5xl font-light font-serif italic leading-tight mb-4 max-w-3xl"><T>{"Elige la ruta que sí corresponde a tu caso."}</T></h1>

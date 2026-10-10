@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { META_PORTADA } from '@/lib/home-content'
 import {
   Modalidades, CierreConsulta, Hero, Participar, QuienTeAtiende,
-  OtrasEspecialidades, Membresia,
+  OtrasEspecialidades, Membresia, Preguntas,
 } from '@/app/components/home/secciones'
 
 /** Solo para «/». El layout mantiene su título para el resto del sitio: cambiarlo
@@ -29,14 +29,15 @@ async function preciosMembresia(): Promise<{ evipro: number | null; basica: numb
 export default async function Home() {
   const precios = await preciosMembresia()
   return (
-    <main className="public-page home-page min-h-screen bg-ink text-white">
-      <Nav />
+    <main className="public-page home-page min-h-screen pb-24 bg-ink text-white">
+      <Nav contact />
       <Hero />
       <Membresia desde={precios.evipro} basica={precios.basica} />
       <Modalidades />
       <QuienTeAtiende />
       <OtrasEspecialidades />
       <Participar />
+      <Preguntas />
       <CierreConsulta />
     </main>
   )
