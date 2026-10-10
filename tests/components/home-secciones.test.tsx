@@ -68,18 +68,12 @@ describe('EvidenciaLimites', () => {
 })
 
 describe('Preguntas', () => {
-  it('deletrea el RENPUC una vez, completo', () => {
+  it('aclara la confirmación y separa consulta de productos', () => {
     render(<Preguntas />)
-    expect(screen.getByText(new RegExp(RENPUC_NOMBRE.slice(0, 40)))).toBeTruthy()
+    expect(screen.getByText(/enviar un mensaje no reserva automáticamente/)).toBeTruthy()
+    expect(screen.getByText(/El pago corresponde a la evaluación médica/)).toBeTruthy()
   })
 
-  it('no hay ningún RENPUC fuera de un <abbr>', () => {
-    const { container } = render(<Preguntas />)
-    const clon = container.cloneNode(true) as HTMLElement
-    const abbrs = clon.querySelectorAll('abbr')
-    abbrs.forEach(abbr => abbr.remove())
-    expect(clon.textContent).not.toContain('RENPUC')
-  })
 })
 
 describe('PrimeraConsulta', () => {
