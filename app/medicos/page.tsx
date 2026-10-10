@@ -14,7 +14,7 @@ export default function MedicosPage() {
       <Nav contact />
       <div className="max-w-5xl mx-auto px-4 py-16">
         <Badge className="mb-4"><T>{"Equipo Médico"}</T></Badge>
-        <h1 className="text-4xl font-light font-serif italic mb-4"><T>{"Especialistas a tu lado"}</T></h1>
+        <h1 className="text-4xl font-light font-serif italic mb-4"><T>{"Conoce a tu equipo médico"}</T></h1>
         <p className="text-muted mb-16 max-w-xl text-sm"><T>{"Atención médica especializada, basada en evidencia científica y enfocada en la realidad andina peruana."}</T></p>
         <div className="grid md:grid-cols-2 gap-8">
           {DOCTORS.map(doctor => (
