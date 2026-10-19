@@ -1,36 +1,27 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { T } from '@/app/components/Language'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { canUseMemberTools, getMemberAccess } from '@/lib/member-access'
 
 const TOOLS = [
   {
-    title: 'Regen',
-    eyebrow: 'Disponible',
-    href: '/miembros/regen',
-    body: 'Prueba de entorno para revisar hogar, trabajo, familia y círculo social.',
-    action: 'Abrir',
+    title: 'Bitácora de hábitos', href: '/miembros/herramientas/habitos',
+    eyebrow: 'Mi día a día', action: 'Abrir mi bitácora →',
+    body: 'Anota sueño, agua, alcohol y cómo te sientes. Retoma un registro guardado y revisa los últimos siete días.',
+    detail: 'Registra lo que sabes; un dato sin registrar no significa cero.',
   },
   {
-    title: 'Calculadora cannabinoide',
-    eyebrow: 'Disponible',
-    href: '/miembros/herramientas/calculadora-cannabinoide',
-    body: 'Conversor orientativo para aceite, cartucho, extracto y flor vaporizada.',
-    action: 'Abrir',
+    title: 'Regen · Mi entorno', href: '/miembros/regen',
+    eyebrow: 'Un momento para reflexionar', action: 'Explorar mi entorno →',
+    body: 'Revisa hogar, trabajo, familia y círculo social con preguntas por bloques y un resumen propio.',
+    detail: 'Herramienta de bienestar con preguntas propias; no es una escala clínica validada.',
   },
   {
-    title: 'Bitácora de hábitos',
-    eyebrow: 'Disponible',
-    href: '/miembros/herramientas/habitos',
-    body: 'Alcohol, agua, sueño, fármacos y comidas con registros simples y alertas prudentes.',
-    action: 'Abrir',
-  },
-  {
-    title: 'Cuestionarios educativos',
-    eyebrow: 'Próximo',
-    href: null,
-    body: 'Preguntas breves para aprender conceptos clave sin convertirlos en consejo médico.',
-    action: 'En preparación',
+    title: 'Calculadora cannabinoide', href: '/miembros/herramientas/calculadora-cannabinoide',
+    eyebrow: 'Entender mi etiqueta', action: 'Convertir datos de etiqueta →',
+    body: 'Convierte los datos declarados en aceites, cartuchos, extractos y flor. Ten a mano la etiqueta del producto.',
+    detail: 'Conversión aritmética: no determina cuánto debes usar ni cambia tu receta.',
   },
 ] as const
 
@@ -38,69 +29,36 @@ export default async function HerramientasPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
-
   const access = await getMemberAccess(supabase, user)
   const enabled = canUseMemberTools(access)
 
-  return (
-    <div>
-      <Link href="/miembros" className="text-xs font-mono text-faint hover:text-white">← Volver</Link>
-      <p className="text-xs font-mono uppercase tracking-widest text-brand mt-6 mb-2">Herramientas</p>
-      <h1 className="text-3xl font-light mb-4">Herramientas para tu seguimiento</h1>
-
-      {!enabled ? (
-        <div className="border border-subtle rounded-lg p-8 text-center">
-          <p className="text-muted text-sm mb-4">
-            Esta zona se activa con una membresía vigente.
-          </p>
-          <Link href="/planes#membresias" className="bg-brand-deep hover:bg-brand-mid text-white px-6 py-2 rounded font-mono text-sm transition-colors">
-            Ver membresías →
-          </Link>
-        </div>
-      ) : (
-        <>
-          {access.adminPreview && (
-            <div className="border border-brand/30 bg-brand/5 rounded-lg p-4 mb-6">
-              <p className="text-brand text-sm">
-                Modo admin · vista previa de herramientas sin membresía activa.
-              </p>
-            </div>
-          )}
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            {TOOLS.map(tool => {
-              const className = 'block min-h-44 border border-subtle rounded-lg p-5 transition-colors'
-              const body = (
-                <>
-                  <div className="flex items-center justify-between gap-3 mb-5">
-                    <p className="text-xs font-mono uppercase tracking-widest text-brand">{tool.eyebrow}</p>
-                    <span className="text-xs font-mono text-faint">{tool.action}</span>
-                  </div>
-                  <h2 className="text-xl font-light text-white mb-2">{tool.title}</h2>
-                  <p className="text-sm leading-6 text-muted">{tool.body}</p>
-                </>
-              )
-
-              return tool.href ? (
-                <Link key={tool.title} href={tool.href} className={`${className} hover:border-brand/60`}>
-                  {body}
-                </Link>
-              ) : (
-                <div key={tool.title} className={`${className} opacity-75`}>
-                  {body}
-                </div>
-              )
-            })}
+  return <div>
+    <Link href="/miembros" className="text-xs font-mono text-faint hover:text-white"><T>← Volver</T></Link>
+    <p className="text-xs font-mono uppercase tracking-widest text-brand mt-6 mb-3"><T>Herramientas</T></p>
+    <h1 className="text-3xl sm:text-4xl font-serif mb-4"><T>Mi seguimiento</T></h1>
+    <p className="text-muted max-w-2xl leading-relaxed mb-8"><T>Un espacio para registrar tu día, reflexionar sobre tu entorno y comprender la información de tus productos. Elige según lo que necesitas hoy.</T></p>
+    {!enabled ? <div className="border-t border-subtle pt-6">
+      <p className="text-muted text-sm mb-4"><T>Esta zona se activa con una membresía vigente.</T></p>
+      <Link href="/planes#membresias" className="inline-block bg-brand text-black px-6 py-3 rounded text-sm"><T>Ver membresías →</T></Link>
+    </div> : <>
+      {access.adminPreview && <p className="border-l-2 border-brand p-4 text-brand text-sm mb-6"><T>Modo admin · vista previa de herramientas sin membresía activa.</T></p>}
+      <div className="divide-y divide-subtle">
+        {TOOLS.map(tool => <article key={tool.href} className="grid md:grid-cols-[0.7fr_1fr] gap-4 md:gap-10 py-7">
+          <div>
+            <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{tool.eyebrow}</T></p>
+            <h2 className="text-2xl font-serif"><T>{tool.title}</T></h2>
           </div>
-
-          <div className="border border-yellow-400/30 bg-yellow-400/5 rounded-lg p-5 mt-6">
-            <p className="text-xs font-mono uppercase tracking-widest text-yellow-300 mb-2">Seguridad</p>
-            <p className="text-sm text-yellow-50 leading-6">
-              Las herramientas convierten datos y ordenan información. No indican dosis, no reemplazan consulta médica y no modifican recetas.
-            </p>
+          <div>
+            <p className="text-sm leading-6 text-muted"><T>{tool.body}</T></p>
+            <p className="text-xs leading-5 text-muted mt-3"><T>{tool.detail}</T></p>
+            <Link href={tool.href} className="inline-block text-brand underline py-3 mt-2"><T>{tool.action}</T></Link>
           </div>
-        </>
-      )}
-    </div>
-  )
+        </article>)}
+      </div>
+      <aside className="border-l-2 border-brand bg-brand/5 p-5 mt-8">
+        <h2 className="font-medium mb-2"><T>Para acompañar tu atención</T></h2>
+        <p className="text-sm text-muted leading-6"><T>Las herramientas ordenan información. No indican tratamientos, no reemplazan una consulta médica y no se vigilan en tiempo real. Si necesitas atención, utiliza el canal de consulta.</T></p>
+      </aside>
+    </>}
+  </div>
 }
