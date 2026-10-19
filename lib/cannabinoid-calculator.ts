@@ -2,40 +2,53 @@ export type OilInputMode = 'mg_per_ml' | 'total_mg' | 'percent_weight_volume'
 export type CannabinoidInputMode = OilInputMode
 export type InhalationInputMode = 'percent_of_product' | 'total_mg'
 
+type NumericInput = number | null
+
 export type OilCalculatorInput = {
   inputMode: OilInputMode
-  volumeMl: number
-  cbdValue: number
-  thcValue: number
-  dropsPerMl: number
-  dropsPerDose: number
-  dosesPerDay: number
+  volumeMl: NumericInput
+  cbdValue: NumericInput
+  thcValue: NumericInput
+  dropsPerMl: NumericInput
+  dropsPerDose: NumericInput
+  dosesPerDay: NumericInput
 }
 
 export type InhalationCalculatorInput = {
   inputMode: InhalationInputMode
-  productGrams: number
-  cbdValue: number
-  thcValue: number
-  expectedInhalations: number
+  productGrams: NumericInput
+  cbdValue: NumericInput
+  thcValue: NumericInput
+  expectedInhalations: NumericInput
 }
 
 export type FlowerCalculatorInput = {
-  flowerGrams: number
-  cbdPercent: number
-  thcPercent: number
-  expectedInhalations: number
+  flowerGrams: NumericInput
+  cbdPercent: NumericInput
+  thcPercent: NumericInput
+  expectedInhalations: NumericInput
 }
 
-export const DEFAULT_DROPS_PER_ML = 20
-
-function positive(value: number) {
-  return Number.isFinite(value) && value > 0 ? value : 0
+function requiredNumber(value: NumericInput, label: string, positive = false) {
+  if (value === null) throw new RangeError(`Falta ${label}.`)
+  if (!Number.isFinite(value) || value < 0 || (positive && value === 0)) {
+    throw new RangeError(`${label}: introduce un número finito ${positive ? 'mayor que 0' : 'igual o mayor que 0'}.`)
+  }
+  return value
 }
 
-export function roundTo(value: number, decimals = 2) {
+function optionalPositive(value: NumericInput, label: string) {
+  return value === null ? null : requiredNumber(value, label, true)
+}
+
+export function roundTo(value: number, decimals?: number): number
+export function roundTo(value: number | null, decimals?: number): number | null
+export function roundTo(value: number | null, decimals = 2) {
+  if (value === null) return null
   const factor = 10 ** decimals
-  return Math.round((value + Number.EPSILON) * factor) / factor
+  const rounded = Math.round((value + Number.EPSILON) * factor) / factor
+  if (!Number.isFinite(rounded)) throw new RangeError('El resultado excede el rango numérico. Revisa las cantidades y unidades.')
+  return rounded
 }
 
 export function concentrationFromInput(
@@ -43,17 +56,16 @@ export function concentrationFromInput(
   value: number,
   volumeMl: number,
 ) {
-  const safeValue = positive(value)
-  const safeVolume = positive(volumeMl)
+  requiredNumber(value, 'Contenido declarado')
+  requiredNumber(volumeMl, 'Volumen del frasco', true)
 
-  if (mode === 'mg_per_ml') return safeValue
-  if (mode === 'percent_weight_volume') return safeValue * 10
-  if (!safeVolume) return 0
-  return safeValue / safeVolume
+  if (mode === 'mg_per_ml') return value
+  if (mode === 'percent_weight_volume') return value * 10
+  return value / volumeMl
 }
 
 export function percentWeightVolumeFromConcentration(mgPerMl: number) {
-  return positive(mgPerMl) / 10
+  return requiredNumber(mgPerMl, 'Concentración') / 10
 }
 
 export function inhalationTotalFromInput(
@@ -61,32 +73,31 @@ export function inhalationTotalFromInput(
   value: number,
   productGrams: number,
 ) {
-  const safeValue = positive(value)
-  const safeGrams = positive(productGrams)
+  requiredNumber(value, 'Contenido declarado')
+  requiredNumber(productGrams, 'Contenido del producto', true)
 
-  if (mode === 'percent_of_product') return safeGrams * 1000 * (safeValue / 100)
-  return safeValue
+  if (mode === 'percent_of_product') return productGrams * 1000 * (value / 100)
+  return value
 }
 
 export function percentOfProductFromTotal(totalMg: number, productGrams: number) {
-  const safeTotal = positive(totalMg)
-  const safeGrams = positive(productGrams)
-
-  if (!safeGrams) return 0
-  return (safeTotal / (safeGrams * 1000)) * 100
+  requiredNumber(totalMg, 'Contenido declarado')
+  requiredNumber(productGrams, 'Contenido del producto', true)
+  return (totalMg / (productGrams * 1000)) * 100
 }
 
 export function cannabinoidRatio(cbdMgPerMl: number, thcMgPerMl: number) {
-  const cbd = positive(cbdMgPerMl)
-  const thc = positive(thcMgPerMl)
+  const cbd = requiredNumber(cbdMgPerMl, 'CBD declarado')
+  const thc = requiredNumber(thcMgPerMl, 'THC declarado')
 
-  if (!cbd && !thc) return 'Sin datos'
+  if (!cbd && !thc) return 'Sin cannabinoides declarados'
   if (!thc) return 'CBD sin THC declarado'
   if (!cbd) return 'THC sin CBD declarado'
 
-  const ratio = cbd / thc
-  if (ratio >= 1) return `${formatRatioPart(ratio)} : 1`
-  return `1 : ${formatRatioPart(1 / ratio)}`
+  const ratio = cbd >= thc ? cbd / thc : thc / cbd
+  if (!Number.isFinite(ratio)) throw new RangeError('La relación excede el rango numérico. Revisa las cantidades.')
+  if (cbd >= thc) return `${formatRatioPart(ratio)} : 1`
+  return `1 : ${formatRatioPart(ratio)}`
 }
 
 function formatRatioPart(value: number) {
@@ -101,41 +112,55 @@ function trimZeros(value: string) {
 }
 
 export function calculateOilMetrics(input: OilCalculatorInput) {
-  const volumeMl = positive(input.volumeMl)
-  const dropsPerMl = positive(input.dropsPerMl) || DEFAULT_DROPS_PER_ML
-  const dropsPerDose = positive(input.dropsPerDose)
-  const dosesPerDay = positive(input.dosesPerDay)
+  const volumeMl = requiredNumber(input.volumeMl, 'Volumen del frasco', true)
+  const cbdValue = requiredNumber(input.cbdValue, 'CBD declarado')
+  const thcValue = requiredNumber(input.thcValue, 'THC declarado')
+  const dropsPerMl = optionalPositive(input.dropsPerMl, 'Gotas por ml')
+  const dropsPerDose = optionalPositive(input.dropsPerDose, 'Gotas por toma')
+  const dosesPerDay = optionalPositive(input.dosesPerDay, 'Tomas por día')
 
-  const cbdMgPerMl = concentrationFromInput(input.inputMode, input.cbdValue, volumeMl)
-  const thcMgPerMl = concentrationFromInput(input.inputMode, input.thcValue, volumeMl)
-  const cbdMgPerDrop = cbdMgPerMl / dropsPerMl
-  const thcMgPerDrop = thcMgPerMl / dropsPerMl
-  const totalDrops = volumeMl * dropsPerMl
-  const dosesPerBottle = dropsPerDose ? totalDrops / dropsPerDose : 0
+  const cbdMgPerMl = concentrationFromInput(input.inputMode, cbdValue, volumeMl)
+  const thcMgPerMl = concentrationFromInput(input.inputMode, thcValue, volumeMl)
+  const cbdMgPerDrop = dropsPerMl === null ? null : cbdMgPerMl / dropsPerMl
+  const thcMgPerDrop = dropsPerMl === null ? null : thcMgPerMl / dropsPerMl
+  const totalDrops = dropsPerMl === null ? null : volumeMl * dropsPerMl
+  const dosesPerBottle = totalDrops === null || dropsPerDose === null ? null : totalDrops / dropsPerDose
 
   return {
     cbdMgPerMl: roundTo(cbdMgPerMl),
     thcMgPerMl: roundTo(thcMgPerMl),
     cbdMgPerDrop: roundTo(cbdMgPerDrop, 3),
     thcMgPerDrop: roundTo(thcMgPerDrop, 3),
-    cbdMgPerDose: roundTo(cbdMgPerDrop * dropsPerDose, 3),
-    thcMgPerDose: roundTo(thcMgPerDrop * dropsPerDose, 3),
+    cbdMgPerDose: roundTo(cbdMgPerDrop === null || dropsPerDose === null ? null : cbdMgPerDrop * dropsPerDose, 3),
+    thcMgPerDose: roundTo(thcMgPerDrop === null || dropsPerDose === null ? null : thcMgPerDrop * dropsPerDose, 3),
     cbdTotalMg: roundTo(cbdMgPerMl * volumeMl),
     thcTotalMg: roundTo(thcMgPerMl * volumeMl),
     cbdPercentWeightVolume: roundTo(percentWeightVolumeFromConcentration(cbdMgPerMl), 2),
     thcPercentWeightVolume: roundTo(percentWeightVolumeFromConcentration(thcMgPerMl), 2),
     totalDrops: roundTo(totalDrops),
     dosesPerBottle: roundTo(dosesPerBottle),
-    estimatedDays: roundTo(dosesPerBottle && dosesPerDay ? dosesPerBottle / dosesPerDay : 0),
+    estimatedDays: roundTo(dosesPerBottle === null || dosesPerDay === null ? null : dosesPerBottle / dosesPerDay),
     ratio: cannabinoidRatio(cbdMgPerMl, thcMgPerMl),
   }
 }
 
 export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
-  const productGrams = positive(input.productGrams)
-  const expectedInhalations = positive(input.expectedInhalations)
-  const cbdTotalMg = inhalationTotalFromInput(input.inputMode, input.cbdValue, productGrams)
-  const thcTotalMg = inhalationTotalFromInput(input.inputMode, input.thcValue, productGrams)
+  const productGrams = requiredNumber(input.productGrams, 'Contenido del producto', true)
+  const cbdValue = requiredNumber(input.cbdValue, 'CBD declarado')
+  const thcValue = requiredNumber(input.thcValue, 'THC declarado')
+  const expectedInhalations = optionalPositive(input.expectedInhalations, 'Inhalaciones estimadas')
+  if (expectedInhalations !== null && !Number.isInteger(expectedInhalations)) {
+    throw new RangeError('Inhalaciones estimadas: introduce un número entero mayor que 0.')
+  }
+  if (input.inputMode === 'percent_of_product' && cbdValue + thcValue > 100) {
+    throw new RangeError('CBD + THC no puede superar el 100 % de la masa del producto.')
+  }
+  if (input.inputMode === 'total_mg' && cbdValue + thcValue > productGrams * 1000) {
+    throw new RangeError('Los mg de CBD + THC no pueden superar la masa del producto (g × 1000).')
+  }
+
+  const cbdTotalMg = inhalationTotalFromInput(input.inputMode, cbdValue, productGrams)
+  const thcTotalMg = inhalationTotalFromInput(input.inputMode, thcValue, productGrams)
   const cbdPercentOfProduct = percentOfProductFromTotal(cbdTotalMg, productGrams)
   const thcPercentOfProduct = percentOfProductFromTotal(thcTotalMg, productGrams)
 
@@ -144,8 +169,8 @@ export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
     thcTotalMg: roundTo(thcTotalMg),
     cbdPercentOfProduct: roundTo(cbdPercentOfProduct, 2),
     thcPercentOfProduct: roundTo(thcPercentOfProduct, 2),
-    cbdMgPerInhalation: roundTo(expectedInhalations ? cbdTotalMg / expectedInhalations : 0, 3),
-    thcMgPerInhalation: roundTo(expectedInhalations ? thcTotalMg / expectedInhalations : 0, 3),
+    cbdMgPerInhalation: roundTo(expectedInhalations === null ? null : cbdTotalMg / expectedInhalations, 3),
+    thcMgPerInhalation: roundTo(expectedInhalations === null ? null : thcTotalMg / expectedInhalations, 3),
     expectedInhalations: roundTo(expectedInhalations),
     productGrams: roundTo(productGrams, 3),
     ratio: cannabinoidRatio(cbdTotalMg, thcTotalMg),
@@ -153,20 +178,22 @@ export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
 }
 
 export function calculateFlowerMetrics(input: FlowerCalculatorInput) {
-  const flowerGrams = positive(input.flowerGrams)
-  const expectedInhalations = positive(input.expectedInhalations)
-  const cbdTotalMg = inhalationTotalFromInput('percent_of_product', input.cbdPercent, flowerGrams)
-  const thcTotalMg = inhalationTotalFromInput('percent_of_product', input.thcPercent, flowerGrams)
-
+  const metrics = calculateInhalationMetrics({
+    inputMode: 'percent_of_product',
+    productGrams: input.flowerGrams,
+    cbdValue: input.cbdPercent,
+    thcValue: input.thcPercent,
+    expectedInhalations: input.expectedInhalations,
+  })
   return {
-    flowerGrams: roundTo(flowerGrams, 3),
-    cbdTotalMg: roundTo(cbdTotalMg),
-    thcTotalMg: roundTo(thcTotalMg),
-    cbdPercentOfFlower: roundTo(positive(input.cbdPercent), 2),
-    thcPercentOfFlower: roundTo(positive(input.thcPercent), 2),
-    cbdMgPerInhalation: roundTo(expectedInhalations ? cbdTotalMg / expectedInhalations : 0, 3),
-    thcMgPerInhalation: roundTo(expectedInhalations ? thcTotalMg / expectedInhalations : 0, 3),
-    expectedInhalations: roundTo(expectedInhalations),
-    ratio: cannabinoidRatio(cbdTotalMg, thcTotalMg),
+    flowerGrams: metrics.productGrams,
+    cbdTotalMg: metrics.cbdTotalMg,
+    thcTotalMg: metrics.thcTotalMg,
+    cbdPercentOfFlower: metrics.cbdPercentOfProduct,
+    thcPercentOfFlower: metrics.thcPercentOfProduct,
+    cbdMgPerInhalation: metrics.cbdMgPerInhalation,
+    thcMgPerInhalation: metrics.thcMgPerInhalation,
+    expectedInhalations: metrics.expectedInhalations,
+    ratio: metrics.ratio,
   }
 }
