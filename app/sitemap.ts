@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Solo páginas públicas canónicas. Sin fechas de modificación inventadas,
   // formularios, tokens, redirects ni consultas a datos de pacientes.
   const paths = [
-    '/', CONSULTA_PATH, '/medicos', '/planes', '/aliados',
+    '/', CONSULTA_PATH, '/medicos', '/planes', '/aliados', '/dudas-del-viajero',
     '/terminos', '/politica-devoluciones',
     ...DOCTORS.map(doctor => `/medicos/${doctor.slug}`),
   ]

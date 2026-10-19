@@ -1,5 +1,6 @@
 import { localizedMetadata } from '@/lib/localized-metadata'
 import Nav from '@/app/components/Nav'
+import { OpinionGoogle, DudasViajero } from '@/app/components/home/Comunidad'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { META_PORTADA } from '@/lib/home-content'
 import {
@@ -36,7 +37,9 @@ export default async function Home() {
       <Modalidades />
       <QuienTeAtiende />
       <OtrasEspecialidades />
+      <OpinionGoogle />
       <Participar />
+      <DudasViajero />
       <Preguntas />
       <CierreConsulta />
     </main>
