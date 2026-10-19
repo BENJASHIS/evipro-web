@@ -1,4 +1,4 @@
-export const HABIT_LOG_VERSION = '2026.08.27'
+export const HABIT_LOG_VERSION = '2026.10.19'
 
 export const HABIT_SYMPTOMS = [
   { key: 'pain', label: 'Dolor' },
@@ -12,7 +12,7 @@ export const MEDICATION_STATUSES = ['not_applicable', 'taken', 'missed', 'change
 
 export type HabitSymptomKey = typeof HABIT_SYMPTOMS[number]['key']
 export type MedicationStatus = typeof MEDICATION_STATUSES[number]
-export type HabitSymptoms = Record<HabitSymptomKey, number>
+export type HabitSymptoms = Record<HabitSymptomKey, number | null>
 
 export type HabitLogData = {
   version: string
@@ -21,7 +21,7 @@ export type HabitLogData = {
   sleep_quality: number | null
   sleepiness: number | null
   water_ml: number | null
-  alcohol_units: number
+  alcohol_units: number | null
   medication_status: MedicationStatus
   meals_regular: boolean | null
   symptoms: HabitSymptoms
@@ -34,10 +34,15 @@ export type HabitLogRecord = HabitLogData & {
 }
 
 export type HabitSummary = {
+  startDate: string
+  endDate: string
   daysLogged: number
+  missingDays: number
   avgSleepHours: number | null
   avgWaterMl: number | null
   alcoholDays: number
+  alcoholDaysWithData: number
+  symptomDaysWithData: number
   medicationFlags: number
   highSymptomDays: number
 }
@@ -47,11 +52,11 @@ type ValidationResult =
   | { ok: false; error: string }
 
 const DEFAULT_SYMPTOMS: HabitSymptoms = {
-  pain: 0,
-  anxiety: 0,
-  nausea: 0,
-  dizziness: 0,
-  appetite: 0,
+  pain: null,
+  anxiety: null,
+  nausea: null,
+  dizziness: null,
+  appetite: null,
 }
 
 function asObject(raw: unknown): Record<string, unknown> | null {
@@ -60,8 +65,8 @@ function asObject(raw: unknown): Record<string, unknown> | null {
 }
 
 function finiteNumber(value: unknown) {
-  if (value === '' || value === null || typeof value === 'undefined') return null
-  const parsed = typeof value === 'number' ? value : Number(String(value).replace(',', '.'))
+  if (typeof value !== 'number' && typeof value !== 'string') return null
+  const parsed = typeof value === 'number' ? value : Number(value.replace(',', '.'))
   return Number.isFinite(parsed) ? parsed : null
 }
 
@@ -71,22 +76,11 @@ function optionalNumber(
   min: number,
   max: number,
 ): { ok: true; value: number | null } | { ok: false; error: string } {
+  if (value == null || (typeof value === 'string' && !value.trim())) return { ok: true, value: null }
   const parsed = finiteNumber(value)
-  if (parsed === null) return { ok: true, value: null }
+  if (parsed === null) return { ok: false, error: `${field} debe ser un número válido.` }
   if (parsed < min || parsed > max) return { ok: false, error: `${field} fuera de rango.` }
-  return { ok: true, value: Math.round(parsed * 100) / 100 }
-}
-
-function requiredNumber(
-  value: unknown,
-  field: string,
-  min: number,
-  max: number,
-): { ok: true; value: number } | { ok: false; error: string } {
-  const parsed = finiteNumber(value)
-  if (parsed === null) return { ok: false, error: `${field} es obligatorio.` }
-  if (parsed < min || parsed > max) return { ok: false, error: `${field} fuera de rango.` }
-  return { ok: true, value: Math.round(parsed * 100) / 100 }
+  return { ok: true, value: parsed }
 }
 
 function optionalInteger(
@@ -102,17 +96,14 @@ function optionalInteger(
 }
 
 function score(value: unknown, field: string) {
-  const parsed = requiredNumber(value, field, 0, 3)
-  if (!parsed.ok) return parsed
-  if (!Number.isInteger(parsed.value)) return { ok: false as const, error: `${field} debe ser entero.` }
-  return parsed
+  return optionalInteger(value, field, 0, 3)
 }
 
 function isMedicationStatus(value: unknown): value is MedicationStatus {
   return typeof value === 'string' && MEDICATION_STATUSES.includes(value as MedicationStatus)
 }
 
-function dateOnly(value: unknown): string | null {
+export function habitDate(value: unknown): string | null {
   if (typeof value !== 'string') return null
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null
   const date = new Date(`${value}T00:00:00Z`)
@@ -125,7 +116,7 @@ export function validateHabitPayload(raw: unknown): ValidationResult {
   const body = asObject(raw)
   if (!body) return { ok: false, error: 'Solicitud inválida.' }
 
-  const logDate = dateOnly(body.log_date)
+  const logDate = habitDate(body.log_date)
   if (!logDate) return { ok: false, error: 'Fecha inválida.' }
 
   const sleepHours = optionalNumber(body.sleep_hours, 'Sueño', 0, 24)
@@ -136,18 +127,25 @@ export function validateHabitPayload(raw: unknown): ValidationResult {
   if (!sleepiness.ok) return sleepiness
   const waterMl = optionalInteger(body.water_ml, 'Agua', 0, 10000)
   if (!waterMl.ok) return waterMl
-  const alcoholUnits = requiredNumber(body.alcohol_units ?? 0, 'Alcohol', 0, 30)
+  const alcoholUnits = optionalNumber(body.alcohol_units, 'Alcohol', 0, 30)
   if (!alcoholUnits.ok) return alcoholUnits
 
+  if (body.medication_status !== undefined && !isMedicationStatus(body.medication_status)) {
+    return { ok: false, error: 'Estado de fármacos inválido.' }
+  }
   const medicationStatus = isMedicationStatus(body.medication_status)
     ? body.medication_status
     : 'not_applicable'
+  if (body.meals_regular != null && typeof body.meals_regular !== 'boolean') {
+    return { ok: false, error: 'Estado de comidas inválido.' }
+  }
   const mealsRegular = typeof body.meals_regular === 'boolean' ? body.meals_regular : null
 
   const rawSymptoms = asObject(body.symptoms) ?? {}
+  if (body.symptoms != null && !asObject(body.symptoms)) return { ok: false, error: 'Síntomas inválidos.' }
   const symptoms = { ...DEFAULT_SYMPTOMS }
   for (const symptom of HABIT_SYMPTOMS) {
-    const parsed = score(rawSymptoms[symptom.key] ?? 0, symptom.label)
+    const parsed = score(rawSymptoms[symptom.key], symptom.label)
     if (!parsed.ok) return parsed
     symptoms[symptom.key] = parsed.value
   }
@@ -172,9 +170,9 @@ export function validateHabitPayload(raw: unknown): ValidationResult {
 export function buildHabitAlerts(log: Pick<HabitLogData, 'sleep_hours' | 'sleepiness' | 'alcohol_units' | 'medication_status' | 'symptoms'>) {
   const alerts: string[] = []
 
-  if (log.alcohol_units > 0 && (log.sleepiness ?? 0) >= 2) {
+  if ((log.alcohol_units ?? 0) > 0 && (log.sleepiness ?? 0) >= 2) {
     alerts.push('Alcohol y somnolencia el mismo día: coméntalo en consulta si se repite.')
-  } else if (log.alcohol_units > 0) {
+  } else if ((log.alcohol_units ?? 0) > 0) {
     alerts.push('Alcohol registrado: si usas cannabis, sedantes u otros fármacos, revísalo con tu médico.')
   }
 
@@ -190,11 +188,11 @@ export function buildHabitAlerts(log: Pick<HabitLogData, 'sleep_hours' | 'sleepi
     alerts.push('Sueño muy reducido: observa si se acompaña de más síntomas o somnolencia.')
   }
 
-  if (log.symptoms.dizziness >= 2) {
+  if ((log.symptoms.dizziness ?? 0) >= 2) {
     alerts.push('Mareo moderado o intenso: registra el contexto y consúltalo si persiste o empeora.')
   }
 
-  if (log.symptoms.anxiety >= 3 || log.symptoms.pain >= 3 || log.symptoms.nausea >= 3) {
+  if ((log.symptoms.anxiety ?? 0) >= 3 || (log.symptoms.pain ?? 0) >= 3 || (log.symptoms.nausea ?? 0) >= 3) {
     alerts.push('Síntoma intenso registrado: llévalo a tu próxima consulta o busca atención si empeora.')
   }
 
@@ -206,14 +204,27 @@ function average(values: number[]) {
   return Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10
 }
 
-export function buildHabitSummary(logs: HabitLogRecord[]): HabitSummary {
-  const recent = logs.slice(0, 7)
+export function habitToday(now = new Date()): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Lima', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now)
+}
+
+export function buildHabitSummary(logs: HabitLogRecord[], now = new Date()): HabitSummary {
+  const endDate = habitToday(now)
+  const start = new Date(`${endDate}T00:00:00Z`)
+  start.setUTCDate(start.getUTCDate() - 6)
+  const startDate = start.toISOString().slice(0, 10)
+  const recent = logs.filter(log => log.log_date >= startDate && log.log_date <= endDate)
   return {
+    startDate,
+    endDate,
     daysLogged: recent.length,
+    missingDays: 7 - recent.length,
     avgSleepHours: average(recent.flatMap(log => typeof log.sleep_hours === 'number' ? [log.sleep_hours] : [])),
     avgWaterMl: average(recent.flatMap(log => typeof log.water_ml === 'number' ? [log.water_ml] : [])),
-    alcoholDays: recent.filter(log => log.alcohol_units > 0).length,
+    alcoholDays: recent.filter(log => (log.alcohol_units ?? 0) > 0).length,
+    alcoholDaysWithData: recent.filter(log => log.alcohol_units !== null).length,
+    symptomDaysWithData: recent.filter(log => Object.values(log.symptoms).some(value => value !== null)).length,
     medicationFlags: recent.filter(log => log.medication_status === 'missed' || log.medication_status === 'changed').length,
-    highSymptomDays: recent.filter(log => Object.values(log.symptoms).some(value => value >= 3)).length,
+    highSymptomDays: recent.filter(log => Object.values(log.symptoms).some(value => value !== null && value >= 3)).length,
   }
 }

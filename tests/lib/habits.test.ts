@@ -76,6 +76,27 @@ describe('validateHabitPayload', () => {
       expect(result.data).not.toHaveProperty('notes')
     }
   })
+
+  it('conserva datos no registrados como null y el cero explícito', () => {
+    const result = validateHabitPayload({ log_date: '2026-08-27', symptoms: { pain: 0 } })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.data.alcohol_units).toBeNull()
+      expect(result.data.symptoms).toEqual({ pain: 0, anxiety: null, nausea: null, dizziness: null, appetite: null })
+    }
+  })
+
+  it.each([
+    { sleep_hours: 'texto' },
+    { water_ml: true },
+    { alcohol_units: [] },
+    { symptoms: { pain: false } },
+    { symptoms: 'sin datos' },
+    { medication_status: 'inventado' },
+    { meals_regular: 'sí' },
+  ])('rechaza valores malformados: %j', invalid => {
+    expect(validateHabitPayload({ ...validPayload, ...invalid }).ok).toBe(false)
+  })
 })
 
 describe('buildHabitAlerts', () => {
@@ -94,19 +115,34 @@ describe('buildHabitAlerts', () => {
 })
 
 describe('buildHabitSummary', () => {
-  it('resume los últimos siete registros', () => {
+  it('resume los últimos siete días calendario, incluyendo el día actual en Lima', () => {
     const logs = [
       log({ id: '1', log_date: '2026-08-27', sleep_hours: 6, water_ml: 1000 }),
       log({ id: '2', log_date: '2026-08-26', sleep_hours: 8, water_ml: 2000, alcohol_units: 1 }),
       log({ id: '3', log_date: '2026-08-25', medication_status: 'changed' }),
     ]
 
-    expect(buildHabitSummary(logs)).toMatchObject({
+    expect(buildHabitSummary(logs, new Date('2026-08-28T02:00:00Z'))).toMatchObject({
+      startDate: '2026-08-21',
+      endDate: '2026-08-27',
       daysLogged: 3,
+      missingDays: 4,
       avgSleepHours: 6.7,
       avgWaterMl: 1333.3,
       alcoholDays: 1,
       medicationFlags: 1,
+    })
+  })
+
+  it('excluye registros antiguos y futuros aunque haya menos de siete filas recientes', () => {
+    const logs = [
+      log({ id: 'futuro', log_date: '2026-08-28', alcohol_units: 2, sleep_hours: 24 }),
+      log({ id: 'hoy', log_date: '2026-08-27', sleep_hours: 8, alcohol_units: null }),
+      log({ id: 'borde', log_date: '2026-08-21', sleep_hours: 6, alcohol_units: 0 }),
+      log({ id: 'antiguo', log_date: '2026-08-20', alcohol_units: 2, sleep_hours: 24 }),
+    ]
+    expect(buildHabitSummary(logs, new Date('2026-08-28T02:00:00Z'))).toMatchObject({
+      daysLogged: 2, missingDays: 5, avgSleepHours: 7, alcoholDays: 0, alcoholDaysWithData: 1,
     })
   })
 })

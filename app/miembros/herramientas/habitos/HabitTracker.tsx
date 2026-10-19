@@ -5,6 +5,8 @@ import {
   HABIT_SYMPTOMS,
   buildHabitAlerts,
   buildHabitSummary,
+  habitToday,
+  validateHabitPayload,
   type HabitLogRecord,
   type HabitSymptoms,
   type MedicationStatus,
@@ -31,28 +33,22 @@ const SCORE_OPTIONS = [
   ['3', 'Intenso'],
 ] as const
 
-function todayDate() {
-  const date = new Date()
-  date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-  return date.toISOString().slice(0, 10)
-}
-
-function emptyForm(): FormState {
+function emptyForm(date = habitToday()): FormState {
   return {
-    log_date: todayDate(),
+    log_date: date,
     sleep_hours: '',
     sleep_quality: '',
     sleepiness: '',
     water_ml: '',
-    alcohol_units: '0',
+    alcohol_units: '',
     medication_status: 'not_applicable',
     meals_regular: 'unknown',
     symptoms: {
-      pain: '0',
-      anxiety: '0',
-      nausea: '0',
-      dizziness: '0',
-      appetite: '0',
+      pain: '',
+      anxiety: '',
+      nausea: '',
+      dizziness: '',
+      appetite: '',
     },
   }
 }
@@ -64,15 +60,15 @@ function fromLog(log: HabitLogRecord): FormState {
     sleep_quality: log.sleep_quality?.toString() ?? '',
     sleepiness: log.sleepiness?.toString() ?? '',
     water_ml: log.water_ml?.toString() ?? '',
-    alcohol_units: log.alcohol_units.toString(),
+    alcohol_units: log.alcohol_units?.toString() ?? '',
     medication_status: log.medication_status,
     meals_regular: typeof log.meals_regular === 'boolean' ? log.meals_regular ? 'yes' : 'no' : 'unknown',
     symptoms: {
-      pain: String(log.symptoms.pain ?? 0),
-      anxiety: String(log.symptoms.anxiety ?? 0),
-      nausea: String(log.symptoms.nausea ?? 0),
-      dizziness: String(log.symptoms.dizziness ?? 0),
-      appetite: String(log.symptoms.appetite ?? 0),
+      pain: log.symptoms.pain?.toString() ?? '',
+      anxiety: log.symptoms.anxiety?.toString() ?? '',
+      nausea: log.symptoms.nausea?.toString() ?? '',
+      dizziness: log.symptoms.dizziness?.toString() ?? '',
+      appetite: log.symptoms.appetite?.toString() ?? '',
     },
   }
 }
@@ -83,10 +79,6 @@ function numberOrNull(value: string) {
   return Number.isFinite(parsed) ? parsed : null
 }
 
-function numberOrZero(value: string) {
-  return numberOrNull(value) ?? 0
-}
-
 function formPayload(form: FormState) {
   return {
     log_date: form.log_date,
@@ -94,13 +86,26 @@ function formPayload(form: FormState) {
     sleep_quality: numberOrNull(form.sleep_quality),
     sleepiness: numberOrNull(form.sleepiness),
     water_ml: numberOrNull(form.water_ml),
-    alcohol_units: numberOrZero(form.alcohol_units),
+    alcohol_units: numberOrNull(form.alcohol_units),
     medication_status: form.medication_status,
     meals_regular: form.meals_regular === 'unknown' ? null : form.meals_regular === 'yes',
     symptoms: Object.fromEntries(
-      HABIT_SYMPTOMS.map(symptom => [symptom.key, numberOrZero(form.symptoms[symptom.key])]),
+      HABIT_SYMPTOMS.map(symptom => [symptom.key, numberOrNull(form.symptoms[symptom.key])]),
     ),
   }
+}
+
+function isCompleteLog(value: unknown): value is HabitLogRecord {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  const log = value as Record<string, unknown>
+  const fields = ['version', 'log_date', 'sleep_hours', 'sleep_quality', 'sleepiness', 'water_ml', 'alcohol_units', 'medication_status', 'meals_regular', 'symptoms']
+  return fields.every(field => Object.hasOwn(log, field))
+    && typeof log.id === 'string'
+    && typeof log.created_at === 'string' && Number.isFinite(Date.parse(log.created_at))
+    && typeof log.updated_at === 'string' && Number.isFinite(Date.parse(log.updated_at))
+    && !!log.symptoms && typeof log.symptoms === 'object'
+    && HABIT_SYMPTOMS.every(({ key }) => Object.hasOwn(log.symptoms!, key))
+    && validateHabitPayload(log).ok
 }
 
 function previewLog(form: FormState): HabitLogRecord {
@@ -131,6 +136,7 @@ function Field({
   step = '1',
   min = '0',
   max,
+  disabled,
 }: {
   label: string
   value: string
@@ -140,6 +146,7 @@ function Field({
   step?: string
   min?: string
   max?: string
+  disabled?: boolean
 }) {
   return (
     <label className="block">
@@ -152,6 +159,7 @@ function Field({
           max={max}
           step={type === 'number' ? step : undefined}
           value={value}
+          disabled={disabled}
           onChange={event => onChange(event.target.value)}
           className={`${INPUT} ${suffix ? 'pr-16' : ''}`}
         />
@@ -202,6 +210,19 @@ export default function HabitTracker() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState('')
+  const [loadedDate, setLoadedDate] = useState<string | null>(null)
+  const [expectedUpdatedAt, setExpectedUpdatedAt] = useState<string | null>(null)
+  const [reload, setReload] = useState(0)
+  const selectedDate = form.log_date
+
+  function chooseDate(date: string) {
+    setForm(emptyForm(date))
+    setLoadedDate(null)
+    setLoading(true)
+    setSaved('')
+    setError('')
+    setReload(current => current + 1)
+  }
 
   useEffect(() => {
     let active = true
@@ -209,41 +230,62 @@ export default function HabitTracker() {
       setLoading(true)
       setError('')
       try {
-        const res = await fetch('/api/habits?limit=14')
-        const data = await res.json() as { logs?: HabitLogRecord[]; error?: string }
+        const res = await fetch(`/api/habits?limit=14&date=${encodeURIComponent(selectedDate)}`, { cache: 'no-store' })
+        const data = await res.json() as { logs?: unknown[]; log?: unknown; error?: string }
         if (!res.ok) throw new Error(data.error ?? 'No se pudo cargar la bitácora.')
-        if (active) setLogs(data.logs ?? [])
+        if (!Array.isArray(data.logs) || !data.logs.every(isCompleteLog)
+          || (data.log !== null && (!isCompleteLog(data.log) || data.log.log_date !== selectedDate))) {
+          throw new Error('La bitácora llegó incompleta. Vuelve a cargarla antes de editar.')
+        }
+        if (active) {
+          setLogs(data.logs)
+          setForm(data.log ? fromLog(data.log) : emptyForm(selectedDate))
+          setExpectedUpdatedAt(data.log?.updated_at ?? null)
+          setLoadedDate(selectedDate)
+        }
       } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : 'No se pudo cargar la bitácora.')
+        if (active) {
+          setLoadedDate(null)
+          setError(err instanceof Error ? err.message : 'No se pudo cargar la bitácora.')
+        }
       } finally {
         if (active) setLoading(false)
       }
     }
     void loadLogs()
     return () => { active = false }
-  }, [])
+  }, [selectedDate, reload])
 
   const currentAlerts = useMemo(() => buildHabitAlerts(previewLog(form)), [form])
   const summary = useMemo(() => buildHabitSummary(logs), [logs])
 
   async function saveLog() {
+    if (loading || saving || loadedDate !== form.log_date) return
     setSaving(true)
     setError('')
     setSaved('')
+    // Un 4xx (salvo 409) es un rechazo sin escritura: el borrador sigue editable.
+    let rejected = false
     try {
       const res = await fetch('/api/habits', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formPayload(form)),
+        body: JSON.stringify({ ...formPayload(form), expected_updated_at: expectedUpdatedAt }),
       })
+      rejected = res.status >= 400 && res.status < 500 && res.status !== 409
       const data = await res.json() as { log?: HabitLogRecord; error?: string }
-      if (!res.ok || !data.log) throw new Error(data.error ?? 'No se pudo guardar la bitácora.')
+      if (!res.ok || !isCompleteLog(data.log) || data.log.log_date !== form.log_date) {
+        throw new Error(data.error ?? 'No se pudo confirmar el guardado. Vuelve a cargar la bitácora.')
+      }
       setLogs(previous => [
         data.log!,
         ...previous.filter(log => log.log_date !== data.log!.log_date),
       ].sort((a, b) => b.log_date.localeCompare(a.log_date)).slice(0, 14))
+      setForm(fromLog(data.log))
+      setExpectedUpdatedAt(data.log.updated_at)
       setSaved('Registro guardado.')
     } catch (err) {
+      if (!rejected) setLoadedDate(null)
       setError(err instanceof Error ? err.message : 'No se pudo guardar la bitácora.')
     } finally {
       setSaving(false)
@@ -260,15 +302,17 @@ export default function HabitTracker() {
           </div>
           <button
             type="button"
-            onClick={() => setForm(emptyForm())}
+            onClick={() => chooseDate(habitToday())}
+            disabled={saving}
             className="rounded border border-subtle px-3 py-2 text-xs font-mono text-faint transition-colors hover:text-white"
           >
             Hoy
           </button>
         </div>
 
+        <Field label="Fecha" type="date" value={form.log_date} onChange={chooseDate} disabled={saving} />
+        <fieldset disabled={loading || saving || loadedDate !== form.log_date} className="mt-4">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Fecha" type="date" value={form.log_date} onChange={value => setForm(current => ({ ...current, log_date: value }))} />
           <Field label="Sueño" value={form.sleep_hours} onChange={value => setForm(current => ({ ...current, sleep_hours: value }))} step="0.5" max="24" suffix="h" />
           <SelectField label="Calidad de sueño" value={form.sleep_quality} onChange={value => setForm(current => ({ ...current, sleep_quality: value }))}>
             <option value="" className="bg-ink">Sin registrar</option>
@@ -310,19 +354,24 @@ export default function HabitTracker() {
                   symptoms: { ...current.symptoms, [symptom.key]: value },
                 }))}
               >
+                <option value="" className="bg-ink">Sin registrar</option>
                 {SCORE_OPTIONS.map(([value, label]) => <option key={value} value={value} className="bg-ink">{label}</option>)}
               </SelectField>
             ))}
           </div>
         </div>
+        </fieldset>
+        <p className="mt-3 text-xs leading-5 text-faint">Los campos vacíos quedan sin registrar. En alcohol, escribe 0 si no consumiste; en síntomas, elige «Nada» si no lo presentaste.</p>
 
-        {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
+        {loading && <p className="mt-4 text-sm text-faint">Cargando el registro de la fecha...</p>}
+        {error && <p role="alert" className="mt-4 text-sm text-red-300">{error}</p>}
+        {!loading && !loadedDate && <button type="button" onClick={() => chooseDate(form.log_date)} className="mt-3 text-sm text-brand underline">Volver a cargar</button>}
         {saved && <p className="mt-4 text-sm text-brand">{saved}</p>}
 
         <button
           type="button"
           onClick={saveLog}
-          disabled={saving || !form.log_date}
+          disabled={loading || saving || loadedDate !== form.log_date || !form.log_date}
           className="mt-6 w-full rounded bg-brand-deep px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-mid disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? 'Guardando...' : 'Guardar registro'}
@@ -332,12 +381,16 @@ export default function HabitTracker() {
       <aside className="space-y-6">
         <section className="rounded-lg border border-brand/30 bg-brand/5 p-5 sm:p-6">
           <p className="mb-4 text-xs font-mono uppercase tracking-widest text-brand">Resumen semanal</p>
+          {loading || !loadedDate ? <p className="text-sm text-faint">Resumen no disponible hasta cargar la bitácora.</p> : <>
+          <p className="mb-3 text-xs leading-5 text-faint">Últimos 7 días (Lima): {summary.startDate} a {summary.endDate}. Promedios solo con datos registrados.</p>
           <SummaryRow label="Días registrados" value={`${summary.daysLogged}/7`} />
+          <SummaryRow label="Días sin registro" value={String(summary.missingDays)} />
           <SummaryRow label="Sueño promedio" value={summary.avgSleepHours === null ? 'Sin datos' : `${summary.avgSleepHours} h`} />
           <SummaryRow label="Agua promedio" value={summary.avgWaterMl === null ? 'Sin datos' : `${summary.avgWaterMl} ml`} />
-          <SummaryRow label="Días con alcohol" value={String(summary.alcoholDays)} />
+          <SummaryRow label="Días con alcohol" value={`${summary.alcoholDays} (${summary.alcoholDaysWithData} con dato)`} />
           <SummaryRow label="Fármacos a revisar" value={String(summary.medicationFlags)} />
-          <SummaryRow label="Síntomas intensos" value={String(summary.highSymptomDays)} />
+          <SummaryRow label="Síntomas intensos" value={`${summary.highSymptomDays} (${summary.symptomDaysWithData} con dato)`} />
+          </>}
         </section>
 
         <section className="rounded-lg border border-yellow-400/30 bg-yellow-400/5 p-5 sm:p-6">
@@ -363,11 +416,12 @@ export default function HabitTracker() {
                 <button
                   key={log.id}
                   type="button"
-                  onClick={() => setForm(fromLog(log))}
+                  onClick={() => chooseDate(log.log_date)}
+                  disabled={saving}
                   className="flex w-full items-center justify-between rounded border border-subtle px-3 py-2 text-left text-sm transition-colors hover:border-brand/60"
                 >
                   <span className="text-white">{log.log_date}</span>
-                  <span className="font-mono text-xs text-faint">{log.alcohol_units > 0 ? 'Alcohol' : 'Ver'}</span>
+                  <span className="font-mono text-xs text-faint">{(log.alcohol_units ?? 0) > 0 ? 'Alcohol' : 'Ver'}</span>
                 </button>
               ))}
             </div>
