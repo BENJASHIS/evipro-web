@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { T } from '@/app/components/Language'
 import { AMBITOS, colorFor, REGEN_VERSION, RECURSOS_AYUDA, type Color, type Resultado } from '@/lib/regen'
 
@@ -13,6 +14,11 @@ export function RegenSupport() {
     <h2 id="regen-apoyo" className="text-xl font-serif"><T>Puedes buscar apoyo</T></h2>
     <p className="text-sm leading-relaxed"><T>Has indicado miedo, acoso o una situación de peligro. Aunque ocurra pocas veces, puedes pedir orientación. Este cuestionario no determina la gravedad ni descarta riesgos.</T></p>
     <p className="text-sm text-muted"><T>Si hay peligro inmediato, prioriza tu seguridad y busca ayuda de emergencia local cuando sea seguro hacerlo. Este formulario no se vigila en tiempo real.</T></p>
+    <div>
+      <Link href="/miembros/mensajes" className="inline-block text-brand underline py-1"><T>Escribe al equipo de EVIPro →</T></Link>
+      <p className="text-xs text-muted"><T>Te leemos y respondemos por Mensajes. No es un servicio de emergencias.</T></p>
+    </div>
+    <p className="text-xs text-muted"><T>Líneas nacionales: pueden tardar o no atender en todas las zonas.</T></p>
     <ul className="divide-y divide-subtle">
       {RECURSOS_AYUDA.map(resource => <li key={resource.href} className="py-3">
         <p className="text-sm"><T>{resource.nombre}</T></p>

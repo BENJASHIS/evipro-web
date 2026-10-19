@@ -21,4 +21,5 @@ it('el resultado con una señal de peligro muestra el apoyo y también el resume
   expect(screen.getByRole('heading', { name: 'Puedes buscar apoyo' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Hogar' })).toBeInTheDocument()
   expect(screen.getByText(/no es un porcentaje de riesgo/)).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: /equipo de EVIPro/ })).toHaveAttribute('href', '/miembros/mensajes')
 })
