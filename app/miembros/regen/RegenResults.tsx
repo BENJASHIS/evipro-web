@@ -28,8 +28,11 @@ export function RegenSupport() {
 }
 
 export function RegenResult({ resultado }: { resultado: Resultado }) {
-  if (resultado.safetyTriggered || resultado.supportFlags.length > 0) return <RegenSupport />
-  return <div className="divide-y divide-subtle">
+  const support = resultado.safetyTriggered || resultado.supportFlags.length > 0
+  return <>
+    {support && <div className="mb-6"><RegenSupport /></div>}
+    <p className="text-xs text-muted"><T>El índice de cada ámbito va de 0 a 100: 0 si respondiste «Nunca» a todo y 100 si respondiste «Siempre» a todo. Muestra con qué frecuencia marcaste dificultades; no es un porcentaje de riesgo ni una nota.</T></p>
+    <div className="divide-y divide-subtle">
     {AMBITOS.map(ambito => <section key={ambito.id} className="py-5">
       <h3 className="font-medium mb-2"><T>{ambito.nombre}</T></h3>
       <p className={`text-sm ${COLORS[resultado.colores[ambito.id]]}`}><T>{LABELS[resultado.colores[ambito.id]]}</T></p>
@@ -38,7 +41,8 @@ export function RegenResult({ resultado }: { resultado: Resultado }) {
         {resultado.consejos[ambito.id].map(consejo => <li key={consejo}><T>{consejo}</T></li>)}
       </ul>}
     </section>)}
-  </div>
+    </div>
+  </>
 }
 
 export type RegenHistoryEntry = {
@@ -65,14 +69,15 @@ export function RegenHistory({ entries }: { entries: RegenHistoryEntry[] }) {
           </summary>
           <p className="text-xs text-muted mt-3"><T>Versión</T>: {entry.version}</p>
           {entry.version !== REGEN_VERSION && <p className="text-xs text-muted mt-2"><T>Registro de una versión anterior. El contexto y la presentación pueden haber cambiado.</T></p>}
-          {support ? <p className="text-sm mt-3"><T>Se registraron señales para ofrecer orientación de apoyo. El puntaje no sustituye una evaluación individual.</T></p> : <ul className="mt-3 space-y-2 text-sm">
+          {support && <p className="text-sm mt-3"><T>Se registraron señales para ofrecer orientación de apoyo. El puntaje no sustituye una evaluación individual.</T></p>}
+          <ul className="mt-3 space-y-2 text-sm">
             {AMBITOS.map(ambito => {
               const score = scores[ambito.id]
               return <li key={ambito.id}><T>{ambito.nombre}</T>: {typeof score === 'number' && Number.isFinite(score) && score >= 0 && score <= 100
                 ? <>{score}/100{entry.version === REGEN_VERSION && <> · <T>{LABELS[colorFor(score)]}</T></>}</>
                 : <T>Sin dato válido</T>}</li>
             })}
-          </ul>}
+          </ul>
         </details>
       })}
     </div>}

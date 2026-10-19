@@ -42,7 +42,7 @@ export const AMBITOS: Ambito[] = [
     preguntas: [
       { id: 'hogar_1', texto: 'En casa vivo con cuidado de no provocar un conflicto.' },
       { id: 'hogar_2', texto: 'Las discusiones en casa terminan en gritos o silencios largos.' },
-      { id: 'hogar_3', texto: 'Llegar a casa no me da descanso; sigo tenso/a.' },
+      { id: 'hogar_3', texto: 'Llegar a casa no me da descanso; sigo con tensión.' },
       { id: 'hogar_4', texto: 'Siento miedo de alguien con quien vivo.', redFlag: true },
     ],
   },
@@ -50,7 +50,7 @@ export const AMBITOS: Ambito[] = [
     id: 'trabajo',
     nombre: 'Trabajo',
     preguntas: [
-      { id: 'trabajo_1', texto: 'Termino la jornada agotado/a emocionalmente, no solo cansado/a.' },
+      { id: 'trabajo_1', texto: 'Termino la jornada con agotamiento emocional, no solo con cansancio.' },
       { id: 'trabajo_2', texto: 'Siento que me tratan con desprecio o me humillan.' },
       { id: 'trabajo_3', texto: 'Me cuesta desconectar del trabajo en mi tiempo libre.' },
       { id: 'trabajo_4', texto: 'Sufro acoso, amenazas o maltrato en el trabajo.', redFlag: true },
@@ -60,7 +60,7 @@ export const AMBITOS: Ambito[] = [
     id: 'familia',
     nombre: 'Familia',
     preguntas: [
-      { id: 'familia_1', texto: 'Las conversaciones con mi familia me dejan dolido/a o ansioso/a.' },
+      { id: 'familia_1', texto: 'Las conversaciones con mi familia me hieren o me dejan con ansiedad.' },
       { id: 'familia_2', texto: 'Siento que me controlan o me culpan por todo.' },
       { id: 'familia_3', texto: 'Evito a mi familia para no sentirme peor.' },
       { id: 'familia_4', texto: 'Alguien de mi familia me hace sentir en peligro.', redFlag: true },
@@ -70,8 +70,8 @@ export const AMBITOS: Ambito[] = [
     id: 'social',
     nombre: 'Círculo social',
     preguntas: [
-      { id: 'social_1', texto: 'Con mis amistades me siento juzgado/a o menospreciado/a.' },
-      { id: 'social_2', texto: 'Me siento solo/a incluso cuando estoy acompañado/a.' },
+      { id: 'social_1', texto: 'Con mis amistades siento que me juzgan o me menosprecian.' },
+      { id: 'social_2', texto: 'Siento soledad incluso cuando tengo compañía.' },
       { id: 'social_3', texto: 'Digo que sí a cosas que no quiero por miedo a que se molesten.' },
       { id: 'social_4', texto: 'Siento que nadie me apoyaría si lo necesitara de verdad.' },
     ],
@@ -107,13 +107,13 @@ export const CONSEJOS: Record<AmbitoId, Record<'amarillo' | 'rojo', string[]>> =
       'Refuerza vínculos que sí te nutren; no toda relación familiar tiene que pesar lo mismo.',
     ],
     rojo: [
-      'Sentirte controlado/a o con culpa constante desgasta; poner distancia no es traición, es cuidarte.',
-      'No tienes que resolverlo solo/a: una orientación profesional puede ayudarte a poner límites sanos.',
+      'Sentir control o culpa constante desgasta; poner distancia no es traición, es cuidarte.',
+      'No tienes que resolverlo sin ayuda: una orientación profesional puede ayudarte a poner límites sanos.',
     ],
   },
   social: {
     amarillo: [
-      'Dedica más tiempo a las amistades donde puedes ser tú, y menos a las que te dejan vacío.',
+      'Dedica más tiempo a las amistades donde puedes ser tú, y menos a las que te dejan con sensación de vacío.',
       'Practicar decir "no" en cosas pequeñas hace más fácil sostener tus límites en las grandes.',
     ],
     rojo: [
