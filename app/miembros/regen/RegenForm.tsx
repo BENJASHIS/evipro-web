@@ -1,125 +1,80 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { ESCALA, RECURSOS_AYUDA, type Ambito, type AmbitoId, type Color, type Resultado } from '@/lib/regen'
+import { useEffect, useRef, useState, useTransition } from 'react'
+import { T, useLanguage } from '@/app/components/Language'
+import { ESCALA, supportFlagsFor, type Ambito, type Resultado } from '@/lib/regen'
 import { saveRegenEvaluacion } from './regen-actions'
-
-const COLOR_UI: Record<Color, { emoji: string; label: string; cls: string }> = {
-  verde:    { emoji: '🟢', label: 'Sano',              cls: 'text-brand' },
-  amarillo: { emoji: '🟡', label: 'Atención',          cls: 'text-yellow-400' },
-  rojo:     { emoji: '🔴', label: 'Te está desgastando', cls: 'text-red-400' },
-}
+import { RegenResult, RegenSupport } from './RegenResults'
 
 export function RegenForm({ ambitos }: { ambitos: Ambito[] }) {
+  const { t } = useLanguage()
   const [valores, setValores] = useState<Record<string, number>>({})
+  const [paso, setPaso] = useState(0)
   const [resultado, setResultado] = useState<Resultado | null>(null)
+  const [saved, setSaved] = useState(false)
   const [err, setErr] = useState('')
   const [pending, startTransition] = useTransition()
+  const heading = useRef<HTMLHeadingElement>(null)
+  useEffect(() => { heading.current?.focus() }, [paso, resultado])
 
-  const totalPreguntas = ambitos.reduce((n, a) => n + a.preguntas.length, 0)
-  const completo = Object.keys(valores).length === totalPreguntas
+  const actual = ambitos[paso]
+  const total = ambitos.reduce((n, a) => n + a.preguntas.length, 0)
+  const raw = Object.entries(valores).map(([preguntaId, valor]) => ({ preguntaId, valor }))
+  const completeStep = actual.preguntas.every(p => Object.hasOwn(valores, p.id))
+  const support = supportFlagsFor(raw).length > 0
 
-  function onSubmit() {
+  function next() {
     setErr('')
-    const raw = Object.entries(valores).map(([preguntaId, valor]) => ({ preguntaId, valor }))
+    if (!completeStep) return
+    if (paso < ambitos.length - 1) { setPaso(paso + 1); return }
     startTransition(async () => {
-      const r = await saveRegenEvaluacion(raw)
-      if (r.ok) setResultado(r.resultado)
-      else setErr(r.error)
+      try {
+        const response = await saveRegenEvaluacion(raw)
+        if (response.ok) { setResultado(response.resultado); setSaved(response.saved) }
+        else setErr(response.error)
+      } catch {
+        setErr('No se pudo completar la evaluación. Tus respuestas siguen aquí; vuelve a intentarlo.')
+      }
     })
   }
 
-  // --- Pantalla de seguridad: corta el score cuando hay bandera roja ---
-  if (resultado?.safetyTriggered) {
-    return (
-      <section className="mt-6 rounded-lg border border-red-500/50 bg-red-950/30 p-5">
-        <h2 className="text-lg font-semibold text-red-300">Antes de seguir, hablemos de ti</h2>
-        <p className="text-sm text-white/90 mt-2">
-          Algo de lo que marcaste sugiere que estás pasando por una situación seria.
-          Esto va más allá de una app: habla con alguien de confianza o con un profesional.
-          No estás solo/a.
-        </p>
-        <ul className="mt-4 space-y-2">
-          {RECURSOS_AYUDA.map((r, i) => (
-            <li key={i} className="text-sm">
-              <span className="font-medium text-white">{r.nombre}</span>
-              {' · '}<span className="font-mono text-brand">{r.contacto}</span>
-              <div className="text-xs text-faint">{r.detalle}</div>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
+  if (resultado) return <section className="mt-8">
+    <h2 tabIndex={-1} ref={heading} className="font-serif text-2xl mb-3"><T>Tu resumen de reflexión</T></h2>
+    <p className="text-sm text-muted mb-5"><T>Regen usa preguntas propias y no es una escala clínica validada. Un resultado bajo no descarta dificultades ni situaciones de riesgo.</T></p>
+    <p role={saved ? 'status' : 'alert'} className="text-sm text-muted mb-6">
+      <T>{saved ? 'Resumen guardado en tu historial.' : 'Puedes leer tu resumen, pero no se pudo guardar en el historial.'}</T>
+    </p>
+    <RegenResult resultado={resultado} />
+    <button type="button" className="border border-subtle rounded px-5 py-3 text-sm mt-6"
+      onClick={() => { setResultado(null); setValores({}); setPaso(0); setErr('') }}><T>Empezar otra reflexión</T></button>
+  </section>
 
-  // --- Resultado normal: semáforo + consejos ---
-  if (resultado) {
-    return (
-      <section className="mt-6 space-y-4">
-        {ambitos.map(a => {
-          const color = resultado.colores[a.id as AmbitoId]
-          const ui = COLOR_UI[color]
-          return (
-            <div key={a.id} className="rounded-lg border border-subtle p-4">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">{a.nombre}</span>
-                <span className={`text-sm font-mono ${ui.cls}`}>{ui.emoji} {ui.label}</span>
-              </div>
-              {resultado.consejos[a.id as AmbitoId].length > 0 && (
-                <ul className="mt-3 list-disc pl-5 text-sm text-faint space-y-1">
-                  {resultado.consejos[a.id as AmbitoId].map((c, i) => <li key={i}>{c}</li>)}
-                </ul>
-              )}
-            </div>
-          )
-        })}
-        <button
-          onClick={() => { setResultado(null); setValores({}) }}
-          className="text-xs font-mono px-3 py-1.5 rounded border border-subtle text-faint hover:text-white transition-colors"
-        >
-          Volver a evaluar
-        </button>
-      </section>
-    )
-  }
-
-  // --- Cuestionario ---
-  return (
-    <div className="mt-6 space-y-8">
-      {ambitos.map(a => (
-        <fieldset key={a.id}>
-          <legend className="font-medium">{a.nombre}</legend>
-          <div className="mt-3 space-y-4">
-            {a.preguntas.map(p => (
-              <div key={p.id}>
-                <p className="text-sm">{p.texto}</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {ESCALA.map((etiqueta, valor) => (
-                    <label key={valor} className="flex items-center gap-1 text-xs font-mono text-faint cursor-pointer">
-                      <input
-                        type="radio"
-                        name={p.id}
-                        checked={valores[p.id] === valor}
-                        onChange={() => setValores(v => ({ ...v, [p.id]: valor }))}
-                      />
-                      {etiqueta}
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </fieldset>
-      ))}
-
-      {err && <p className="text-sm text-red-400 font-mono">{err}</p>}
-      <button
-        onClick={onSubmit}
-        disabled={!completo || pending}
-        className="px-4 py-2 rounded bg-brand text-black font-medium disabled:opacity-50"
-      >
-        {pending ? 'Calculando…' : completo ? 'Ver mi resultado' : `Responde las ${totalPreguntas} preguntas`}
+  return <div className="mt-8 space-y-6">
+    <p className="text-sm text-muted"><T>Piensa en las últimas dos semanas. Elige la frecuencia que mejor describa tu experiencia; no hay respuestas correctas o incorrectas.</T></p>
+    <div>
+      <p className="text-xs text-muted mb-2" aria-live="polite"><T values={{ paso: paso + 1, total: ambitos.length, respuestas: raw.length, preguntas: total }}>{'Ámbito {paso} de {total} · {respuestas} de {preguntas} respuestas'}</T></p>
+      <progress max={total} value={raw.length} aria-label={t('Progreso de respuestas')} aria-valuenow={raw.length} className="w-full h-2 accent-brand" />
+    </div>
+    <h2 tabIndex={-1} ref={heading} className="font-serif text-2xl"><T>{actual.nombre}</T></h2>
+    {actual.preguntas.map(pregunta => <fieldset key={pregunta.id} className="border-t border-subtle pt-5" disabled={pending}>
+      <legend className="text-base pr-3"><T>{pregunta.texto}</T></legend>
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-3">
+        {ESCALA.map((label, value) => <label key={value} className={`flex gap-2 items-center text-sm border rounded px-3 py-3 cursor-pointer ${valores[pregunta.id] === value ? 'border-brand bg-brand/10' : 'border-subtle'}`}>
+          <input type="radio" name={pregunta.id} value={value} checked={valores[pregunta.id] === value}
+            onChange={() => setValores(previous => ({ ...previous, [pregunta.id]: value }))} />
+          <T>{label}</T>
+        </label>)}
+      </div>
+    </fieldset>)}
+    {support && <RegenSupport />}
+    {err && <p role="alert" className="text-sm text-red-300"><T>{err}</T></p>}
+    <div className="flex flex-wrap gap-3 pt-3">
+      {paso > 0 && <button type="button" disabled={pending} className="border border-subtle rounded px-5 py-3 text-sm disabled:opacity-50" onClick={() => setPaso(paso - 1)}><T>← Anterior</T></button>}
+      <button type="button" onClick={next} disabled={!completeStep || pending}
+        className="bg-brand text-black rounded px-5 py-3 text-sm disabled:opacity-50">
+        <T>{pending ? 'Preparando resumen…' : paso < ambitos.length - 1 ? 'Siguiente ámbito →' : 'Ver mi resumen'}</T>
       </button>
     </div>
-  )
+    {!completeStep && <p className="text-xs text-muted"><T>Responde las cuatro preguntas de este ámbito para continuar. Puedes volver al anterior sin perder tus respuestas.</T></p>}
+  </div>
 }

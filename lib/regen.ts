@@ -3,7 +3,7 @@
 // ponytail: el copy final (preguntas, consejos, recursos de ayuda) lo aporta el
 // usuario (roadmap 🙋). Este set es funcional y testeable; se afina sin tocar lógica.
 
-export const REGEN_VERSION = '2026.07.15'
+export const REGEN_VERSION = '2026.10.19'
 
 // Escala Likert 0..4. Redactamos TODA pregunta para que mayor valor = más desgaste.
 // ponytail: sin reverse-scoring en v1; si se añaden preguntas "positivas", invertir aquí.
@@ -123,38 +123,35 @@ export const CONSEJOS: Record<AmbitoId, Record<'amarillo' | 'rojo', string[]>> =
   },
 }
 
-// Recursos de ayuda para la pantalla de seguridad (banderas rojas).
-// Líneas oficiales de Perú verificadas por el equipo clínico (Carlos, 2026-07-13).
-export const RECURSOS_AYUDA: { nombre: string; contacto: string; detalle: string }[] = [
+// Contactos oficiales comprobados el 2026-10-19; no validan el cuestionario.
+export const RECURSOS_AYUDA = [
   {
     nombre: 'Línea 113 (opción 5) · Infosalud, MINSA',
     contacto: '113',
     detalle: 'Orientación en salud mental. Gratuita, 24 horas, desde cualquier operador.',
-  },
-  {
-    nombre: 'Instituto Nacional de Salud Mental',
-    contacto: '0800-00-068',
-    detalle: 'Línea gratuita nacional de salud mental.',
+    href: 'tel:113',
+    sourceUrl: 'https://www.gob.pe/institucion/minsa/noticias/1332478-minsa-recuerda-que-la-linea-113-brinda-orientacion-y-apoyo-psicologico-gratuito-las-24-horas',
   },
   {
     nombre: 'Línea 100 · Violencia familiar y sexual, MIMP',
     contacto: '100',
     detalle: 'Gratuita, 24 horas.',
+    href: 'tel:100',
+    sourceUrl: 'https://www.gob.pe/institucion/mimp/noticias/1402338-mimp-servicios-de-atencion-y-proteccion-contra-la-violencia-continuaran-funcionando-durante-la-segunda-vuelta-electoral',
   },
+  {
+    nombre: 'Chat 100 · MIMP',
+    contacto: 'Abrir Chat 100',
+    detalle: 'Orientación en línea ante situaciones de violencia, las 24 horas.',
+    href: 'https://chat100.warminan.gob.pe/',
+    sourceUrl: 'https://www.gob.pe/institucion/mimp/noticias/1402338-mimp-servicios-de-atencion-y-proteccion-contra-la-violencia-continuaran-funcionando-durante-la-segunda-vuelta-electoral',
+  },
+  // Verificado por el equipo clínico (Carlos, 2026-07-13); sin fuente enlazada aún.
   {
     nombre: 'Emergencias médicas · SAMU',
     contacto: '106',
     detalle: 'Central de emergencias médicas. Gratuita, 24 horas.',
-  },
-  {
-    nombre: 'WhatsApp Infosalud (MINSA)',
-    contacto: '955 557 000 · 952 842 623',
-    detalle: 'Orientación por chat con el Ministerio de Salud.',
-  },
-  {
-    nombre: 'Chat 100 (MIMP) por WhatsApp',
-    contacto: '(01) 743 8800',
-    detalle: 'Apoyo ante situaciones de violencia.',
+    href: 'tel:106',
   },
 ]
 
@@ -168,7 +165,13 @@ export interface Resultado {
   colores: Record<AmbitoId, Color>
   redFlags: string[]        // ids de preguntas bandera roja en nivel de riesgo
   safetyTriggered: boolean
+  supportFlags: string[] // Apoyo preventivo ante cualquier señal informada; no cambia umbrales.
   consejos: Record<AmbitoId, string[]>
+}
+
+export function supportFlagsFor(respuestas: Respuesta[]): string[] {
+  const dangerIds = new Set(AMBITOS.flatMap(a => a.preguntas.filter(p => p.redFlag).map(p => p.id)))
+  return respuestas.filter(r => dangerIds.has(r.preguntaId) && r.valor > 0).map(r => r.preguntaId)
 }
 
 export function colorFor(score: number): Color {
@@ -204,7 +207,7 @@ export function evaluate(respuestas: Respuesta[]): Resultado {
     }
   }
 
-  return { scores, colores, redFlags, safetyTriggered: redFlags.length > 0, consejos }
+  return { scores, colores, redFlags, safetyTriggered: redFlags.length > 0, supportFlags: supportFlagsFor(respuestas), consejos }
 }
 
 // Frontera de confianza: valida la forma cruda que llega del cliente antes de puntuar.

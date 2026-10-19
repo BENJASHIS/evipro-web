@@ -95,6 +95,13 @@ describe('evaluate', () => {
     expect(r.safetyTriggered).toBe(false)
     expect(r.redFlags).toEqual([])
   })
+  it('ofrece apoyo ante miedo infrecuente sin cambiar los puntajes ni el umbral existente', () => {
+    const resp = allValores(0).map(x => x.preguntaId === 'hogar_4' ? { ...x, valor: 1 } : x)
+    const r = evaluate(resp)
+    expect(r.scores.hogar).toBe(6)
+    expect(r.safetyTriggered).toBe(false)
+    expect(r.supportFlags).toEqual(['hogar_4'])
+  })
 })
 
 describe('parseRespuestas (frontera de confianza)', () => {

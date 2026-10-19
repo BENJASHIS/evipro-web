@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { AMBITOS } from '@/lib/regen'
 import { canUseMemberTools, getMemberAccess } from '@/lib/member-access'
 import { RegenForm } from './RegenForm'
+import { T } from '@/app/components/Language'
+import { RegenHistory } from './RegenResults'
 
 export default async function RegenPage() {
   const supabase = await createServerSupabaseClient()
@@ -29,9 +31,10 @@ export default async function RegenPage() {
   }
 
   // Historial propio (RLS: user_id = auth.uid()). Solo columnas necesarias.
-  const { data: previas } = await supabase
+  const { data: previas, error } = await supabase
     .from('regen_evaluaciones')
-    .select('created_at, safety_triggered')
+    .select('created_at, version, scores, flags, safety_triggered')
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(5)
 
@@ -45,24 +48,16 @@ export default async function RegenPage() {
           </p>
         </div>
       )}
-      <h1 className="text-2xl font-semibold mt-3">¿Cómo está tu entorno?</h1>
+      <p className="text-xs text-brand font-mono uppercase tracking-widest mt-6"><T>Regen · Mi entorno</T></p>
+      <h1 className="text-3xl font-serif mt-3"><T>¿Cómo está tu entorno?</T></h1>
       <p className="text-sm text-faint mt-2">
-        Una mirada al clima de tus 4 ámbitos: hogar, trabajo, familia y círculo social.
-        Es una herramienta de autoconocimiento y bienestar, no un diagnóstico. Nadie más ve tus respuestas.
+        <T>Una reflexión sobre hogar, trabajo, familia y círculo social. Es una herramienta de bienestar con preguntas propias, no un diagnóstico ni una escala clínica validada.</T>
       </p>
+      <p className="text-xs text-muted mt-3"><T>Tu historial no es público. Guardamos fecha, versión, puntajes y señales de apoyo; no guardamos texto libre. Este formulario no se vigila en tiempo real.</T></p>
 
       <RegenForm ambitos={AMBITOS} />
 
-      {previas && previas.length > 0 && (
-        <section className="mt-10 border-t border-subtle pt-4">
-          <h2 className="text-sm font-mono text-faint">Tus evaluaciones anteriores</h2>
-          <ul className="mt-2 text-xs text-faint font-mono space-y-1">
-            {previas.map((p, i) => (
-              <li key={i}>{new Date(p.created_at as string).toLocaleDateString('es-PE')}</li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {error ? <p role="alert" className="mt-8 text-sm text-red-300"><T>No se pudo cargar tu historial. Puedes usar el cuestionario y volver a cargar la página más tarde.</T></p> : <RegenHistory entries={previas ?? []} />}
     </div>
   )
 }
