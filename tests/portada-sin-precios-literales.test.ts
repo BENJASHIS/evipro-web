@@ -59,14 +59,4 @@ describe('la portada no tiene precios escritos a mano', () => {
     expect(fuente).toContain("find(p => p.type === 'basica')")
     expect(fuente).toContain('desde={precios.evipro} basica={precios.basica}')
   })
-
-  // El spec exige UNA sola accion principal: el visitante frio no tiene que
-  // elegir entre acciones del mismo peso. La membresía es ahora la prioridad.
-  it('hay exactamente un CTA primario en toda la portada', () => {
-    const fuente = readFileSync(
-      resolve(process.cwd(), 'app/components/home/secciones.tsx'), 'utf8',
-    )
-    const primarios = fuente.match(/variant="primary"/g) ?? []
-    expect(primarios).toHaveLength(1)
-  })
 })

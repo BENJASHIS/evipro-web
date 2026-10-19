@@ -8,6 +8,13 @@ import {
 
 // Solo el test la usa: no tiene sitio en el bundle de producción.
 const PALABRAS_PROHIBIDAS = ['cura', 'garantiz', 'milagro']
+const PREGUNTA_SIN_GARANTIA = '¿La consulta incluye productos o garantiza una receta?'
+
+function promesasProhibidas(texto: string): string[] {
+  // Solo esta pregunta informativa está revisada; su respuesta sigue bajo el barrido.
+  const afirmaciones = texto.toLowerCase().replace(PREGUNTA_SIN_GARANTIA.toLowerCase(), '')
+  return PALABRAS_PROHIBIDAS.filter(palabra => afirmaciones.includes(palabra))
+}
 
 /** Todo el texto que la portada imprime, en un solo string, para barrerlo.
  *  Debe cubrir TODOS los exports que aparecen en la página: si alguien añade
@@ -77,10 +84,23 @@ describe('contenido de la portada — restricciones clínicas', () => {
   })
 
   it('no promete resultados en ningún texto', () => {
-    const texto = textoDeLaPortada()
-    for (const palabra of PALABRAS_PROHIBIDAS) {
-      expect(texto, `aparece "${palabra}"`).not.toContain(palabra)
-    }
+    expect(promesasProhibidas(textoDeLaPortada())).toEqual([])
+  })
+
+  it('la pregunta sobre productos y receta mantiene una respuesta negativa y condicionada', () => {
+    const respuesta = PREGUNTAS.find(q => q.p === PREGUNTA_SIN_GARANTIA)?.r
+    expect(respuesta).toMatch(/^No\./)
+    expect(respuesta).toContain('solo si el profesional la considera indicada')
+  })
+
+  it.each([
+    ['cura', 'El cannabis cura tu enfermedad.'],
+    ['milagro', 'Un tratamiento milagroso.'],
+    ['garantiz', 'Garantizamos resultados.'],
+    ['garantiz', `${PREGUNTA_SIN_GARANTIA} Sí, garantizamos una receta.`],
+    ['garantiz', '¿Garantizamos resultados? Sí.'],
+  ])('el barrido sigue detectando "%s" en "%s"', (palabra, texto) => {
+    expect(promesasProhibidas(texto)).toContain(palabra)
   })
 
   it('no lleva ningún precio en el contenido', () => {
@@ -106,10 +126,10 @@ describe('contenido de la portada — estructura', () => {
     )
   })
 
-  it('explica el RENPUC en las preguntas frecuentes', () => {
-    const renpuc = PREGUNTAS.find(q => q.p.toLowerCase().includes('renpuc'))
-    expect(renpuc, 'falta la pregunta del RENPUC').toBeDefined()
-    expect(renpuc!.r).toContain(RENPUC_NOMBRE)
+  it('explica el RENPUC en los pasos de la primera consulta', () => {
+    const registro = PASOS_PRIMERA_CONSULTA.find(p => p.titulo.includes('RENPUC'))
+    expect(registro, 'falta el paso del RENPUC').toBeDefined()
+    expect(registro!.texto).toContain('El RENPUC es el registro que la ley exige')
   })
 
   it('la primera consulta son 4 pasos, en orden, con receta y registro', () => {

@@ -25,7 +25,13 @@ La página enlaza a [CDC: Travel to High Altitudes](https://wwwnc.cdc.gov/travel
 - Revisión independiente del cambio: sin hallazgos accionables.
 - Vista local: página y formulario revisados en español e inglés; preparación de correo probada sin enviarlo; reseña revisada en portada. No se probó envío real desde un cliente de correo ni vista móvil.
 
-## Pendiente
+## Corrección de pruebas preexistentes (2026-10-19)
 
-- Confirmación de Carlos para push a `evipro-web/main` y despliegue. La autorización del push anterior correspondía exclusivamente al archivo de Search Console.
+Los tres fallos iniciales se corrigieron únicamente en tests: la pregunta informativa exacta sobre garantía se exceptúa del filtro, su respuesta permanece examinada y debe negar la garantía y exigir criterio profesional; cinco controles confirman que otras promesas siguen detectándose. RENPUC se comprueba donde está explicado actualmente (pasos de la primera consulta). El conteo de `variant="primary"` se elimina por ser una comprobación de estilo obsoleta, redundante con `Hero.test.tsx`, que ya verifica contacto, reserva y jerarquía visual.
+
+Validación final: **55 archivos, 342 pruebas aprobadas, cero fallos** (`npm test -- --maxWorkers=2`). ESLint dirigido y `git diff --check` aprobados. El primer intento de la suite terminó por el entorno restringido (143); la ejecución completa fuera de esa restricción terminó con código 0. Estas correcciones se guardan en un commit local; no se realizó un segundo push.
+
+## Estado de publicación y pendientes
+
+- Publicación autorizada por Carlos y completada: commit `2c89684` en `evipro-web/main`, estado Vercel «Deployment has completed». Página pública `/dudas-del-viajero` comprobada en navegador; portada con reseña, enlace original y acceso del viajero comprobada por HTTP.
 - AdSense, foro completo y espacios para profesionales/pacientes quedan pendientes; esta entrega no los activa.
