@@ -736,5 +736,17 @@
   "Escribe al equipo de EVIPro →": "Write to the EVIPro team →",
   "Te leemos y respondemos por Mensajes. No es un servicio de emergencias.": "We read and reply through Messages. This is not an emergency service.",
   "Líneas nacionales: pueden tardar o no atender en todas las zonas.": "National lines: they may be slow or unavailable in some areas.",
-  "Pantalla completa": "Full screen"
+  "Pantalla completa": "Full screen",
+  "Temperatura (°C)": "Temperature (°C)",
+  "Tiempo (min)": "Time (min)",
+  "THCA que queda: {pct}": "THCA remaining: {pct}",
+  "medido": "measured",
+  "estimado": "estimated",
+  "En el estudio, casi cero a los {n} min": "In the study, almost zero at {n} min",
+  "En el estudio no se completó en 60 min": "In the study, it was not completed within 60 min",
+  "grupo ácido · sale CO₂": "acid group · CO₂ leaves",
+  "Condiciones del estudio: extractos de cannabis en horno al vacío, sin oxígeno ni luz.": "Study conditions: cannabis extracts in a vacuum oven, without oxygen or light.",
+  "A 110 °C, cerca de {pct} se recuperó como THC.": "At 110 °C, about {pct} was recovered as THC.",
+  "Fuente: {cita}, PMID {pmid}.": "Source: {cita}, PMID {pmid}.",
+  "Ver el estudio": "View the study"
 }
