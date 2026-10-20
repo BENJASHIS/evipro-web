@@ -1,3 +1,4 @@
+import { it, expect } from 'vitest'
 import { readFileSync, existsSync } from 'node:fs'
 import { MOLECULAS } from '@/lib/educacion/moleculas'
 import { atomosAcido, atomosAnilloOxigeno } from '@/lib/educacion/resaltado'

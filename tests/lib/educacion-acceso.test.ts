@@ -1,3 +1,4 @@
+import { it, expect } from 'vitest'
 import { buildMemberAccess } from '@/lib/member-access'
 import { ADMIN_EMAILS } from '@/lib/auth'
 import { nivelModulo, moduloVisible } from '@/lib/educacion/acceso-modulo'

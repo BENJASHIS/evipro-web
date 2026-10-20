@@ -1,3 +1,4 @@
+import { it, expect } from 'vitest'
 import { constanteTHCA, fraccionTHCARestante, CASI_CERO_MEDIDO, formatoPorcentaje } from '@/lib/educacion/descarboxilacion'
 
 it('constantes medidas de la Tabla 2', () => {
