@@ -13,6 +13,20 @@ it('responder muestra si acertó y la explicación', () => {
   fireEvent.click(screen.getByRole('button', { name: 'CBD' }))
   expect(screen.getByText(/no es correcta|incorrect/i)).toBeInTheDocument()
   expect(screen.getByText('El THC es intoxicante; el CBD no.')).toBeInTheDocument()
+  expect(screen.getByText('Tu respuesta')).toBeInTheDocument()
+  expect(screen.getByText('✓ Respuesta correcta')).toBeInTheDocument()
+})
+it('acierto muestra ¡Correcto!, la explicación y las marcas de respuesta', () => {
+  render(<LanguageProvider locale="es"><Repaso preguntas={[p]} /></LanguageProvider>)
+  fireEvent.click(screen.getByRole('button', { name: 'THC' }))
+  expect(screen.getByText('¡Correcto!')).toBeInTheDocument()
+  expect(screen.getByText('El THC es intoxicante; el CBD no.')).toBeInTheDocument()
+  expect(screen.getByText('Tu respuesta')).toBeInTheDocument()
+  expect(screen.getByText('✓ Respuesta correcta')).toBeInTheDocument()
+})
+it('la región de estado existe antes de responder', () => {
+  render(<LanguageProvider locale="es"><Repaso preguntas={[p]} /></LanguageProvider>)
+  expect(screen.getByRole('status')).toBeEmptyDOMElement()
 })
 it('usa el idioma activo', () => {
   render(<LanguageProvider locale="en"><Repaso preguntas={[p]} /></LanguageProvider>)

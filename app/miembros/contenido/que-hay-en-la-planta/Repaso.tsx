@@ -17,16 +17,24 @@ export default function Repaso({ preguntas }: { preguntas: Pregunta[] }) {
       return <div key={pregunta.id}>
         <p className="font-serif text-lg mb-3">{pregunta.enunciado[locale]}</p>
         <div className="flex flex-col gap-2">
-          {pregunta.opciones.map((opcion, indice) => <button key={indice} type="button" disabled={respondida}
-            onClick={() => setRespuestas(previas => ({ ...previas, [pregunta.id]: indice }))}
-            className={`text-left px-3 py-2 rounded border text-sm focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${elegida === indice ? 'border-brand text-brand' : 'border-subtle text-muted'}`}>
-            {opcion[locale]}
-          </button>)}
+          {pregunta.opciones.map((opcion, indice) => {
+            const esElegida = elegida === indice
+            const esCorrecta = pregunta.correcta === indice
+            return <button key={indice} type="button" disabled={respondida}
+              onClick={() => setRespuestas(previas => ({ ...previas, [pregunta.id]: indice }))}
+              className={`text-left px-3 py-2 rounded border text-sm focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${esElegida ? 'border-brand text-brand' : 'border-subtle text-muted'}`}>
+              <span>{opcion[locale]}</span>
+              {esElegida && <span className="ml-2 text-xs font-mono uppercase"><T>Tu respuesta</T></span>}
+              {respondida && esCorrecta && <span className="ml-2 text-xs font-mono uppercase"><T>✓ Respuesta correcta</T></span>}
+            </button>
+          })}
         </div>
-        {respondida && <div role="status" className="mt-3 text-sm space-y-1">
-          <p className="font-medium">{elegida === pregunta.correcta ? <T>¡Correcto!</T> : <T>Esa no es correcta.</T>}</p>
-          <p className="text-muted leading-6">{pregunta.explicacion[locale]}</p>
-        </div>}
+        <div role="status" aria-live="polite" className="mt-3 text-sm space-y-1">
+          {respondida && <>
+            <p className="font-medium">{elegida === pregunta.correcta ? <T>¡Correcto!</T> : <T>Esa no es correcta.</T>}</p>
+            <p className="text-muted leading-6">{pregunta.explicacion[locale]}</p>
+          </>}
+        </div>
       </div>
     })}
   </section>
