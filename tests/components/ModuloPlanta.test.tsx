@@ -36,3 +36,9 @@ it('cada afirmación muestra su tipo', () => {
   expect(screen.getAllByText(/Estudio en personas/).length).toBeGreaterThan(0)
   expect(screen.getAllByText(/Orientación del equipo médico/).length).toBeGreaterThan(0)
 })
+it('THC y CBD: el resaltado de ambos lleva etiqueta de texto; las imágenes 2D no se deforman', () => {
+  render(<LanguageProvider locale="es"><ModuloPlanta {...props('completo')} /></LanguageProvider>)
+  expect(screen.getByText('anillo cerrado')).toBeInTheDocument()
+  expect(screen.getByText('anillo abierto')).toBeInTheDocument()
+  expect(screen.getByRole('img', { name: 'CBGA (ácido cannabigerólico)' })).toHaveClass('object-contain')
+})

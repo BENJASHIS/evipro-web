@@ -36,7 +36,7 @@ function Imagen2D({ id }: { id: MoleculaId }) {
   const m = MOLECULAS[id]
   return <figure className="border border-subtle rounded p-3 text-center">
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src={rutaPng(id)} alt={m.nombre[locale]} className="mx-auto h-40 w-auto max-w-full" />
+    <img src={rutaPng(id)} alt={m.nombre[locale]} className="mx-auto h-40 w-auto max-w-full object-contain" />
     <figcaption className="text-sm mt-2">{m.nombre[locale]} <span className="font-mono text-xs text-faint">{m.formula}</span></figcaption>
   </figure>
 }
@@ -51,10 +51,7 @@ function Visores({ seccion }: { seccion: Seccion }) {
     case 'isomeros':
       return <div className="grid md:grid-cols-2 gap-4">
         <VisorMolecula molecula="thc" resaltar="anillo" etiquetaResaltado={t('anillo cerrado')} />
-        <div>
-          <VisorMolecula molecula="cbd" />
-          <p className="text-xs font-mono text-brand mt-2"><T>anillo abierto</T></p>
-        </div>
+        <VisorMolecula molecula="cbd" resaltar="hidroxilos" etiquetaResaltado={t('anillo abierto')} />
       </div>
     default:
       return seccion.moleculas.length ? <div className="grid md:grid-cols-2 gap-4">

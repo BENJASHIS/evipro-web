@@ -741,7 +741,6 @@
   "Tiempo (min)": "Time (min)",
   "THCA que queda: {pct}": "THCA remaining: {pct}",
   "medido": "measured",
-  "estimado": "estimated",
   "En el estudio, casi cero a los {n} min": "In the study, almost zero at {n} min",
   "En el estudio no se completó en 60 min": "In the study, it was not completed within 60 min",
   "grupo ácido · sale CO₂": "acid group · CO₂ leaves",
@@ -772,5 +771,12 @@
   "Revisado por {responsable} · versión {version}": "Reviewed by {responsable} · version {version}",
   "Módulo educativo": "Educational module",
   "Terpenos, flavonoides y cannabinoides explicados con moléculas en 3D y un simulador de calor.": "Terpenes, flavonoids and cannabinoids explained with 3D molecules and a heat simulator.",
-  "Abrir el módulo →": "Open the module →"
+  "Abrir el módulo →": "Open the module →",
+  "constante medida (Tabla 2)": "measured constant (Table 2)",
+  "constante estimada (Arrhenius)": "estimated constant (Arrhenius)",
+  "calculado con un modelo de primer orden": "calculated with a first-order model",
+  "modelo": "model",
+  "modelo · constante estimada": "model · estimated constant",
+  "Gráfico del modelo de primer orden a {temp} °C ({constante}): THCA que queda de 0 a 60 min; ahora, {min} min y {pct}.": "First-order model chart at {temp} °C ({constante}): THCA remaining from 0 to 60 min; now, {min} min and {pct}.",
+  "Girar con el dedo": "Rotate with your finger"
 }

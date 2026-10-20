@@ -20,9 +20,10 @@ export default function Repaso({ preguntas }: { preguntas: Pregunta[] }) {
           {pregunta.opciones.map((opcion, indice) => {
             const esElegida = elegida === indice
             const esCorrecta = pregunta.correcta === indice
-            return <button key={indice} type="button" disabled={respondida}
-              onClick={() => setRespuestas(previas => ({ ...previas, [pregunta.id]: indice }))}
-              className={`text-left px-3 py-2 rounded border text-sm focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${esElegida ? 'border-brand text-brand' : 'border-subtle text-muted'}`}>
+            // aria-disabled y no disabled: el botón con foco no lo pierde al responder.
+            return <button key={indice} type="button" aria-disabled={respondida || undefined}
+              onClick={() => { if (!respondida) setRespuestas(previas => ({ ...previas, [pregunta.id]: indice })) }}
+              className={`text-left px-3 py-2 rounded border text-sm focus-visible:ring-2 focus-visible:ring-brand aria-disabled:cursor-default ${esElegida ? 'border-brand text-brand' : 'border-subtle text-muted'}`}>
               <span>{opcion[locale]}</span>
               {esElegida && <span className="ml-2 text-xs font-mono uppercase"><T>Tu respuesta</T></span>}
               {respondida && esCorrecta && <span className="ml-2 text-xs font-mono uppercase"><T>✓ Respuesta correcta</T></span>}

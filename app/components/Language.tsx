@@ -15,10 +15,15 @@ export function useLanguage() {
   return { locale, t: (source: string) => translate(locale, source) }
 }
 
+/** Rellena los {marcadores} de un texto ya traducido (para atributos como aria-label, donde no cabe <T>). */
+export function interpolar(texto: string, values?: Record<string, string | number>) {
+  return texto.replace(/\{(\w+)\}/g, (match, key: string) =>
+    values && Object.hasOwn(values, key) ? String(values[key]) : match)
+}
+
 export function T({ children, values }: { children: string; values?: Record<string, string | number> }) {
   const { t } = useLanguage()
-  return t(children).replace(/\{(\w+)\}/g, (match, key: string) =>
-    values && Object.hasOwn(values, key) ? String(values[key]) : match)
+  return interpolar(t(children), values)
 }
 
 export function LanguageSelect() {
