@@ -84,7 +84,7 @@ function Visor({ molecula, resaltar, etiquetaResaltado, alto = 320 }: Props) {
       <p className="mt-2 text-sm text-muted">{resumen}</p>
       {etiqueta}
       {!respaldo && pantallaCompleta && (
-        <button type="button" className="mt-2 text-xs text-brand underline" onClick={() => { raiz.current?.requestFullscreen().catch(() => {}) }}>
+        <button type="button" className="mt-2 text-xs text-brand underline" onClick={() => { Promise.resolve(raiz.current?.requestFullscreen()).catch(() => {}) }}>
           <T>Pantalla completa</T>
         </button>
       )}
