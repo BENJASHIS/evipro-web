@@ -735,5 +735,6 @@
   "El índice de cada ámbito va de 0 a 100: 0 si respondiste «Nunca» a todo y 100 si respondiste «Siempre» a todo. Muestra con qué frecuencia marcaste dificultades; no es un porcentaje de riesgo ni una nota.": "Each area index runs from 0 to 100: 0 if you answered “Never” to everything and 100 if you answered “Always” to everything. It shows how often you marked difficulties; it is not a risk percentage or a grade.",
   "Escribe al equipo de EVIPro →": "Write to the EVIPro team →",
   "Te leemos y respondemos por Mensajes. No es un servicio de emergencias.": "We read and reply through Messages. This is not an emergency service.",
-  "Líneas nacionales: pueden tardar o no atender en todas las zonas.": "National lines: they may be slow or unavailable in some areas."
+  "Líneas nacionales: pueden tardar o no atender en todas las zonas.": "National lines: they may be slow or unavailable in some areas.",
+  "Pantalla completa": "Full screen"
 }
