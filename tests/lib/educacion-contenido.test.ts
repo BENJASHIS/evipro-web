@@ -28,3 +28,8 @@ it('fuentes sin duplicados', () => {
   expect(new Set(f.map(x => x.pmid ?? x.doi ?? x.url)).size).toBe(f.length)
 })
 it('nace sin publicar', () => expect(REVISION.version).toBeNull())
+it('la comparación THCA/CBDA conserva «a 110 °C» en ambos idiomas', () => {
+  const a = todas.find(x => x.id === 'calor.comparacion')!
+  expect(a.es).toMatch(/110 °C/)
+  expect(a.en).toMatch(/110 °C/)
+})

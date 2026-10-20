@@ -1,6 +1,6 @@
 // Cinética de descarboxilación del THCA → THC (Wang M et al. 2016, Cannabis Cannabinoid Res, PMID 28861498).
 // Primer orden: fracción restante = exp(−k·t). k en s⁻¹, t en segundos.
-// Solo 110 °C tiene k medida en Tabla 2; 130 y 145 °C se estiman por Arrhenius desde 110 °C (Ea 88 kJ/mol).
+// 80, 95 y 110 °C tienen k medida en la Tabla 2; 130 y 145 °C se estiman por Arrhenius desde 110 °C (Ea 88 kJ/mol).
 
 export const TEMPERATURAS = [80, 95, 110, 130, 145] as const
 export type Temperatura = typeof TEMPERATURAS[number]

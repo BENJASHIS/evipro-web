@@ -28,3 +28,16 @@ export function atomosAnilloOxigeno(atomos: AtomoSimple[]): number[] {
   })
   return [...out]
 }
+
+/** Hidroxilos de fenol: cada oxígeno con un H y un C vecino, más ese H. Excluye el OH de un ácido (C con dos O). */
+export function atomosHidroxiloFenol(atomos: AtomoSimple[]): number[] {
+  const out: number[] = []
+  atomos.forEach((at, i) => {
+    if (at.elem !== 'O') return
+    const hs = vecinos(atomos, i, 'H')
+    const cs = vecinos(atomos, i, 'C')
+    if (hs.length !== 1 || cs.length !== 1 || vecinos(atomos, cs[0], 'O').length !== 1) return
+    out.push(i, hs[0])
+  })
+  return out
+}
