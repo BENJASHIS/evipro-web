@@ -16,7 +16,12 @@ function hayWebGL() {
   } catch { return false }
 }
 
-export default function VisorMolecula({ molecula, resaltar, etiquetaResaltado, alto = 320 }: Props) {
+// key: al cambiar de molécula o resaltado se reinicia todo (canvas y respaldo)
+export default function VisorMolecula(props: Props) {
+  return <Visor key={`${props.molecula}:${props.resaltar ?? ''}`} {...props} />
+}
+
+function Visor({ molecula, resaltar, etiquetaResaltado, alto = 320 }: Props) {
   const { locale } = useLanguage()
   const raiz = useRef<HTMLDivElement>(null)
   const lienzo = useRef<HTMLDivElement>(null)
@@ -28,9 +33,10 @@ export default function VisorMolecula({ molecula, resaltar, etiquetaResaltado, a
     // eslint-disable-next-line react-hooks/set-state-in-effect -- detección de capacidades solo posible en cliente
     setPantallaCompleta(typeof document.documentElement.requestFullscreen === 'function')
     if (typeof IntersectionObserver === 'undefined' || !hayWebGL()) { setRespaldo(true); return }
+    const contenedor = lienzo.current
     let vivo = true
     let timer: ReturnType<typeof setTimeout> | undefined
-    let visor: { clear: () => void } | undefined
+    let visor: { clear: () => void; spin: (a: boolean) => void } | undefined
     const obs = new IntersectionObserver(async ([entrada]) => {
       if (!entrada?.isIntersecting) return
       obs.disconnect()
@@ -58,29 +64,29 @@ export default function VisorMolecula({ molecula, resaltar, etiquetaResaltado, a
       } catch { if (vivo) setRespaldo(true) }
     })
     if (raiz.current) obs.observe(raiz.current)
-    return () => { vivo = false; clearTimeout(timer); obs.disconnect(); visor?.clear() }
+    return () => { vivo = false; clearTimeout(timer); obs.disconnect(); visor?.spin(false); visor?.clear(); contenedor?.replaceChildren() }
   }, [molecula, resaltar])
 
+  const resumen = `${nombre} · ${MOLECULAS[molecula].formula}`
+  const etiqueta = resaltar && etiquetaResaltado
+    ? <p className="mt-2 text-sm"><span style={{ color: NARANJA }}>●</span> {etiquetaResaltado}</p>
+    : null
   return (
     <div ref={raiz} className="rounded border border-subtle p-3">
       {respaldo ? (
         <div className="flex flex-col items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={rutaPng(molecula)} alt={nombre} className="max-w-full bg-white rounded" style={{ maxHeight: alto }} />
-          <p className="text-sm text-muted">{nombre} · {MOLECULAS[molecula].formula}</p>
         </div>
       ) : (
-        <>
-          <div ref={lienzo} className="relative w-full" style={{ height: alto }} />
-          {resaltar && etiquetaResaltado && (
-            <p className="mt-2 text-sm"><span style={{ color: NARANJA }}>●</span> {etiquetaResaltado}</p>
-          )}
-          {pantallaCompleta && (
-            <button type="button" className="mt-2 text-xs text-brand underline" onClick={() => raiz.current?.requestFullscreen()}>
-              <T>Pantalla completa</T>
-            </button>
-          )}
-        </>
+        <div ref={lienzo} role="img" aria-label={etiqueta ? `${resumen}. ${etiquetaResaltado}` : resumen} className="relative w-full" style={{ height: alto }} />
+      )}
+      <p className="mt-2 text-sm text-muted">{resumen}</p>
+      {etiqueta}
+      {!respaldo && pantallaCompleta && (
+        <button type="button" className="mt-2 text-xs text-brand underline" onClick={() => { raiz.current?.requestFullscreen().catch(() => {}) }}>
+          <T>Pantalla completa</T>
+        </button>
       )}
     </div>
   )
