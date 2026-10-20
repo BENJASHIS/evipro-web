@@ -1,6 +1,11 @@
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-server'
+import Link from 'next/link'
+import { T } from '@/app/components/Language'
+import { getMemberAccess } from '@/lib/member-access'
+import { moduloVisible } from '@/lib/educacion/acceso-modulo'
+import { REVISION } from '@/lib/educacion/contenido-planta'
 import { attachSignedUrls, MEMBER_CONTENT_BUCKET, type ContentRow } from '@/lib/content'
 
 const TYPE_LABELS: Record<string, string> = {
@@ -11,6 +16,9 @@ export default async function ContenidoPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const access = await getMemberAccess(supabase, user)
+  const mostrarModulo = moduloVisible(access, REVISION.version !== null)
 
   const { data } = await supabase
     .from('content')
@@ -29,6 +37,15 @@ export default async function ContenidoPage() {
     <div>
       <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Biblioteca</p>
       <h1 className="text-3xl font-light font-serif italic mb-8">Contenido exclusivo</h1>
+
+      {mostrarModulo && (
+        <Link href="/miembros/contenido/que-hay-en-la-planta" className="block border border-brand rounded-lg p-5 mb-6 hover:bg-brand/5 transition-colors">
+          <span className="text-xs font-mono text-brand uppercase tracking-widest"><T>Módulo educativo</T></span>
+          <h2 className="text-lg font-light mt-1 mb-2"><T>¿Qué hay en la planta?</T></h2>
+          <p className="text-muted text-sm leading-relaxed mb-3"><T>Terpenos, flavonoides y cannabinoides explicados con moléculas en 3D y un simulador de calor.</T></p>
+          <span className="text-xs font-mono text-brand"><T>Abrir el módulo →</T></span>
+        </Link>
+      )}
 
       {!items.length ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
