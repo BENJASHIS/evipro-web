@@ -748,5 +748,8 @@
   "Condiciones del estudio: extractos de cannabis en horno al vacío, sin oxígeno ni luz.": "Study conditions: cannabis extracts in a vacuum oven, without oxygen or light.",
   "A 110 °C, cerca de {pct} se recuperó como THC.": "At 110 °C, about {pct} was recovered as THC.",
   "Fuente: {cita}, PMID {pmid}.": "Source: {cita}, PMID {pmid}.",
-  "Ver el estudio": "View the study"
+  "Ver el estudio": "View the study",
+  "Mini repaso": "Quick review",
+  "¡Correcto!": "Correct!",
+  "Esa no es correcta.": "That is not the right answer."
 }
