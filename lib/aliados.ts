@@ -73,19 +73,6 @@ export const ALIADOS: Aliado[] = [
     ],
   },
   {
-    slug: 'ascamed',
-    nombre: 'ASCAMED · Asociación de Cannabis Medicinal del Cusco',
-    logo: '/images/aliados/ascamed.png',
-    rol: 'Asociación',
-    // Sin descripción hasta que ASCAMED confirme cómo quiere describirse.
-    enlaces: [
-      { etiqueta: 'Instagram', url: 'https://www.instagram.com/ascamed_peru/' },
-      // Linktree sin los parámetros de seguimiento con que llegó el enlace:
-      // no hay por qué reenviar a nadie los identificadores de una campaña.
-      { etiqueta: 'Todos sus enlaces', url: 'https://linktr.ee/ascamedperu' },
-    ],
-  },
-  {
     slug: 'cannabis-libre-club',
     nombre: 'Cannabis Libre Club',
     logo: '/images/aliados/cannabislibreclub.png',
@@ -101,6 +88,19 @@ export const ALIADOS: Aliado[] = [
       // de red social.
       { etiqueta: 'Ver su web', url: 'https://www.cannabislibre.club/pe/' },
       { etiqueta: 'Instagram', url: 'https://www.instagram.com/cannabislibreclub/' },
+    ],
+  },
+  {
+    slug: 'ascamed',
+    nombre: 'ASCAMED · Asociación de Cannabis Medicinal del Cusco',
+    logo: '/images/aliados/ascamed.png',
+    rol: 'Asociación',
+    // Sin descripción hasta que ASCAMED confirme cómo quiere describirse.
+    enlaces: [
+      { etiqueta: 'Instagram', url: 'https://www.instagram.com/ascamed_peru/' },
+      // Linktree sin los parámetros de seguimiento con que llegó el enlace:
+      // no hay por qué reenviar a nadie los identificadores de una campaña.
+      { etiqueta: 'Todos sus enlaces', url: 'https://linktr.ee/ascamedperu' },
     ],
   },
   {

@@ -43,4 +43,10 @@ describe('aliados', () => {
     expect(slugs.indexOf('centro-estudios-cannabis-peru'))
       .toBeLessThan(slugs.indexOf('cannavital'))
   })
+
+  it('muestra Cannabis Libre Club antes de ASCAMED', () => {
+    const slugs = ALIADOS.map(a => a.slug)
+    expect(slugs.indexOf('cannabis-libre-club'))
+      .toBeLessThan(slugs.indexOf('ascamed'))
+  })
 })
