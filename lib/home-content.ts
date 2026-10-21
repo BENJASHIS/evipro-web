@@ -195,7 +195,7 @@ export const MEDICO = {
   // área de práctica dice lo mismo sin arrogarse un título que no consta.
   especialidades: 'Médico Cirujano · Cannabis medicinal y medicina de altura',
   credenciales: 'CMP 82817 · RNA A10684',
-  direccion: 'Av. Micaela Bastidas 829 · Frente al IPD, Cusco',
+  direccion: 'Av. Micaela Bastidas 829, Wanchaq, Cusco (frente al IPD)',
   presencialNota: 'Atención presencial solo con cita programada y confirmación previa del consultorio.',
   // Misma ruta que la ficha de `lib/doctors.ts`. Escrita a mano aquí para no
   // acoplar el contenido de la portada al catálogo de médicos; el candado

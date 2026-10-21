@@ -23,6 +23,8 @@ export interface Aliado {
   rol?: string
   /** Qué encuentra ahí el paciente. Se omite hasta que el aliado lo confirme. */
   descripcion?: string
+  /** Solo la que confirmó Carlos: los directorios públicos traen domicilios viejos. */
+  direccion?: string
   enlaces: EnlaceAliado[]
 }
 
@@ -48,6 +50,26 @@ export const ALIADOS: Aliado[] = [
     enlaces: [
       { etiqueta: 'Ver farmacia magistral', url: 'https://cannavital.pe/farmacia-magistral/' },
       { etiqueta: 'Instagram', url: 'https://www.instagram.com/cannavital.farmacia/' },
+    ],
+  },
+  {
+    slug: 'fisioimperium',
+    nombre: 'FisioImperium · Centro médico integral',
+    logo: '/images/aliados/fisioimperium.png',
+    rol: 'Centro aliado',
+    descripcion:
+      'Centro aliado de fisioterapia y rehabilitación para complementar tu tratamiento.',
+    // Dirección dada por Carlos (2026-10-21). SUNAT y GuiaMedica aún dicen
+    // Jr. El Retiro 422: no reemplazar por esa.
+    direccion: 'Av. República de Brasil G9, Wanchaq, Cusco (frente al nuevo local de la UTEA)',
+    enlaces: [
+      { etiqueta: 'Ver en Facebook', url: 'https://www.facebook.com/fisioimperium' },
+      // Búsqueda por la dirección, no la ficha de Maps de antes: su pin
+      // quedó en el local anterior.
+      {
+        etiqueta: 'Cómo llegar',
+        url: 'https://www.google.com/maps/search/?api=1&query=Av.+Rep%C3%BAblica+de+Brasil+G9%2C+Wanchaq%2C+Cusco',
+      },
     ],
   },
   {
