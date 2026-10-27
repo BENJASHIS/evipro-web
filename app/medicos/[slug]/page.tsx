@@ -139,6 +139,15 @@ export default async function DoctorPage({ params }: Props) {
               rel="noopener noreferrer"
               className="block w-full text-center border border-brand/40 text-brand py-3 rounded font-mono text-sm hover:border-brand transition-colors"
             ><T>{"Consultar por WhatsApp"}</T></a>
+
+            {doctor.facebook && (
+              <a
+                href={doctor.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center border border-strong text-white py-3 rounded font-mono text-sm hover:border-white/40 transition-colors"
+              ><T>{"Facebook personal"}</T></a>
+            )}
           </div>
         </div>
       </div>

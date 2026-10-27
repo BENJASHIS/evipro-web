@@ -27,6 +27,7 @@ export interface Doctor {
   plans: string[]
   availability: string
   whatsapp: string
+  facebook?: string
   photo: string
   photoWidth: number
   photoHeight: number
@@ -73,6 +74,7 @@ export const DOCTORS: Doctor[] = [
     plans: ['Membresía Básica', 'Membresía EVIPro', 'Plan Turista Inicio', 'Plan Turista Plus'],
     availability: 'Lun–Vie · 9am–6pm',
     whatsapp: '51942185939',
+    facebook: 'https://www.facebook.com/Behashis',
     photo: '/images/medicos/dr-jara.jpeg',
     photoWidth: 1268,
     photoHeight: 1241,
