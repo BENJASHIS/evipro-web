@@ -18,6 +18,20 @@ export function OpinionGoogle() {
         <a href="https://maps.app.goo.gl/XbQYN9aeSS42sJ5B6" target="_blank" rel="noopener noreferrer" className="inline-block text-brand underline text-sm mt-5"><T>Leer reseña completa en Google ↗</T></a>
       </div>
     </figure>
+    <figure className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 md:gap-12 mt-10 border-t border-subtle pt-10">
+      <figcaption>
+        <p className="text-brand tracking-widest" aria-label="5 / 5">★★★★★</p>
+        <p className="text-sm mt-3">Bianca Luna Parmigiani</p>
+        <p className="text-xs text-muted mt-2"><T>Una reseña individual · Google Maps</T></p>
+      </figcaption>
+      <div className="md:col-span-2">
+        <blockquote className="font-serif text-2xl md:text-3xl leading-relaxed">
+          <p lang="es">«Tengo mucho tiempo tratandome con los doctores y mi calidad de vida ha mejorado muchisimo. 100% recomendable!»</p>
+        </blockquote>
+        <p className="text-muted text-xs mt-4"><T>Experiencia individual; no garantiza resultados en otras personas.</T></p>
+        <a href="https://goo.gl/maps/DSjNKFntwmZfqk8y9" target="_blank" rel="noopener noreferrer" className="inline-block text-brand underline text-sm mt-5"><T>Leer reseña completa en Google ↗</T></a>
+      </div>
+    </figure>
   </section>
 }
 
