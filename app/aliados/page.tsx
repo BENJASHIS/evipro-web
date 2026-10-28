@@ -46,7 +46,7 @@ export default function AliadosPage() {
                   <p className="text-muted text-sm mb-3"><T>{aliado.descripcion}</T></p>
                 )}
                 {aliado.direccion && (
-                  <p className="text-faint text-xs mb-3">📍 <T>{aliado.direccion}</T></p>
+                  <p className="text-faint text-xs mb-3"><T>{aliado.direccion}</T></p>
                 )}
                 <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center sm:justify-start">
                   {aliado.enlaces.map(enlace => (
