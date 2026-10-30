@@ -63,6 +63,9 @@ export async function confirmBooking(formData: FormData) {
     .from('counseling_bookings')
     .update({ confirmed_at: new Date().toISOString() })
     .eq('id', id)
+    // Una reserva cancelada no se confirma aquí: revivir su evento dejaría en el
+    // calendario una cita que no existe (el portal del médico sí la reactiva).
+    .is('cancelled_at', null)
     .select(COUNSELING_BOOKING_CALENDAR_COLUMNS)
     .maybeSingle()
   if (reserva) await confirmarEvento(reserva).catch(() => {})

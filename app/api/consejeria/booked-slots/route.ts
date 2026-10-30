@@ -42,6 +42,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const booked = new Set([...(data ?? []).map(r => `${r.slot_date}T${r.slot_time}`), ...enGoogle])
+  // slot_time es `time` (HH:MM:SS); el formulario compara con HH:MM.
+  const booked = new Set([...(data ?? []).map(r => `${r.slot_date}T${String(r.slot_time).slice(0, 5)}`), ...enGoogle])
   return NextResponse.json({ booked: [...booked] })
 }

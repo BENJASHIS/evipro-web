@@ -38,7 +38,8 @@ export function fechasDesde(inicio: string, n: number): string[] {
   return Array.from({ length: n }, (_, i) => new Date(base + i * 24 * HORA_MS).toISOString().slice(0, 10))
 }
 
-const inicioTurno = (fecha: string, hora: string) => Date.parse(`${fecha}T${hora}:00${LIMA}`)
+// La columna slot_time es `time`: Supabase la devuelve como HH:MM:SS; el formulario manda HH:MM.
+const inicioTurno = (fecha: string, hora: string) => Date.parse(`${fecha}T${hora.slice(0, 5)}:00${LIMA}`)
 
 /** Turnos de una hora que se cruzan con algún intervalo ocupado, como claves `${fecha}T${hora}`. */
 export function slotsOcupados(busy: Intervalo[], fechas: string[], horario: string[]): string[] {

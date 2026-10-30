@@ -35,7 +35,7 @@ beforeEach(() => {
 
 describe('GET /api/consejeria/booked-slots', () => {
   it('junta lo reservado en la web con lo ocupado en Google, sin duplicados', async () => {
-    estado.filas = [{ slot_date: '2026-11-03', slot_time: '09:00' }]
+    estado.filas = [{ slot_date: '2026-11-03', slot_time: '09:00:00' }] // columna time: HH:MM:SS
     ocupados.mockResolvedValue(['2026-11-03T09:00', '2026-11-04T15:00'])
     const { booked } = await (await GET(pedir('dr-jara'))).json()
     expect(booked.sort()).toEqual(['2026-11-03T09:00', '2026-11-04T15:00'])

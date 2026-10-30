@@ -138,3 +138,16 @@ describe('eventos', () => {
     expect(console.error).not.toHaveBeenCalled()
   })
 })
+
+describe('hora como la devuelve Postgres (columna time → HH:MM:SS)', () => {
+  it('confirmarEvento con 404 crea el evento a la hora correcta', async () => {
+    siguientes = [() => respuesta(404), () => respuesta(200, {})]
+    await m.confirmarEvento({ ...reserva, slot_time: '09:00:00' })
+    const [, post] = llamadasA('/events')
+    expect(cuerpoDe(post)).toMatchObject({
+      start: { dateTime: '2026-11-03T09:00:00-05:00' },
+      end: { dateTime: '2026-11-03T10:00:00-05:00' },
+    })
+    expect(console.error).not.toHaveBeenCalled()
+  })
+})
