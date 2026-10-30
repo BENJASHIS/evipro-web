@@ -6,6 +6,7 @@ import { validateBookingInput } from '@/lib/booking-validation'
 import { createMPPreference, describeMPError } from '@/lib/mercadopago'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
+import { DOCTORS } from '@/lib/doctors'
 
 interface BookingBody {
   doctor_slug: string
@@ -30,6 +31,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Solicitud inválida' }, { status: 400 })
   }
   const { doctor_slug, modality, patient_name, patient_phone, is_first_session } = body
+
+  // Canal retirado el 2026-07-30: el formulario ya no lo ofrece, y una reserva
+  // directa a esta ruta no llegaría al calendario de Google.
+  if (!DOCTORS.find(d => d.slug === doctor_slug)?.counseling?.available) {
+    return NextResponse.json({ error: 'Canal no disponible' }, { status: 400 })
+  }
 
   if (!modality || !(modality in MODALITY_PRICES)) {
     return NextResponse.json({ error: 'Modalidad inválida' }, { status: 400 })

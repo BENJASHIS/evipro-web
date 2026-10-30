@@ -4,6 +4,7 @@ import { precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
 import { validateBookingInput } from '@/lib/booking-validation'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
+import { crearEventoTentativo, ocupadosEnGoogle } from '@/lib/google-calendar'
 
 interface ReservaBody {
   doctor_slug: string
@@ -37,6 +38,12 @@ export async function POST(req: NextRequest) {
   const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
   if (!turnstile.ok) {
     return NextResponse.json({ error: turnstile.error }, { status: 403 })
+  }
+
+  // El paciente pudo cargar los horarios antes de que Carlos ocupara ese turno en Google.
+  const { slot_date, slot_time } = body
+  if (slot_date && slot_time && (await ocupadosEnGoogle(doctor_slug, [slot_date], [slot_time])).includes(`${slot_date}T${slot_time}`)) {
+    return NextResponse.json({ error: 'Ese horario ya fue reservado. Elige otro.' }, { status: 409 })
   }
 
   // Frontera de confianza: el precio se DERIVA en el servidor (nominal de referencia).
@@ -73,5 +80,9 @@ export async function POST(req: NextRequest) {
     console.error('[reservar/book] db error:', error.message)
     return NextResponse.json({ error: 'No se pudo guardar la solicitud' }, { status: 500 })
   }
+  await crearEventoTentativo({
+    id: data.id, doctor_slug, patient_name, modality,
+    slot_date: slot_date ?? null, slot_time: slot_time ?? null,
+  }).catch(() => {})
   return NextResponse.json({ booking_id: data.id })
 }
