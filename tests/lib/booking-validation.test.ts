@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateBookingInput, NAME_MAX, PHONE_MAX, NOTE_MAX } from '../../lib/booking-validation'
+import { validateBookingInput, proximosDias, NAME_MAX, PHONE_MAX, NOTE_MAX } from '../../lib/booking-validation'
 import { DOCTORS } from '../../lib/doctors'
 
 const ok = {
@@ -45,5 +45,27 @@ describe('validateBookingInput', () => {
   it('acepta nota nula o ausente', () => {
     expect(validateBookingInput({ ...ok, patient_note: null })).toBeNull()
     expect(validateBookingInput({ doctor_slug: ok.doctor_slug, patient_name: ok.patient_name, patient_phone: ok.patient_phone })).toBeNull()
+  })
+})
+
+// Horario de Carlos (2026-10-29): martes a viernes, 9–12 y 15–17, turnos de una hora.
+describe('horario de atención', () => {
+  const jara = { ...ok, doctor_slug: 'dr-jara' }
+
+  it('rechaza un lunes', () => {
+    expect(validateBookingInput({ ...jara, slot_date: '2026-11-02', slot_time: '09:00' })).toBe('Horario no disponible')
+  })
+
+  it('rechaza una hora fuera de turno', () => {
+    expect(validateBookingInput({ ...jara, slot_date: '2026-11-03', slot_time: '14:00' })).toBe('Horario no disponible')
+  })
+
+  it('acepta martes a las 16:00', () => {
+    expect(validateBookingInput({ ...jara, slot_date: '2026-11-03', slot_time: '16:00' })).toBeNull()
+  })
+
+  it('los próximos días reservables son solo martes a viernes, desde mañana', () => {
+    const dias = proximosDias([2, 3, 4, 5], 5, new Date(2026, 10, 2)) // lunes 2-nov-2026
+    expect(dias.map(d => d.getDate())).toEqual([3, 4, 5, 6, 10])
   })
 })

@@ -5,6 +5,7 @@ export interface DoctorCounseling {
   description: string
   modalities: Modality[]
   schedule: string[]
+  days?: number[] // días de atención, 0=domingo … 6=sábado; por defecto lunes a viernes
 }
 
 // ponytail: piso de cobro de Mercado Pago. Cobros por debajo de este monto los

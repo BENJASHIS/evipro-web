@@ -72,7 +72,7 @@ export const DOCTORS: Doctor[] = [
     location: 'Cusco, Perú',
     modality: 'Teleconsulta en todo el Perú · Presencial en Cusco con cita programada',
     plans: ['Membresía Básica', 'Membresía EVIPro', 'Plan Turista Inicio', 'Plan Turista Plus'],
-    availability: 'Lun–Vie · 9am–6pm',
+    availability: 'Mar–Vie · 9am–12pm y 3pm–5pm · Otros horarios, solo si es necesario',
     whatsapp: '51942185939',
     facebook: 'https://www.facebook.com/Behashis',
     photo: '/images/medicos/dr-jara.jpeg',
@@ -85,7 +85,9 @@ export const DOCTORS: Doctor[] = [
       available: false,
       description: 'Orientación sobre cannabis medicinal, preparación para consulta, dudas sobre medicina de altura y síntomas de salud mental.',
       modalities: ['video', 'whatsapp'],
-      schedule: ['09:00','10:00','11:00','14:00','15:00','17:00'],
+      // Horario de reserva web de Carlos (2026-10-29); otros horarios se coordinan por WhatsApp.
+      schedule: ['09:00','10:00','11:00','15:00','16:00'],
+      days: [2, 3, 4, 5],
     },
   },
   {

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   if (!modality || !MODALIDADES.includes(modality)) {
     return NextResponse.json({ error: 'Modalidad inválida' }, { status: 400 })
   }
-  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note })
+  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note, slot_date: body.slot_date, slot_time: body.slot_time })
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
   const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
   if (!turnstile.ok) {

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
 import { MEDICO } from '@/lib/home-content'
 import type { Doctor } from '@/lib/doctors'
+import { agendaDe, proximosDias } from '@/lib/booking-validation'
 import { MODALITY_LABELS, MODALITY_DURATION, getPrice, type Modality } from '@/lib/counseling'
 import { CONSULTA_MODALITY_LABELS, escaleraReserva, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
 
@@ -16,17 +17,6 @@ const needsSlot = (m: AnyModality) => (SLOT_MODS as string[]).includes(m)
 const labelOf = (m: AnyModality) =>
   isConsulta(m) ? CONSULTA_MODALITY_LABELS[m] : MODALITY_LABELS[m as Modality]
 
-function getWeekdays(count: number): Date[] {
-  const days: Date[] = []
-  const d = new Date()
-  d.setHours(0, 0, 0, 0)
-  while (days.length < count) {
-    d.setDate(d.getDate() + 1)
-    const dow = d.getDay()
-    if (dow !== 0 && dow !== 6) days.push(new Date(d))
-  }
-  return days
-}
 function formatDate(d: Date, locale: string): string {
   return d.toLocaleDateString(locale === 'en' ? 'en-GB' : 'es-PE', { weekday: 'short', day: 'numeric', month: 'short' })
 }
@@ -50,8 +40,8 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const [turnstileToken, setTurnstileToken] = useState('')
   const [turnstileReset, setTurnstileReset] = useState(0)
 
-  const SCHEDULE = doctor.counseling?.schedule ?? ['09:00', '10:00', '11:00', '14:00', '15:00', '17:00']
-  const weekdays = getWeekdays(7)
+  const { days, schedule: SCHEDULE } = agendaDe(doctor)
+  const weekdays = proximosDias(days, 7)
   const consejeriaMods = doctor.counseling?.available ? (doctor.counseling.modalities ?? []) : []
   const price = modality && !isConsulta(modality) ? getPrice(modality as Modality, false) : null
 
