@@ -2,6 +2,8 @@
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
 import { isAdminUser } from '@/lib/auth'
 import { computePeriodEnd } from '@/lib/billing'
+import { COUNSELING_BOOKING_CALENDAR_COLUMNS } from '@/lib/db-columns'
+import { confirmarEvento } from '@/lib/google-calendar'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -57,10 +59,13 @@ export async function confirmBooking(formData: FormData) {
   await requireAdmin()
   const id = formData.get('id') as string
   const supabase = createServiceClient()
-  await supabase
+  const { data: reserva } = await supabase
     .from('counseling_bookings')
     .update({ confirmed_at: new Date().toISOString() })
     .eq('id', id)
+    .select(COUNSELING_BOOKING_CALENDAR_COLUMNS)
+    .maybeSingle()
+  if (reserva) await confirmarEvento(reserva).catch(() => {})
   revalidatePath('/admin/consejeria')
 }
 

@@ -5,18 +5,23 @@ import { createServiceClient } from '@/lib/supabase-server'
 import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { validateCancelReason } from '@/lib/bookings'
 import { generateCreditCode } from '@/lib/credits'
+import { COUNSELING_BOOKING_CALENDAR_COLUMNS } from '@/lib/db-columns'
+import { cancelarEvento, confirmarEvento } from '@/lib/google-calendar'
 
 type ActionResult = { ok: boolean; error?: string }
 
 export async function confirmBooking(slug: string, token: string, id: string): Promise<ActionResult> {
   if (!verifyDoctorPortalToken(slug, token)) return { ok: false, error: 'No autorizado' }
   const supabase = createServiceClient()
-  const { error } = await supabase
+  const { data: reserva, error } = await supabase
     .from('counseling_bookings')
     .update({ confirmed_at: new Date().toISOString(), cancelled_at: null, cancel_reason: null })
     .eq('id', id)
     .eq('doctor_slug', slug)
+    .select(COUNSELING_BOOKING_CALENDAR_COLUMNS)
+    .maybeSingle()
   if (error) return { ok: false, error: error.message }
+  if (reserva) await confirmarEvento(reserva).catch(() => {})
   revalidatePath(`/medicos/${slug}/reservas`)
   return { ok: true }
 }
@@ -81,6 +86,7 @@ export async function cancelBooking(slug: string, token: string, id: string, raw
     .eq('id', id)
     .eq('doctor_slug', slug)
   if (error) return { ok: false, error: error.message }
+  await cancelarEvento({ id, doctor_slug: slug }).catch(() => {})
   revalidatePath(`/medicos/${slug}/reservas`)
   return { ok: true }
 }

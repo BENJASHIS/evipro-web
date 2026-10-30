@@ -17,7 +17,7 @@ const respuesta = (status: number, cuerpo: unknown = {}) =>
 
 // Responde al token siempre; lo demás, en el orden que pida cada prueba.
 let siguientes: Array<() => Response>
-const fetchFalso = vi.fn(async (url: string | URL) => {
+const fetchFalso = vi.fn<(url: string | URL, init?: RequestInit) => Promise<Response>>(async url => {
   if (String(url).startsWith('https://oauth2.googleapis.com/token')) {
     return respuesta(200, { access_token: 'tok', expires_in: 3600 })
   }
