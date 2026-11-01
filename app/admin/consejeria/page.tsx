@@ -17,7 +17,7 @@ export default async function AdminConsejeriaPage() {
   const total = bookings?.length ?? 0
   const paid = bookings?.filter(b => b.paid).length ?? 0
   const free = bookings?.filter(b => b.payment_method === 'free').length ?? 0
-  const pending = bookings?.filter(b => !b.paid && b.payment_method !== 'free').length ?? 0
+  const pending = bookings?.filter(b => !b.cancelled_at && !b.paid && b.payment_method !== 'free').length ?? 0
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -84,7 +84,11 @@ export default async function AdminConsejeriaPage() {
 
             {/* Status */}
             <div className="shrink-0">
-              {b.confirmed_at ? (
+              {b.cancelled_at ? (
+                <span className="text-xs font-mono px-3 py-1 rounded-full text-faint line-through">
+                  Cancelada
+                </span>
+              ) : b.confirmed_at ? (
                 <span className="text-xs font-mono px-3 py-1 rounded-full bg-brand/10 text-brand">
                   Confirmada
                 </span>
@@ -104,7 +108,7 @@ export default async function AdminConsejeriaPage() {
             </div>
 
             {/* Confirmar en DB */}
-            {!b.confirmed_at && (
+            {!b.confirmed_at && !b.cancelled_at && (
               <form action={confirmBooking}>
                 <input type="hidden" name="id" value={b.id} />
                 <button
@@ -116,7 +120,8 @@ export default async function AdminConsejeriaPage() {
               </form>
             )}
 
-            {/* WhatsApp confirm */}
+            {/* WhatsApp confirm: nunca a una reserva cancelada */}
+            {!b.cancelled_at && (
             <a
               href={`https://wa.me/${b.patient_phone}?text=${encodeURIComponent(
                 `Hola ${b.patient_name}, confirmamos tu sesión de consejería con EVIPro` +
@@ -129,6 +134,7 @@ export default async function AdminConsejeriaPage() {
             >
               WA →
             </a>
+            )}
           </div>
         ))}
       </div>
