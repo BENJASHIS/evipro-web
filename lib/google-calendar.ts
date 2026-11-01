@@ -82,7 +82,14 @@ let cache: { token: string; vence: number } | null = null
 
 async function token(): Promise<string> {
   if (cache && Date.now() < cache.vence) return cache.token
-  const { client_email, private_key } = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON ?? '')
+  let cuenta: { client_email: string; private_key: string }
+  try {
+    cuenta = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON ?? '')
+  } catch {
+    // El error de JSON.parse cita el texto cercano a la falla, que puede ser la clave privada.
+    throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON no es un JSON válido')
+  }
+  const { client_email, private_key } = cuenta
   const ahora = Math.floor(Date.now() / 1000)
   const b64 = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url')
   const sinFirma = `${b64({ alg: 'RS256', typ: 'JWT' })}.${b64({ iss: client_email, scope: SCOPE, aud: TOKEN_URL, iat: ahora, exp: ahora + 3600 })}`

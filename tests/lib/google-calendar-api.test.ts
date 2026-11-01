@@ -164,6 +164,15 @@ describe('calendario principal compartido solo como libre/ocupado (GOOGLE_BUSY_C
   })
 })
 
+it('una clave mal pegada en Vercel no deja trozos de la clave en los logs', async () => {
+  // El error de JSON.parse cita el texto cercano a la falla: aquí, la clave privada.
+  process.env.GOOGLE_SERVICE_ACCOUNT_JSON = '{"type": "service_account", "private_key": MIIEvQIBADANBgkqhkiG9w0}'
+  await m.crearEventoTentativo(reserva)
+  const logs = vi.mocked(console.error).mock.calls.flat().map(String).join(' ')
+  expect(logs).toContain('GOOGLE_SERVICE_ACCOUNT_JSON no es un JSON válido')
+  expect(logs).not.toContain('MIIEvQ')
+})
+
 describe('hora como la devuelve Postgres (columna time → HH:MM:SS)', () => {
   it('confirmarEvento con 404 crea el evento a la hora correcta', async () => {
     siguientes = [() => respuesta(404), () => respuesta(200, {})]
