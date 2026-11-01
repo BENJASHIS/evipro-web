@@ -17,6 +17,12 @@ describe('calendarioDe', () => {
     expect(calendarioDe('dr-jara')).toBe('carlos@example.com')
     expect(calendarioDe('dr-vera')).toBeNull()
   })
+
+  it('ignora espacios o el salto de línea que se cuelan al pegar el ID en Vercel', () => {
+    process.env.GOOGLE_SERVICE_ACCOUNT_JSON = '{}'
+    process.env.GOOGLE_CALENDAR_ID = ' abc@group.calendar.google.com\n'
+    expect(calendarioDe('dr-jara')).toBe('abc@group.calendar.google.com')
+  })
 })
 
 it('idEvento quita los guiones', () => {

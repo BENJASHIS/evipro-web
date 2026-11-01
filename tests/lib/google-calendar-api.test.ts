@@ -139,6 +139,31 @@ describe('eventos', () => {
   })
 })
 
+describe('calendario principal compartido solo como libre/ocupado (GOOGLE_BUSY_CALENDAR_ID)', () => {
+  const PRINCIPAL = 'carlos.principal@example.com'
+  const a15 = { start: '2026-11-03T20:00:00Z', end: '2026-11-03T21:00:00Z' } // 15:00 Lima
+  beforeEach(() => { process.env.GOOGLE_BUSY_CALENDAR_ID = ` ${PRINCIPAL}\n` })
+  afterEach(() => { delete process.env.GOOGLE_BUSY_CALENDAR_ID })
+
+  it('freeBusy pregunta por los dos calendarios y junta lo ocupado', async () => {
+    siguientes = [() => respuesta(200, { calendars: {
+      [CAL]: { busy: [{ start: '2026-11-03T14:00:00Z', end: '2026-11-03T15:00:00Z' }] },
+      [PRINCIPAL]: { busy: [a15] },
+    } })]
+    expect(await m.ocupadosEnGoogle('dr-jara', ['2026-11-03'], H)).toEqual(['2026-11-03T09:00', '2026-11-03T15:00'])
+    expect(cuerpoDe(llamadasA('/freeBusy')[0]).items).toEqual([{ id: CAL }, { id: PRINCIPAL }])
+  })
+
+  it('si uno de los dos no responde, igual oculta lo ocupado en el otro', async () => {
+    siguientes = [() => respuesta(200, { calendars: {
+      [CAL]: { busy: [], errors: [{ reason: 'notFound' }] },
+      [PRINCIPAL]: { busy: [a15] },
+    } })]
+    expect(await m.ocupadosEnGoogle('dr-jara', ['2026-11-03'], H)).toEqual(['2026-11-03T15:00'])
+    expect(console.error).toHaveBeenCalled()
+  })
+})
+
 describe('hora como la devuelve Postgres (columna time → HH:MM:SS)', () => {
   it('confirmarEvento con 404 crea el evento a la hora correcta', async () => {
     siguientes = [() => respuesta(404), () => respuesta(200, {})]

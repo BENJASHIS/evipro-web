@@ -21,7 +21,7 @@ const HORA_MS = 3_600_000
 // ponytail: un solo médico con calendario; pasar a un mapa slug → variable si se suma otro.
 export function calendarioDe(slug: string): string | null {
   if (slug !== 'dr-jara' || !process.env.GOOGLE_SERVICE_ACCOUNT_JSON) return null
-  return process.env.GOOGLE_CALENDAR_ID || null
+  return process.env.GOOGLE_CALENDAR_ID?.trim() || null
 }
 
 /** El id de la reserva (uuid) sin guiones: sus caracteres hex caben en el base32hex que pide Google. */
@@ -124,22 +124,35 @@ async function insertar(cal: string, r: ReservaEvento, status: 'tentative' | 'co
 const cambiarEstado = (cal: string, bookingId: string, status: 'confirmed' | 'cancelled') =>
   google(`${eventos(cal)}/${idEvento(bookingId)}`, 'PATCH', { status })
 
-/** Turnos ocupados en el calendario del médico; [] si no tiene calendario o si Google falla. */
+/**
+ * Turnos ocupados del médico; [] si no tiene calendario o si Google falla.
+ * Además del calendario de la web, GOOGLE_BUSY_CALENDAR_ID es el calendario personal de Carlos,
+ * compartido solo como libre/ocupado: la web sabe cuándo está ocupado, nunca con quién.
+ */
 export async function ocupadosEnGoogle(slug: string, fechas: string[], horario: string[]): Promise<string[]> {
   const cal = calendarioDe(slug)
   if (!cal || fechas.length === 0) return []
+  const variables: Record<string, string> = { [cal]: 'GOOGLE_CALENDAR_ID' }
+  const soloOcupado = process.env.GOOGLE_BUSY_CALENDAR_ID?.trim()
+  if (soloOcupado) variables[soloOcupado] ??= 'GOOGLE_BUSY_CALENDAR_ID'
+  const ids = Object.keys(variables)
   try {
     const res = await google('/freeBusy', 'POST', {
       timeMin: `${fechas[0]}T00:00:00${LIMA}`,
       timeMax: `${fechas[fechas.length - 1]}T23:59:59${LIMA}`,
       timeZone: 'America/Lima',
-      items: [{ id: cal }],
+      items: ids.map(id => ({ id })),
     })
     if (!res.ok) throw new ErrorGoogle(res.status)
     const { calendars } = await res.json() as { calendars?: Record<string, { busy?: Intervalo[]; errors?: { reason: string }[] }> }
-    const datos = calendars?.[cal]
-    if (!datos || datos.errors?.length) throw new Error(datos?.errors?.[0]?.reason ?? 'sin calendario en la respuesta')
-    return slotsOcupados(datos.busy ?? [], fechas, horario)
+    // Si un calendario no responde (mal compartido, ID errado), se usa lo ocupado de los demás.
+    const busy = ids.flatMap(id => {
+      const datos = calendars?.[id]
+      if (datos && !datos.errors?.length) return datos.busy ?? []
+      falla('freeBusy', `${slug} ${variables[id]}`, datos?.errors?.[0]?.reason ?? 'sin calendario en la respuesta')
+      return []
+    })
+    return slotsOcupados(busy, fechas, horario)
   } catch (e) {
     falla('freeBusy', slug, e)
     return []
