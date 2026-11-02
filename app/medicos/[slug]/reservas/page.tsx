@@ -8,6 +8,7 @@ import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { notFound } from 'next/navigation'
 import { bookingStatus, MOTIVO_VENCIDA, type BookingState } from '@/lib/bookings'
 import { liberarVencidas } from '@/lib/pago-reserva'
+import { agendaDe } from '@/lib/booking-validation'
 import { mensajeConfirmacion } from '@/lib/mensajes-reserva'
 import { CREDIT_STATUS_LABEL, CREDIT_VALID_DAYS, type CreditStatus } from '@/lib/credits'
 import { BookingActions } from './BookingActions'
@@ -182,6 +183,11 @@ export default async function ReservasPage({
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <p className="text-white text-sm font-medium">{b.patient_name}</p>
                         <span className={`text-xs font-mono ${status.color}`}>{status.text}</span>
+                        {b.reschedule_count > 0 && (
+                          <span className="text-xs font-mono text-yellow-400">
+                            Ya cambió de fecha {b.reschedule_count} {b.reschedule_count === 1 ? 'vez' : 'veces'}
+                          </span>
+                        )}
                       </div>
                       <p className="text-muted text-xs font-mono mb-1">
                         {ALL_MODALITY_LABELS[b.modality] ?? b.modality}
@@ -205,7 +211,7 @@ export default async function ReservasPage({
                     </a>
                   </div>
                   <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name}
-                    cobra={cobra} precio={b.price_soles} />
+                    cobra={cobra} precio={b.price_soles} horario={agendaDe(doctor).schedule} />
                 </div>
               )
             })}

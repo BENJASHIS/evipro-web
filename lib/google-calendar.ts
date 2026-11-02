@@ -189,6 +189,23 @@ export async function confirmarEvento(r: ReservaEvento): Promise<void> {
   }
 }
 
+/**
+ * Cambio de fecha: mueve el evento a la hora nueva de la reserva. El status va en el mismo PATCH
+ * porque una reserva pagada sin turno revive con un evento que Google tenía cancelado.
+ */
+export async function moverEvento(r: ReservaEvento, status: 'tentative' | 'confirmed' = 'confirmed'): Promise<void> {
+  const cal = calendarioDe(r.doctor_slug)
+  if (!cal || !r.slot_date || !r.slot_time) return
+  try {
+    const { start, end } = cuerpoEvento(r, status)
+    const res = await google(`${eventos(cal)}/${idEvento(r.id)}`, 'PATCH', { status, start, end })
+    if (res.status === 404) await insertar(cal, r, status)
+    else if (!res.ok) throw new ErrorGoogle(res.status)
+  } catch (e) {
+    falla('mover evento', r.id, e)
+  }
+}
+
 export async function cancelarEvento(r: { id: string; doctor_slug: string }): Promise<void> {
   const cal = calendarioDe(r.doctor_slug)
   if (!cal) return

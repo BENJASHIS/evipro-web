@@ -27,7 +27,7 @@ export function proximosDias(days: number[], count: number, desde: Date = new Da
 
 // slot_date es la fecha en hora Perú (YYYY-MM-DD): el día de la semana se lee a mediodía UTC,
 // así no depende de la zona horaria del servidor.
-function slotValido(doctor: Doctor, slot_date: string | null | undefined, slot_time: string | null | undefined): boolean {
+export function slotValido(doctor: Doctor, slot_date: string | null | undefined, slot_time: string | null | undefined): boolean {
   if (!slot_date || !slot_time || !/^\d{4}-\d{2}-\d{2}$/.test(slot_date)) return false
   const { days, schedule } = agendaDe(doctor)
   return days.includes(new Date(`${slot_date}T12:00:00Z`).getUTCDay()) && schedule.includes(slot_time)

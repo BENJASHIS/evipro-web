@@ -131,6 +131,33 @@ describe('eventos', () => {
     expect(cuerpoDe(post)).toMatchObject({ id: m.idEvento(reserva.id), status: 'confirmed' })
   })
 
+  it('moverEvento hace PATCH con el nuevo inicio y fin en hora de Lima, y lo deja confirmado', async () => {
+    siguientes = [() => respuesta(200, {})]
+    await m.moverEvento({ ...reserva, slot_date: '2026-11-05', slot_time: '11:00' })
+    const [llamada] = llamadasA('/events')
+    expect(String(llamada[0])).toMatch(new RegExp(`/events/${m.idEvento(reserva.id)}$`))
+    expect((llamada[1] as RequestInit).method).toBe('PATCH')
+    expect(cuerpoDe(llamada)).toEqual({
+      status: 'confirmed',
+      start: { dateTime: '2026-11-05T11:00:00-05:00', timeZone: 'America/Lima' },
+      end: { dateTime: '2026-11-05T12:00:00-05:00', timeZone: 'America/Lima' },
+    })
+  })
+
+  it('moverEvento con 404 crea el evento confirmado en la hora nueva', async () => {
+    siguientes = [() => respuesta(404), () => respuesta(200, {})]
+    await m.moverEvento({ ...reserva, slot_date: '2026-11-05', slot_time: '11:00' })
+    const [, post] = llamadasA('/events')
+    expect((post[1] as RequestInit).method).toBe('POST')
+    expect(cuerpoDe(post)).toMatchObject({ status: 'confirmed', start: { dateTime: '2026-11-05T11:00:00-05:00' } })
+  })
+
+  it('moverEvento con error de Google no lanza', async () => {
+    siguientes = [() => respuesta(500)]
+    await expect(m.moverEvento(reserva)).resolves.toBeUndefined()
+    expect(console.error).toHaveBeenCalled()
+  })
+
   it('cancelarEvento hace PATCH a cancelled e ignora 410', async () => {
     siguientes = [() => respuesta(410)]
     await expect(m.cancelarEvento({ id: reserva.id, doctor_slug: 'dr-jara' })).resolves.toBeUndefined()
