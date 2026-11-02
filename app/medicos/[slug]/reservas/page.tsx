@@ -34,6 +34,8 @@ interface Booking {
 const STATUS_LABEL: Record<BookingState, { text: string; color: string }> = {
   cancelled:       { text: 'Cancelada',            color: 'text-faint line-through' },
   confirmed:       { text: 'Confirmada',           color: 'text-brand' },
+  payment_to_verify: { text: 'Pago por verificar', color: 'text-yellow-400' },
+  pending_payment: { text: 'Pendiente de pago',    color: 'text-faint' },
   pending_confirm: { text: 'Pendiente confirmar',  color: 'text-yellow-400' },
   unpaid:          { text: 'Sin pago',             color: 'text-faint' },
 }

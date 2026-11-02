@@ -35,6 +35,8 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 const CITA_ESTADO: Record<BookingState, { label: string; color: string }> = {
   cancelled:       { label: 'Cancelada',      color: 'text-faint' },
   confirmed:       { label: 'Confirmada',     color: 'text-brand' },
+  payment_to_verify: { label: 'Pago por verificar', color: 'text-yellow-400' },
+  pending_payment: { label: 'Pendiente de pago', color: 'text-faint' },
   pending_confirm: { label: 'Por confirmar',  color: 'text-yellow-400' },
   unpaid:          { label: 'Pago pendiente', color: 'text-faint' },
 }
