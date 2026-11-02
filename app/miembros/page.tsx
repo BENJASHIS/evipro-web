@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { bookingStatus, canPatientCancel, type BookingState } from '@/lib/bookings'
 import { MODALITY_LABELS } from '@/lib/counseling'
-import { precioConsulta, PRECIOS_CONSULTA, type TarifaConsulta } from '@/lib/consulta-pricing'
+import { precioConsulta, PRECIOS_CONSULTA, tarifaDe } from '@/lib/consulta-pricing'
 import { canUseMemberTools } from '@/lib/member-access'
 import { CitaActions } from './CitaActions'
 
@@ -23,12 +23,6 @@ const PLAN_NAMES: Record<string, string> = {
   turista_plus:   'Plan Turista Plus',
 }
 
-/** Qué tarifa de consulta le toca a este plan. */
-function tarifaDe(planType: string | undefined): TarifaConsulta {
-  if (planType === 'evipro' || planType === 'cannabis' || planType === 'integral') return 'evipro'
-  if (planType === 'basica' || planType === 'acceso') return 'basica'
-  return 'regular'
-}
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   active:           { label: 'Activa',                  color: 'text-brand' },

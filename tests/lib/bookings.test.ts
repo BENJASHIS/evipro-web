@@ -53,3 +53,21 @@ describe('canPatientCancel', () => {
     expect(canPatientCancel({ cancelled_at: null, slot_date: '2026-07-01' }, TODAY)).toBe(false)
   })
 })
+
+describe('bookingStatus — pago al reservar', () => {
+  const pend = { confirmed_at: null, cancelled_at: null, paid: false, payment_method: 'manual' }
+  const ahora = new Date('2026-11-03T15:00:00Z')
+  it('reserva con plazo vigente → pending_payment', () => {
+    expect(bookingStatus({ ...pend, pago_hasta: '2026-11-03T15:30:00Z' }, ahora)).toBe('pending_payment')
+  })
+  it('con número de operación → payment_to_verify, aunque el plazo haya pasado', () => {
+    expect(bookingStatus({ ...pend, pago_hasta: '2026-11-03T14:00:00Z', payment_reported_at: '2026-11-03T13:50:00Z' }, ahora)).toBe('payment_to_verify')
+  })
+  it('confirmada gana a por verificar; cancelada gana a todo', () => {
+    expect(bookingStatus({ ...pend, payment_reported_at: 'x', confirmed_at: 'y' }, ahora)).toBe('confirmed')
+    expect(bookingStatus({ ...pend, confirmed_at: 'y', cancelled_at: 'z' }, ahora)).toBe('cancelled')
+  })
+  it('sin pago_hasta conserva lo de siempre', () => {
+    expect(bookingStatus(pend, ahora)).toBe('unpaid')
+  })
+})

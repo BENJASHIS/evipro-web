@@ -11,11 +11,11 @@ export const RAFFLE_PUBLIC_COLUMNS =
   'id, title, prize, draw_date, status, winner_alias'
 
 export const COUNSELING_BOOKING_ADMIN_COLUMNS =
-  'id, patient_name, patient_phone, patient_note, doctor_slug, modality, slot_date, slot_time, price_soles, paid, payment_method, confirmed_at, cancelled_at, created_at'
+  'id, patient_name, patient_phone, patient_note, doctor_slug, modality, slot_date, slot_time, price_soles, paid, payment_method, confirmed_at, cancelled_at, cancel_reason, created_at, pago_hasta, payment_reference, payment_reported_at, amount_received, visit_number, reschedule_count, refund_pending, refunded_at'
 
 // Lo que necesita lib/google-calendar para crear o actualizar el evento de una reserva.
 export const COUNSELING_BOOKING_CALENDAR_COLUMNS =
   'id, doctor_slug, patient_name, modality, slot_date, slot_time'
 
 export const COUNSELING_BOOKING_PORTAL_COLUMNS =
-  'id, user_id, modality, slot_date, slot_time, patient_name, patient_phone, patient_note, is_first_session, price_soles, paid, payment_method, confirmed_at, cancelled_at, cancel_reason, created_at'
+  'id, user_id, modality, slot_date, slot_time, patient_name, patient_phone, patient_note, is_first_session, price_soles, paid, payment_method, confirmed_at, cancelled_at, cancel_reason, created_at, pago_hasta, payment_reference, payment_reported_at, amount_received, visit_number, reschedule_count, refund_pending, refunded_at'

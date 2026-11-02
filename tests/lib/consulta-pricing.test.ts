@@ -104,3 +104,13 @@ describe('CONSULTA_MODALITY_LABELS', () => {
     expect(CONSULTA_MODALITY_LABELS.domicilio).toBe('A domicilio')
   })
 })
+
+import { tarifaDe } from '../../lib/consulta-pricing'
+
+describe('tarifaDe — tarifa de consulta según el plan', () => {
+  it('planes EVIPro, Básica y sin plan', () => {
+    expect(tarifaDe('cannabis')).toBe('evipro')
+    expect(tarifaDe('acceso')).toBe('basica')
+    expect(tarifaDe(undefined)).toBe('regular')
+  })
+})

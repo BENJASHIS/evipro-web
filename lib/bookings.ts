@@ -1,15 +1,28 @@
 export const MAX_CANCEL_REASON = 300
 
-export type BookingState = 'cancelled' | 'confirmed' | 'pending_confirm' | 'unpaid'
+// Pago al reservar (docs/superpowers/specs/2026-11-01-pago-reserva-yape-plin-design.md).
+export const PLAZO_PAGO_MS = 3_600_000
+export const MOTIVO_VENCIDA = 'sin pago en 1 hora'
+export const MOTIVO_SIN_TURNO = 'pagó sin turno'
+export const POLITICA_CANCELACION_VERSION = '2026-11-01'
+export const REGLA_CANCELACION =
+  'Puedes cancelar o cambiar la fecha hasta 24 h antes; con menos de 24 h, solo cambiar la fecha una vez.'
+
+export type BookingState =
+  | 'cancelled' | 'confirmed' | 'payment_to_verify' | 'pending_payment' | 'pending_confirm' | 'unpaid'
 
 export function bookingStatus(b: {
   confirmed_at: string | null
   cancelled_at: string | null
   paid: boolean
   payment_method: string | null
-}): BookingState {
+  pago_hasta?: string | null
+  payment_reported_at?: string | null
+}, ahora: Date = new Date()): BookingState {
   if (b.cancelled_at) return 'cancelled'
   if (b.confirmed_at) return 'confirmed'
+  if (b.payment_reported_at) return 'payment_to_verify'
+  if (b.pago_hasta && !b.paid && new Date(b.pago_hasta) >= ahora) return 'pending_payment'
   if (b.paid || b.payment_method === 'free') return 'pending_confirm'
   return 'unpaid'
 }

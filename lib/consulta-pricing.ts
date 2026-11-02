@@ -15,6 +15,13 @@ export const PRECIOS_CONSULTA: Record<
   virtual:    { regular: [70, 35, 17],  basica: [55, 28, 14], evipro: [40, 20, 10] },
 }
 
+/** Qué tarifa de consulta le toca a un plan de membresía. */
+export function tarifaDe(planType: string | undefined): TarifaConsulta {
+  if (planType === 'evipro' || planType === 'cannabis' || planType === 'integral') return 'evipro'
+  if (planType === 'basica' || planType === 'acceso') return 'basica'
+  return 'regular'
+}
+
 /** Precio de una consulta según modalidad, tarifa y nº de visita (1 = primera,
  *  2 = reconsulta, 3+ = piso). `bonoRenovacion` = miembro EVIPro que recién
  *  pagó/renovó: arranca un escalón más abajo (2º), una vez por pago. */

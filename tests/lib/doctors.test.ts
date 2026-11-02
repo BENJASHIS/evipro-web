@@ -46,3 +46,10 @@ describe('DOCTORS data', () => {
     }
   })
 })
+
+describe('pago al reservar por médico', () => {
+  it('dr-jara cobra al reservar con sus QR; dr-vera no', () => {
+    expect(DOCTORS.find(d => d.slug === 'dr-jara')?.pagoAlReservar?.qr.yape).toBe('dr-jara/yape.png')
+    expect(DOCTORS.find(d => d.slug === 'dr-vera')?.pagoAlReservar).toBeUndefined()
+  })
+})

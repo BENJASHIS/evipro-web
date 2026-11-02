@@ -13,6 +13,8 @@ export interface Formation {
   year?: number
 }
 
+export type MedioQR = 'yape' | 'plin'
+
 export interface Doctor {
   slug: string
   name: string
@@ -32,11 +34,14 @@ export interface Doctor {
   photoWidth: number
   photoHeight: number
   counseling?: DoctorCounseling
+  // Cobro al reservar por Yape/Plin: rutas de sus QR en el bucket privado `pagos-qr`.
+  pagoAlReservar?: { qr: Partial<Record<MedioQR, string>> }
 }
 
 export const DOCTORS: Doctor[] = [
   {
     slug: 'dr-jara',
+    pagoAlReservar: { qr: { yape: 'dr-jara/yape.png', plin: 'dr-jara/plin.png' } },
     name: 'Dr. José Carlos Benjamín Jara Ovalle',
     cmp: '82817',
     rna: 'A10684',
