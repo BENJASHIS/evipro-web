@@ -1,17 +1,19 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { confirmBooking, cancelBooking, confirmarPagoReserva, cambiarFecha } from './actions'
+import { confirmBooking, cancelBooking, confirmarPagoReserva, cambiarFecha, marcarDevuelta } from './actions'
 import { GiftCreditButton } from './GiftCreditButton'
 
 export function BookingActions(
-  { slug, token, id, userId, memberName, cobra = false, precio, soloPago = false, horario = [] }:
+  { slug, token, id, userId, memberName, cobra = false, precio, soloPago = false, horario = [], pagada = false, devolucion = false }:
   {
     slug: string; token: string; id: string; userId: string | null; memberName: string
     // Pago al reservar: «Confirmar pago» con monto recibido y número de operación opcional.
     cobra?: boolean; precio?: number; soloPago?: boolean
     // Cambiar fecha: horas de la agenda del médico (el servidor valida el día y que esté libre).
     horario?: string[]
+    // pagada: al cancelar pregunta si corresponde devolución. devolucion: fila de devoluciones pendientes.
+    pagada?: boolean; devolucion?: boolean
   },
 ) {
   const [pending, startTransition] = useTransition()
@@ -21,9 +23,18 @@ export function BookingActions(
   const [monto, setMonto] = useState(precio === undefined ? '' : String(precio))
   const [referencia, setReferencia] = useState('')
   const [aviso, setAviso] = useState('')
+  const [devolver, setDevolver] = useState(false)
   const [showFecha, setShowFecha] = useState(false)
   const [fecha, setFecha] = useState('')
   const [hora, setHora] = useState('')
+
+  function onDevuelta() {
+    setErr('')
+    startTransition(async () => {
+      const r = await marcarDevuelta(slug, token, id)
+      if (!r.ok) setErr(r.error ?? 'Error')
+    })
+  }
 
   function onCambiarFecha() {
     setErr('')
@@ -55,7 +66,7 @@ export function BookingActions(
   function onCancel() {
     setErr('')
     startTransition(async () => {
-      const r = await cancelBooking(slug, token, id, reason)
+      const r = await cancelBooking(slug, token, id, reason, pagada && devolver)
       if (r.ok) { setShowCancel(false); setReason('') }
       else setErr(r.error ?? 'Error')
     })
@@ -63,7 +74,25 @@ export function BookingActions(
 
   return (
     <div className="flex flex-col gap-2 mt-2">
-      {cobra && (
+      {devolucion && (
+        <div className="flex gap-2">
+          <button
+            onClick={onDevuelta}
+            disabled={pending}
+            className="text-xs font-mono px-3 py-1.5 rounded bg-brand-deep hover:bg-brand-mid text-white transition-colors disabled:opacity-50"
+          >
+            Marcar devuelta
+          </button>
+          <button
+            onClick={() => setShowFecha(v => !v)}
+            disabled={pending}
+            className="text-xs font-mono px-3 py-1.5 rounded border border-subtle text-faint hover:text-white transition-colors disabled:opacity-50"
+          >
+            Cambiar fecha
+          </button>
+        </div>
+      )}
+      {cobra && !devolucion && (
         <div className="flex gap-2 flex-wrap items-center">
           <label className="text-xs font-mono text-faint">
             S/{' '}
@@ -81,7 +110,7 @@ export function BookingActions(
           </button>
         </div>
       )}
-      {!soloPago && (
+      {!soloPago && !devolucion && (
       <div className="flex gap-2">
         {!cobra && (
         <button
@@ -138,6 +167,12 @@ export function BookingActions(
             placeholder="Motivo de la cancelación"
             className="flex-1 bg-transparent border border-subtle rounded px-2 py-1 text-xs text-white"
           />
+          {pagada && (
+            <label className="flex items-center gap-1 text-xs font-mono text-faint">
+              <input type="checkbox" checked={devolver} onChange={e => setDevolver(e.target.checked)} />
+              ¿Corresponde devolución?
+            </label>
+          )}
           <button
             onClick={onCancel}
             disabled={pending || !reason.trim()}

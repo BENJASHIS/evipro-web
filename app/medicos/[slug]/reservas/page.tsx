@@ -133,6 +133,14 @@ export default async function ReservasPage({
       .order('created_at', { ascending: false })
     : { data: [] }
 
+  // Devoluciones pendientes: canceladas con devolución y pagadas sin turno, hasta marcarlas devueltas.
+  const { data: devoluciones } = await supabase
+    .from('counseling_bookings')
+    .select(COUNSELING_BOOKING_PORTAL_COLUMNS)
+    .eq('doctor_slug', slug)
+    .eq('refund_pending', true)
+    .order('created_at', { ascending: false })
+
   const { data: credits } = await supabase
     .from('consultation_credits')
     .select('id, code, member_name, status, created_at')
@@ -211,12 +219,36 @@ export default async function ReservasPage({
                     </a>
                   </div>
                   <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name}
-                    cobra={cobra} precio={b.price_soles} horario={agendaDe(doctor).schedule} />
+                    cobra={cobra} precio={b.price_soles} horario={agendaDe(doctor).schedule} pagada={b.paid} />
                 </div>
               )
             })}
           </div>
         </section>
+
+        {(devoluciones ?? []).length > 0 && (
+          <section className="mb-10">
+            <p className="text-xs font-mono uppercase tracking-widest text-muted mb-1">
+              Devoluciones pendientes ({devoluciones!.length})
+            </p>
+            <p className="text-faint text-xs font-mono mb-4">
+              Devuelve por Yape o Plin y márcala; o, si el paciente prefiere, cámbiale la fecha sin cobrar de nuevo.
+            </p>
+            <div className="space-y-3">
+              {(devoluciones as Booking[]).map(b => (
+                <div key={b.id} className="border border-subtle rounded-lg p-4">
+                  <p className="text-white text-sm">{b.patient_name}</p>
+                  <p className="text-muted text-xs font-mono">
+                    S/ {b.amount_received ?? b.price_soles} · {MEDIO_LABEL[b.payment_method ?? ''] ?? b.payment_method} {b.payment_reference ?? ''}
+                    {' · '}{b.cancel_reason} · 📱 {b.patient_phone}
+                  </p>
+                  <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name}
+                    horario={agendaDe(doctor).schedule} devolucion />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {(vencidas ?? []).length > 0 && (
           <section className="mb-10">

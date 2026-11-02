@@ -88,6 +88,18 @@ export async function cambiarFecha(slug: string, token: string, id: string, fech
   return { ok: true }
 }
 
+export async function marcarDevuelta(slug: string, token: string, id: string): Promise<ActionResult> {
+  if (!verifyDoctorPortalToken(slug, token)) return { ok: false, error: 'No autorizado' }
+  const { error } = await createServiceClient()
+    .from('counseling_bookings')
+    .update({ refunded_at: new Date().toISOString(), refund_pending: false })
+    .eq('id', id)
+    .eq('doctor_slug', slug)
+  if (error) return { ok: false, error: error.message }
+  revalidatePath(`/medicos/${slug}/reservas`)
+  return { ok: true }
+}
+
 // Acuña un crédito de consulta gratis para el miembro dueño de una reserva.
 // Solo reservas de miembros logueados (con user_id) pueden recibirlo.
 export async function mintCredit(
@@ -137,14 +149,15 @@ export async function donateCredit(slug: string, token: string, creditId: string
   return setCreditStatus(slug, token, creditId, 'donated')
 }
 
-export async function cancelBooking(slug: string, token: string, id: string, rawReason: unknown): Promise<ActionResult> {
+// `devolver`: al cancelar una reserva pagada, la devolución queda pendiente hasta marcarla (la hace Carlos por Yape/Plin).
+export async function cancelBooking(slug: string, token: string, id: string, rawReason: unknown, devolver = false): Promise<ActionResult> {
   if (!verifyDoctorPortalToken(slug, token)) return { ok: false, error: 'No autorizado' }
   const v = validateCancelReason(rawReason)
   if (!v.ok) return { ok: false, error: v.error }
   const supabase = createServiceClient()
   const { error } = await supabase
     .from('counseling_bookings')
-    .update({ cancelled_at: new Date().toISOString(), cancel_reason: v.reason, confirmed_at: null })
+    .update({ cancelled_at: new Date().toISOString(), cancel_reason: v.reason, confirmed_at: null, refund_pending: devolver })
     .eq('id', id)
     .eq('doctor_slug', slug)
   if (error) return { ok: false, error: error.message }

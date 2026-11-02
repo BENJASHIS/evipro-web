@@ -32,10 +32,10 @@ vi.mock('@/lib/google-calendar', () => ({
 }))
 vi.mock('@/lib/pago-reserva', () => ({ confirmarPago: vi.fn() }))
 
-import { confirmarPagoReserva, cambiarFecha } from '../../app/medicos/[slug]/reservas/actions'
+import { confirmarPagoReserva, cambiarFecha, cancelBooking, marcarDevuelta } from '../../app/medicos/[slug]/reservas/actions'
 import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { confirmarPago } from '@/lib/pago-reserva'
-import { moverEvento, ocupadosEnGoogle } from '@/lib/google-calendar'
+import { moverEvento, ocupadosEnGoogle, cancelarEvento } from '@/lib/google-calendar'
 
 const confirmar = vi.mocked(confirmarPago)
 
@@ -46,6 +46,7 @@ beforeEach(() => {
   vi.mocked(verifyDoctorPortalToken).mockReturnValue(true)
   confirmar.mockReset().mockResolvedValue({ ok: true, sinTurno: false })
   vi.mocked(moverEvento).mockReset().mockResolvedValue(undefined)
+  vi.mocked(cancelarEvento).mockReset().mockResolvedValue(undefined)
   vi.mocked(ocupadosEnGoogle).mockReset().mockResolvedValue([])
 })
 
@@ -126,5 +127,29 @@ describe('confirmarPagoReserva', () => {
   it('pasa el error de confirmarPago', async () => {
     confirmar.mockResolvedValue({ ok: false, error: 'Reserva cancelada' })
     expect(await confirmarPagoReserva('dr-jara', 't', 'b1', '', '')).toEqual({ ok: false, error: 'Reserva cancelada' })
+  })
+})
+
+describe('cancelar con devolución pendiente', () => {
+  it('cancelar una reserva pagada con devolver=true deja refund_pending true', async () => {
+    expect(await cancelBooking('dr-jara', 't', 'b1', 'No puede venir', true)).toEqual({ ok: true })
+    expect(estado.updates[0]).toMatchObject({ cancel_reason: 'No puede venir', confirmed_at: null, refund_pending: true })
+  })
+
+  it('cancelar sin devolver deja refund_pending false', async () => {
+    await cancelBooking('dr-jara', 't', 'b1', 'Faltó sin avisar')
+    expect(estado.updates[0]).toMatchObject({ refund_pending: false })
+  })
+
+  it('marcarDevuelta pone refunded_at y refund_pending false', async () => {
+    expect(await marcarDevuelta('dr-jara', 't', 'b1')).toEqual({ ok: true })
+    expect(estado.updates[0]).toMatchObject({ refund_pending: false })
+    expect(estado.updates[0].refunded_at).toEqual(expect.any(String))
+  })
+
+  it('marcarDevuelta sin token válido → No autorizado', async () => {
+    vi.mocked(verifyDoctorPortalToken).mockReturnValue(false)
+    expect(await marcarDevuelta('dr-jara', 'x', 'b1')).toEqual({ ok: false, error: 'No autorizado' })
+    expect(estado.updates).toHaveLength(0)
   })
 })
