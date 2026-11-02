@@ -10,7 +10,7 @@ export default function PoliticaDevolucionesPage() {
       <div className="public-panel max-w-3xl mx-auto rounded-lg p-6 sm:p-10">
         <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">Legal</p>
         <h1 className="text-4xl font-light font-serif italic mb-2"><T>{"Política de Cancelaciones y Reembolsos"}</T></h1>
-        <p className="text-faint text-xs font-mono mb-12"><T>{"Última actualización: junio 2026"}</T></p>
+        <p className="text-faint text-xs font-mono mb-12"><T>{"Última actualización: noviembre 2026"}</T></p>
 
         <div className="space-y-10 text-gray-300 text-sm leading-relaxed">
 
@@ -34,7 +34,7 @@ export default function PoliticaDevolucionesPage() {
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li><T>{"Servicios ya prestados (consultas realizadas, recetas emitidas)."}</T></li>
               <li><T>{"Cancelación iniciada después de los 7 días cuando el servicio ha sido utilizado."}</T></li>
-              <li><T>{"Inasistencia a consulta programada sin cancelación previa con al menos 24 horas de anticipación."}</T></li>
+              <li><T>{"Inasistencia sin aviso a una consulta programada, y cancelaciones con menos de 24 horas de anticipación (en ese caso se puede cambiar la fecha una vez)."}</T></li>
             </ul>
           </section>
 
@@ -50,8 +50,8 @@ export default function PoliticaDevolucionesPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-light text-lg mb-3"><T>{"6. Reprogramación de consultas"}</T></h2>
-            <p><T>{"Las consultas pueden reprogramarse con un mínimo de "}</T><strong className="text-white"><T>{"24 horas de anticipación"}</T></strong><T>{" sin costo adicional. La reprogramación tardía o la inasistencia sin aviso previo no generan derecho a reembolso."}</T></p>
+            <h2 className="text-white font-light text-lg mb-3"><T>{"6. Cambios de fecha y cancelación de consultas"}</T></h2>
+            <p><T>{"Puedes cancelar o cambiar la fecha de tu consulta hasta 24 horas antes, con devolución completa o cambio de fecha, como prefieras. Con menos de 24 horas no hay devolución, pero puedes cambiar la fecha una sola vez. Si no te presentas sin avisar, se pierde el pago. Si EVIPro cancela la consulta, eliges devolución completa o cambio de fecha. Los cambios y cancelaciones se piden por WhatsApp. La devolución se hace al mismo medio de pago."}</T></p>
           </section>
 
           <section>
