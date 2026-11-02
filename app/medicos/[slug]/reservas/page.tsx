@@ -6,7 +6,9 @@ import type { Modality } from '@/lib/counseling'
 import { CONSULTA_MODALITY_LABELS, type ModalidadReserva } from '@/lib/consulta-pricing'
 import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { notFound } from 'next/navigation'
-import { bookingStatus, type BookingState } from '@/lib/bookings'
+import { bookingStatus, MOTIVO_VENCIDA, type BookingState } from '@/lib/bookings'
+import { liberarVencidas } from '@/lib/pago-reserva'
+import { mensajeConfirmacion } from '@/lib/mensajes-reserva'
 import { CREDIT_STATUS_LABEL, CREDIT_VALID_DAYS, type CreditStatus } from '@/lib/credits'
 import { BookingActions } from './BookingActions'
 import { CreditActions } from './CreditActions'
@@ -29,6 +31,14 @@ interface Booking {
   cancelled_at: string | null
   cancel_reason: string | null
   created_at: string
+  pago_hasta: string | null
+  payment_reference: string | null
+  payment_reported_at: string | null
+  amount_received: number | null
+  visit_number: number | null
+  reschedule_count: number
+  refund_pending: boolean
+  refunded_at: string | null
 }
 
 const STATUS_LABEL: Record<BookingState, { text: string; color: string }> = {
@@ -38,6 +48,21 @@ const STATUS_LABEL: Record<BookingState, { text: string; color: string }> = {
   pending_payment: { text: 'Pendiente de pago',    color: 'text-faint' },
   pending_confirm: { text: 'Pendiente confirmar',  color: 'text-yellow-400' },
   unpaid:          { text: 'Sin pago',             color: 'text-faint' },
+}
+
+const MEDIO_LABEL: Record<string, string> = { yape: 'Yape', plin: 'Plin', free: 'Código', mercadopago: 'Mercado Pago' }
+const horaLima = (iso: string) =>
+  new Date(iso).toLocaleTimeString('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit' })
+
+/** Estado con el detalle que Carlos necesita para verificar: hasta cuándo, medio, número y monto. */
+function etiquetaEstado(b: Booking): { text: string; color: string } {
+  const estado = bookingStatus(b)
+  const base = STATUS_LABEL[estado]
+  if (estado === 'pending_payment' && b.pago_hasta) return { ...base, text: `${base.text} · vence ${horaLima(b.pago_hasta)}` }
+  if (estado === 'payment_to_verify') {
+    return { ...base, text: `${base.text} · ${MEDIO_LABEL[b.payment_method ?? ''] ?? b.payment_method} ${b.payment_reference ?? ''} · S/ ${b.price_soles}` }
+  }
+  return base
 }
 
 const ALL_MODALITY_LABELS: Record<string, string> = { ...MODALITY_LABELS, ...CONSULTA_MODALITY_LABELS }
@@ -60,6 +85,9 @@ export default async function ReservasPage({
   if (!verifyDoctorPortalToken(slug, token)) notFound()
 
   const supabase = createServiceClient()
+  // Pago al reservar: las reservas sin pagar en 1 hora se liberan al abrir el panel (sin cron).
+  const cobra = !!doctor.pagoAlReservar
+  if (cobra) await liberarVencidas(supabase, slug)
   const now = new Date()
   const today = now.toISOString().split('T')[0]
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -91,6 +119,18 @@ export default async function ReservasPage({
     .eq('doctor_slug', slug)
     .order('created_at', { ascending: false })
     .limit(5)
+
+  // Vencidas sin pago (48 h): por si el pago llegó tarde (captura por WhatsApp) y el turno sigue libre.
+  const { data: vencidas } = cobra
+    ? await supabase
+      .from('counseling_bookings')
+      .select(COUNSELING_BOOKING_PORTAL_COLUMNS)
+      .eq('doctor_slug', slug)
+      .eq('cancel_reason', MOTIVO_VENCIDA)
+      .gte('created_at', new Date(now.getTime() - 48 * 3_600_000).toISOString())
+      .gte('slot_date', today)
+      .order('created_at', { ascending: false })
+    : { data: [] }
 
   const { data: credits } = await supabase
     .from('consultation_credits')
@@ -125,9 +165,10 @@ export default async function ReservasPage({
 
           <div className="space-y-3">
             {allPending.map(b => {
-              const status = STATUS_LABEL[bookingStatus(b)]
-              const waMsg = encodeURIComponent(
-                `Hola ${b.patient_name}, soy ${doctor.name} de EVIPro.\n` +
+              const status = etiquetaEstado(b)
+              const waMsg = encodeURIComponent(cobra && b.slot_date && b.slot_time
+                ? mensajeConfirmacion({ patient_name: b.patient_name, slot_date: b.slot_date, slot_time: b.slot_time, modality: b.modality })
+                : `Hola ${b.patient_name}, soy ${doctor.name} de EVIPro.\n` +
                 `Confirmo tu ${MODALIDADES_CONSULTA.includes(b.modality) ? 'cita' : 'sesión de consejería'} (${ALL_MODALITY_LABELS[b.modality] ?? b.modality}).\n` +
                 (b.slot_date ? `📅 ${b.slot_date} a las ${b.slot_time}\n` : '') +
                 `Ref: ${b.id.slice(0, 8)}`
@@ -163,12 +204,36 @@ export default async function ReservasPage({
                       Confirmar por WA →
                     </a>
                   </div>
-                  <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name} />
+                  <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name}
+                    cobra={cobra} precio={b.price_soles} />
                 </div>
               )
             })}
           </div>
         </section>
+
+        {(vencidas ?? []).length > 0 && (
+          <section className="mb-10">
+            <p className="text-xs font-mono uppercase tracking-widest text-muted mb-1">
+              Vencidas sin pago (48 h) ({vencidas!.length})
+            </p>
+            <p className="text-faint text-xs font-mono mb-4">
+              Si el pago llegó tarde, confírmalo: si el turno sigue libre, la reserva vuelve; si no, queda en devoluciones pendientes.
+            </p>
+            <div className="space-y-3">
+              {(vencidas as Booking[]).map(b => (
+                <div key={b.id} className="border border-subtle rounded-lg p-4">
+                  <p className="text-white text-sm">{b.patient_name}</p>
+                  <p className="text-muted text-xs font-mono">
+                    {ALL_MODALITY_LABELS[b.modality] ?? b.modality} · {b.slot_date} {b.slot_time} · S/. {b.price_soles} · 📱 {b.patient_phone}
+                  </p>
+                  <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name}
+                    cobra precio={b.price_soles} soloPago />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Créditos de consulta gratis */}
         <section className="mb-10">
@@ -211,7 +276,7 @@ export default async function ReservasPage({
             </p>
             <div className="space-y-2">
               {(recent as Booking[]).map(b => {
-                const status = STATUS_LABEL[bookingStatus(b)]
+                const status = etiquetaEstado(b)
                 return (
                   <div className="flex items-center justify-between border-b border-subtle py-2 gap-4" key={b.id}>
                     <div className="min-w-0">

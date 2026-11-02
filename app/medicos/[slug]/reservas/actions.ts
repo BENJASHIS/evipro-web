@@ -7,6 +7,7 @@ import { validateCancelReason } from '@/lib/bookings'
 import { generateCreditCode } from '@/lib/credits'
 import { COUNSELING_BOOKING_CALENDAR_COLUMNS } from '@/lib/db-columns'
 import { cancelarEvento, confirmarEvento } from '@/lib/google-calendar'
+import { confirmarPago } from '@/lib/pago-reserva'
 
 type ActionResult = { ok: boolean; error?: string }
 
@@ -24,6 +25,24 @@ export async function confirmBooking(slug: string, token: string, id: string): P
   if (reserva) await confirmarEvento(reserva).catch(() => {})
   revalidatePath(`/medicos/${slug}/reservas`)
   return { ok: true }
+}
+
+// Confirmar el pago de una reserva con pago al reservar: tanto si el paciente mandó su número de
+// operación como si Carlos vio el pago primero en su app. Revive una reserva vencida si su turno sigue libre.
+export async function confirmarPagoReserva(
+  slug: string, token: string, id: string, rawMonto: unknown, rawReferencia: unknown,
+): Promise<ActionResult & { sinTurno?: boolean }> {
+  if (!verifyDoctorPortalToken(slug, token)) return { ok: false, error: 'No autorizado' }
+  const textoMonto = String(rawMonto ?? '').trim().replace(',', '.')
+  const monto = textoMonto === '' ? undefined : Number(textoMonto)
+  if (monto !== undefined && (!Number.isFinite(monto) || monto < 0 || monto > 10000)) return { ok: false, error: 'Monto inválido' }
+  const referencia = String(rawReferencia ?? '').trim() || null
+  if (referencia && referencia.length > 40) return { ok: false, error: 'Número de operación inválido' }
+
+  const r = await confirmarPago(createServiceClient(), id, { monto, referencia }, slug)
+  if (!r.ok) return r
+  revalidatePath(`/medicos/${slug}/reservas`)
+  return { ok: true, sinTurno: r.sinTurno }
 }
 
 // Acuña un crédito de consulta gratis para el miembro dueño de una reserva.
