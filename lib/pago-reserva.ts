@@ -4,6 +4,7 @@
 import type { createServiceClient } from '@/lib/supabase-server'
 import { MOTIVO_SIN_TURNO, MOTIVO_VENCIDA } from '@/lib/bookings'
 import { confirmarEvento } from '@/lib/google-calendar'
+import { DOCTORS, type Doctor } from '@/lib/doctors'
 
 export type ServiceClient = ReturnType<typeof createServiceClient>
 export type MedioReporte = 'yape' | 'plin' | 'codigo'
@@ -34,6 +35,46 @@ export async function liberarVencidas(supabase: ServiceClient, doctorSlug: strin
     .is('payment_reported_at', null)
     .lt('pago_hasta', iso)
   if (error) console.error('[pago-reserva] liberar vencidas falló', doctorSlug, error.message)
+}
+
+export interface ReservaConPago {
+  id: string
+  doctor_slug: string
+  patient_name: string
+  modality: string
+  slot_date: string | null
+  slot_time: string | null
+  price_soles: number
+  paid: boolean
+  payment_method: string | null
+  confirmed_at: string | null
+  cancelled_at: string | null
+  cancel_reason: string | null
+  pago_hasta: string | null
+  payment_reported_at: string | null
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/**
+ * Reserva de un médico con pago al reservar, leída después de liberar las vencidas de ese médico
+ * (así su estado ya es el real). null si el id no es válido, no existe o el médico no cobra al reservar.
+ */
+export async function leerReservaConPago(
+  supabase: ServiceClient, id: string | null,
+): Promise<{ reserva: ReservaConPago; doctor: Doctor } | null> {
+  if (!id || !UUID.test(id)) return null
+  const leer = async () => (await supabase
+    .from('counseling_bookings')
+    .select('id, doctor_slug, patient_name, modality, slot_date, slot_time, price_soles, paid, payment_method, confirmed_at, cancelled_at, cancel_reason, pago_hasta, payment_reported_at')
+    .eq('id', id)
+    .maybeSingle()).data as ReservaConPago | null
+  const primera = await leer()
+  const doctor = DOCTORS.find(d => d.slug === primera?.doctor_slug)
+  if (!primera || !doctor?.pagoAlReservar) return null
+  await liberarVencidas(supabase, doctor.slug)
+  const reserva = await leer()
+  return reserva ? { reserva, doctor } : null
 }
 
 type ResultadoConfirmar = { ok: true; sinTurno: boolean } | { ok: false; error: string }
