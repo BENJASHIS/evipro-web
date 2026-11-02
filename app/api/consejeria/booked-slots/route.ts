@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { DOCTORS } from '@/lib/doctors'
 import { agendaDe } from '@/lib/booking-validation'
 import { fechasDesde, hoyEnLima, ocupadosEnGoogle } from '@/lib/google-calendar'
+import { liberarVencidas } from '@/lib/pago-reserva'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 
 // Cubre de sobra los 7 días de atención que ofrece el formulario (mar–vie ≈ 2 semanas).
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
   }
 
   const supabase = createServiceClient()
+  if (doctor.pagoAlReservar) await liberarVencidas(supabase, doctorSlug)
 
   const today = new Date().toISOString().split('T')[0]
 

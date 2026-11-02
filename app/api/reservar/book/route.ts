@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
-import { precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
+import { precioConsulta, precioReferencia, tarifaDe, type ModalidadReserva, type TarifaConsulta } from '@/lib/consulta-pricing'
 import { validateBookingInput } from '@/lib/booking-validation'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
-import { crearEventoTentativo, ocupadosEnGoogle } from '@/lib/google-calendar'
+import { ocupadosEnGoogle } from '@/lib/google-calendar'
+import { DOCTORS } from '@/lib/doctors'
+import { PLAZO_PAGO_MS, POLITICA_CANCELACION_VERSION } from '@/lib/bookings'
+import { liberarVencidas } from '@/lib/pago-reserva'
 
 interface ReservaBody {
   doctor_slug: string
@@ -14,6 +17,7 @@ interface ReservaBody {
   patient_name: string
   patient_phone: string
   patient_note?: string | null
+  visit_number?: number
 }
 
 const MODALIDADES: ModalidadReserva[] = ['presencial', 'virtual', 'domicilio']
@@ -46,13 +50,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Ese horario ya fue reservado. Elige otro.' }, { status: 409 })
   }
 
-  // Frontera de confianza: el precio se DERIVA en el servidor (nominal de referencia).
-  // Cobro manual: paid=false, payment_method='manual' — el médico cobra y aplica la escalera.
-  const price_soles = precioReferencia(modality)
+  const visita = body.visit_number ?? 1
+  if (![1, 2, 3].includes(visita)) return NextResponse.json({ error: 'Visita inválida' }, { status: 400 })
 
   const supabase = createServiceClient()
   const authClient = await createServerSupabaseClient()
   const { data: { user } } = await authClient.auth.getUser()
+
+  // Pago al reservar (Yape/Plin): solo médicos con QR y consultas con turno; domicilio sigue como antes.
+  const cobra = !!DOCTORS.find(d => d.slug === doctor_slug)?.pagoAlReservar && modality !== 'domicilio' && !!slot_date && !!slot_time
+
+  // Frontera de confianza: el precio se DERIVA en el servidor.
+  // Sin pago al reservar: nominal de referencia y cobro manual (paid=false, payment_method='manual').
+  const price_soles = cobra
+    ? precioConsulta(modality as Exclude<ModalidadReserva, 'domicilio'>, user ? await tarifaDelUsuario(supabase, user.id) : 'regular', visita)
+    : precioReferencia(modality)
+  const pago_hasta = cobra ? new Date(Date.now() + PLAZO_PAGO_MS).toISOString() : undefined
+  if (cobra) await liberarVencidas(supabase, doctor_slug)
 
   const { data, error } = await supabase
     .from('counseling_bookings')
@@ -69,6 +83,7 @@ export async function POST(req: NextRequest) {
       paid: false,
       payment_method: 'manual',
       user_id: user?.id ?? null,
+      ...(cobra ? { visit_number: visita, pago_hasta, policy_version: POLITICA_CANCELACION_VERSION } : {}),
     })
     .select('id')
     .single()
@@ -80,9 +95,21 @@ export async function POST(req: NextRequest) {
     console.error('[reservar/book] db error:', error.message)
     return NextResponse.json({ error: 'No se pudo guardar la solicitud' }, { status: 500 })
   }
-  await crearEventoTentativo({
-    id: data.id, doctor_slug, patient_name, modality,
-    slot_date: slot_date ?? null, slot_time: slot_time ?? null,
-  }).catch(() => {})
+  // El evento de Google se crea al reportar el pago o al confirmar: una reserva que vence no deja eventos.
+  if (cobra) return NextResponse.json({ booking_id: data.id, pago: { monto: price_soles, pago_hasta } })
   return NextResponse.json({ booking_id: data.id })
+}
+
+/** Tarifa de la membresía activa del usuario; regular si no tiene. */
+async function tarifaDelUsuario(supabase: ReturnType<typeof createServiceClient>, userId: string): Promise<TarifaConsulta> {
+  const { data } = await supabase
+    .from('subscriptions')
+    .select('membership_plans(type)')
+    .eq('user_id', userId)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  const plan = data?.membership_plans as { type?: string } | { type?: string }[] | null | undefined
+  return tarifaDe(Array.isArray(plan) ? plan[0]?.type : plan?.type)
 }

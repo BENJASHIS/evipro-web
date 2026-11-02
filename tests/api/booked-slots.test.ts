@@ -21,7 +21,10 @@ vi.mock('@/lib/google-calendar', async importActual => ({
   ocupadosEnGoogle: vi.fn(),
 }))
 
+vi.mock('@/lib/pago-reserva', () => ({ liberarVencidas: vi.fn(async () => { estado.llamadas.push(['liberar', []]) }) }))
+
 import { GET } from '../../app/api/consejeria/booked-slots/route'
+import { liberarVencidas } from '@/lib/pago-reserva'
 import { ocupadosEnGoogle, hoyEnLima } from '@/lib/google-calendar'
 
 const ocupados = vi.mocked(ocupadosEnGoogle)
@@ -34,6 +37,12 @@ beforeEach(() => {
 })
 
 describe('GET /api/consejeria/booked-slots', () => {
+  it('libera las reservas vencidas del médico antes de leer los turnos', async () => {
+    await GET(pedir('dr-jara'))
+    expect(liberarVencidas).toHaveBeenCalledWith(expect.anything(), 'dr-jara')
+    expect(estado.llamadas[0][0]).toBe('liberar')
+  })
+
   it('junta lo reservado en la web con lo ocupado en Google, sin duplicados', async () => {
     estado.filas = [{ slot_date: '2026-11-03', slot_time: '09:00:00' }] // columna time: HH:MM:SS
     ocupados.mockResolvedValue(['2026-11-03T09:00', '2026-11-04T15:00'])
