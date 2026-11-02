@@ -209,6 +209,9 @@ export default async function ReservasPage({
                       )}
                       <p className="text-faint text-xs font-mono mt-1">📱 {b.patient_phone}</p>
                     </div>
+                    {/* Con pago al reservar, «confirmada» solo se avisa después de «Confirmar pago»:
+                        si no, el turno vence a la hora mientras el paciente cree que tiene cita. */}
+                    {(!cobra || b.confirmed_at) && (
                     <a
                       href={waLink}
                       target="_blank"
@@ -217,6 +220,7 @@ export default async function ReservasPage({
                     >
                       Confirmar por WA →
                     </a>
+                    )}
                   </div>
                   <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name}
                     cobra={cobra} precio={b.price_soles} horario={agendaDe(doctor).schedule} pagada={b.paid} />

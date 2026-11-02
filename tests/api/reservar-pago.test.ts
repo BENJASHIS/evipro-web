@@ -13,13 +13,19 @@ const estado = vi.hoisted(() => ({
   updates: [] as Record<string, unknown>[],
   errorUpdate: null as { code?: string; message: string } | null,
   qr: true,
+  credito: null as { id: string } | null,
 }))
 
 vi.mock('@/lib/supabase-server', () => ({
   createServiceClient: () => ({
-    from: () => {
+    from: (tabla: string) => {
       const q: Record<string, unknown> = {}
       let esUpdate = false
+      if (tabla === 'consultation_credits') {
+        for (const m of ['select', 'eq']) q[m] = () => q
+        q.maybeSingle = async () => ({ data: estado.credito, error: null })
+        return q
+      }
       for (const m of ['select', 'eq', 'is', 'lt']) q[m] = () => q
       q.update = (cambios: Record<string, unknown>) => { esUpdate = true; estado.updates.push(cambios); return q }
       q.maybeSingle = async () => ({ data: estado.fila, error: null })
@@ -57,6 +63,7 @@ beforeEach(() => {
   estado.updates = []
   estado.errorUpdate = null
   estado.qr = true
+  estado.credito = null
   crear.mockReset().mockResolvedValue(undefined)
 })
 
@@ -72,6 +79,7 @@ describe('POST /api/reservar/pago', () => {
   })
 
   it('código de crédito se guarda con payment_method free y monto 0', async () => {
+    estado.credito = { id: 'c1' }
     await POST(post({ reserva: ID, medio: 'codigo', referencia: 'evi-abcd2345' }))
     expect(reporte()).toMatchObject({ payment_method: 'free', payment_reference: 'EVI-ABCD2345', price_soles: 0 })
   })
@@ -82,6 +90,13 @@ describe('POST /api/reservar/pago', () => {
     expect((await r.json()).error).toBe('Número de operación inválido')
     r = await POST(post({ reserva: ID, medio: 'codigo', referencia: 'EVI-1' }))
     expect((await r.json()).error).toBe('Código inválido')
+  })
+
+  it('código que no existe o ya no está activo → 400 Código inválido, sin guardar', async () => {
+    const r = await POST(post({ reserva: ID, medio: 'codigo', referencia: 'EVI-ABCD2345' }))
+    expect(r.status).toBe(400)
+    expect((await r.json()).error).toBe('Código inválido')
+    expect(estado.updates.some(u => 'payment_reference' in u)).toBe(false)
   })
 
   it('número repetido (23505) → 409', async () => {

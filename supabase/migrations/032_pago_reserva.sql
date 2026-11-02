@@ -17,10 +17,11 @@ alter table public.counseling_bookings drop constraint if exists counseling_book
 alter table public.counseling_bookings add constraint counseling_bookings_payment_method_check
   check (payment_method in ('mercadopago','yape','plin','free','manual'));
 
--- Un número de operación (o código de crédito) no sirve para dos reservas.
+-- Un número de operación (o código de crédito) no sirve para dos reservas vivas. Si la reserva se
+-- cancela, el código de consulta gratis vuelve a poder usarse.
 create unique index if not exists counseling_bookings_payment_reference_unique
   on public.counseling_bookings (payment_method, payment_reference)
-  where payment_reference is not null;
+  where payment_reference is not null and cancelled_at is null;
 
 -- QR de Yape y Plin: bucket privado; la web los sirve solo con una reserva vigente.
 insert into storage.buckets (id, name, public) values ('pagos-qr', 'pagos-qr', false)

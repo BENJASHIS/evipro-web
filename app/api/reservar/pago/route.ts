@@ -54,6 +54,16 @@ export async function POST(req: NextRequest) {
   if (bookingStatus(r) !== 'pending_payment') {
     return NextResponse.json({ error: 'La reserva ya no está pendiente de pago' }, { status: 409 })
   }
+  if (medio === 'codigo') {
+    // Solo un crédito que existe y sigue activo aparta el turno; Carlos lo canjea al confirmar.
+    const { data: credito } = await supabase
+      .from('consultation_credits')
+      .select('id')
+      .eq('code', referencia)
+      .eq('status', 'active')
+      .maybeSingle()
+    if (!credito) return NextResponse.json({ error: 'Código inválido' }, { status: 400 })
+  }
 
   const { error } = await supabase
     .from('counseling_bookings')
