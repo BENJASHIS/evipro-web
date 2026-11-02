@@ -3,6 +3,7 @@ import { verifyMPWebhook, getMPPayment } from '@/lib/mercadopago'
 import { createServiceClient } from '@/lib/supabase-server'
 import { generateTicketBatch } from '@/lib/tickets'
 import { computePeriodEnd } from '@/lib/billing'
+import { confirmarPago } from '@/lib/pago-reserva'
 import type { PaymentResponse } from 'mercadopago/dist/clients/payment/commonTypes'
 
 type ServiceClient = ReturnType<typeof createServiceClient>
@@ -32,7 +33,9 @@ export async function POST(req: NextRequest) {
     const status = payment.status
     const extRef = payment.external_reference ?? ''
 
-    if (extRef.startsWith('consejeria:')) {
+    if (extRef.startsWith('reserva:')) {
+      if (status === 'approved') await handleReservaPagada(supabase, extRef.replace('reserva:', ''), payment)
+    } else if (extRef.startsWith('consejeria:')) {
       const bookingId = extRef.replace('consejeria:', '')
       if (status === 'approved') {
         await handleConsejeriaPagada(supabase, bookingId, String(payment.id))
@@ -47,6 +50,19 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ received: true })
+}
+
+// Pago al reservar desde el extranjero: Mercado Pago ya verificó el pago, así que confirma la
+// reserva (o la revive, o la deja pagada sin turno; ver lib/pago-reserva). Idempotente.
+async function handleReservaPagada(supabase: ServiceClient, bookingId: string, payment: PaymentResponse) {
+  const paymentId = String(payment.id)
+  const { data: reserva } = await supabase
+    .from('counseling_bookings')
+    .select('mp_payment_id')
+    .eq('id', bookingId)
+    .maybeSingle()
+  if (!reserva || reserva.mp_payment_id === paymentId) return
+  await confirmarPago(supabase, bookingId, { medio: 'mercadopago', monto: payment.transaction_amount ?? undefined, mpPaymentId: paymentId })
 }
 
 async function handleConsejeriaPagada(
