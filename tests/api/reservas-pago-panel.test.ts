@@ -30,7 +30,10 @@ vi.mock('@/lib/supabase-server', () => ({
 vi.mock('@/lib/google-calendar', () => ({
   confirmarEvento: vi.fn(), cancelarEvento: vi.fn(), moverEvento: vi.fn(), ocupadosEnGoogle: vi.fn(),
 }))
-vi.mock('@/lib/pago-reserva', () => ({ confirmarPago: vi.fn() }))
+vi.mock('@/lib/pago-reserva', async importActual => ({
+  ...(await importActual<typeof import('@/lib/pago-reserva')>()),
+  confirmarPago: vi.fn(),
+}))
 
 import { confirmarPagoReserva, cambiarFecha, cancelBooking, marcarDevuelta } from '../../app/medicos/[slug]/reservas/actions'
 import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
@@ -111,6 +114,11 @@ describe('confirmarPagoReserva', () => {
       expect(await confirmarPagoReserva('dr-jara', 't', 'b1', malo, '')).toEqual({ ok: false, error: 'Monto inválido' })
     }
     expect(confirmar).not.toHaveBeenCalled()
+  })
+
+  it('el número que escribe Carlos se normaliza como el del paciente', async () => {
+    await confirmarPagoReserva('dr-jara', 't', 'b1', '', '1234 5678')
+    expect(confirmar).toHaveBeenLastCalledWith(expect.anything(), 'b1', { monto: undefined, referencia: '12345678' }, 'dr-jara')
   })
 
   it('número de operación opcional de hasta 40 caracteres', async () => {

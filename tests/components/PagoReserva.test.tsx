@@ -77,3 +77,22 @@ describe('PagoReserva', () => {
     await waitFor(() => expect(irA).toHaveBeenCalledWith('https://mp/checkout'))
   })
 })
+
+describe('vuelta de Mercado Pago', () => {
+  it('con collection_status=approved no muestra los QR y vuelve a consultar hasta ver la cita confirmada', async () => {
+    window.history.pushState({}, '', '/medicos/dr-jara/agendar?reserva=r1&collection_status=approved')
+    let consultas = 0
+    fetchFalso.mockImplementation(async (url: string) => {
+      if (url.startsWith('/api/reservar/pago?')) {
+        consultas++
+        return new Response(JSON.stringify(consultas < 3 ? pendiente : { ...pendiente, estado: 'confirmed' }), { status: 200 })
+      }
+      throw new Error(`fetch inesperado ${url}`)
+    })
+    render(<PagoReserva reservaId="r1" reintentoMs={5} />)
+    expect(await screen.findByText('Recibimos tu pago con tarjeta. Estamos confirmando tu reserva…')).toBeTruthy()
+    expect(screen.queryByAltText('QR Yape')).toBeNull()
+    expect(await screen.findByText('Tu cita está confirmada')).toBeTruthy()
+    window.history.pushState({}, '', '/')
+  })
+})

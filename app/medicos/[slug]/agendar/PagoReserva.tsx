@@ -24,9 +24,13 @@ const wa = (numero: string, texto: string) => `https://wa.me/${numero}?text=${en
  * Pantalla de pago de una reserva: QR de Yape/Plin (sin celular ni nombre del médico),
  * número de operación y aviso por WhatsApp. Diseño: docs/superpowers/specs/2026-11-01-pago-reserva-yape-plin-design.md.
  */
-export default function PagoReserva({ reservaId, irA = url => window.location.assign(url) }: {
+// Al volver de Mercado Pago el paciente suele llegar antes que el aviso del pago: se reintenta.
+const REINTENTOS_TARJETA = 10
+
+export default function PagoReserva({ reservaId, irA = url => window.location.assign(url), reintentoMs = 3000 }: {
   reservaId: string
   irA?: (url: string) => void
+  reintentoMs?: number
 }) {
   const { t } = useLanguage()
   const [info, setInfo] = useState<InfoPago | null | undefined>(undefined)
@@ -36,13 +40,23 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
   const [error, setError] = useState<string | null>(null)
   const [aviso, setAviso] = useState<string | null>(null)
   const [ahora, setAhora] = useState(() => Date.now())
+  const [tarjeta] = useState(() =>
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('collection_status') === 'approved')
+  const [consultas, setConsultas] = useState(0)
 
   useEffect(() => {
     fetch(`/api/reservar/pago?reserva=${reservaId}`)
       .then(r => (r.ok ? r.json() : null))
       .then(setInfo)
       .catch(() => setInfo(null))
-  }, [reservaId])
+  }, [reservaId, consultas])
+
+  const esperandoTarjeta = tarjeta && info?.estado === 'pending_payment'
+  useEffect(() => {
+    if (!esperandoTarjeta || consultas >= REINTENTOS_TARJETA) return
+    const id = setTimeout(() => setConsultas(c => c + 1), reintentoMs)
+    return () => clearTimeout(id)
+  }, [esperandoTarjeta, consultas, reintentoMs])
 
   useEffect(() => {
     const id = setInterval(() => setAhora(Date.now()), 30_000)
@@ -76,6 +90,20 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
           className="inline-block bg-brand text-black px-6 py-2.5 rounded font-mono text-sm hover:bg-brand-hover transition-colors">
           <T>{"Escribir al doctor"}</T>
         </a>
+      </div>
+    )
+  }
+
+  if (esperandoTarjeta) {
+    return (
+      <div className="max-w-md space-y-4">
+        <p className="text-muted text-sm"><T>{"Recibimos tu pago con tarjeta. Estamos confirmando tu reserva…"}</T></p>
+        {consultas >= REINTENTOS_TARJETA && (
+          <a href={wa(info.whatsapp, `Hola, pagué con tarjeta mi reserva del ${cuando}.`)} target="_blank" rel="noopener noreferrer"
+            className="inline-block bg-brand text-black px-6 py-2.5 rounded font-mono text-sm hover:bg-brand-hover transition-colors">
+            <T>{"Escribir al doctor"}</T>
+          </a>
+        )}
       </div>
     )
   }

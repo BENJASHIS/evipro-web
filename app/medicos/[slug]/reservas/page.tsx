@@ -211,7 +211,7 @@ export default async function ReservasPage({
                     </div>
                     {/* Con pago al reservar, «confirmada» solo se avisa después de «Confirmar pago»:
                         si no, el turno vence a la hora mientras el paciente cree que tiene cita. */}
-                    {(!cobra || b.confirmed_at) && (
+                    {(!b.pago_hasta || b.confirmed_at) && (
                     <a
                       href={waLink}
                       target="_blank"
@@ -223,7 +223,8 @@ export default async function ReservasPage({
                     )}
                   </div>
                   <BookingActions slug={slug} token={token!} id={b.id} userId={b.user_id} memberName={b.patient_name}
-                    cobra={cobra} precio={b.price_soles} horario={agendaDe(doctor).schedule} pagada={b.paid} />
+                    cobra={cobra && !!b.pago_hasta && !b.confirmed_at} fechaMovible={cobra && !!b.pago_hasta}
+                    precio={b.price_soles} horario={agendaDe(doctor).schedule} pagada={b.paid} />
                 </div>
               )
             })}

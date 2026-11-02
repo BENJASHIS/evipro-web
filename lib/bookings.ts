@@ -44,7 +44,7 @@ export function validateCancelReason(raw: unknown): CancelReasonValidation {
 }
 
 // Un miembro puede cancelar su cita si no está ya cancelada, el slot no pasó y sigue sin pagar:
-// una pagada, con pago avisado o confirmada se cancela o cambia por WhatsApp (regla de 24 h,
+// una pagada o con pago avisado se cancela o cambia por WhatsApp (regla de 24 h,
 // devolución pendiente; la aplica Carlos en su panel).
 // Granularidad por día (YYYY-MM-DD, comparación lexicográfica) para evitar
 // problemas de zona horaria: el servidor corre en UTC, los slots son hora Perú;
@@ -53,7 +53,7 @@ export function canPatientCancel(
   b: { cancelled_at: string | null; slot_date: string | null; paid?: boolean; payment_reported_at?: string | null; confirmed_at?: string | null },
   today: string = new Date().toISOString().slice(0, 10),
 ): boolean {
-  if (b.cancelled_at || b.paid || b.payment_reported_at || b.confirmed_at) return false
+  if (b.cancelled_at || b.paid || b.payment_reported_at) return false
   if (!b.slot_date) return true
   return b.slot_date >= today
 }

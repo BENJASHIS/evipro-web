@@ -97,12 +97,19 @@ export async function confirmarPago(
   if (soloMedico) consulta = consulta.eq('doctor_slug', soloMedico)
   const { data: reserva } = await consulta.maybeSingle()
   if (!reserva) return { ok: false, error: 'No encontrado' }
-  if (reserva.cancelled_at && reserva.cancel_reason !== MOTIVO_VENCIDA) return { ok: false, error: 'Reserva cancelada' }
-
   const pago: Record<string, unknown> = { paid: true, amount_received: datos.monto ?? reserva.price_soles }
   if (datos.referencia) pago.payment_reference = datos.referencia
   if (datos.medio) pago.payment_method = datos.medio
   if (datos.mpPaymentId) pago.mp_payment_id = datos.mpPaymentId
+
+  if (reserva.cancelled_at && reserva.cancel_reason !== MOTIVO_VENCIDA) {
+    // Carlos la canceló. Si igual llegó un pago con tarjeta (el paciente estaba en Mercado Pago),
+    // no se pierde: queda pagada, sin turno y con devolución pendiente.
+    if (!datos.mpPaymentId) return { ok: false, error: 'Reserva cancelada' }
+    const { error: e } = await supabase.from('counseling_bookings').update({ ...pago, refund_pending: true }).eq('id', id)
+    if (e) return { ok: false, error: e.message }
+    return { ok: true, sinTurno: true }
+  }
 
   const { error } = await supabase
     .from('counseling_bookings')

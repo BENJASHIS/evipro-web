@@ -104,6 +104,15 @@ describe('confirmarPago', () => {
     expect(await confirmarPago(sb, 'b1', {})).toEqual({ ok: false, error: 'Reserva cancelada' })
     expect(updates()).toHaveLength(0)
   })
+  it('un pago de Mercado Pago sobre una reserva que canceló Carlos queda registrado y con devolución pendiente', async () => {
+    reserva = { ...fila, cancelled_at: '2026-11-03T15:00:00Z', cancel_reason: 'paciente no puede' }
+    expect(await confirmarPago(sb, 'b1', { medio: 'mercadopago', monto: 70, mpPaymentId: 'mp1' })).toEqual({ ok: true, sinTurno: true })
+    expect(updates()[0]).toMatchObject({ paid: true, refund_pending: true, mp_payment_id: 'mp1', amount_received: 70 })
+    expect(updates()[0]).not.toHaveProperty('cancelled_at')
+    expect(updates()[0]).not.toHaveProperty('cancel_reason')
+    expect(confirmarEvento).not.toHaveBeenCalled()
+  })
+
   it('reserva inexistente → No encontrado', async () => {
     reserva = null
     expect(await confirmarPago(sb, 'b1', {})).toEqual({ ok: false, error: 'No encontrado' })

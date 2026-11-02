@@ -9,7 +9,7 @@ import { COUNSELING_BOOKING_CALENDAR_COLUMNS } from '@/lib/db-columns'
 import { cancelarEvento, confirmarEvento, moverEvento, ocupadosEnGoogle } from '@/lib/google-calendar'
 import { DOCTORS } from '@/lib/doctors'
 import { slotValido } from '@/lib/booking-validation'
-import { confirmarPago } from '@/lib/pago-reserva'
+import { confirmarPago, normalizarReferencia } from '@/lib/pago-reserva'
 
 type ActionResult = { ok: boolean; error?: string }
 
@@ -38,7 +38,9 @@ export async function confirmarPagoReserva(
   const textoMonto = String(rawMonto ?? '').trim().replace(',', '.')
   const monto = textoMonto === '' ? undefined : Number(textoMonto)
   if (monto !== undefined && (!Number.isFinite(monto) || monto < 0 || monto > 10000)) return { ok: false, error: 'Monto inválido' }
-  const referencia = String(rawReferencia ?? '').trim() || null
+  const escrita = String(rawReferencia ?? '').trim()
+  // Mismo formato que el número que manda el paciente: así el índice único detecta el repetido.
+  const referencia = escrita ? (normalizarReferencia('yape', escrita) ?? escrita) : null
   if (referencia && referencia.length > 40) return { ok: false, error: 'Número de operación inválido' }
 
   const r = await confirmarPago(createServiceClient(), id, { monto, referencia }, slug)

@@ -73,10 +73,11 @@ describe('bookingStatus — pago al reservar', () => {
 })
 
 describe('canPatientCancel — pago al reservar', () => {
-  it('el miembro no puede cancelar una reserva pagada, reportada o confirmada', () => {
+  it('el miembro no puede cancelar una reserva pagada o con pago avisado', () => {
     expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01', paid: true })).toBe(false)
     expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01', payment_reported_at: 'x' })).toBe(false)
-    expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01', confirmed_at: 'x' })).toBe(false)
+    // Una confirmada sin pago (domicilio, Dr. Vera) se sigue pudiendo cancelar, como antes.
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01', confirmed_at: 'x' })).toBe(true)
     expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01' })).toBe(true)
   })
 })

@@ -5,7 +5,7 @@ import { confirmBooking, cancelBooking, confirmarPagoReserva, cambiarFecha, marc
 import { GiftCreditButton } from './GiftCreditButton'
 
 export function BookingActions(
-  { slug, token, id, userId, memberName, cobra = false, precio, soloPago = false, horario = [], pagada = false, devolucion = false }:
+  { slug, token, id, userId, memberName, cobra = false, precio, soloPago = false, horario = [], pagada = false, devolucion = false, fechaMovible = false }:
   {
     slug: string; token: string; id: string; userId: string | null; memberName: string
     // Pago al reservar: «Confirmar pago» con monto recibido y número de operación opcional.
@@ -13,7 +13,8 @@ export function BookingActions(
     // Cambiar fecha: horas de la agenda del médico (el servidor valida el día y que esté libre).
     horario?: string[]
     // pagada: al cancelar pregunta si corresponde devolución. devolucion: fila de devoluciones pendientes.
-    pagada?: boolean; devolucion?: boolean
+    // fechaMovible: reserva con turno y pago al reservar (domicilio no tiene turno).
+    pagada?: boolean; devolucion?: boolean; fechaMovible?: boolean
   },
 ) {
   const [pending, startTransition] = useTransition()
@@ -128,7 +129,7 @@ export function BookingActions(
         >
           Cancelar
         </button>
-        {cobra && (
+        {fechaMovible && (
           <button
             onClick={() => setShowFecha(v => !v)}
             disabled={pending}
