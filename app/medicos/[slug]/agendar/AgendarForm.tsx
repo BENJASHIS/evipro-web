@@ -7,7 +7,8 @@ import { MEDICO } from '@/lib/home-content'
 import type { Doctor } from '@/lib/doctors'
 import { agendaDe, proximosDias } from '@/lib/booking-validation'
 import { MODALITY_LABELS, MODALITY_DURATION, getPrice, type Modality } from '@/lib/counseling'
-import { CONSULTA_MODALITY_LABELS, escaleraReserva, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
+import { CONSULTA_MODALITY_LABELS, escaleraReserva, precioConsulta, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
+import PagoReserva from './PagoReserva'
 
 type AnyModality = Modality | ModalidadReserva
 const CONSULTA_MODS: ModalidadReserva[] = ['virtual', 'presencial', 'domicilio']
@@ -26,7 +27,11 @@ function toISODate(d: Date): string {
 
 export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const { locale, t } = useLanguage()
-  const [modality, setModality] = useState<AnyModality | null>(null)
+  // Con pago al reservar (Yape/Plin) la mayoría consulta virtual: queda marcada de entrada.
+  const cobraAlReservar = !!doctor.pagoAlReservar
+  const [modality, setModality] = useState<AnyModality | null>(cobraAlReservar ? 'virtual' : null)
+  const [visita, setVisita] = useState<1 | 2 | 3>(1)
+  const [reservaPago, setReservaPago] = useState<string | null>(null)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [name, setName] = useState('')
@@ -44,6 +49,13 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const weekdays = proximosDias(days, 7)
   const consejeriaMods = doctor.counseling?.available ? (doctor.counseling.modalities ?? []) : []
   const price = modality && !isConsulta(modality) ? getPrice(modality as Modality, false) : null
+
+  // El enlace de vuelta (Mercado Pago, o el paciente que reabre la página) trae ?reserva=<id>.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('reserva')
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (id) setReservaPago(id)
+  }, [])
 
   useEffect(() => {
     fetch(`/api/consejeria/booked-slots?doctor_slug=${doctor.slug}`)
@@ -88,10 +100,15 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             patient_name: name,
             patient_phone: phone,
             patient_note: note || null,
+            visit_number: visita,
             turnstile_token: turnstileToken,
           }),
         })
-        if (res.ok) setBookingId(((await res.json()) as { booking_id: string }).booking_id)
+        if (res.ok) {
+          const cuerpo = (await res.json()) as { booking_id: string; pago?: unknown }
+          if (cuerpo.pago) setReservaPago(cuerpo.booking_id)
+          else setBookingId(cuerpo.booking_id)
+        }
         else {
           const data = await res.json().catch(() => null) as { error?: string } | null
           setError(data?.error ?? 'Error al guardar la solicitud. Intenta de nuevo.')
@@ -137,6 +154,8 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
     }
   }
 
+  if (reservaPago) return <PagoReserva reservaId={reservaPago} />
+
   if (bookingId) {
     const waMsg = encodeURIComponent(
       `${t('Hola, solicité una cita.')}\n` +
@@ -165,7 +184,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const showData = modality !== null && slotOk
   const canSubmit = showData && name.trim() !== '' && phone.trim() !== '' && (!TURNSTILE_CLIENT_ENABLED || turnstileToken)
   const submitLabel = modality && isConsulta(modality)
-    ? 'Solicitar consulta →'
+    ? (cobraAlReservar && modality !== 'domicilio' ? 'Reservar y pagar →' : 'Solicitar consulta →')
     : price !== null ? `${t('Pagar')} S/. ${price} →` : 'Solicitar →'
 
   return (
@@ -199,7 +218,9 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
           </>
         )}
 
-        <p className="text-faint text-xs font-mono mb-2"><T>{"Consulta médica (cobro al atender)"}</T></p>
+        <p className="text-faint text-xs font-mono mb-2">
+          {cobraAlReservar ? <T>{"Consulta médica (pago al reservar)"}</T> : <T>{"Consulta médica (cobro al atender)"}</T>}
+        </p>
         <div className="space-y-2">
           {CONSULTA_MODS.map(m => (
             <button
@@ -223,6 +244,24 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             </button>
           ))}
         </div>
+
+        {cobraAlReservar && modality && modality !== 'domicilio' && isConsulta(modality) && (
+          <div className="mt-4">
+            <p className="text-faint text-xs font-mono mb-2"><T>{"¿Qué consulta es con el doctor?"}</T></p>
+            <div className="flex flex-wrap gap-2">
+              {([1, 2, 3] as const).map(v => (
+                <button key={v} onClick={() => setVisita(v)}
+                  className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors ${
+                    visita === v ? 'border-brand bg-brand/5 text-white' : 'border-subtle text-faint hover:border-white/30'
+                  }`}>
+                  {v === 1 ? <T>{"Primera consulta"}</T> : v === 2 ? <T>{"Segunda consulta"}</T> : <T>{"Tercera o más"}</T>}
+                  {` · S/. ${precioConsulta(modality, 'regular', v)}`}
+                </button>
+              ))}
+            </div>
+            <p className="text-faint text-xs mt-2"><T>{"Precios sin membresía; si eres miembro y entras con tu cuenta, se aplica tu tarifa."}</T></p>
+          </div>
+        )}
 
         {doctor.slug === 'dr-jara' && (
           <p className="text-sm text-muted mt-4">
@@ -325,7 +364,11 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
         </>
       )}
 
-      <p className="text-xs text-faint font-mono"><T>{"Consulta médica: es una solicitud, el médico confirma y cobra al atender. Consejería: se paga online al reservar."}</T></p>
+      <p className="text-xs text-faint font-mono">
+        {cobraAlReservar
+          ? <T>{"Consulta médica: eliges tu turno, pagas por Yape o Plin y el médico confirma. A domicilio se coordina por WhatsApp."}</T>
+          : <T>{"Consulta médica: es una solicitud, el médico confirma y cobra al atender. Consejería: se paga online al reservar."}</T>}
+      </p>
     </div>
   )
 }
