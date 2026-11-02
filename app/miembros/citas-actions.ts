@@ -18,7 +18,7 @@ export async function cancelMyBooking(bookingId: string, rawReason: unknown): Pr
   const supabase = createServiceClient()
   const { data: booking, error: selErr } = await supabase
     .from('counseling_bookings')
-    .select('cancelled_at, slot_date, doctor_slug')
+    .select('cancelled_at, slot_date, doctor_slug, paid, payment_reported_at, confirmed_at')
     .eq('id', bookingId)
     .eq('user_id', user.id)
     .maybeSingle()

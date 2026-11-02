@@ -58,7 +58,7 @@ export default async function MiembrosPage() {
       .maybeSingle(),
     supabase
       .from('counseling_bookings')
-      .select('id, modality, slot_date, slot_time, confirmed_at, cancelled_at, cancel_reason, price_soles, paid, payment_method')
+      .select('id, modality, slot_date, slot_time, confirmed_at, cancelled_at, cancel_reason, price_soles, paid, payment_method, pago_hasta, payment_reported_at')
       .eq('user_id', user.id)
       .order('slot_date', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false }),
@@ -115,7 +115,11 @@ export default async function MiembrosPage() {
                 {c.cancelled_at && c.cancel_reason && (
                   <p className="text-faint text-xs italic mt-1">Motivo: {c.cancel_reason}</p>
                 )}
-                {canPatientCancel(c) && <CitaActions id={c.id} />}
+                {canPatientCancel(c)
+                  ? <CitaActions id={c.id} />
+                  : !c.cancelled_at && (!c.slot_date || c.slot_date >= new Date().toISOString().slice(0, 10)) && (
+                    <p className="text-faint text-xs mt-1">Para cancelar o cambiar la fecha, escríbenos por WhatsApp.</p>
+                  )}
               </div>
             )
           })}

@@ -10,6 +10,8 @@ const reservas = [
   // Cancelada después de confirmarla (así quedó la prueba del 2026-11-01).
   { ...base, id: 'a', patient_name: 'Prueba cancelada', confirmed_at: '2026-11-01T21:38:00Z', cancelled_at: '2026-11-01T22:00:00Z' },
   { ...base, id: 'b', patient_name: 'Paciente activo', confirmed_at: null, cancelled_at: null },
+  { ...base, id: 'c', patient_name: 'Pago por verificar', confirmed_at: null, cancelled_at: null,
+    pago_hasta: '2026-11-01T15:00:00Z', payment_reported_at: '2026-11-01T14:30:00Z' },
 ]
 
 vi.mock('@/lib/supabase-server', () => ({
@@ -30,5 +32,15 @@ it('una reserva cancelada se ve cancelada, no cuenta como por cobrar y no ofrece
   expect(cancelada.textContent).not.toContain('WA →')
 
   const porCobrar = screen.getByText('Por cobrar', { selector: 'p' }).nextElementSibling
-  expect(porCobrar?.textContent).toBe('1')
+  expect(porCobrar?.textContent).toBe('2')
+})
+
+it('una reserva con pago al reservar muestra su estado y manda a confirmar el pago al panel del médico', async () => {
+  const { default: AdminConsejeriaPage } = await import('../../app/admin/consejeria/page')
+  render(await AdminConsejeriaPage())
+  const fila = screen.getByText('Pago por verificar', { selector: 'p' }).closest('div.border')!
+  expect(fila.textContent).toContain('Pago por verificar')
+  expect(fila.textContent).toContain('Confirmar pago en el panel del médico')
+  expect(fila.querySelector('form')).toBeNull()
+  expect(fila.textContent).not.toContain('WA →')
 })

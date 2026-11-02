@@ -4,6 +4,7 @@ import { confirmBooking } from '@/app/admin/actions'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
 import Link from 'next/link'
+import { bookingStatus } from '@/lib/bookings'
 
 export default async function AdminConsejeriaPage() {
   const supabase = await createServerSupabaseClient()
@@ -88,6 +89,10 @@ export default async function AdminConsejeriaPage() {
                 <span className="text-xs font-mono px-3 py-1 rounded-full text-faint line-through">
                   Cancelada
                 </span>
+              ) : b.pago_hasta && !b.confirmed_at ? (
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-yellow-400/10 text-yellow-400">
+                  {bookingStatus(b) === 'payment_to_verify' ? 'Pago por verificar' : 'Pendiente de pago'}
+                </span>
               ) : b.confirmed_at ? (
                 <span className="text-xs font-mono px-3 py-1 rounded-full bg-brand/10 text-brand">
                   Confirmada
@@ -108,7 +113,11 @@ export default async function AdminConsejeriaPage() {
             </div>
 
             {/* Confirmar en DB */}
-            {!b.confirmed_at && !b.cancelled_at && (
+            {/* Pago al reservar: el pago se confirma en el panel del médico (monto, número de operación). */}
+            {b.pago_hasta && !b.confirmed_at && !b.cancelled_at && (
+              <p className="shrink-0 text-xs font-mono text-faint">Confirmar pago en el panel del médico</p>
+            )}
+            {!b.confirmed_at && !b.cancelled_at && !b.pago_hasta && (
               <form action={confirmBooking}>
                 <input type="hidden" name="id" value={b.id} />
                 <button
@@ -121,7 +130,7 @@ export default async function AdminConsejeriaPage() {
             )}
 
             {/* WhatsApp confirm: nunca a una reserva cancelada */}
-            {!b.cancelled_at && (
+            {!b.cancelled_at && !(b.pago_hasta && !b.confirmed_at) && (
             <a
               href={`https://wa.me/${b.patient_phone}?text=${encodeURIComponent(
                 `Hola ${b.patient_name}, confirmamos tu sesión de consejería con EVIPro` +

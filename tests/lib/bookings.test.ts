@@ -71,3 +71,12 @@ describe('bookingStatus — pago al reservar', () => {
     expect(bookingStatus(pend, ahora)).toBe('unpaid')
   })
 })
+
+describe('canPatientCancel — pago al reservar', () => {
+  it('el miembro no puede cancelar una reserva pagada, reportada o confirmada', () => {
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01', paid: true })).toBe(false)
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01', payment_reported_at: 'x' })).toBe(false)
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01', confirmed_at: 'x' })).toBe(false)
+    expect(canPatientCancel({ cancelled_at: null, slot_date: '2099-01-01' })).toBe(true)
+  })
+})
