@@ -102,6 +102,15 @@ describe('POST /api/reservar/book con pago al reservar', () => {
     expect(estado.insertado).toMatchObject({ price_soles: 40, user_id: 'u1' })
   })
 
+  it('convenio ASCAMED: el servidor cobra 40 en la 1ª virtual', async () => {
+    // IP propia: el límite de 8 por IP lo comparten las demás pruebas del archivo.
+    await POST(new NextRequest('http://localhost/api/reservar/book', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-real-ip': '10.0.0.40' },
+      body: JSON.stringify({ ...cuerpoValido, convenio: 'ascamed' }),
+    }))
+    expect(estado.insertado).toMatchObject({ price_soles: 40 })
+  })
+
   it('visit_number fuera de 1..3 → 400', async () => {
     const r = await POST(pedir({ ...cuerpoValido, visit_number: 4 }))
     expect(r.status).toBe(400)

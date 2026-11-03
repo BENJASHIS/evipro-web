@@ -114,3 +114,24 @@ describe('tarifaDe — tarifa de consulta según el plan', () => {
     expect(tarifaDe(undefined)).toBe('regular')
   })
 })
+
+import { CONVENIOS } from '../../lib/consulta-pricing'
+import { ALIADOS } from '../../lib/aliados'
+
+describe('convenios con aliados — enlace ?convenio=', () => {
+  it('ASCAMED virtual 40/20/10; presencial sin fila queda regular', () => {
+    expect([1, 2, 3, 9].map(v => precioConsulta('virtual', 'regular', v, false, 'ascamed'))).toEqual([40, 20, 10, 10])
+    expect(precioConsulta('presencial', 'regular', 1, false, 'ascamed')).toBe(100)
+    expect(escaleraReserva('virtual', 'es', 'cannabis-libre-club')).toBe('1ª S/40 · reconsulta S/20 · desde 3ª S/10')
+  })
+  it('un convenio desconocido o de prototipo no cambia el precio', () => {
+    for (const c of ['inventado', '__proto__', 'constructor']) expect(precioConsulta('virtual', 'regular', 1, false, c)).toBe(70)
+  })
+  it('el convenio no toca a los demás: sin enlace, 70/35/17; si la membresía cobra menos, gana la membresía', () => {
+    expect([1, 2, 3].map(v => precioConsulta('virtual', 'regular', v))).toEqual([70, 35, 17])
+    expect(precioConsulta('presencial', 'evipro', 1, false, 'ascamed')).toBe(60)
+  })
+  it('cada convenio es un aliado de /aliados (si no, el aviso no muestra su nombre)', () => {
+    for (const slug of Object.keys(CONVENIOS)) expect(ALIADOS.map(a => a.slug)).toContain(slug)
+  })
+})

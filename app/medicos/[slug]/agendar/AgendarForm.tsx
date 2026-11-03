@@ -7,7 +7,8 @@ import { MEDICO } from '@/lib/home-content'
 import type { Doctor } from '@/lib/doctors'
 import { agendaDe, proximosDias } from '@/lib/booking-validation'
 import { MODALITY_LABELS, MODALITY_DURATION, getPrice, type Modality } from '@/lib/counseling'
-import { CONSULTA_MODALITY_LABELS, escaleraReserva, precioConsulta, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
+import { CONSULTA_MODALITY_LABELS, escaleraReserva, esConvenio, precioConsulta, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
+import { ALIADOS } from '@/lib/aliados'
 import PagoReserva from './PagoReserva'
 
 type AnyModality = Modality | ModalidadReserva
@@ -32,6 +33,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const [modality, setModality] = useState<AnyModality | null>(cobraAlReservar ? 'virtual' : null)
   const [visita, setVisita] = useState<1 | 2 | 3>(1)
   const [reservaPago, setReservaPago] = useState<string | null>(null)
+  const [convenio, setConvenio] = useState<string | undefined>()
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [name, setName] = useState('')
@@ -49,12 +51,17 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const weekdays = proximosDias(days, 7)
   const consejeriaMods = doctor.counseling?.available ? (doctor.counseling.modalities ?? []) : []
   const price = modality && !isConsulta(modality) ? getPrice(modality as Modality, false) : null
+  const aliado = convenio ? ALIADOS.find(a => a.slug === convenio) : undefined
 
-  // El enlace de vuelta (Mercado Pago, o el paciente que reabre la página) trae ?reserva=<id>.
+  // El enlace de vuelta (Mercado Pago, o el paciente que reabre la página) trae ?reserva=<id>;
+  // el de un aliado que manda pacientes, ?convenio=<slug> (el servidor vuelve a calcular el precio).
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get('reserva')
+    const q = new URLSearchParams(window.location.search)
+    const id = q.get('reserva')
+    const c = q.get('convenio')
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (id) setReservaPago(id)
+    if (esConvenio(c)) setConvenio(c)
   }, [])
 
   useEffect(() => {
@@ -101,6 +108,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             patient_phone: phone,
             patient_note: note || null,
             visit_number: visita,
+            convenio,
             turnstile_token: turnstileToken,
           }),
         })
@@ -238,7 +246,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
                   </p>
                 </div>
                 <p className="text-gray-300 text-sm font-mono shrink-0">
-                  <T>{m === 'domicilio' ? 'desde ' : ''}</T>S/. {precioReferencia(m)}
+                  <T>{m === 'domicilio' ? 'desde ' : ''}</T>S/. {precioReferencia(m, convenio)}
                 </p>
               </div>
             </button>
@@ -255,7 +263,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
                     visita === v ? 'border-brand bg-brand/5 text-white' : 'border-subtle text-faint hover:border-white/30'
                   }`}>
                   {v === 1 ? <T>{"Primera consulta"}</T> : v === 2 ? <T>{"Segunda consulta"}</T> : <T>{"Tercera o más"}</T>}
-                  {` · S/. ${precioConsulta(modality, 'regular', v)}`}
+                  {` · S/. ${precioConsulta(modality, 'regular', v, false, convenio)}`}
                 </button>
               ))}
             </div>
@@ -270,7 +278,19 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
         )}
 
         {/* La escalera completa cabía mal en una línea y en el móvil se cortaba:
-            la tarjeta muestra un solo precio y el detalle vive aquí, plegado. */}
+            la tarjeta muestra un solo precio y el detalle vive aquí, plegado.
+            Con convenio no aplica «la mitad cada vez»: se muestra su escalera. */}
+        {aliado ? (
+          <div className="mt-3 text-xs border border-brand/40 rounded p-3 space-y-1 text-muted">
+            <p className="text-white"><T values={{ aliado: aliado.nombre }}>{"Precio por convenio con {aliado}"}</T></p>
+            {CONSULTA_MODS.filter(m => m !== 'domicilio').map(m => (
+              <p key={m}>
+                <span className="text-white"><T>{CONSULTA_MODALITY_LABELS[m]}</T>:</span>{' '}
+                <span className="font-mono">{escaleraReserva(m, locale, convenio)}</span>
+              </p>
+            ))}
+          </div>
+        ) : (
         <details className="mt-3 text-xs">
           <summary className="text-faint font-mono cursor-pointer hover:text-white"><T>{"¿Y si vuelvo? Cómo baja el precio"}</T></summary>
           <div className="mt-2 space-y-1 text-muted leading-relaxed">
@@ -285,6 +305,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             </p>
           </div>
         </details>
+        )}
       </div>
 
       {/* Paso 2: horario (solo modalidades con slot) */}

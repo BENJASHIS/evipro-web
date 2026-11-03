@@ -18,6 +18,8 @@ interface ReservaBody {
   patient_phone: string
   patient_note?: string | null
   visit_number?: number
+  /** Slug del aliado que manda al paciente (enlace ?convenio=); uno desconocido no cambia el precio. */
+  convenio?: string
 }
 
 const MODALIDADES: ModalidadReserva[] = ['presencial', 'virtual', 'domicilio']
@@ -63,8 +65,8 @@ export async function POST(req: NextRequest) {
   // Frontera de confianza: el precio se DERIVA en el servidor.
   // Sin pago al reservar: nominal de referencia y cobro manual (paid=false, payment_method='manual').
   const price_soles = cobra
-    ? precioConsulta(modality as Exclude<ModalidadReserva, 'domicilio'>, user ? await tarifaDelUsuario(supabase, user.id) : 'regular', visita)
-    : precioReferencia(modality)
+    ? precioConsulta(modality as Exclude<ModalidadReserva, 'domicilio'>, user ? await tarifaDelUsuario(supabase, user.id) : 'regular', visita, false, body.convenio)
+    : precioReferencia(modality, body.convenio)
   const pago_hasta = cobra ? new Date(Date.now() + PLAZO_PAGO_MS).toISOString() : undefined
   if (cobra) await liberarVencidas(supabase, doctor_slug)
 

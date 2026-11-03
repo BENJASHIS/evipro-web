@@ -116,3 +116,21 @@ describe('AgendarForm — precios en el paso 1', () => {
     expect(screen.getByText(/Cómo baja el precio/)).toBeInTheDocument()
   })
 })
+
+describe('AgendarForm — enlace de convenio', () => {
+  it('?convenio=ascamed muestra el precio del aliado y lo manda al servidor', async () => {
+    Object.defineProperty(window, 'location', { value: { search: '?convenio=ascamed' }, writable: true, configurable: true })
+    render(<AgendarForm doctor={doctor} />)
+    expect(await screen.findByText(/Precio por convenio con ASCAMED/)).toBeInTheDocument()
+    expect(screen.getByText('S/. 40')).toBeInTheDocument()
+    expect(screen.getByText('S/. 100')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('A domicilio'))
+    fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
+    fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByText(/Solicitar/))
+    await waitFor(() => {
+      const call = vi.mocked(fetch).mock.calls.find(c => c[0] === '/api/reservar/book')
+      expect(JSON.parse((call?.[1] as RequestInit).body as string).convenio).toBe('ascamed')
+    })
+  })
+})
