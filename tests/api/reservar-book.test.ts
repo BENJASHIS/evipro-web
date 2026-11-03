@@ -108,7 +108,7 @@ describe('POST /api/reservar/book con pago al reservar', () => {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'x-real-ip': '10.0.0.40' },
       body: JSON.stringify({ ...cuerpoValido, convenio: 'ascamed' }),
     }))
-    expect(estado.insertado).toMatchObject({ price_soles: 40 })
+    expect(estado.insertado).toMatchObject({ price_soles: 40, convenio: 'ascamed' })
   })
 
   it('visit_number fuera de 1..3 → 400', async () => {

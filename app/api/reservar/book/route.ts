@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
-import { precioConsulta, precioReferencia, tarifaDe, type ModalidadReserva, type TarifaConsulta } from '@/lib/consulta-pricing'
+import { esConvenio, precioConsulta, precioReferencia, tarifaDe, type ModalidadReserva, type TarifaConsulta } from '@/lib/consulta-pricing'
 import { validateBookingInput } from '@/lib/booking-validation'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
       paid: false,
       payment_method: 'manual',
       user_id: user?.id ?? null,
+      convenio: esConvenio(body.convenio) ? body.convenio : null,
       ...(cobra ? { visit_number: visita, pago_hasta, policy_version: POLITICA_CANCELACION_VERSION } : {}),
     })
     .select('id')

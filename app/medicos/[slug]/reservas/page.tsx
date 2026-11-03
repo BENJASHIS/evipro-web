@@ -1,6 +1,7 @@
 import { createServiceClient } from '@/lib/supabase-server'
 import { COUNSELING_BOOKING_PORTAL_COLUMNS } from '@/lib/db-columns'
 import { DOCTORS } from '@/lib/doctors'
+import { ALIADOS } from '@/lib/aliados'
 import { MODALITY_LABELS } from '@/lib/counseling'
 import type { Modality } from '@/lib/counseling'
 import { CONSULTA_MODALITY_LABELS, type ModalidadReserva } from '@/lib/consulta-pricing'
@@ -40,6 +41,7 @@ interface Booking {
   reschedule_count: number
   refund_pending: boolean
   refunded_at: string | null
+  convenio: string | null
 }
 
 const STATUS_LABEL: Record<BookingState, { text: string; color: string }> = {
@@ -194,6 +196,11 @@ export default async function ReservasPage({
                         {b.reschedule_count > 0 && (
                           <span className="text-xs font-mono text-yellow-400">
                             Ya cambió de fecha {b.reschedule_count} {b.reschedule_count === 1 ? 'vez' : 'veces'}
+                          </span>
+                        )}
+                        {b.convenio && (
+                          <span className="text-xs font-mono text-brand">
+                            Convenio: {ALIADOS.find(a => a.slug === b.convenio)?.nombre ?? b.convenio}
                           </span>
                         )}
                       </div>
