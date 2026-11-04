@@ -9,7 +9,7 @@ import { verifyDoctorPortalToken } from '@/lib/doctor-portal'
 import { notFound } from 'next/navigation'
 import { bookingStatus, MOTIVO_VENCIDA, type BookingState } from '@/lib/bookings'
 import { liberarVencidas } from '@/lib/pago-reserva'
-import { agendaDe } from '@/lib/booking-validation'
+import { agendaDe, hoyEnLima } from '@/lib/booking-validation'
 import { mensajeConfirmacion } from '@/lib/mensajes-reserva'
 import { CREDIT_STATUS_LABEL, CREDIT_VALID_DAYS, type CreditStatus } from '@/lib/credits'
 import { BookingActions } from './BookingActions'
@@ -92,7 +92,7 @@ export default async function ReservasPage({
   const cobra = !!doctor.pagoAlReservar
   if (cobra) await liberarVencidas(supabase, slug)
   const now = new Date()
-  const today = now.toISOString().split('T')[0]
+  const today = hoyEnLima(now)
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
   const { data: upcoming } = await supabase

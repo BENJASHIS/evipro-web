@@ -1,6 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import { validateBookingInput, proximosDias, NAME_MAX, PHONE_MAX, NOTE_MAX } from '../../lib/booking-validation'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { validateBookingInput, proximosDias, slotValido, NAME_MAX, PHONE_MAX, NOTE_MAX } from '../../lib/booking-validation'
 import { DOCTORS } from '../../lib/doctors'
+
+// Las fechas de estas pruebas (martes 3-nov-2026) tienen que seguir en el futuro.
+beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date('2026-11-01T12:00:00Z')) })
+afterEach(() => { vi.useRealTimers() })
 
 const ok = {
   doctor_slug: DOCTORS[0].slug,
@@ -67,5 +71,16 @@ describe('horario de atención', () => {
   it('los próximos días reservables son solo martes a viernes, desde mañana', () => {
     const dias = proximosDias([2, 3, 4, 5], 5, new Date(2026, 10, 2)) // lunes 2-nov-2026
     expect(dias.map(d => d.getDate())).toEqual([3, 4, 5, 6, 10])
+  })
+})
+
+describe('slotValido — un turno que ya empezó no vale', () => {
+  const jara = DOCTORS.find(d => d.slug === 'dr-jara')!
+  const ahora = new Date('2026-11-03T15:30:00Z') // martes 3-nov, 10:30 en Lima
+  it('rechaza un día pasado y una hora de hoy que ya empezó; acepta la siguiente', () => {
+    expect(slotValido(jara, '2026-10-30', '09:00', ahora)).toBe(false)
+    expect(slotValido(jara, '2026-11-03', '09:00', ahora)).toBe(false)
+    expect(slotValido(jara, '2026-11-03', '10:00', ahora)).toBe(false)
+    expect(slotValido(jara, '2026-11-03', '11:00', ahora)).toBe(true)
   })
 })

@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { calendarioDe, idEvento, hoyEnLima, fechasDesde, slotsOcupados, cuerpoEvento } from '../../lib/google-calendar'
+import { calendarioDe, idEvento, fechasDesde, slotsOcupados, cuerpoEvento } from '../../lib/google-calendar'
+import { hoyEnLima } from '../../lib/booking-validation'
 
 const H = ['09:00', '10:00', '11:00', '15:00', '16:00']
 const reserva = {

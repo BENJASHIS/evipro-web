@@ -25,7 +25,8 @@ vi.mock('@/lib/pago-reserva', () => ({ liberarVencidas: vi.fn(async () => { esta
 
 import { GET } from '../../app/api/consejeria/booked-slots/route'
 import { liberarVencidas } from '@/lib/pago-reserva'
-import { ocupadosEnGoogle, hoyEnLima } from '@/lib/google-calendar'
+import { ocupadosEnGoogle } from '@/lib/google-calendar'
+import { hoyEnLima } from '@/lib/booking-validation'
 
 const ocupados = vi.mocked(ocupadosEnGoogle)
 const pedir = (slug: string) => new Request(`http://localhost/api/consejeria/booked-slots?doctor_slug=${slug}`)

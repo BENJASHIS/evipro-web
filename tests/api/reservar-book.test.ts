@@ -51,6 +51,9 @@ const pedir = (body: unknown, ruta = 'reservar') => new NextRequest(`http://loca
 })
 
 beforeEach(() => {
+  // El martes 3-nov tiene que seguir en el futuro: un turno pasado no vale.
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date('2026-11-01T12:00:00Z'))
   estado.insertado = null
   estado.usuario = null
   estado.plan = null
@@ -59,6 +62,8 @@ beforeEach(() => {
   ocupados.mockReset().mockResolvedValue([])
   crear.mockReset().mockResolvedValue(undefined)
 })
+
+afterEach(() => { vi.useRealTimers() })
 
 describe('POST /api/reservar/book con Google Calendar', () => {
   it('si el turno se ocupó en Google después de cargar la página → 409 y no guarda', async () => {

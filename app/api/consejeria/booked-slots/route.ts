@@ -1,8 +1,8 @@
 import { createServiceClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
 import { DOCTORS } from '@/lib/doctors'
-import { agendaDe } from '@/lib/booking-validation'
-import { fechasDesde, hoyEnLima, ocupadosEnGoogle } from '@/lib/google-calendar'
+import { agendaDe, hoyEnLima } from '@/lib/booking-validation'
+import { fechasDesde, ocupadosEnGoogle } from '@/lib/google-calendar'
 import { liberarVencidas } from '@/lib/pago-reserva'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 

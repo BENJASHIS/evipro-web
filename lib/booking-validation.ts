@@ -25,10 +25,20 @@ export function proximosDias(days: number[], count: number, desde: Date = new Da
   return out
 }
 
+// Perú no tiene horario de verano: Lima es siempre UTC−5. Aquí y no en google-calendar
+// (usa node:crypto) porque el formulario de reserva corre en el navegador.
+const enLima = (ahora: Date) => new Date(ahora.getTime() - 5 * 3_600_000).toISOString()
+
+/** Fecha de hoy en Lima (YYYY-MM-DD). */
+export function hoyEnLima(ahora: Date = new Date()): string {
+  return enLima(ahora).slice(0, 10)
+}
+
 // slot_date es la fecha en hora Perú (YYYY-MM-DD): el día de la semana se lee a mediodía UTC,
-// así no depende de la zona horaria del servidor.
-export function slotValido(doctor: Doctor, slot_date: string | null | undefined, slot_time: string | null | undefined): boolean {
+// así no depende de la zona horaria del servidor. Un turno que ya empezó no vale.
+export function slotValido(doctor: Doctor, slot_date: string | null | undefined, slot_time: string | null | undefined, ahora: Date = new Date()): boolean {
   if (!slot_date || !slot_time || !/^\d{4}-\d{2}-\d{2}$/.test(slot_date)) return false
+  if (`${slot_date}T${slot_time}` <= enLima(ahora).slice(0, 16)) return false
   const { days, schedule } = agendaDe(doctor)
   return days.includes(new Date(`${slot_date}T12:00:00Z`).getUTCDay()) && schedule.includes(slot_time)
 }

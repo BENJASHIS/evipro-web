@@ -29,10 +29,6 @@ export function idEvento(bookingId: string): string {
   return bookingId.replace(/-/g, '').toLowerCase()
 }
 
-export function hoyEnLima(ahora: Date = new Date()): string {
-  return new Date(ahora.getTime() - 5 * HORA_MS).toISOString().slice(0, 10)
-}
-
 export function fechasDesde(inicio: string, n: number): string[] {
   const base = Date.parse(`${inicio}T00:00:00Z`)
   return Array.from({ length: n }, (_, i) => new Date(base + i * 24 * HORA_MS).toISOString().slice(0, 10))
