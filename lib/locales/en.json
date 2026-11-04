@@ -56,6 +56,7 @@
   "Consulta médica (cobro al atender)": "Medical consultation (pay at your appointment)",
   "¿Y si vuelvo? Cómo baja el precio": "Returning for follow-up? View reduced rates",
   "Precio por convenio con {aliado}": "Partner rate with {aliado}",
+  "El médico verifica tu historial; si no corresponde, te pedirá la diferencia antes de confirmar.": "The doctor checks your history; if it doesn't match, you'll be asked to pay the difference before your appointment is confirmed.",
   "Cada consulta de seguimiento cuesta la mitad de la anterior hasta la 3ª; de ahí en adelante se mantiene ese precio. Si pasan 90 días sin volver, la cuenta empieza otra vez. Estos son los precios sin membresía: los miembros pagan menos,": "Each follow-up consultation costs half the previous fee until your third visit; that rate then stays the same. After 90 days without a visit, pricing starts again from the first-visit rate. These are non-member rates. Members pay less:",
   "ver planes": "view plans",
   "2 · Horario": "2 · Appointment time",

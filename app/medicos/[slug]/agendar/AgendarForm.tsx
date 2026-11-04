@@ -268,6 +268,8 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
               ))}
             </div>
             <p className="text-faint text-xs mt-2"><T>{"Precios sin membresía; si eres miembro y entras con tu cuenta, se aplica tu tarifa."}</T></p>
+            {/* La web no conoce el historial (vive en la app local): la visita la declara el paciente. */}
+            <p className="text-faint text-xs mt-1"><T>{"El médico verifica tu historial; si no corresponde, te pedirá la diferencia antes de confirmar."}</T></p>
           </div>
         )}
 
