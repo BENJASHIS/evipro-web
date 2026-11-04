@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Nav from '@/app/components/Nav'
 import Button from '@/app/components/ui/Button'
 import { DOCTORS } from '@/lib/doctors'
-import { precioConsulta } from '@/lib/consulta-pricing'
+import { escaleraReserva, precioConsulta } from '@/lib/consulta-pricing'
 import { MEDICO } from '@/lib/home-content'
 import { CONSULTA_PATH, SITE_URL } from '@/lib/seo'
 
@@ -63,7 +63,7 @@ export default function ConsultaCannabisPage() {
               <div key={m.id} className="border-l-2 border-brand pl-5">
                 <h3 className="text-lg mb-2"><T>{m.nombre}</T></h3>
                 <p className="text-3xl mb-2">S/{precioConsulta(m.id, 'regular', 1)} <span className="text-sm text-muted"><T>{"primera consulta"}</T></span></p>
-                <p className="text-muted text-sm mb-3"><T>{"Reconsulta: S/"}</T>{precioConsulta(m.id, 'regular', 2)}<T>{" · Desde la tercera: S/"}</T>{precioConsulta(m.id, 'regular', 3)}</p>
+                <p className="text-muted text-sm mb-3 font-mono">{escaleraReserva(m.id)}</p>
                 <p className="text-sm text-muted leading-relaxed"><T>{m.detalle}</T></p>
                 {m.id === 'presencial' && <p className="text-sm text-muted leading-relaxed mt-2"><T>{MEDICO.presencialNota}</T></p>}
               </div>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
-import { esConvenio, precioConsulta, precioReferencia, tarifaDe, type ModalidadReserva, type TarifaConsulta } from '@/lib/consulta-pricing'
+import { esConvenio, precioConsulta, precioReferencia, tarifaDe, VISITA_MAX, type ModalidadReserva, type TarifaConsulta } from '@/lib/consulta-pricing'
 import { validateBookingInput } from '@/lib/booking-validation'
 import { checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 import { readTurnstileToken, verifyTurnstileToken } from '@/lib/turnstile'
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   }
 
   const visita = body.visit_number ?? 1
-  if (![1, 2, 3].includes(visita)) return NextResponse.json({ error: 'Visita inválida' }, { status: 400 })
+  if (!Number.isInteger(visita) || visita < 1 || visita > VISITA_MAX) return NextResponse.json({ error: 'Visita inválida' }, { status: 400 })
 
   const supabase = createServiceClient()
   const authClient = await createServerSupabaseClient()
@@ -67,7 +67,9 @@ export async function POST(req: NextRequest) {
   const price_soles = cobra
     ? precioConsulta(modality as Exclude<ModalidadReserva, 'domicilio'>, user ? await tarifaDelUsuario(supabase, user.id) : 'regular', visita, false, body.convenio)
     : precioReferencia(modality, body.convenio)
-  const pago_hasta = cobra ? new Date(Date.now() + PLAZO_PAGO_MS).toISOString() : undefined
+  // Gratis (miembro en virtual desde la 5ª): nada que pagar; Carlos verifica la visita y confirma como siempre.
+  const conPago = cobra && price_soles > 0
+  const pago_hasta = conPago ? new Date(Date.now() + PLAZO_PAGO_MS).toISOString() : undefined
   if (cobra) await liberarVencidas(supabase, doctor_slug)
 
   const { data, error } = await supabase
@@ -83,10 +85,11 @@ export async function POST(req: NextRequest) {
       is_first_session: true,
       price_soles,
       paid: false,
-      payment_method: 'manual',
+      payment_method: price_soles === 0 ? 'free' : 'manual',
       user_id: user?.id ?? null,
       convenio: esConvenio(body.convenio) ? body.convenio : null,
-      ...(cobra ? { visit_number: visita, pago_hasta, policy_version: POLITICA_CANCELACION_VERSION } : {}),
+      ...(cobra ? { visit_number: visita } : {}),
+      ...(conPago ? { pago_hasta, policy_version: POLITICA_CANCELACION_VERSION } : {}),
     })
     .select('id')
     .single()
@@ -99,7 +102,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No se pudo guardar la solicitud' }, { status: 500 })
   }
   // El evento de Google se crea al reportar el pago o al confirmar: una reserva que vence no deja eventos.
-  if (cobra) return NextResponse.json({ booking_id: data.id, pago: { monto: price_soles, pago_hasta } })
+  if (conPago) return NextResponse.json({ booking_id: data.id, pago: { monto: price_soles, pago_hasta } })
   return NextResponse.json({ booking_id: data.id })
 }
 

@@ -3,21 +3,21 @@ export type ModalidadConsulta = 'presencial' | 'virtual'
 /** Qué paga cada quien: sin membresía, con la Básica (S/9.90) o con EVIPro. */
 export type TarifaConsulta = 'regular' | 'basica' | 'evipro'
 
-// [1ª, 2ª, 3ª+] por modalidad y tarifa. Números exactos de Carlos; el piso (3º)
-// es dato, no cálculo, para no arrastrar redondeos (p.ej. virtual regular = 17,
-// no 17.5). La Básica queda a medio camino: descuento real, pero con distancia
-// suficiente para que EVIPro siga teniendo sentido.
-export const PRECIOS_CONSULTA: Record<
-  ModalidadConsulta,
-  Record<TarifaConsulta, [number, number, number]>
-> = {
+// [1ª, 2ª, 3ª, …] por modalidad y tarifa; el último escalón vale para las siguientes.
+// Números exactos de Carlos (virtual reajustada el 2026-11-03): son dato, no cálculo.
+// La Básica queda a medio camino entre el regular y EVIPro; en virtual, los miembros
+// no pagan desde la 5ª (0). Presencial sin cambios.
+export const PRECIOS_CONSULTA: Record<ModalidadConsulta, Record<TarifaConsulta, number[]>> = {
   presencial: { regular: [100, 50, 25], basica: [80, 40, 20], evipro: [60, 30, 15] },
-  virtual:    { regular: [70, 35, 17],  basica: [55, 28, 14], evipro: [40, 20, 10] },
+  virtual:    { regular: [80, 40, 20, 10], basica: [60, 30, 15, 10, 0], evipro: [40, 20, 10, 10, 0] },
 }
+
+/** Visita más alta que el paciente puede declarar («Quinta o más»). */
+export const VISITA_MAX = 5
 
 /** Aliados que mandan pacientes con su enlace `/medicos/dr-jara/agendar?convenio=<slug de lib/aliados.ts>`.
  *  Números de Carlos; el 3º (S/10) es para quien viene seguido. Modalidad sin fila = precio regular. */
-export const CONVENIOS: Record<string, Partial<Record<ModalidadConsulta, [number, number, number]>>> = {
+export const CONVENIOS: Record<string, Partial<Record<ModalidadConsulta, number[]>>> = {
   ascamed: { virtual: [40, 20, 10] },
   'cannabis-libre-club': { virtual: [40, 20, 10] },
 }
@@ -34,8 +34,8 @@ export function tarifaDe(planType: string | undefined): TarifaConsulta {
 }
 
 /** Precio de una consulta según modalidad, tarifa y nº de visita (1 = primera,
- *  2 = reconsulta, 3+ = piso). `bonoRenovacion` = miembro EVIPro que recién
- *  pagó/renovó: arranca un escalón más abajo (2º), una vez por pago. */
+ *  2 = reconsulta…; pasado el último escalón, se queda en él). `bonoRenovacion` =
+ *  miembro EVIPro que recién pagó/renovó: arranca un escalón más abajo, una vez por pago. */
 export function precioConsulta(
   modalidad: ModalidadConsulta,
   tarifa: TarifaConsulta,
@@ -45,10 +45,10 @@ export function precioConsulta(
 ): number {
   const fila = PRECIOS_CONSULTA[modalidad][tarifa]
   const escalon = (bonoRenovacion && tarifa === 'evipro') ? visita + 1 : visita
-  const idx = Math.min(Math.max(escalon, 1), 3) - 1
+  const en = (f: number[]) => f[Math.min(Math.max(escalon, 1), f.length) - 1]
   const conv = esConvenio(convenio) ? CONVENIOS[convenio][modalidad] : undefined
   // El convenio nunca encarece: si la membresía o el regular cobran menos, gana el menor.
-  return conv ? Math.min(fila[idx], conv[idx]) : fila[idx]
+  return conv ? Math.min(en(fila), en(conv)) : en(fila)
 }
 
 export type ModalidadReserva = ModalidadConsulta | 'domicilio'
@@ -68,10 +68,18 @@ export function precioReferencia(modalidad: ModalidadReserva, convenio?: string)
   return modalidad === 'domicilio' ? PRECIO_DOMICILIO : precioConsulta(modalidad, 'regular', 1, false, convenio)
 }
 
-/** Texto de escalera que muestra la página pública (tarifa regular). */
-export function escaleraReserva(modalidad: ModalidadReserva, locale: 'es' | 'en' = 'es', convenio?: string): string {
-  if (modalidad === 'domicilio') return `${locale === 'en' ? 'From' : 'Desde'} S/${PRECIO_DOMICILIO}`
-  const [p1, p2, p3] = [1, 2, 3].map(v => precioConsulta(modalidad, 'regular', v, false, convenio))
-  if (locale === 'en') return `1st S/${p1} · follow-up S/${p2} · 3rd onwards S/${p3}`
-  return `1ª S/${p1} · reconsulta S/${p2} · desde 3ª S/${p3}`
+/** Texto de escalera que muestran las páginas públicas: «1ª S/80 · reconsulta S/40 · 3ª S/20 · desde 4ª S/10». */
+export function escaleraReserva(
+  modalidad: ModalidadReserva, locale: 'es' | 'en' = 'es', convenio?: string, tarifa: TarifaConsulta = 'regular',
+): string {
+  const en = locale === 'en'
+  if (modalidad === 'domicilio') return `${en ? 'From' : 'Desde'} S/${PRECIO_DOMICILIO}`
+  const p = Array.from({ length: VISITA_MAX }, (_, i) => precioConsulta(modalidad, tarifa, i + 1, false, convenio))
+  while (p.length > 1 && p[p.length - 1] === p[p.length - 2]) p.pop()
+  return p.map((precio, i) => {
+    const orden = en ? `${i + 1}${['st', 'nd', 'rd'][i] ?? 'th'}` : `${i + 1}ª`
+    const etiqueta = i > 0 && i === p.length - 1 ? (en ? `${orden} onwards` : `desde ${orden}`)
+      : i === 1 ? (en ? 'follow-up' : 'reconsulta') : orden
+    return `${etiqueta} ${precio === 0 ? (en ? 'free' : 'gratis') : `S/${precio}`}`
+  }).join(' · ')
 }

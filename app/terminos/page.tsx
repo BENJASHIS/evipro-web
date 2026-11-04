@@ -1,6 +1,6 @@
 import { localizedMetadata } from '@/lib/localized-metadata'
 import { T } from '@/app/components/Language'
-import { PRECIOS_CONSULTA, PRECIO_DOMICILIO } from '@/lib/consulta-pricing'
+import { escaleraReserva, PRECIO_DOMICILIO } from '@/lib/consulta-pricing'
 
 export const generateMetadata = () => localizedMetadata('/terminos', 'Términos y Condiciones · EVIPro',
   'Condiciones de uso, consultas y membresías de EVIPro. Revisa las condiciones del servicio antes de reservar.')
@@ -11,7 +11,7 @@ export default function TerminosPage() {
       <div className="public-panel max-w-3xl mx-auto rounded-lg p-6 sm:p-10">
         <p className="text-xs font-mono uppercase tracking-widest text-brand mb-4">Legal</p>
         <h1 className="text-4xl font-light font-serif italic mb-2"><T>{"Términos y Condiciones"}</T></h1>
-        <p className="text-faint text-xs font-mono mb-12"><T>{"Última actualización: agosto 2026"}</T></p>
+        <p className="text-faint text-xs font-mono mb-12"><T>{"Última actualización: noviembre 2026"}</T></p>
 
         <div className="space-y-10 text-gray-300 text-sm leading-relaxed">
 
@@ -31,11 +31,11 @@ export default function TerminosPage() {
 
             <h3 className="text-white font-light mb-2 mt-6"><T>{"3.1 Consulta médica"}</T></h3>
             <p className="mb-3"><T>{"La consulta médica es un acto médico: historia clínica, evaluación de interacciones, diagnóstico y, cuando corresponde, receta e inscripción en el RENPUC. "}</T><strong className="text-white"><T>{"No requiere membresía ni crear una cuenta"}</T></strong><T>{": se agenda con nombre y teléfono. El pago de la consulta "}</T><strong className="text-white"><T>{"no se cobra en línea"}</T></strong><T>{"; se realiza directamente al médico en el momento de la atención."}</T></p>
-            <p className="mb-3"><T>{"El precio depende de la modalidad y de cuántas veces ha venido el paciente. Cada consulta de seguimiento cuesta la mitad de la anterior hasta la tercera; de la tercera en adelante se mantiene ese precio, que es el más bajo. Si transcurren 90 días sin volver, la cuenta reinicia desde la primera consulta. Tarifas vigentes en soles (1ª · 2ª · 3ª en adelante):"}</T></p>
+            <p className="mb-3"><T>{"El precio depende de la modalidad, de la membresía y de cuántas veces ha venido el paciente: cada consulta de seguimiento cuesta menos que la anterior hasta llegar al precio más bajo, que se mantiene. En la consulta virtual, los miembros no pagan desde la quinta consulta. Si transcurren 90 días sin volver, la cuenta reinicia desde la primera consulta. Tarifas vigentes en soles:"}</T></p>
             <ul className="list-disc list-inside space-y-1 ml-2 mb-3">
-              <li><strong className="text-white"><T>{"Sin membresía:"}</T></strong><T>{" presencial "}</T>{PRECIOS_CONSULTA.presencial.regular.join(' · ')}<T>{" · virtual "}</T>{PRECIOS_CONSULTA.virtual.regular.join(' · ')}</li>
-              <li><strong className="text-white"><T>{"Con Membresía Básica:"}</T></strong><T>{" presencial "}</T>{PRECIOS_CONSULTA.presencial.basica.join(' · ')}<T>{" · virtual "}</T>{PRECIOS_CONSULTA.virtual.basica.join(' · ')}</li>
-              <li><strong className="text-white"><T>{"Con Membresía EVIPro:"}</T></strong><T>{" presencial "}</T>{PRECIOS_CONSULTA.presencial.evipro.join(' · ')}<T>{" · virtual "}</T>{PRECIOS_CONSULTA.virtual.evipro.join(' · ')}<T>{". El miembro que acaba de pagar o renovar inicia directamente en el segundo escalón, una vez por pago."}</T></li>
+              <li><strong className="text-white"><T>{"Sin membresía:"}</T></strong><T>{" presencial "}</T>{escaleraReserva('presencial')}<T>{"; virtual "}</T>{escaleraReserva('virtual')}</li>
+              <li><strong className="text-white"><T>{"Con Membresía Básica:"}</T></strong><T>{" presencial "}</T>{escaleraReserva('presencial', 'es', undefined, 'basica')}<T>{"; virtual "}</T>{escaleraReserva('virtual', 'es', undefined, 'basica')}</li>
+              <li><strong className="text-white"><T>{"Con Membresía EVIPro:"}</T></strong><T>{" presencial "}</T>{escaleraReserva('presencial', 'es', undefined, 'evipro')}<T>{"; virtual "}</T>{escaleraReserva('virtual', 'es', undefined, 'evipro')}<T>{". El miembro que acaba de pagar o renovar inicia directamente en el segundo escalón, una vez por pago."}</T></li>
               <li><strong className="text-white"><T>{"Visita a domicilio:"}</T></strong><T>{" desde S/. "}</T>{PRECIO_DOMICILIO}<T>{", según distancia. No aplica la escala de seguimiento."}</T></li>
             </ul>
             <p className="mb-3"><T>{"El médico puede no prescribir si clínicamente no está indicado; la consulta se cobra igual, porque el servicio prestado es la evaluación médica."}</T></p>

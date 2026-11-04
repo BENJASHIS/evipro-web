@@ -96,8 +96,8 @@ describe('POST /api/reservar/book con pago al reservar', () => {
     vi.setSystemTime(new Date('2026-11-01T20:00:00Z'))
     const r = await POST(pedir({ ...cuerpoValido, visit_number: 2 }))
     const pago_hasta = '2026-11-01T21:00:00.000Z'
-    expect(estado.insertado).toMatchObject({ price_soles: 35, visit_number: 2, pago_hasta, policy_version: '2026-11-01' })
-    expect(await r.json()).toEqual({ booking_id: 'b1', pago: { monto: 35, pago_hasta } })
+    expect(estado.insertado).toMatchObject({ price_soles: 40, visit_number: 2, pago_hasta, policy_version: '2026-11-01' })
+    expect(await r.json()).toEqual({ booking_id: 'b1', pago: { monto: 40, pago_hasta } })
   })
 
   it('miembro con plan cannabis activo paga su tarifa', async () => {
@@ -116,8 +116,20 @@ describe('POST /api/reservar/book con pago al reservar', () => {
     expect(estado.insertado).toMatchObject({ price_soles: 40, convenio: 'ascamed' })
   })
 
-  it('visit_number fuera de 1..3 → 400', async () => {
-    const r = await POST(pedir({ ...cuerpoValido, visit_number: 4 }))
+  it('miembro en su 5ª virtual: gratis, sin plazo de pago; Carlos verifica y confirma', async () => {
+    estado.usuario = { id: 'u1' }
+    estado.plan = 'cannabis'
+    const r = await POST(new NextRequest('http://localhost/api/reservar/book', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-real-ip': '10.0.0.5' },
+      body: JSON.stringify({ ...cuerpoValido, visit_number: 5 }),
+    }))
+    expect(estado.insertado).toMatchObject({ price_soles: 0, payment_method: 'free', visit_number: 5 })
+    expect(estado.insertado?.pago_hasta).toBeUndefined()
+    expect(await r.json()).toEqual({ booking_id: 'b1' })
+  })
+
+  it('visit_number fuera de 1..5 → 400', async () => {
+    const r = await POST(pedir({ ...cuerpoValido, visit_number: 6 }))
     expect(r.status).toBe(400)
     expect(estado.insertado).toBeNull()
   })
@@ -130,7 +142,7 @@ describe('POST /api/reservar/book con pago al reservar', () => {
 
   it('dr-vera y domicilio no llevan pago_hasta', async () => {
     await POST(pedir({ ...cuerpoValido, doctor_slug: 'dr-vera' }))
-    expect(estado.insertado).toMatchObject({ doctor_slug: 'dr-vera', price_soles: 70 })
+    expect(estado.insertado).toMatchObject({ doctor_slug: 'dr-vera', price_soles: 80 })
     expect(estado.insertado?.pago_hasta).toBeUndefined()
     await POST(pedir({ ...cuerpoValido, modality: 'domicilio', slot_date: null, slot_time: null }))
     expect(estado.insertado?.pago_hasta).toBeUndefined()

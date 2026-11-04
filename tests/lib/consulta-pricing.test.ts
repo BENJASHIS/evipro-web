@@ -8,10 +8,8 @@ describe('precioConsulta — sin membresía', () => {
     expect(precioConsulta('presencial', 'regular', 3)).toBe(25)
     expect(precioConsulta('presencial', 'regular', 9)).toBe(25)
   })
-  it('virtual escalera 70/35/17', () => {
-    expect(precioConsulta('virtual', 'regular', 1)).toBe(70)
-    expect(precioConsulta('virtual', 'regular', 2)).toBe(35)
-    expect(precioConsulta('virtual', 'regular', 3)).toBe(17)
+  it('virtual escalera 80/40/20/10, sin gratis', () => {
+    expect([1, 2, 3, 4, 5, 9].map(v => precioConsulta('virtual', 'regular', v))).toEqual([80, 40, 20, 10, 10, 10])
   })
 })
 
@@ -21,10 +19,8 @@ describe('precioConsulta — miembro EVIPro', () => {
     expect(precioConsulta('presencial', 'evipro', 2)).toBe(30)
     expect(precioConsulta('presencial', 'evipro', 3)).toBe(15)
   })
-  it('virtual 40/20/10', () => {
-    expect(precioConsulta('virtual', 'evipro', 1)).toBe(40)
-    expect(precioConsulta('virtual', 'evipro', 2)).toBe(20)
-    expect(precioConsulta('virtual', 'evipro', 3)).toBe(10)
+  it('virtual 40/20/10/10 y gratis desde la 5ª', () => {
+    expect([1, 2, 3, 4, 5, 9].map(v => precioConsulta('virtual', 'evipro', v))).toEqual([40, 20, 10, 10, 0, 0])
   })
 })
 
@@ -34,10 +30,8 @@ describe('precioConsulta — miembro Básica', () => {
     expect(precioConsulta('presencial', 'basica', 2)).toBe(40)
     expect(precioConsulta('presencial', 'basica', 3)).toBe(20)
   })
-  it('virtual 55/28/14', () => {
-    expect(precioConsulta('virtual', 'basica', 1)).toBe(55)
-    expect(precioConsulta('virtual', 'basica', 2)).toBe(28)
-    expect(precioConsulta('virtual', 'basica', 3)).toBe(14)
+  it('virtual 60/30/15/10 y gratis desde la 5ª', () => {
+    expect([1, 2, 3, 4, 5, 9].map(v => precioConsulta('virtual', 'basica', v))).toEqual([60, 30, 15, 10, 0, 0])
   })
   it('queda entre la tarifa regular y la de EVIPro', () => {
     for (const m of ['presencial', 'virtual'] as const) {
@@ -77,7 +71,7 @@ import {
 describe('precioReferencia — precio nominal que guarda /reservar', () => {
   it('presencial y virtual = 1ª consulta a tarifa regular', () => {
     expect(precioReferencia('presencial')).toBe(100)
-    expect(precioReferencia('virtual')).toBe(70)
+    expect(precioReferencia('virtual')).toBe(80)
   })
   it('domicilio = precio plano', () => {
     expect(precioReferencia('domicilio')).toBe(PRECIO_DOMICILIO)
@@ -89,8 +83,13 @@ describe('escaleraReserva — texto informativo de la página', () => {
   it('presencial muestra los tres escalones', () => {
     expect(escaleraReserva('presencial')).toBe('1ª S/100 · reconsulta S/50 · desde 3ª S/25')
   })
-  it('virtual muestra los tres escalones', () => {
-    expect(escaleraReserva('virtual')).toBe('1ª S/70 · reconsulta S/35 · desde 3ª S/17')
+  it('virtual baja hasta la 4ª', () => {
+    expect(escaleraReserva('virtual')).toBe('1ª S/80 · reconsulta S/40 · 3ª S/20 · desde 4ª S/10')
+    expect(escaleraReserva('virtual', 'en')).toBe('1st S/80 · follow-up S/40 · 3rd S/20 · 4th onwards S/10')
+  })
+  it('miembros en virtual: gratis desde la 5ª', () => {
+    expect(escaleraReserva('virtual', 'es', undefined, 'basica')).toBe('1ª S/60 · reconsulta S/30 · 3ª S/15 · 4ª S/10 · desde 5ª gratis')
+    expect(escaleraReserva('virtual', 'en', undefined, 'evipro')).toBe('1st S/40 · follow-up S/20 · 3rd S/10 · 4th S/10 · 5th onwards free')
   })
   it('domicilio no tiene escalera', () => {
     expect(escaleraReserva('domicilio')).toBe('Desde S/150')
@@ -125,10 +124,12 @@ describe('convenios con aliados — enlace ?convenio=', () => {
     expect(escaleraReserva('virtual', 'es', 'cannabis-libre-club')).toBe('1ª S/40 · reconsulta S/20 · desde 3ª S/10')
   })
   it('un convenio desconocido o de prototipo no cambia el precio', () => {
-    for (const c of ['inventado', '__proto__', 'constructor']) expect(precioConsulta('virtual', 'regular', 1, false, c)).toBe(70)
+    for (const c of ['inventado', '__proto__', 'constructor']) expect(precioConsulta('virtual', 'regular', 1, false, c)).toBe(80)
   })
-  it('el convenio no toca a los demás: sin enlace, 70/35/17; si la membresía cobra menos, gana la membresía', () => {
-    expect([1, 2, 3].map(v => precioConsulta('virtual', 'regular', v))).toEqual([70, 35, 17])
+  it('el convenio no toca a los demás ni quita el gratis del miembro', () => {
+    expect([1, 2, 3, 4].map(v => precioConsulta('virtual', 'regular', v))).toEqual([80, 40, 20, 10])
+    expect(precioConsulta('virtual', 'evipro', 5, false, 'ascamed')).toBe(0)
+    expect(precioConsulta('virtual', 'regular', 5, false, 'ascamed')).toBe(10)
     expect(precioConsulta('presencial', 'evipro', 1, false, 'ascamed')).toBe(60)
   })
   it('cada convenio es un aliado de /aliados (si no, el aviso no muestra su nombre)', () => {

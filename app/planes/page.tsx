@@ -201,7 +201,7 @@ export default async function PlanesPage() {
 
         <ConfiguradorEvipro plans={eviproPlans} addons={(addons ?? []) as PlanAddon[]} />
 
-        <p className="text-xs text-faint font-mono mt-16 leading-relaxed max-w-2xl mx-auto text-center"><T>{"Sin membresía: "}</T><LineaConsultas tarifa="regular" /><T>{"; cada membresía la abarata. Cada consulta de seguimiento cuesta la mitad de la anterior: la 2ª, la mitad de la 1ª; la 3ª, la mitad de la 2ª. De la 3ª en adelante se queda en ese precio, que es el más bajo. Si pasan 90 días sin volver, la cuenta empieza de nuevo desde la 1ª. Miembro EVIPro que acaba de pagar o renovar: su próxima consulta arranca directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia)."}</T></p>
+        <p className="text-xs text-faint font-mono mt-16 leading-relaxed max-w-2xl mx-auto text-center"><T>{"Sin membresía: "}</T><LineaConsultas tarifa="regular" /><T>{"; cada membresía la abarata. Cada consulta de seguimiento cuesta menos que la anterior hasta llegar al precio más bajo, que se mantiene; en la consulta virtual, los miembros no pagan desde la 5ª. Si pasan 90 días sin volver, la cuenta empieza de nuevo desde la 1ª. Miembro EVIPro que acaba de pagar o renovar: su próxima consulta arranca directo a mitad de precio. Visita a domicilio desde S/. 150 (según distancia)."}</T></p>
         <Link href="/medicos" className="inline-block mt-3 text-sm font-mono text-brand underline hover:text-white"><T>{"Agendar consulta sin membresía →"}</T></Link>
 
         <p className="text-center text-xs text-faint mt-6 font-mono"><T>{"Pagos procesados de forma segura por Mercado Pago · Cancela cuando quieras"}</T></p>

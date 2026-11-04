@@ -111,7 +111,7 @@ describe('AgendarForm — precios en el paso 1', () => {
     // La línea larga («1ª S/100 · reconsulta S/50 · desde 3ª S/25») se salía de
     // la pantalla en el móvil: ahora vive plegada, no en la tarjeta.
     expect(screen.getByText('S/. 100')).toBeInTheDocument()
-    expect(screen.getByText('S/. 70')).toBeInTheDocument()
+    expect(screen.getByText('S/. 80')).toBeInTheDocument()
     expect(screen.getByText(/desde S\/\. 150/)).toBeInTheDocument()
     expect(screen.getByText(/Cómo baja el precio/)).toBeInTheDocument()
   })

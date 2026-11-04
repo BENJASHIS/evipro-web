@@ -7,7 +7,7 @@ import { MEDICO } from '@/lib/home-content'
 import type { Doctor } from '@/lib/doctors'
 import { agendaDe, proximosDias } from '@/lib/booking-validation'
 import { MODALITY_LABELS, MODALITY_DURATION, getPrice, type Modality } from '@/lib/counseling'
-import { CONSULTA_MODALITY_LABELS, escaleraReserva, esConvenio, precioConsulta, precioReferencia, type ModalidadReserva } from '@/lib/consulta-pricing'
+import { CONSULTA_MODALITY_LABELS, escaleraReserva, esConvenio, precioConsulta, precioReferencia, PRECIOS_CONSULTA, type ModalidadReserva } from '@/lib/consulta-pricing'
 import { ALIADOS } from '@/lib/aliados'
 import PagoReserva from './PagoReserva'
 
@@ -16,6 +16,9 @@ const CONSULTA_MODS: ModalidadReserva[] = ['virtual', 'presencial', 'domicilio']
 const SLOT_MODS: AnyModality[] = ['video', 'presencial', 'virtual']
 const isConsulta = (m: AnyModality): m is ModalidadReserva => (CONSULTA_MODS as string[]).includes(m)
 const needsSlot = (m: AnyModality) => (SLOT_MODS as string[]).includes(m)
+// La última opción incluye las siguientes: presencial llega a «Tercera o más»; virtual, a «Quinta o más».
+const NOMBRE_VISITA = ['', 'Primera consulta', 'Segunda consulta', 'Tercera consulta', 'Cuarta consulta']
+const ULTIMA_VISITA: Record<number, string> = { 3: 'Tercera o más', 5: 'Quinta o más' }
 const labelOf = (m: AnyModality) =>
   isConsulta(m) ? CONSULTA_MODALITY_LABELS[m] : MODALITY_LABELS[m as Modality]
 
@@ -31,7 +34,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   // Con pago al reservar (Yape/Plin) la mayoría consulta virtual: queda marcada de entrada.
   const cobraAlReservar = !!doctor.pagoAlReservar
   const [modality, setModality] = useState<AnyModality | null>(cobraAlReservar ? 'virtual' : null)
-  const [visita, setVisita] = useState<1 | 2 | 3>(1)
+  const [visita, setVisita] = useState(1)
   const [reservaPago, setReservaPago] = useState<string | null>(null)
   const [convenio, setConvenio] = useState<string | undefined>()
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
@@ -233,7 +236,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
           {CONSULTA_MODS.map(m => (
             <button
               key={m}
-              onClick={() => { setModality(m); setSelectedDate(null); setSelectedTime(null); setIsFirst(null) }}
+              onClick={() => { setModality(m); setSelectedDate(null); setSelectedTime(null); setIsFirst(null); setVisita(1) }}
               className={`w-full text-left p-4 border rounded transition-colors focus-visible:border-brand ${
                 modality === m ? 'border-brand bg-brand/5' : 'border-subtle hover:border-white/30'
               }`}
@@ -257,12 +260,12 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
           <div className="mt-4">
             <p className="text-faint text-xs font-mono mb-2"><T>{"¿Qué consulta es con el doctor?"}</T></p>
             <div className="flex flex-wrap gap-2">
-              {([1, 2, 3] as const).map(v => (
+              {Array.from({ length: Math.max(...Object.values(PRECIOS_CONSULTA[modality]).map(f => f.length)) }, (_, i) => i + 1).map((v, _, todas) => (
                 <button key={v} onClick={() => setVisita(v)}
                   className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors ${
                     visita === v ? 'border-brand bg-brand/5 text-white' : 'border-subtle text-faint hover:border-white/30'
                   }`}>
-                  {v === 1 ? <T>{"Primera consulta"}</T> : v === 2 ? <T>{"Segunda consulta"}</T> : <T>{"Tercera o más"}</T>}
+                  {t(v === todas.length ? ULTIMA_VISITA[v] : NOMBRE_VISITA[v])}
                   {` · S/. ${precioConsulta(modality, 'regular', v, false, convenio)}`}
                 </button>
               ))}
@@ -302,7 +305,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
                 <span className="font-mono">{escaleraReserva(m, locale)}</span>
               </p>
             ))}
-            <p><T>{"Cada consulta de seguimiento cuesta la mitad de la anterior hasta la 3ª; de ahí en adelante se mantiene ese precio. Si pasan 90 días sin volver, la cuenta empieza otra vez. Estos son los precios sin membresía: los miembros pagan menos,"}</T>{' '}
+            <p><T>{"Cada consulta de seguimiento cuesta menos que la anterior hasta llegar al precio más bajo, que se mantiene. Si pasan 90 días sin volver, la cuenta empieza otra vez. Estos son los precios sin membresía: los miembros pagan menos y, en la consulta virtual, no pagan desde la 5ª,"}</T>{' '}
               <Link href="/planes" className="underline hover:text-white"><T>{"ver planes"}</T></Link>.
             </p>
           </div>
