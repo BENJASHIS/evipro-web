@@ -106,6 +106,14 @@ describe('POST /api/reservar/pago', () => {
     expect((await r.json()).error).toBe('Ese número de operación ya se usó en otra reserva')
   })
 
+  it('código repetido (23505) → 409 que habla de código, no de número de operación', async () => {
+    estado.errorUpdate = { code: '23505', message: 'counseling_bookings_payment_reference_unique' }
+    estado.credito = { id: 'c1' }
+    const r = await POST(post({ reserva: ID, medio: 'codigo', referencia: 'evi-abcd2345' }))
+    expect(r.status).toBe(409)
+    expect((await r.json()).error).toBe('Ese código ya se usó en otra reserva')
+  })
+
   it('reserva vencida → 410 con el aviso de WhatsApp', async () => {
     estado.fila = { ...filaBase, cancelled_at: '2099-11-01T21:00:01Z', cancel_reason: 'sin pago en 1 hora' }
     const r = await POST(post({ reserva: ID, medio: 'yape', referencia: '12345678' }))

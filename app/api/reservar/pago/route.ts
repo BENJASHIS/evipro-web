@@ -9,12 +9,17 @@ const MEDIOS: MedioReporte[] = ['yape', 'plin', 'codigo']
 
 /** Lo que necesita la pantalla de pago. Sin nombre ni teléfono del paciente. */
 export async function GET(req: NextRequest) {
+  // Holgado: la pantalla consulta al abrir y hasta 10 veces al volver de pagar con tarjeta.
+  const limit = checkRateLimit(req, { namespace: 'api:reservar-pago-get', limit: 60, windowMs: 10 * 60 * 1000 })
+  if (!limit.ok) return rateLimitResponse(limit)
   const leida = await leerReservaConPago(createServiceClient(), req.nextUrl.searchParams.get('reserva'))
   if (!leida) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
   const { reserva: r, doctor } = leida
   return NextResponse.json({
     estado: bookingStatus(r),
     vencida: r.cancel_reason === MOTIVO_VENCIDA,
+    // Cancelada pero pagada: pagó con tarjeta cuando el turno ya no estaba (devolución pendiente).
+    pagada: r.paid,
     slot_date: r.slot_date,
     slot_time: r.slot_time?.slice(0, 5) ?? null,
     modality: r.modality,
@@ -75,7 +80,9 @@ export async function POST(req: NextRequest) {
       ...(medio === 'codigo' ? { price_soles: 0 } : {}),
     })
     .eq('id', r.id)
-  if (error?.code === '23505') return NextResponse.json({ error: 'Ese número de operación ya se usó en otra reserva' }, { status: 409 })
+  if (error?.code === '23505') {
+    return NextResponse.json({ error: medio === 'codigo' ? 'Ese código ya se usó en otra reserva' : 'Ese número de operación ya se usó en otra reserva' }, { status: 409 })
+  }
   if (error) {
     console.error('[reservar/pago] db error:', error.message)
     return NextResponse.json({ error: 'No se pudo guardar el pago' }, { status: 500 })

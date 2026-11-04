@@ -68,6 +68,15 @@ describe('PagoReserva', () => {
     render(<PagoReserva reservaId="r1" />)
     await pagar(/Plin/, '12345678')
     expect(await screen.findByText('Tu turno venció. Si ya pagaste, escríbenos por WhatsApp con tu número de operación')).toBeTruthy()
+    const enlace = screen.getByRole('link', { name: 'Escribir al doctor' }).getAttribute('href')!
+    expect(decodeURIComponent(enlace)).toContain('Plin operación 12345678, pero el turno venció.')
+  })
+
+  it('pagó con tarjeta y el turno ya no estaba: dice que recibimos su pago, no que se canceló', async () => {
+    info = { ...pendiente, estado: 'cancelled', pagada: true }
+    render(<PagoReserva reservaId="r1" />)
+    expect(await screen.findByText(/Recibimos tu pago, pero ese turno ya no está disponible/)).toBeTruthy()
+    expect(screen.queryByText(/fue cancelada/)).toBeNull()
   })
 
   it('"Pagar desde el extranjero (tarjeta)" lleva al checkout de Mercado Pago', async () => {

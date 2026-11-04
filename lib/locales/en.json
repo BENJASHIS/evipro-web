@@ -813,6 +813,8 @@
   "Número de operación inválido": "Invalid transaction number",
   "Código inválido": "Invalid code",
   "Ese número de operación ya se usó en otra reserva": "That transaction number was already used for another booking",
+  "Ese código ya se usó en otra reserva": "That code was already used for another booking",
+  "Recibimos tu pago, pero ese turno ya no está disponible. Escríbenos por WhatsApp para elegir otra fecha o pedir la devolución.": "We received your payment, but that slot is no longer available. Message us on WhatsApp to choose another date or request a refund.",
   "La reserva ya no está pendiente de pago": "This booking is no longer awaiting payment",
   "Consulta médica (pago al reservar)": "Medical consultation (pay when booking)",
   "¿Qué consulta es con el doctor?": "Which visit with the doctor is this?",

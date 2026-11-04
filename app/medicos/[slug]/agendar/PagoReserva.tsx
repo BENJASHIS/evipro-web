@@ -9,6 +9,7 @@ type Medio = MedioQR | 'codigo'
 interface InfoPago {
   estado: string
   vencida: boolean
+  pagada: boolean
   slot_date: string | null
   slot_time: string | null
   modality: string
@@ -39,6 +40,8 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [aviso, setAviso] = useState<string | null>(null)
+  // El turno venció justo al avisar el pago: WhatsApp con el número de operación ya escrito.
+  const [avisoVencida, setAvisoVencida] = useState<string | null>(null)
   const [ahora, setAhora] = useState(() => Date.now())
   const [tarjeta] = useState(() =>
     typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('collection_status') === 'approved')
@@ -83,10 +86,12 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
   if (info.estado === 'cancelled') {
     return (
       <div className="max-w-md space-y-4">
-        {info.vencida
+        {info.pagada
+          ? <p className="text-muted text-sm"><T>{"Recibimos tu pago, pero ese turno ya no está disponible. Escríbenos por WhatsApp para elegir otra fecha o pedir la devolución."}</T></p>
+          : info.vencida
           ? <p className="text-muted text-sm"><T>{"Tu turno venció. Si ya pagaste, escríbenos por WhatsApp con tu número de operación"}</T></p>
           : <p className="text-muted text-sm"><T>{"Esta reserva fue cancelada. Escríbenos por WhatsApp si necesitas otra fecha."}</T></p>}
-        <a href={wa(info.whatsapp, `Hola, sobre mi reserva del ${cuando}.`)} target="_blank" rel="noopener noreferrer"
+        <a href={wa(info.whatsapp, info.pagada ? `Hola, pagué mi reserva del ${cuando} y el turno ya no estaba disponible.` : `Hola, sobre mi reserva del ${cuando}.`)} target="_blank" rel="noopener noreferrer"
           className="inline-block bg-brand text-black px-6 py-2.5 rounded font-mono text-sm hover:bg-brand-hover transition-colors">
           <T>{"Escribir al doctor"}</T>
         </a>
@@ -114,21 +119,24 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
     if (!info) return
     setEnviando(true)
     setError(null)
+    setAvisoVencida(null)
+    const ref = referencia.trim()
+    const mensaje = medio === 'codigo'
+      ? `Reservé el ${cuando} con mi código de consulta gratis ${ref}`
+      : `Pagué mi reserva del ${cuando}, ${NOMBRE[medio]} operación ${ref}`
     try {
       const r = await fetch('/api/reservar/pago', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reserva: reservaId, medio, referencia: referencia.trim() }),
+        body: JSON.stringify({ reserva: reservaId, medio, referencia: ref }),
       })
       const cuerpo = await r.json().catch(() => ({})) as { error?: string }
       if (!r.ok) {
         setError(cuerpo.error ?? 'No se pudo guardar el pago. Intenta de nuevo.')
+        if (r.status === 410) setAvisoVencida(`${mensaje}, pero el turno venció.`)
         return
       }
-      const ref = referencia.trim()
-      setAviso(medio === 'codigo'
-        ? `Reservé el ${cuando} con mi código de consulta gratis ${ref}`
-        : `Pagué mi reserva del ${cuando}, ${NOMBRE[medio]} operación ${ref}`)
+      setAviso(mensaje)
     } finally {
       setEnviando(false)
     }
@@ -210,6 +218,12 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
         </div>
 
         {error && <p className="text-red-400 text-xs font-mono">{t(error)}</p>}
+        {avisoVencida && (
+          <a href={wa(info.whatsapp, avisoVencida)} target="_blank" rel="noopener noreferrer"
+            className="inline-block bg-brand text-black px-6 py-2.5 rounded font-mono text-sm hover:bg-brand-hover transition-colors">
+            <T>{"Escribir al doctor"}</T>
+          </a>
+        )}
 
         <button disabled={!referencia.trim() || enviando} onClick={avisarPago}
           className="w-full py-2.5 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-40 font-mono">
