@@ -1,6 +1,13 @@
 // El gotero que maneja EVIPro: mismo valor que GOTAS_ML_ESTANDAR en core/dosis.py.
 export const DEFAULT_DROPS_PER_ML = 20
 
+// Valores nominales de la app clínica (PERFIL_INHALACION en templates/app.html), en mg de THC.
+export const INHALATION_PROFILES = [
+  { value: 'corta', label: 'Corta · 1-2 s · 1-2 mg THC', thcMg: 1.5 },
+  { value: 'estandar', label: 'Estándar · 3-4 s · 3-4 mg THC', thcMg: 3.5 },
+  { value: 'larga', label: 'Larga · 5+ s · más de 5 mg THC', thcMg: 5.5 },
+]
+
 export type OilInputMode = 'mg_per_ml' | 'total_mg' | 'percent_weight_volume'
 export type CannabinoidInputMode = OilInputMode
 export type InhalationInputMode = 'percent_of_product' | 'total_mg'
@@ -179,6 +186,18 @@ export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
     expectedInhalations: roundTo(expectedInhalations),
     productGrams: roundTo(productGrams, 3),
     ratio: cannabinoidRatio(cbdTotalMg, thcTotalMg),
+  }
+}
+
+export function calculateInhalationDose(thcMgPerInhalation: NumericInput, inhalationsPerDose: NumericInput) {
+  const perInhalation = requiredNumber(thcMgPerInhalation, 'mg de THC por inhalación', true)
+  const inhalations = optionalPositive(inhalationsPerDose, 'Inhalaciones por toma')
+  if (inhalations !== null && !Number.isInteger(inhalations)) {
+    throw new RangeError('Inhalaciones por toma: introduce un número entero mayor que 0.')
+  }
+  return {
+    thcMgPerInhalation: roundTo(perInhalation, 3),
+    thcMgPerDose: roundTo(inhalations === null ? null : perInhalation * inhalations, 3),
   }
 }
 

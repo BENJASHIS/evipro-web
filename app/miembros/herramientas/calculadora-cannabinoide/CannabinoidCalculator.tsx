@@ -4,9 +4,11 @@ import { useId, useMemo, useState, type ReactNode } from 'react'
 import { T, useLanguage } from '@/app/components/Language'
 import {
   calculateFlowerMetrics,
+  calculateInhalationDose,
   calculateInhalationMetrics,
   calculateOilMetrics,
   DEFAULT_DROPS_PER_ML,
+  INHALATION_PROFILES,
   type InhalationInputMode,
   type OilInputMode,
 } from '@/lib/cannabinoid-calculator'
@@ -171,7 +173,9 @@ export default function CannabinoidCalculator() {
   const [productGrams, setProductGrams] = useState('')
   const [inhalationCbdValue, setInhalationCbdValue] = useState('')
   const [inhalationThcValue, setInhalationThcValue] = useState('')
-  const [expectedInhalations, setExpectedInhalations] = useState('')
+  const [inhalationProfile, setInhalationProfile] = useState('estandar')
+  const [measuredThcMg, setMeasuredThcMg] = useState('')
+  const [inhalationsPerDose, setInhalationsPerDose] = useState('')
   const [flowerGrams, setFlowerGrams] = useState('')
   const [flowerCbdPercent, setFlowerCbdPercent] = useState('')
   const [flowerThcPercent, setFlowerThcPercent] = useState('')
@@ -192,8 +196,12 @@ export default function CannabinoidCalculator() {
     productGrams: numberFrom(productGrams),
     cbdValue: numberFrom(inhalationCbdValue),
     thcValue: numberFrom(inhalationThcValue),
-    expectedInhalations: numberFrom(expectedInhalations),
-  }), [inhalationInputMode, productGrams, inhalationCbdValue, inhalationThcValue, expectedInhalations])
+    expectedInhalations: null,
+  }), [inhalationInputMode, productGrams, inhalationCbdValue, inhalationThcValue])
+
+  const thcMgPerInhalation = inhalationProfile === 'medido'
+    ? numberFrom(measuredThcMg)
+    : INHALATION_PROFILES.find(profile => profile.value === inhalationProfile)?.thcMg ?? null
 
   const flowerInput = useMemo(() => ({
     flowerGrams: numberFrom(flowerGrams),
@@ -203,7 +211,10 @@ export default function CannabinoidCalculator() {
   }), [flowerGrams, flowerCbdPercent, flowerThcPercent, flowerInhalations])
 
   const oilResult = useMemo(() => calculatorResult(() => calculateOilMetrics(oilInput)), [oilInput])
-  const inhalationResult = useMemo(() => calculatorResult(() => calculateInhalationMetrics(inhalationInput)), [inhalationInput])
+  const inhalationResult = useMemo(() => calculatorResult(() => ({
+    ...calculateInhalationMetrics(inhalationInput),
+    ...calculateInhalationDose(thcMgPerInhalation, numberFrom(inhalationsPerDose)),
+  })), [inhalationInput, thcMgPerInhalation, inhalationsPerDose])
   const flowerResult = useMemo(() => calculatorResult(() => calculateFlowerMetrics(flowerInput)), [flowerInput])
   const oil = oilResult.value
   const inhalation = inhalationResult.value
@@ -245,7 +256,7 @@ export default function CannabinoidCalculator() {
           <p className="text-xs leading-5 text-faint mb-5">
             {productKind === 'oil' && <T>{OIL_HELP[oilInputMode]}</T>}
             {productKind === 'inhalation' && <T>{INHALATION_HELP[inhalationInputMode]}</T>}
-            {productKind === 'flower' && <T>Para flor vaporizada, usa el porcentaje de cannabinoides de la etiqueta y la cantidad de flor cargada. Ej.: 10% en 0.1 g = 10 mg totales teóricos.</T>}
+            {productKind === 'flower' && <><T>Para flor vaporizada, usa el porcentaje de cannabinoides de la etiqueta y la cantidad de flor cargada. Ej.: 10% en 0.1 g = 10 mg totales teóricos.</T> <T>Las inhalaciones reparten ese total: cuantas más, menos mg en cada una.</T></>}
           </p>
 
           {productKind === 'oil' && <details className="text-xs leading-5 text-faint mb-5">
@@ -269,7 +280,14 @@ export default function CannabinoidCalculator() {
                 <Field label="Contenido del producto" value={productGrams} onChange={setProductGrams} step="0.1" suffix="g" />
                 <Field label="CBD declarado" value={inhalationCbdValue} onChange={setInhalationCbdValue} max={inhalationInputMode === 'percent_of_product' ? '100' : undefined} suffix={inhalationInputModeOption.suffix} />
                 <Field label="THC declarado" value={inhalationThcValue} onChange={setInhalationThcValue} max={inhalationInputMode === 'percent_of_product' ? '100' : undefined} suffix={inhalationInputModeOption.suffix} />
-                <Field label="Inhalaciones estimadas" value={expectedInhalations} onChange={setExpectedInhalations} min="1" step="1" suffix="inh." optional />
+                <SelectField label="Duración de la inhalación" value={inhalationProfile} onChange={setInhalationProfile}>
+                  {INHALATION_PROFILES.map(profile => (
+                    <option key={profile.value} value={profile.value} className="bg-ink"><T>{profile.label}</T></option>
+                  ))}
+                  <option value="medido" className="bg-ink"><T>Medido en mi dispositivo</T></option>
+                </SelectField>
+                {inhalationProfile === 'medido' && <Field label="mg de THC por inhalación" value={measuredThcMg} onChange={setMeasuredThcMg} suffix="mg" />}
+                <Field label="Inhalaciones por toma" value={inhalationsPerDose} onChange={setInhalationsPerDose} min="1" step="1" suffix="inh." optional />
               </>
             ) : (
               <>
@@ -280,6 +298,8 @@ export default function CannabinoidCalculator() {
               </>
             )}
           </div>
+
+          {productKind === 'inhalation' && <p className="text-xs leading-5 text-faint mt-4"><T>Valores de referencia para cartuchos con THC: cambian con el aparato, la temperatura y la duración. Si mediste tu dispositivo, elige «Medido en mi dispositivo».</T></p>}
 
           {productKind === 'oil' && <details className="text-xs leading-5 text-faint mt-4">
             <summary className="cursor-pointer"><T values={{ n: dropsPerMl.trim() || DEFAULT_DROPS_PER_ML }}>{'Gotero: {n} gotas por ml (cambiar)'}</T></summary>
@@ -321,8 +341,8 @@ export default function CannabinoidCalculator() {
                   value={formatPair(inhalation.cbdPercentOfProduct, inhalation.thcPercentOfProduct, '%')}
                 />
                 <PrimaryResult
-                  label="Por inhalación teórica"
-                  value={inhalation.expectedInhalations === null ? t('Faltan inhalaciones estimadas') : formatPair(inhalation.cbdMgPerInhalation, inhalation.thcMgPerInhalation, 'mg', 3)}
+                  label="Por inhalación (estimado)"
+                  value={inhalation.thcTotalMg === 0 ? t('No aplica: la referencia es para THC') : `THC ≈ ${format(inhalation.thcMgPerInhalation, 'mg', 3)}`}
                 />
               </>
             ) : productKind === 'flower' && flower ? (
@@ -354,8 +374,8 @@ export default function CannabinoidCalculator() {
             </>
           ) : productKind === 'inhalation' && inhalation ? (
             <>
+              <ResultRow label="Por toma (estimado)" value={inhalation.thcTotalMg === 0 ? t('No aplica: la referencia es para THC') : inhalation.thcMgPerDose === null ? t('Faltan inhalaciones por toma') : `THC ≈ ${format(inhalation.thcMgPerDose, 'mg', 3)}`} />
               <ResultRow label="Producto" value={format(inhalation.productGrams, 'g', 2)} />
-              {inhalation.expectedInhalations !== null && <ResultRow label="Inhalaciones" value={format(inhalation.expectedInhalations, t('estimadas'), 0)} />}
             </>
           ) : productKind === 'flower' && flower ? (
             <>
@@ -370,7 +390,7 @@ export default function CannabinoidCalculator() {
       <section className="border border-yellow-400/30 bg-yellow-400/5 rounded-lg p-5">
         <p className="text-xs font-mono uppercase tracking-widest text-yellow-300 mb-2"><T>Uso seguro</T></p>
         <p className="text-sm leading-6 text-yellow-50">
-          <T>Esta calculadora solo convierte datos de etiqueta. Aquí el porcentaje del aceite se interpreta por volumen; en cartuchos y flor, según el peso. Esas bases no son intercambiables. No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.</T>
+          <T>Esta calculadora convierte datos de etiqueta; el gotero y la inhalación usan valores de referencia. Aquí el porcentaje del aceite se interpreta por volumen; en cartuchos y flor, según el peso. Esas bases no son intercambiables. No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.</T>
         </p>
       </section>
     </div>

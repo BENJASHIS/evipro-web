@@ -105,22 +105,47 @@ describe('CannabinoidCalculator', () => {
     expect(screen.queryByText(/CBD 600 mg/)).not.toBeInTheDocument()
   })
 
-  it('conserva el contenido de cartucho con inhalaciones vacías sin presentar cero por inhalación', () => {
-    render(<CannabinoidCalculator />)
+  function fillCartridge(thc: string) {
     enter(/tipo de producto/i, 'inhalation')
     enter(/contenido del producto/i, '1')
-    enter(/cbd declarado/i, '0')
-    enter(/thc declarado/i, '68')
-    expect(screen.getByText('CBD 0 mg · THC 680 mg')).toBeInTheDocument()
-    expect(screen.getByText('CBD 0 % · THC 68 %')).toBeInTheDocument()
-    expect(screen.getByText(/faltan inhalaciones/i)).toBeInTheDocument()
-    expect(screen.queryByText('0 estimadas')).not.toBeInTheDocument()
-    enter(/inhalaciones estimadas/i, '100')
-    expect(screen.getByText('CBD 0 mg · THC 6.8 mg')).toBeInTheDocument()
-    expect(screen.getByText('100 estimadas')).toBeInTheDocument()
-    enter(/inhalaciones estimadas/i, '')
-    expect(screen.queryByText('CBD 0 mg · THC 6.8 mg')).not.toBeInTheDocument()
-    expect(screen.getByText(/faltan inhalaciones/i)).toBeInTheDocument()
+    enter(/cbd declarado/i, thc === '0' ? '60' : '0')
+    enter(/thc declarado/i, thc)
+  }
+
+  it('cartucho: parte de la inhalación estándar y más inhalaciones dan más mg de THC', () => {
+    render(<CannabinoidCalculator />)
+    fillCartridge('70')
+    expect(screen.getByText('CBD 0 mg · THC 700 mg')).toBeInTheDocument()
+    expect(screen.getByLabelText(/duración de la inhalación/i)).toHaveValue('estandar')
+    expect(screen.getByText('Por inhalación (estimado)').parentElement).toHaveTextContent('THC ≈ 3.5 mg')
+    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent(/faltan inhalaciones por toma/i)
+    enter(/inhalaciones por toma/i, '2')
+    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 7 mg')
+    enter(/inhalaciones por toma/i, '4')
+    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 14 mg')
+    enter(/duración de la inhalación/i, 'corta')
+    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 6 mg')
+    enter(/duración de la inhalación/i, 'larga')
+    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 22 mg')
+    enter(/inhalaciones por toma/i, '1.5')
+    expect(screen.getByRole('alert')).toHaveTextContent(/entero/i)
+  })
+
+  it('cartucho: acepta lo medido en el dispositivo y lo exige al elegirlo', () => {
+    render(<CannabinoidCalculator />)
+    fillCartridge('70')
+    enter(/duración de la inhalación/i, 'medido')
+    expect(screen.getByRole('alert')).toHaveTextContent(/falta.*thc por inhalación/i)
+    enter(/mg de thc por inhalación/i, '2')
+    expect(screen.getByText('Por inhalación (estimado)').parentElement).toHaveTextContent('THC ≈ 2 mg')
+  })
+
+  it('cartucho sin THC declarado no estima mg por inhalación', () => {
+    render(<CannabinoidCalculator />)
+    fillCartridge('0')
+    expect(screen.getByText('CBD 600 mg · THC 0 mg')).toBeInTheDocument()
+    expect(screen.getByText('Por inhalación (estimado)').parentElement).toHaveTextContent(/no aplica/i)
+    expect(screen.queryByText(/THC ≈/)).not.toBeInTheDocument()
   })
 
   it('calcula flor con datos explícitos y rechaza porcentajes incompatibles', () => {
@@ -137,19 +162,17 @@ describe('CannabinoidCalculator', () => {
     expect(screen.queryByText('CBD 0 mg · THC 2 mg')).not.toBeInTheDocument()
   })
 
-  it.each(['inhalation', 'flower'])('rechaza inhalaciones fraccionarias y acepta una inhalación en %s', productKind => {
+  it('flor: rechaza inhalaciones fraccionarias, acepta una y explica que reparten el total', () => {
     render(<CannabinoidCalculator />)
-    enter(/tipo de producto/i, productKind)
-    enter(productKind === 'inhalation' ? /contenido del producto/i : /flor por carga/i, '1')
-    enter(productKind === 'inhalation' ? /cbd declarado/i : /cbd en etiqueta/i, '0')
-    enter(productKind === 'inhalation' ? /thc declarado/i : /thc en etiqueta/i, '70')
-    const inhalationsLabel = productKind === 'inhalation' ? /inhalaciones estimadas/i : /inhalaciones por carga/i
-    enter(inhalationsLabel, '0.1')
+    enter(/tipo de producto/i, 'flower')
+    enter(/flor por carga/i, '1')
+    enter(/cbd en etiqueta/i, '0')
+    enter(/thc en etiqueta/i, '70')
+    expect(screen.getByText(/reparten ese total/i)).toBeInTheDocument()
+    enter(/inhalaciones por carga/i, '0.1')
     expect(screen.getByRole('alert')).toHaveTextContent(/entero/i)
-    expect(screen.queryByText(/7000 mg/)).not.toBeInTheDocument()
     expect(screen.queryByText('0 estimadas')).not.toBeInTheDocument()
-
-    enter(inhalationsLabel, '1')
+    enter(/inhalaciones por carga/i, '1')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     expect(screen.getByText('Por inhalación teórica').parentElement).toHaveTextContent('CBD 0 mg · THC 700 mg')
     expect(screen.getByText('1 estimadas')).toBeInTheDocument()

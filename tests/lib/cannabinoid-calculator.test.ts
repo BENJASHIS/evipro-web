@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   calculateFlowerMetrics,
+  calculateInhalationDose,
+  INHALATION_PROFILES,
   calculateInhalationMetrics,
   calculateOilMetrics,
   cannabinoidRatio,
@@ -161,6 +163,19 @@ describe('cannabinoid calculator', () => {
     expect(result.cbdMgPerDose).toBeNull()
     expect(result.dosesPerBottle).toBeNull()
     expect(result.estimatedDays).toBeNull()
+  })
+
+  it('usa los mismos valores de inhalación que la app clínica', () => {
+    expect(INHALATION_PROFILES.map(profile => profile.thcMg)).toEqual([1.5, 3.5, 5.5])
+  })
+
+  it('multiplica mg por inhalación e inhalaciones por toma', () => {
+    expect(calculateInhalationDose(3.5, 2)).toEqual({ thcMgPerInhalation: 3.5, thcMgPerDose: 7 })
+    expect(calculateInhalationDose(3.5, null)).toEqual({ thcMgPerInhalation: 3.5, thcMgPerDose: null })
+  })
+
+  it.each([[null, 1], [0, 1], [3.5, 0], [3.5, 1.5]])('rechaza inhalación inválida: %s mg, %s inhalaciones', (mg, inhalations) => {
+    expect(() => calculateInhalationDose(mg, inhalations)).toThrow(RangeError)
   })
 
   it('suma los mg del día solo con gotas por toma y tomas por día', () => {
