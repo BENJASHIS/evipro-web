@@ -43,6 +43,7 @@ export default async function CalculadoraCannabinoidePage() {
         Convierte etiquetas de aceites, cartuchos, extractos y flor vaporizada a mg teóricos fáciles de leer.
       </p>
 
+      <Link href="/miembros/contenido/explora-cbd-thc" className="inline-block text-sm text-brand underline mb-6">Entender la composición del frasco · abrir recurso didáctico →</Link>
       <CannabinoidCalculator />
     </div>
   )

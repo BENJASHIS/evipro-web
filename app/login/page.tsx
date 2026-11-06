@@ -1,6 +1,7 @@
 'use client'
 import { T } from '@/app/components/Language'
 import { useState } from 'react'
+import { memberReturnPath } from '@/lib/member-return'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
@@ -49,7 +50,7 @@ export default function LoginPage() {
       setLoading(false)
       return
     }
-    router.push('/miembros')
+    router.push(memberReturnPath(new URLSearchParams(window.location.search).get('next')))
     router.refresh()
   }
 

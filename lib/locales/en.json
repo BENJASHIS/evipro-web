@@ -703,7 +703,6 @@
   "Completa los datos de etiqueta; escribe 0 solo si está declarado. Los datos de uso son opcionales y no se asumen.": "Fill in the label data; enter 0 only if the label states it. Usage data is optional and is never assumed.",
   "Resultado": "Result",
   "Uso seguro": "Safe use",
-  "Esta calculadora solo convierte datos de etiqueta. En aceites, % p/v es peso/volumen; en cartuchos y flor, el porcentaje suele ser del producto. No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.": "This calculator only converts label data. For oils, % w/v is weight/volume; for cartridges and flower, the percentage usually refers to the product. It does not calculate actual absorption, clinical dose, decarboxylation or treatment changes.",
   "← Volver": "← Back",
   "Herramientas": "Tools",
   "Mi seguimiento": "My follow-up",
@@ -837,5 +836,12 @@
   "Inasistencia sin aviso a una consulta programada, y cancelaciones con menos de 24 horas de anticipación (en ese caso se puede cambiar la fecha una vez).": "Not showing up to a scheduled consultation without notice, and cancellations with less than 24 hours' notice (in that case the date can be changed once).",
   "6. Cambios de fecha y cancelación de consultas": "6. Date changes and cancellation of consultations",
   "Puedes cancelar o cambiar la fecha de tu consulta hasta 24 horas antes, con devolución completa o cambio de fecha, como prefieras. Con menos de 24 horas no hay devolución, pero puedes cambiar la fecha una sola vez. Si no te presentas sin avisar, se pierde el pago. Si EVIPro cancela la consulta, eliges devolución completa o cambio de fecha. Los cambios y cancelaciones se piden por WhatsApp. La devolución se hace al mismo medio de pago.": "You can cancel or change the date of your consultation up to 24 hours before, with a full refund or a new date, as you prefer. With less than 24 hours there is no refund, but you can change the date once. If you don't show up without notice, the payment is lost. If EVIPro cancels the consultation, you choose a full refund or a new date. Changes and cancellations are requested via WhatsApp. Refunds are made to the same payment method.",
-  "Recibimos tu pago con tarjeta. Estamos confirmando tu reserva…": "We received your card payment. We're confirming your booking…"
+  "Recibimos tu pago con tarjeta. Estamos confirmando tu reserva…": "We received your card payment. We're confirming your booking…",
+  "Concentración (%) del aceite": "Oil concentration (%)",
+  "En este modo, CBD al 10 % equivale a 100 mg en cada mL de aceite. Comprueba que esa sea la equivalencia de tu etiqueta.": "In this mode, CBD at 10% means 100 mg in each mL of oil. Check that your label uses this equivalence.",
+  "En este modo, el porcentaje indica cuánto cannabinoide hay en el peso del producto. Por ejemplo: 70 % en 1 g equivale a 700 mg totales.": "In this mode, the percentage describes cannabinoid content by product weight. For example: 70% in 1 g equals 700 mg in total.",
+  "Concentración equivalente (%)": "Equivalent concentration (%)",
+  "Esta calculadora solo convierte datos de etiqueta. Aquí el porcentaje del aceite se interpreta por volumen; en cartuchos y flor, según el peso. Esas bases no son intercambiables. No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.": "This calculator only converts label data. Here, oil percentages are interpreted by volume; cartridge and flower percentages by weight. These bases are not interchangeable. It does not calculate actual absorption, clinical dose, decarboxylation or treatment changes.",
+  "¿Cómo se interpreta este porcentaje?": "How is this percentage interpreted?",
+  "El porcentaje del aceite se interpreta aquí como masa por volumen (% m/v, también llamado % p/v): 10 % son 10 gramos en 100 mL. Si tu etiqueta indica porcentaje por peso o no especifica la base, verifica ese dato antes de usar este modo.": "Here, oil percentage means mass per volume (% w/v): 10% is 10 grams in 100 mL. If your label gives a percentage by weight or does not specify its basis, verify it before using this mode."
 }

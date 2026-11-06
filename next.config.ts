@@ -8,7 +8,9 @@ const nextConfig: NextConfig = {
       headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
     }));
   },
-  /* config options here */
+  outputFileTracingIncludes: {
+    '/miembros/contenido/explora-cbd-thc/visor/*': ['./private/frasco/**/*'],
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'bfcyzdrxnjkfeplcxyxv.supabase.co' },

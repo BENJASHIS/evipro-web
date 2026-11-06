@@ -16,7 +16,7 @@ const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 text-whi
 const LABEL = 'block text-xs text-muted mb-1 uppercase tracking-widest'
 
 const OIL_INPUT_MODE_OPTIONS: { value: OilInputMode; label: string; suffix: string }[] = [
-  { value: 'percent_weight_volume', label: '% p/v peso/volumen', suffix: '%' },
+  { value: 'percent_weight_volume', label: 'Concentración (%) del aceite', suffix: '%' },
   { value: 'mg_per_ml', label: 'mg por ml', suffix: 'mg/ml' },
   { value: 'total_mg', label: 'mg total en el envase', suffix: 'mg' },
 ]
@@ -27,13 +27,13 @@ const INHALATION_INPUT_MODE_OPTIONS: { value: InhalationInputMode; label: string
 ]
 
 const OIL_HELP: Record<OilInputMode, string> = {
-  percent_weight_volume: '% p/v significa peso/volumen: gramos de CBD o THC por cada 100 ml. Ej.: 10% p/v = 100 mg/ml.',
+  percent_weight_volume: 'En este modo, CBD al 10 % equivale a 100 mg en cada mL de aceite. Comprueba que esa sea la equivalencia de tu etiqueta.',
   mg_per_ml: 'Con mg/ml, el total sale multiplicando concentración por volumen del frasco.',
   total_mg: 'Con mg total, la concentración sale dividiendo el contenido entre el volumen del frasco.',
 }
 
 const INHALATION_HELP: Record<InhalationInputMode, string> = {
-  percent_of_product: 'Para inhalables, 66%, 68% o 70% suele significar porcentaje del producto, no p/v. Ej.: 70% en 1 g = 700 mg totales.',
+  percent_of_product: 'En este modo, el porcentaje indica cuánto cannabinoide hay en el peso del producto. Por ejemplo: 70 % en 1 g equivale a 700 mg totales.',
   total_mg: 'Usa mg total si la etiqueta declara directamente cuántos miligramos trae el cartucho o extracto.',
 }
 
@@ -250,6 +250,11 @@ export default function CannabinoidCalculator() {
             {productKind === 'flower' && <T>Para flor vaporizada, usa el porcentaje de cannabinoides de la etiqueta y la cantidad de flor cargada. Ej.: 10% en 0.1 g = 10 mg totales teóricos.</T>}
           </p>
 
+          {productKind === 'oil' && <details className="text-xs leading-5 text-faint mb-5">
+            <summary className="cursor-pointer"><T>¿Cómo se interpreta este porcentaje?</T></summary>
+            <p className="mt-2"><T>El porcentaje del aceite se interpreta aquí como masa por volumen (% m/v, también llamado % p/v): 10 % son 10 gramos en 100 mL. Si tu etiqueta indica porcentaje por peso o no especifica la base, verifica ese dato antes de usar este modo.</T></p>
+          </details>}
+
           <p className="text-xs leading-5 text-faint mb-5"><T>Completa los datos de etiqueta; escribe 0 solo si está declarado. Los datos de uso son opcionales y no se asumen.</T></p>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -292,8 +297,8 @@ export default function CannabinoidCalculator() {
                   value={formatPair(oil.cbdMgPerMl, oil.thcMgPerMl, 'mg/ml')}
                 />
                 <PrimaryResult
-                  label="% p/v equivalente"
-                  value={formatPair(oil.cbdPercentWeightVolume, oil.thcPercentWeightVolume, '% p/v')}
+                  label="Concentración equivalente (%)"
+                  value={formatPair(oil.cbdPercentWeightVolume, oil.thcPercentWeightVolume, '%')}
                 />
                 <PrimaryResult
                   label="Total del frasco"
@@ -359,7 +364,7 @@ export default function CannabinoidCalculator() {
       <section className="border border-yellow-400/30 bg-yellow-400/5 rounded-lg p-5">
         <p className="text-xs font-mono uppercase tracking-widest text-yellow-300 mb-2"><T>Uso seguro</T></p>
         <p className="text-sm leading-6 text-yellow-50">
-          <T>Esta calculadora solo convierte datos de etiqueta. En aceites, % p/v es peso/volumen; en cartuchos y flor, el porcentaje suele ser del producto. No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.</T>
+          <T>Esta calculadora solo convierte datos de etiqueta. Aquí el porcentaje del aceite se interpreta por volumen; en cartuchos y flor, según el peso. Esas bases no son intercambiables. No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.</T>
         </p>
       </section>
     </div>

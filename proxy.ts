@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { BOTTLE_PATH, memberReturnPath } from './lib/member-return'
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
@@ -28,7 +29,9 @@ export async function proxy(request: NextRequest) {
 
   if (pathname.startsWith('/miembros') || pathname.startsWith('/admin')) {
     if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      const login = new URL('/login', request.url)
+      if (pathname === BOTTLE_PATH || pathname.startsWith(`${BOTTLE_PATH}/visor/`)) login.searchParams.set('next',BOTTLE_PATH)
+      return NextResponse.redirect(login)
     }
   }
 
@@ -40,7 +43,8 @@ export async function proxy(request: NextRequest) {
   }
 
   if ((pathname === '/login' || pathname === '/registro') && user) {
-    return NextResponse.redirect(new URL('/miembros', request.url))
+    const destination = pathname === '/login' ? memberReturnPath(request.nextUrl.searchParams.get('next')) : '/miembros'
+    return NextResponse.redirect(new URL(destination, request.url))
   }
 
   return supabaseResponse

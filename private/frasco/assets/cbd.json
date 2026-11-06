@@ -1,0 +1,760 @@
+{
+  "name": "Cannabidiol",
+  "formula": "C21H30O2",
+  "cid": 644019,
+  "source": "https://pubchem.ncbi.nlm.nih.gov/compound/644019",
+  "data_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/644019/record/JSON?record_type=3d",
+  "retrieved": "2026-10-19",
+  "description": "Conformación 3D calculada de referencia; no describe una molécula medida en este preparado.",
+  "atoms": [
+    {
+      "id": 1,
+      "element": 8,
+      "position": [
+        -0.8107,
+        -1.0808,
+        -1.7544
+      ]
+    },
+    {
+      "id": 2,
+      "element": 8,
+      "position": [
+        -0.3557,
+        1.3439,
+        2.3576
+      ]
+    },
+    {
+      "id": 3,
+      "element": 6,
+      "position": [
+        -3.002,
+        0.528,
+        -0.4606
+      ]
+    },
+    {
+      "id": 4,
+      "element": 6,
+      "position": [
+        -2.0824,
+        -0.1171,
+        0.6145
+      ]
+    },
+    {
+      "id": 5,
+      "element": 6,
+      "position": [
+        -4.4373,
+        0.0054,
+        -0.324
+      ]
+    },
+    {
+      "id": 6,
+      "element": 6,
+      "position": [
+        -4.4902,
+        -1.5161,
+        -0.4777
+      ]
+    },
+    {
+      "id": 7,
+      "element": 6,
+      "position": [
+        -2.3625,
+        -1.5914,
+        0.821
+      ]
+    },
+    {
+      "id": 8,
+      "element": 6,
+      "position": [
+        -0.6089,
+        0.1266,
+        0.3074
+      ]
+    },
+    {
+      "id": 9,
+      "element": 6,
+      "position": [
+        -3.4298,
+        -2.2333,
+        0.3151
+      ]
+    },
+    {
+      "id": 10,
+      "element": 6,
+      "position": [
+        -2.9995,
+        2.0271,
+        -0.3713
+      ]
+    },
+    {
+      "id": 11,
+      "element": 6,
+      "position": [
+        -0.0554,
+        -0.3732,
+        -0.8679
+      ]
+    },
+    {
+      "id": 12,
+      "element": 6,
+      "position": [
+        0.1741,
+        0.8482,
+        1.204
+      ]
+    },
+    {
+      "id": 13,
+      "element": 6,
+      "position": [
+        -3.6353,
+        -3.7063,
+        0.5123
+      ]
+    },
+    {
+      "id": 14,
+      "element": 6,
+      "position": [
+        -2.5231,
+        2.7614,
+        -1.5893
+      ]
+    },
+    {
+      "id": 15,
+      "element": 6,
+      "position": [
+        2.0809,
+        0.5735,
+        -0.2539
+      ]
+    },
+    {
+      "id": 16,
+      "element": 6,
+      "position": [
+        1.2923,
+        -0.1494,
+        -1.1491
+      ]
+    },
+    {
+      "id": 17,
+      "element": 6,
+      "position": [
+        1.5217,
+        1.0721,
+        0.9227
+      ]
+    },
+    {
+      "id": 18,
+      "element": 6,
+      "position": [
+        3.5218,
+        0.8127,
+        -0.5548
+      ]
+    },
+    {
+      "id": 19,
+      "element": 6,
+      "position": [
+        -3.4008,
+        2.6721,
+        0.734
+      ]
+    },
+    {
+      "id": 20,
+      "element": 6,
+      "position": [
+        4.4723,
+        -0.2741,
+        -0.0196
+      ]
+    },
+    {
+      "id": 21,
+      "element": 6,
+      "position": [
+        5.9468,
+        0.0405,
+        -0.2905
+      ]
+    },
+    {
+      "id": 22,
+      "element": 6,
+      "position": [
+        6.8583,
+        -1.0477,
+        0.278
+      ]
+    },
+    {
+      "id": 23,
+      "element": 6,
+      "position": [
+        8.3253,
+        -0.7223,
+        0.0465
+      ]
+    },
+    {
+      "id": 24,
+      "element": 1,
+      "position": [
+        -2.6877,
+        0.2601,
+        -1.4745
+      ]
+    },
+    {
+      "id": 25,
+      "element": 1,
+      "position": [
+        -2.3483,
+        0.3242,
+        1.58
+      ]
+    },
+    {
+      "id": 26,
+      "element": 1,
+      "position": [
+        -5.0909,
+        0.4637,
+        -1.0773
+      ]
+    },
+    {
+      "id": 27,
+      "element": 1,
+      "position": [
+        -4.8581,
+        0.2687,
+        0.6557
+      ]
+    },
+    {
+      "id": 28,
+      "element": 1,
+      "position": [
+        -4.3751,
+        -1.7824,
+        -1.5356
+      ]
+    },
+    {
+      "id": 29,
+      "element": 1,
+      "position": [
+        -5.4843,
+        -1.8587,
+        -0.166
+      ]
+    },
+    {
+      "id": 30,
+      "element": 1,
+      "position": [
+        -1.6424,
+        -2.1494,
+        1.4164
+      ]
+    },
+    {
+      "id": 31,
+      "element": 1,
+      "position": [
+        -4.5669,
+        -3.8908,
+        1.0569
+      ]
+    },
+    {
+      "id": 32,
+      "element": 1,
+      "position": [
+        -2.8198,
+        -4.1653,
+        1.081
+      ]
+    },
+    {
+      "id": 33,
+      "element": 1,
+      "position": [
+        -3.6919,
+        -4.2131,
+        -0.4564
+      ]
+    },
+    {
+      "id": 34,
+      "element": 1,
+      "position": [
+        -1.4905,
+        2.484,
+        -1.8245
+      ]
+    },
+    {
+      "id": 35,
+      "element": 1,
+      "position": [
+        -3.1544,
+        2.5195,
+        -2.4506
+      ]
+    },
+    {
+      "id": 36,
+      "element": 1,
+      "position": [
+        -2.5511,
+        3.8476,
+        -1.452
+      ]
+    },
+    {
+      "id": 37,
+      "element": 1,
+      "position": [
+        1.723,
+        -0.5423,
+        -2.0669
+      ]
+    },
+    {
+      "id": 38,
+      "element": 1,
+      "position": [
+        2.1318,
+        1.6346,
+        1.6254
+      ]
+    },
+    {
+      "id": 39,
+      "element": 1,
+      "position": [
+        3.6576,
+        0.9079,
+        -1.6404
+      ]
+    },
+    {
+      "id": 40,
+      "element": 1,
+      "position": [
+        3.819,
+        1.7867,
+        -0.1437
+      ]
+    },
+    {
+      "id": 41,
+      "element": 1,
+      "position": [
+        -3.3918,
+        3.7564,
+        0.7818
+      ]
+    },
+    {
+      "id": 42,
+      "element": 1,
+      "position": [
+        -3.7503,
+        2.1498,
+        1.6175
+      ]
+    },
+    {
+      "id": 43,
+      "element": 1,
+      "position": [
+        4.2138,
+        -1.2389,
+        -0.4743
+      ]
+    },
+    {
+      "id": 44,
+      "element": 1,
+      "position": [
+        4.3193,
+        -0.3875,
+        1.0614
+      ]
+    },
+    {
+      "id": 45,
+      "element": 1,
+      "position": [
+        6.1099,
+        0.1335,
+        -1.3708
+      ]
+    },
+    {
+      "id": 46,
+      "element": 1,
+      "position": [
+        6.202,
+        1.0072,
+        0.1602
+      ]
+    },
+    {
+      "id": 47,
+      "element": 1,
+      "position": [
+        -1.5503,
+        -1.5291,
+        -1.3261
+      ]
+    },
+    {
+      "id": 48,
+      "element": 1,
+      "position": [
+        -0.8852,
+        0.6474,
+        2.7802
+      ]
+    },
+    {
+      "id": 49,
+      "element": 1,
+      "position": [
+        6.6238,
+        -2.0112,
+        -0.1893
+      ]
+    },
+    {
+      "id": 50,
+      "element": 1,
+      "position": [
+        6.6817,
+        -1.1574,
+        1.3544
+      ]
+    },
+    {
+      "id": 51,
+      "element": 1,
+      "position": [
+        8.5995,
+        0.22,
+        0.5314
+      ]
+    },
+    {
+      "id": 52,
+      "element": 1,
+      "position": [
+        8.9589,
+        -1.5136,
+        0.4592
+      ]
+    },
+    {
+      "id": 53,
+      "element": 1,
+      "position": [
+        8.5436,
+        -0.635,
+        -1.0226
+      ]
+    }
+  ],
+  "bonds": [
+    {
+      "from": 1,
+      "to": 11,
+      "order": 1
+    },
+    {
+      "from": 1,
+      "to": 47,
+      "order": 1
+    },
+    {
+      "from": 2,
+      "to": 12,
+      "order": 1
+    },
+    {
+      "from": 2,
+      "to": 48,
+      "order": 1
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "order": 1
+    },
+    {
+      "from": 3,
+      "to": 5,
+      "order": 1
+    },
+    {
+      "from": 3,
+      "to": 10,
+      "order": 1
+    },
+    {
+      "from": 3,
+      "to": 24,
+      "order": 1
+    },
+    {
+      "from": 4,
+      "to": 7,
+      "order": 1
+    },
+    {
+      "from": 4,
+      "to": 8,
+      "order": 1
+    },
+    {
+      "from": 4,
+      "to": 25,
+      "order": 1
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "order": 1
+    },
+    {
+      "from": 5,
+      "to": 26,
+      "order": 1
+    },
+    {
+      "from": 5,
+      "to": 27,
+      "order": 1
+    },
+    {
+      "from": 6,
+      "to": 9,
+      "order": 1
+    },
+    {
+      "from": 6,
+      "to": 28,
+      "order": 1
+    },
+    {
+      "from": 6,
+      "to": 29,
+      "order": 1
+    },
+    {
+      "from": 7,
+      "to": 9,
+      "order": 2
+    },
+    {
+      "from": 7,
+      "to": 30,
+      "order": 1
+    },
+    {
+      "from": 8,
+      "to": 11,
+      "order": 2
+    },
+    {
+      "from": 8,
+      "to": 12,
+      "order": 1
+    },
+    {
+      "from": 9,
+      "to": 13,
+      "order": 1
+    },
+    {
+      "from": 10,
+      "to": 14,
+      "order": 1
+    },
+    {
+      "from": 10,
+      "to": 19,
+      "order": 2
+    },
+    {
+      "from": 11,
+      "to": 16,
+      "order": 1
+    },
+    {
+      "from": 12,
+      "to": 17,
+      "order": 2
+    },
+    {
+      "from": 13,
+      "to": 31,
+      "order": 1
+    },
+    {
+      "from": 13,
+      "to": 32,
+      "order": 1
+    },
+    {
+      "from": 13,
+      "to": 33,
+      "order": 1
+    },
+    {
+      "from": 14,
+      "to": 34,
+      "order": 1
+    },
+    {
+      "from": 14,
+      "to": 35,
+      "order": 1
+    },
+    {
+      "from": 14,
+      "to": 36,
+      "order": 1
+    },
+    {
+      "from": 15,
+      "to": 16,
+      "order": 2
+    },
+    {
+      "from": 15,
+      "to": 17,
+      "order": 1
+    },
+    {
+      "from": 15,
+      "to": 18,
+      "order": 1
+    },
+    {
+      "from": 16,
+      "to": 37,
+      "order": 1
+    },
+    {
+      "from": 17,
+      "to": 38,
+      "order": 1
+    },
+    {
+      "from": 18,
+      "to": 20,
+      "order": 1
+    },
+    {
+      "from": 18,
+      "to": 39,
+      "order": 1
+    },
+    {
+      "from": 18,
+      "to": 40,
+      "order": 1
+    },
+    {
+      "from": 19,
+      "to": 41,
+      "order": 1
+    },
+    {
+      "from": 19,
+      "to": 42,
+      "order": 1
+    },
+    {
+      "from": 20,
+      "to": 21,
+      "order": 1
+    },
+    {
+      "from": 20,
+      "to": 43,
+      "order": 1
+    },
+    {
+      "from": 20,
+      "to": 44,
+      "order": 1
+    },
+    {
+      "from": 21,
+      "to": 22,
+      "order": 1
+    },
+    {
+      "from": 21,
+      "to": 45,
+      "order": 1
+    },
+    {
+      "from": 21,
+      "to": 46,
+      "order": 1
+    },
+    {
+      "from": 22,
+      "to": 23,
+      "order": 1
+    },
+    {
+      "from": 22,
+      "to": 49,
+      "order": 1
+    },
+    {
+      "from": 22,
+      "to": 50,
+      "order": 1
+    },
+    {
+      "from": 23,
+      "to": 51,
+      "order": 1
+    },
+    {
+      "from": 23,
+      "to": 52,
+      "order": 1
+    },
+    {
+      "from": 23,
+      "to": 53,
+      "order": 1
+    }
+  ]
+}

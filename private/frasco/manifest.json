@@ -1,0 +1,70 @@
+{
+  "version": "v08",
+  "importMapHash": "GqsWfEjHm73zbHa7lGbVXfv95jxypKuCtjd6kntjIRA=",
+  "files": {
+    "index.html": {
+      "type": "text/html; charset=utf-8",
+      "sha256": "20a36dba8160c44f97289e19d9d3a1070635cae3fabc957b17f8f20fc63eb46d"
+    },
+    "style.css": {
+      "type": "text/css; charset=utf-8",
+      "sha256": "997f910036cd793c157ac63a3309cbf61e015880e2d51b82bc4b4587aedeae18"
+    },
+    "app.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "8d9e4c129700618dd1ad51a969ad2bfc75b26cafccaf35a7dc38d9637d07e5da"
+    },
+    "cap.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "86fdec6cb3730be5a4ba703b8e915cecf11e776012ba8c989d9f2ff968a8d7f0"
+    },
+    "dropper.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "7b38799315d69b51088fde81809a82d63f85c9043971c83dc3d896e378c4ae24"
+    },
+    "composition.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "09c63cd66613798d0b25c7b2ce6ec445b7bbe5a930c03eea0564994f90361204"
+    },
+    "label-panels.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "9863bf260b0a96c38080bfc0d22227c2d4ab780f9b540ebdc7c053fe3ae779da"
+    },
+    "vendor/three.module.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    "vendor/three.core.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    "vendor/OrbitControls.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "b97879c748170baadeb3fb84cea1ffdf4674e283dc06042f34e2acb95a76042c"
+    },
+    "vendor/RoomEnvironment.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "c20f0b4677f6128a138d7152b85cbef9091f4f45cdfa05adca04d40c1697c7ae"
+    },
+    "assets/cbd.json": {
+      "type": "application/json; charset=utf-8",
+      "sha256": "4923f766aa20a94f0aa7d7a78930e1371b8b9367b0972ce3cc9a9997d471a863"
+    },
+    "assets/thc.json": {
+      "type": "application/json; charset=utf-8",
+      "sha256": "6522d9dd9052896d2ef9fe2c2d3ce99082412df821809457c481ba2336dce4fa"
+    },
+    "assets/cbd-reference.svg": {
+      "type": "image/svg+xml",
+      "sha256": "a28505c7821e6c01aebcd3a4dc603680758b35cc9b078b2778f5c6e0c51c9674"
+    },
+    "assets/thc-reference.svg": {
+      "type": "image/svg+xml",
+      "sha256": "3c9d129c7e3cf2067d4f7e3fbaf21ec26d5a01ebae842af82b3796a75e114262"
+    },
+    "vendor/THREE-LICENSE.txt": {
+      "type": "text/plain; charset=utf-8",
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    }
+  }
+}

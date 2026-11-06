@@ -25,7 +25,7 @@ describe('CannabinoidCalculator', () => {
     render(<CannabinoidCalculator />)
     fillOil()
     expect(screen.getByText('CBD 100 mg/ml · THC 0 mg/ml')).toBeInTheDocument()
-    expect(screen.getByText('CBD 10 % p/v · THC 0 % p/v')).toBeInTheDocument()
+    expect(screen.getByText('CBD 10 % · THC 0 %')).toBeInTheDocument()
     expect(screen.getByText('CBD 1000 mg · THC 0 mg')).toBeInTheDocument()
     expect(screen.getByText(/falta gotas por ml/i)).toBeInTheDocument()
     expect(screen.queryByText('CBD 5 mg · THC 0 mg')).not.toBeInTheDocument()
@@ -122,4 +122,13 @@ describe('CannabinoidCalculator', () => {
     expect(screen.getByText('Por inhalación teórica').parentElement).toHaveTextContent('CBD 0 mg · THC 700 mg')
     expect(screen.getByText('1 estimadas')).toBeInTheDocument()
   })
+})
+
+it('explica el porcentaje del aceite sin abreviaturas técnicas en los controles principales',()=>{
+  render(<CannabinoidCalculator />)
+  expect(screen.getByRole('option',{name:'Concentración (%) del aceite'})).toBeInTheDocument()
+  expect(screen.getByText(/CBD al 10 % equivale a 100 mg en cada mL de aceite/)).toBeVisible()
+  expect(screen.getByText(/masa por volumen/)).not.toBeVisible()
+  fillOil()
+  expect(screen.getByText('CBD 10 % · THC 0 %')).toBeInTheDocument()
 })

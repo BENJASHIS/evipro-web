@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-server'
 import Link from 'next/link'
 import { T } from '@/app/components/Language'
-import { getMemberAccess } from '@/lib/member-access'
+import { canUseMemberTools, getMemberAccess } from '@/lib/member-access'
 import { moduloVisible } from '@/lib/educacion/acceso-modulo'
 import { REVISION } from '@/lib/educacion/contenido-planta'
 import { attachSignedUrls, MEMBER_CONTENT_BUCKET, type ContentRow } from '@/lib/content'
@@ -37,6 +37,12 @@ export default async function ContenidoPage() {
     <div>
       <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Biblioteca</p>
       <h1 className="text-3xl font-light font-serif italic mb-8">Contenido exclusivo</h1>
+
+      {canUseMemberTools(access) && <Link href="/miembros/contenido/explora-cbd-thc" className="block border border-subtle rounded-lg p-5 mb-6 hover:border-brand">
+        <span className="text-xs uppercase tracking-widest text-brand">Recurso interactivo</span>
+        <h2 className="text-lg mt-1 mb-2">Explora CBD y THC</h2>
+        <p className="text-muted text-sm">Frasco en 3D, composición y moléculas para aprender observando.</p>
+      </Link>}
 
       {mostrarModulo && (
         <Link href="/miembros/contenido/que-hay-en-la-planta" className="block border border-brand rounded-lg p-5 mb-6 hover:bg-brand/5 transition-colors">

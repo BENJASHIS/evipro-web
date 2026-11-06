@@ -23,6 +23,7 @@ function completarLogin() {
 
 describe('LoginPage', () => {
   beforeEach(() => {
+    window.history.replaceState({},'', '/login')
     mocks.push.mockReset()
     mocks.refresh.mockReset()
     mocks.signInWithPassword.mockReset()
@@ -63,4 +64,18 @@ describe('LoginPage', () => {
 
     expect(await screen.findByText(/verificación anti-bot/i)).toBeInTheDocument()
   })
+})
+
+it.each([
+  ['/miembros/contenido/explora-cbd-thc','/miembros/contenido/explora-cbd-thc'],
+  ['https://otro.example','/miembros'],
+])('retorno de login seguro para %s',async(next,expected)=>{
+  window.history.replaceState({},'', `/login?next=${encodeURIComponent(next)}`)
+  mocks.signInWithPassword.mockResolvedValue({error:null})
+  mocks.push.mockClear()
+  render(<LoginPage />)
+  completarLogin()
+  fireEvent.click(screen.getByRole('button',{name:/ingresar/i}))
+  await waitFor(()=>expect(mocks.push).toHaveBeenCalledWith(expected))
+  window.history.replaceState({},'', '/login')
 })
