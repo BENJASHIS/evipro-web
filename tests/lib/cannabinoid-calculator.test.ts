@@ -152,13 +152,13 @@ describe('cannabinoid calculator', () => {
     expect(() => calculateOilMetrics({ ...oilInput, dropsPerMl })).toThrow(/gotas por ml/i)
   })
 
-  it('permite concentración sin datos opcionales de uso y no inventa un gotero', () => {
+  it('sin gotero indicado usa 20 gotas por ml y no asume los datos de uso', () => {
     const result = calculateOilMetrics({ ...oilInput, dropsPerMl: null, dropsPerDose: null, dosesPerDay: null })
     expect(result.cbdMgPerMl).toBe(100)
     expect(result.thcMgPerMl).toBe(0)
-    expect(result.cbdMgPerDrop).toBeNull()
+    expect(result.cbdMgPerDrop).toBe(5)
+    expect(result.totalDrops).toBe(200)
     expect(result.cbdMgPerDose).toBeNull()
-    expect(result.totalDrops).toBeNull()
     expect(result.dosesPerBottle).toBeNull()
     expect(result.estimatedDays).toBeNull()
   })

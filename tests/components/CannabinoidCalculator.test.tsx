@@ -13,32 +13,30 @@ function fillOil() {
 }
 
 describe('CannabinoidCalculator', () => {
-  it('inicia sin datos de ejemplo calculados como si fueran datos del usuario', () => {
+  it('inicia con gotero de 20 a la vista y sin datos de etiqueta calculados', () => {
     render(<CannabinoidCalculator />)
     expect(screen.getByLabelText(/volumen del frasco/i)).toHaveValue(null)
-    expect(screen.getByLabelText(/^gotero/i)).toHaveValue('')
+    expect(screen.getByLabelText(/gotas por ml/i)).toHaveValue(20)
+    expect(screen.getByText(/gotero: 20 gotas por ml/i)).toBeInTheDocument()
     expect(screen.getByRole('alert')).toHaveTextContent(/falta/i)
     expect(screen.queryByText(/CBD \d/)).not.toBeInTheDocument()
   })
 
-  it('muestra concentración con THC cero explícito y pide los datos opcionales faltantes', () => {
+  it('con el gotero por defecto muestra mg por gota y pide solo las gotas por toma', () => {
     render(<CannabinoidCalculator />)
     fillOil()
     expect(screen.getByText('CBD 100 mg/ml · THC 0 mg/ml')).toBeInTheDocument()
     expect(screen.getByText('CBD 10 % · THC 0 %')).toBeInTheDocument()
     expect(screen.getByText('CBD 1000 mg · THC 0 mg')).toBeInTheDocument()
-    expect(screen.getByText(/falta elegir el gotero/i)).toBeInTheDocument()
-    expect(screen.queryByText('CBD 5 mg · THC 0 mg')).not.toBeInTheDocument()
+    expect(screen.getByText('CBD 5 mg · THC 0 mg')).toBeInTheDocument()
+    expect(screen.getAllByText(/faltan gotas por toma/i)).toHaveLength(2)
   })
 
-  it('más gotas por toma dan más mg; el gotero se elige y no es un número que se suba', () => {
+  it('más gotas por toma dan más mg sin tocar el gotero', () => {
     render(<CannabinoidCalculator />)
     enter(/volumen del frasco/i, '10')
     enter(/cbd declarado/i, '10')
     enter(/thc declarado/i, '5')
-    expect(screen.getByLabelText(/^gotero/i).tagName).toBe('SELECT')
-    expect(screen.queryByRole('spinbutton', { name: /gotas por ml/i })).not.toBeInTheDocument()
-    enter(/^gotero/i, '20')
     enter(/gotas por toma/i, '1')
     expect(screen.getAllByText('CBD 5 mg · THC 2.5 mg')).toHaveLength(2)
     enter(/gotas por toma/i, '2')
@@ -50,28 +48,25 @@ describe('CannabinoidCalculator', () => {
   it('deriva cada resultado de los datos de uso presentes, sin asumir tomas por día', () => {
     render(<CannabinoidCalculator />)
     fillOil()
-    enter(/^gotero/i, '20')
-    expect(screen.getByText('CBD 5 mg · THC 0 mg')).toBeInTheDocument()
-    expect(screen.getByText(/falta gotas por toma/i)).toBeInTheDocument()
     enter(/gotas por toma/i, '1')
     expect(screen.getAllByText('CBD 5 mg · THC 0 mg')).toHaveLength(2)
-    expect(screen.getByText(/200 tomas/)).toHaveTextContent(/falta tomas por día/i)
+    expect(screen.getByText(/200 tomas/)).toHaveTextContent(/faltan tomas por día/i)
     enter(/tomas por día/i, '1')
     expect(screen.getByText('200 tomas · 200 días')).toBeInTheDocument()
   })
 
-  it('otro gotero: rechaza cero y recupera la concentración al dejarlo sin dato', () => {
+  it('cambiar el gotero es opcional: rechaza cero y vuelve a 20 si se borra', () => {
     render(<CannabinoidCalculator />)
     fillOil()
-    enter(/^gotero/i, 'otro')
-    enter(/gotas por ml/i, '0')
-    expect(screen.getByRole('alert')).toHaveTextContent(/gotas por ml.*mayor que 0/i)
-    expect(screen.queryByText('CBD 5 mg · THC 0 mg')).not.toBeInTheDocument()
-    enter(/gotas por ml/i, '')
-    expect(screen.getByText('CBD 100 mg/ml · THC 0 mg/ml')).toBeInTheDocument()
-    expect(screen.getByText(/falta elegir el gotero/i)).toBeInTheDocument()
     enter(/gotas por ml/i, '25')
     expect(screen.getByText('CBD 4 mg · THC 0 mg')).toBeInTheDocument()
+    expect(screen.getByText(/gotero: 25 gotas por ml/i)).toBeInTheDocument()
+    enter(/gotas por ml/i, '0')
+    expect(screen.getByRole('alert')).toHaveTextContent(/gotas por ml.*mayor que 0/i)
+    expect(screen.queryByText('CBD 4 mg · THC 0 mg')).not.toBeInTheDocument()
+    enter(/gotas por ml/i, '')
+    expect(screen.getByText('CBD 5 mg · THC 0 mg')).toBeInTheDocument()
+    expect(screen.getByText(/gotero: 20 gotas por ml/i)).toBeInTheDocument()
   })
 
   it('no convierte un campo obligatorio borrado en cero', () => {

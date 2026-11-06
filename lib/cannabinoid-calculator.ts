@@ -1,3 +1,6 @@
+// El gotero que maneja EVIPro: mismo valor que GOTAS_ML_ESTANDAR en core/dosis.py.
+export const DEFAULT_DROPS_PER_ML = 20
+
 export type OilInputMode = 'mg_per_ml' | 'total_mg' | 'percent_weight_volume'
 export type CannabinoidInputMode = OilInputMode
 export type InhalationInputMode = 'percent_of_product' | 'total_mg'
@@ -115,24 +118,24 @@ export function calculateOilMetrics(input: OilCalculatorInput) {
   const volumeMl = requiredNumber(input.volumeMl, 'Volumen del frasco', true)
   const cbdValue = requiredNumber(input.cbdValue, 'CBD declarado')
   const thcValue = requiredNumber(input.thcValue, 'THC declarado')
-  const dropsPerMl = optionalPositive(input.dropsPerMl, 'Gotas por ml')
+  const dropsPerMl = input.dropsPerMl === null ? DEFAULT_DROPS_PER_ML : requiredNumber(input.dropsPerMl, 'Gotas por ml', true)
   const dropsPerDose = optionalPositive(input.dropsPerDose, 'Gotas por toma')
   const dosesPerDay = optionalPositive(input.dosesPerDay, 'Tomas por día')
 
   const cbdMgPerMl = concentrationFromInput(input.inputMode, cbdValue, volumeMl)
   const thcMgPerMl = concentrationFromInput(input.inputMode, thcValue, volumeMl)
-  const cbdMgPerDrop = dropsPerMl === null ? null : cbdMgPerMl / dropsPerMl
-  const thcMgPerDrop = dropsPerMl === null ? null : thcMgPerMl / dropsPerMl
-  const totalDrops = dropsPerMl === null ? null : volumeMl * dropsPerMl
-  const dosesPerBottle = totalDrops === null || dropsPerDose === null ? null : totalDrops / dropsPerDose
+  const cbdMgPerDrop = cbdMgPerMl / dropsPerMl
+  const thcMgPerDrop = thcMgPerMl / dropsPerMl
+  const totalDrops = volumeMl * dropsPerMl
+  const dosesPerBottle = dropsPerDose === null ? null : totalDrops / dropsPerDose
 
   return {
     cbdMgPerMl: roundTo(cbdMgPerMl),
     thcMgPerMl: roundTo(thcMgPerMl),
     cbdMgPerDrop: roundTo(cbdMgPerDrop, 3),
     thcMgPerDrop: roundTo(thcMgPerDrop, 3),
-    cbdMgPerDose: roundTo(cbdMgPerDrop === null || dropsPerDose === null ? null : cbdMgPerDrop * dropsPerDose, 3),
-    thcMgPerDose: roundTo(thcMgPerDrop === null || dropsPerDose === null ? null : thcMgPerDrop * dropsPerDose, 3),
+    cbdMgPerDose: roundTo(dropsPerDose === null ? null : cbdMgPerDrop * dropsPerDose, 3),
+    thcMgPerDose: roundTo(dropsPerDose === null ? null : thcMgPerDrop * dropsPerDose, 3),
     cbdTotalMg: roundTo(cbdMgPerMl * volumeMl),
     thcTotalMg: roundTo(thcMgPerMl * volumeMl),
     cbdPercentWeightVolume: roundTo(percentWeightVolumeFromConcentration(cbdMgPerMl), 2),
