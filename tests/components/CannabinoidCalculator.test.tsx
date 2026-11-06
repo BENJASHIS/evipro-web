@@ -139,6 +139,32 @@ describe('CannabinoidCalculator', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(/entero/i)
   })
 
+  it.each([
+    ['0.3', '0.016'],
+    ['1', '0.053'],
+    ['5', '0.27'],
+    ['15', '0.8'],
+    ['30', '1.6'],
+    ['50', '2.7'],
+    ['66', '3.5'],
+    ['80', '4.2'],
+    ['100', '5.3'],
+  ])('cartucho: con %s %% de THC estima %s mg, sin redondear a cero', (percent, mg) => {
+    render(<CannabinoidCalculator />)
+    fillCartridge('0', percent)
+    expect(porInhalacion()).toHaveTextContent(`≈ CBD 0 mg · THC ${mg} mg`)
+  })
+
+  it('cartucho: también funciona si la etiqueta da mg totales', () => {
+    render(<CannabinoidCalculator />)
+    enter(/tipo de producto/i, 'inhalation')
+    enter(/la etiqueta muestra/i, 'total_mg')
+    enter(/contenido del producto/i, '1')
+    enter(/cbd declarado/i, '0')
+    enter(/thc declarado/i, '660')
+    expect(porInhalacion()).toHaveTextContent('≈ CBD 0 mg · THC 3.5 mg')
+  })
+
   it('cartucho: también estima el CBD del producto', () => {
     render(<CannabinoidCalculator />)
     fillCartridge('70', '0')

@@ -58,6 +58,12 @@ function formatPair(cbd: number | null, thc: number | null, unit: string, decima
   return `CBD ${format(cbd, unit, decimals)} · THC ${format(thc, unit, decimals)}`
 }
 
+// Dos cifras significativas: no finge precisión ni muestra 0 mg si hay poco cannabinoide.
+function formatEstimate(cbd: number | null, thc: number | null) {
+  const significant = (mg: number | null) => mg === null ? null : Number(mg.toPrecision(2))
+  return `≈ ${formatPair(significant(cbd), significant(thc), 'mg', 3)}`
+}
+
 function calculatorResult<T>(calculate: () => T) {
   try {
     return { value: calculate(), error: null }
@@ -352,7 +358,7 @@ export default function CannabinoidCalculator() {
                 />
                 <PrimaryResult
                   label="Por inhalación (estimado)"
-                  value={`≈ ${formatPair(inhalation.cbdMgPerInhalation, inhalation.thcMgPerInhalation, 'mg', 1)}`}
+                  value={formatEstimate(inhalation.cbdMgPerInhalation, inhalation.thcMgPerInhalation)}
                 />
               </>
             ) : productKind === 'flower' && flower ? (
@@ -384,7 +390,7 @@ export default function CannabinoidCalculator() {
             </>
           ) : productKind === 'inhalation' && inhalation ? (
             <>
-              <ResultRow label="Por toma (estimado)" value={inhalation.thcMgPerDose === null ? t('Faltan inhalaciones por toma') : `≈ ${formatPair(inhalation.cbdMgPerDose, inhalation.thcMgPerDose, 'mg', 1)}`} />
+              <ResultRow label="Por toma (estimado)" value={inhalation.thcMgPerDose === null ? t('Faltan inhalaciones por toma') : formatEstimate(inhalation.cbdMgPerDose, inhalation.thcMgPerDose)} />
               <ResultRow label="Producto" value={format(inhalation.productGrams, 'g', 2)} />
             </>
           ) : productKind === 'flower' && flower ? (
