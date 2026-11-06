@@ -9,6 +9,7 @@ import {
   calculateOilMetrics,
   DEFAULT_DROPS_PER_ML,
   INHALATION_PROFILES,
+  REFERENCE_EXTRACT_PERCENT,
   type InhalationInputMode,
   type OilInputMode,
 } from '@/lib/cannabinoid-calculator'
@@ -199,7 +200,7 @@ export default function CannabinoidCalculator() {
     expectedInhalations: null,
   }), [inhalationInputMode, productGrams, inhalationCbdValue, inhalationThcValue])
 
-  const thcMgPerInhalation = inhalationProfile === 'medido'
+  const referenceThcMg = inhalationProfile === 'medido'
     ? numberFrom(measuredThcMg)
     : INHALATION_PROFILES.find(profile => profile.value === inhalationProfile)?.thcMg ?? null
 
@@ -211,10 +212,19 @@ export default function CannabinoidCalculator() {
   }), [flowerGrams, flowerCbdPercent, flowerThcPercent, flowerInhalations])
 
   const oilResult = useMemo(() => calculatorResult(() => calculateOilMetrics(oilInput)), [oilInput])
-  const inhalationResult = useMemo(() => calculatorResult(() => ({
-    ...calculateInhalationMetrics(inhalationInput),
-    ...calculateInhalationDose(thcMgPerInhalation, numberFrom(inhalationsPerDose)),
-  })), [inhalationInput, thcMgPerInhalation, inhalationsPerDose])
+  const inhalationResult = useMemo(() => calculatorResult(() => {
+    const metrics = calculateInhalationMetrics(inhalationInput)
+    return {
+      ...metrics,
+      ...calculateInhalationDose({
+        referenceThcMg,
+        referencePercent: inhalationProfile === 'medido' ? metrics.thcPercentOfProduct : REFERENCE_EXTRACT_PERCENT,
+        cbdPercent: metrics.cbdPercentOfProduct,
+        thcPercent: metrics.thcPercentOfProduct,
+        inhalationsPerDose: numberFrom(inhalationsPerDose),
+      }),
+    }
+  }), [inhalationInput, referenceThcMg, inhalationProfile, inhalationsPerDose])
   const flowerResult = useMemo(() => calculatorResult(() => calculateFlowerMetrics(flowerInput)), [flowerInput])
   const oil = oilResult.value
   const inhalation = inhalationResult.value
@@ -299,7 +309,7 @@ export default function CannabinoidCalculator() {
             )}
           </div>
 
-          {productKind === 'inhalation' && <p className="text-xs leading-5 text-faint mt-4"><T>Valores de referencia para cartuchos con THC: cambian con el aparato, la temperatura y la duración. Si mediste tu dispositivo, elige «Medido en mi dispositivo».</T></p>}
+          {productKind === 'inhalation' && <p className="text-xs leading-5 text-faint mt-4"><T>Estimación que parte de un extracto al 66 % y sube o baja con el porcentaje de tu producto. El valor real cambia con el aparato, la temperatura y la inhalación. Si mediste tu dispositivo, elige «Medido en mi dispositivo».</T></p>}
 
           {productKind === 'oil' && <details className="text-xs leading-5 text-faint mt-4">
             <summary className="cursor-pointer"><T values={{ n: dropsPerMl.trim() || DEFAULT_DROPS_PER_ML }}>{'Gotero: {n} gotas por ml (cambiar)'}</T></summary>
@@ -342,7 +352,7 @@ export default function CannabinoidCalculator() {
                 />
                 <PrimaryResult
                   label="Por inhalación (estimado)"
-                  value={inhalation.thcTotalMg === 0 ? t('No aplica: la referencia es para THC') : `THC ≈ ${format(inhalation.thcMgPerInhalation, 'mg', 3)}`}
+                  value={`≈ ${formatPair(inhalation.cbdMgPerInhalation, inhalation.thcMgPerInhalation, 'mg', 1)}`}
                 />
               </>
             ) : productKind === 'flower' && flower ? (
@@ -374,7 +384,7 @@ export default function CannabinoidCalculator() {
             </>
           ) : productKind === 'inhalation' && inhalation ? (
             <>
-              <ResultRow label="Por toma (estimado)" value={inhalation.thcTotalMg === 0 ? t('No aplica: la referencia es para THC') : inhalation.thcMgPerDose === null ? t('Faltan inhalaciones por toma') : `THC ≈ ${format(inhalation.thcMgPerDose, 'mg', 3)}`} />
+              <ResultRow label="Por toma (estimado)" value={inhalation.thcMgPerDose === null ? t('Faltan inhalaciones por toma') : `≈ ${formatPair(inhalation.cbdMgPerDose, inhalation.thcMgPerDose, 'mg', 1)}`} />
               <ResultRow label="Producto" value={format(inhalation.productGrams, 'g', 2)} />
             </>
           ) : productKind === 'flower' && flower ? (

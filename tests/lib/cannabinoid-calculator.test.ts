@@ -3,6 +3,7 @@ import {
   calculateFlowerMetrics,
   calculateInhalationDose,
   INHALATION_PROFILES,
+  REFERENCE_EXTRACT_PERCENT,
   calculateInhalationMetrics,
   calculateOilMetrics,
   cannabinoidRatio,
@@ -171,13 +172,24 @@ describe('cannabinoid calculator', () => {
     expect(Math.max(...INHALATION_PROFILES.map(profile => profile.label.length))).toBeLessThanOrEqual(18)
   })
 
-  it('multiplica mg por inhalación e inhalaciones por toma', () => {
-    expect(calculateInhalationDose(3.5, 2)).toEqual({ thcMgPerInhalation: 3.5, thcMgPerDose: 7 })
-    expect(calculateInhalationDose(3.5, null)).toEqual({ thcMgPerInhalation: 3.5, thcMgPerDose: null })
+  const dose = { referenceThcMg: 3.5, referencePercent: REFERENCE_EXTRACT_PERCENT, cbdPercent: 0, thcPercent: 66, inhalationsPerDose: 2 }
+
+  it('escala por porcentaje y multiplica por inhalaciones', () => {
+    expect(REFERENCE_EXTRACT_PERCENT).toBe(66)
+    expect(calculateInhalationDose(dose)).toEqual({ cbdMgPerInhalation: 0, thcMgPerInhalation: 3.5, cbdMgPerDose: 0, thcMgPerDose: 7 })
+    expect(calculateInhalationDose({ ...dose, thcPercent: 33 }).thcMgPerInhalation).toBe(1.75)
+    expect(calculateInhalationDose({ ...dose, thcPercent: 0, cbdPercent: 33 }).cbdMgPerInhalation).toBe(1.75)
+    expect(calculateInhalationDose({ ...dose, inhalationsPerDose: null }).thcMgPerDose).toBeNull()
   })
 
-  it.each([[null, 1], [0, 1], [3.5, 0], [3.5, 1.5]])('rechaza inhalación inválida: %s mg, %s inhalaciones', (mg, inhalations) => {
-    expect(() => calculateInhalationDose(mg, inhalations)).toThrow(RangeError)
+  it.each([
+    { referenceThcMg: null },
+    { referenceThcMg: 0 },
+    { referencePercent: 0 },
+    { inhalationsPerDose: 0 },
+    { inhalationsPerDose: 1.5 },
+  ])('rechaza inhalación inválida: %o', invalid => {
+    expect(() => calculateInhalationDose({ ...dose, ...invalid })).toThrow(RangeError)
   })
 
   it('suma los mg del día solo con gotas por toma y tomas por día', () => {

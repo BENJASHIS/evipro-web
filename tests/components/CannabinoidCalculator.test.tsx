@@ -105,48 +105,70 @@ describe('CannabinoidCalculator', () => {
     expect(screen.queryByText(/CBD 600 mg/)).not.toBeInTheDocument()
   })
 
-  function fillCartridge(thc: string) {
+  function fillCartridge(cbd: string, thc: string) {
     enter(/tipo de producto/i, 'inhalation')
     enter(/contenido del producto/i, '1')
-    enter(/cbd declarado/i, thc === '0' ? '60' : '0')
+    enter(/cbd declarado/i, cbd)
     enter(/thc declarado/i, thc)
   }
+  const porInhalacion = () => screen.getByText('Por inhalación (estimado)').parentElement
+  const porToma = () => screen.getByText('Por toma (estimado)').parentElement
 
-  it('cartucho: parte de la inhalación estándar y más inhalaciones dan más mg de THC', () => {
+  it('cartucho: los mg suben y bajan con el porcentaje y crecen con las inhalaciones', () => {
     render(<CannabinoidCalculator />)
-    fillCartridge('70')
-    expect(screen.getByText('CBD 0 mg · THC 700 mg')).toBeInTheDocument()
-    expect(screen.getByLabelText(/duración de la inhalación/i)).toHaveValue('estandar')
+    fillCartridge('0', '66')
     expect(screen.queryByText(/gotas por toma/i)).not.toBeInTheDocument()
-    expect(screen.getByText('Por inhalación (estimado)').parentElement).toHaveTextContent('THC ≈ 3.5 mg')
-    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent(/faltan inhalaciones por toma/i)
+    expect(screen.getByText('CBD 0 mg · THC 660 mg')).toBeInTheDocument()
+    expect(screen.getByLabelText(/duración de la inhalación/i)).toHaveValue('estandar')
+    expect(porInhalacion()).toHaveTextContent('≈ CBD 0 mg · THC 3.5 mg')
+    enter(/thc declarado/i, '90')
+    expect(porInhalacion()).toHaveTextContent('≈ CBD 0 mg · THC 4.8 mg')
+    enter(/thc declarado/i, '15')
+    expect(porInhalacion()).toHaveTextContent('≈ CBD 0 mg · THC 0.8 mg')
+    enter(/thc declarado/i, '66')
+    expect(porToma()).toHaveTextContent(/faltan inhalaciones por toma/i)
     enter(/inhalaciones por toma/i, '2')
-    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 7 mg')
+    expect(porToma()).toHaveTextContent('≈ CBD 0 mg · THC 7 mg')
     enter(/inhalaciones por toma/i, '4')
-    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 14 mg')
+    expect(porToma()).toHaveTextContent('≈ CBD 0 mg · THC 14 mg')
     enter(/duración de la inhalación/i, 'corta')
-    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 6 mg')
+    expect(porToma()).toHaveTextContent('≈ CBD 0 mg · THC 6 mg')
     enter(/duración de la inhalación/i, 'larga')
-    expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent('THC ≈ 22 mg')
+    expect(porToma()).toHaveTextContent('≈ CBD 0 mg · THC 22 mg')
     enter(/inhalaciones por toma/i, '1.5')
     expect(screen.getByRole('alert')).toHaveTextContent(/entero/i)
   })
 
-  it('cartucho: acepta lo medido en el dispositivo y lo exige al elegirlo', () => {
+  it('cartucho: también estima el CBD del producto', () => {
     render(<CannabinoidCalculator />)
-    fillCartridge('70')
+    fillCartridge('70', '0')
+    expect(porInhalacion()).toHaveTextContent('≈ CBD 3.7 mg · THC 0 mg')
+    enter(/cbd declarado/i, '40')
+    enter(/thc declarado/i, '40')
+    expect(porInhalacion()).toHaveTextContent('≈ CBD 2.1 mg · THC 2.1 mg')
+  })
+
+  it('cartucho: lo medido se respeta tal cual y exige THC declarado', () => {
+    render(<CannabinoidCalculator />)
+    fillCartridge('20', '40')
     enter(/duración de la inhalación/i, 'medido')
     expect(screen.getByRole('alert')).toHaveTextContent(/falta.*thc por inhalación/i)
     enter(/mg de thc por inhalación/i, '2')
-    expect(screen.getByText('Por inhalación (estimado)').parentElement).toHaveTextContent('THC ≈ 2 mg')
+    expect(porInhalacion()).toHaveTextContent('≈ CBD 1 mg · THC 2 mg')
+    enter(/thc declarado/i, '0')
+    expect(screen.getByRole('alert')).toHaveTextContent(/thc declarado.*mayor que 0/i)
   })
 
-  it('cartucho sin THC declarado no estima mg por inhalación', () => {
+  it('flor: los mg por inhalación suben y bajan con el porcentaje', () => {
     render(<CannabinoidCalculator />)
-    fillCartridge('0')
-    expect(screen.getByText('CBD 600 mg · THC 0 mg')).toBeInTheDocument()
-    expect(screen.getByText('Por inhalación (estimado)').parentElement).toHaveTextContent(/no aplica/i)
-    expect(screen.queryByText(/THC ≈/)).not.toBeInTheDocument()
+    enter(/tipo de producto/i, 'flower')
+    enter(/flor por carga/i, '0.1')
+    enter(/cbd en etiqueta/i, '0')
+    enter(/thc en etiqueta/i, '15')
+    enter(/inhalaciones por carga/i, '5')
+    expect(screen.getByText('Por inhalación teórica').parentElement).toHaveTextContent('CBD 0 mg · THC 3 mg')
+    enter(/thc en etiqueta/i, '20')
+    expect(screen.getByText('Por inhalación teórica').parentElement).toHaveTextContent('CBD 0 mg · THC 4 mg')
   })
 
   it('calcula flor con datos explícitos y rechaza porcentajes incompatibles', () => {

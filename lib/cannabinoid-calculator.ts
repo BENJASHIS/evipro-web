@@ -1,7 +1,11 @@
 // El gotero que maneja EVIPro: mismo valor que GOTAS_ML_ESTANDAR en core/dosis.py.
 export const DEFAULT_DROPS_PER_ML = 20
 
-// Valores nominales de la app clínica (PERFIL_INHALACION en templates/app.html), en mg de THC.
+// mg de THC de la app clínica (PERFIL_INHALACION en templates/app.html), que EVIPro maneja
+// para vaporizador de 66 % o más. Se toma 66 % como referencia y se escala linealmente:
+// estimación mecánica, sin estudio que la mida. Ver evidence/appraisal/2026-11-06-thc-por-inhalacion.md.
+// En flor no aplica: el vapor no tiene el % de la flor, así que ahí se reparte la carga.
+export const REFERENCE_EXTRACT_PERCENT = 66
 export const INHALATION_PROFILES = [
   { value: 'corta', label: 'Corta · 1-2 s', thcMg: 1.5 },
   { value: 'estandar', label: 'Estándar · 3-4 s', thcMg: 3.5 },
@@ -189,15 +193,26 @@ export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
   }
 }
 
-export function calculateInhalationDose(thcMgPerInhalation: NumericInput, inhalationsPerDose: NumericInput) {
-  const perInhalation = requiredNumber(thcMgPerInhalation, 'mg de THC por inhalación', true)
-  const inhalations = optionalPositive(inhalationsPerDose, 'Inhalaciones por toma')
+export function calculateInhalationDose(input: {
+  referenceThcMg: NumericInput
+  referencePercent: NumericInput
+  cbdPercent: number
+  thcPercent: number
+  inhalationsPerDose: NumericInput
+}) {
+  const referenceThcMg = requiredNumber(input.referenceThcMg, 'mg de THC por inhalación', true)
+  const mgPerPercent = referenceThcMg / requiredNumber(input.referencePercent, 'THC declarado', true)
+  const inhalations = optionalPositive(input.inhalationsPerDose, 'Inhalaciones por toma')
   if (inhalations !== null && !Number.isInteger(inhalations)) {
     throw new RangeError('Inhalaciones por toma: introduce un número entero mayor que 0.')
   }
+  const cbdMg = mgPerPercent * input.cbdPercent
+  const thcMg = mgPerPercent * input.thcPercent
   return {
-    thcMgPerInhalation: roundTo(perInhalation, 3),
-    thcMgPerDose: roundTo(inhalations === null ? null : perInhalation * inhalations, 3),
+    cbdMgPerInhalation: roundTo(cbdMg, 3),
+    thcMgPerInhalation: roundTo(thcMg, 3),
+    cbdMgPerDose: roundTo(inhalations === null ? null : cbdMg * inhalations, 3),
+    thcMgPerDose: roundTo(inhalations === null ? null : thcMg * inhalations, 3),
   }
 }
 
