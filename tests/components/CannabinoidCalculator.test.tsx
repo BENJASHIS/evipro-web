@@ -117,6 +117,7 @@ describe('CannabinoidCalculator', () => {
     fillCartridge('70')
     expect(screen.getByText('CBD 0 mg · THC 700 mg')).toBeInTheDocument()
     expect(screen.getByLabelText(/duración de la inhalación/i)).toHaveValue('estandar')
+    expect(screen.queryByText(/gotas por toma/i)).not.toBeInTheDocument()
     expect(screen.getByText('Por inhalación (estimado)').parentElement).toHaveTextContent('THC ≈ 3.5 mg')
     expect(screen.getByText('Por toma (estimado)').parentElement).toHaveTextContent(/faltan inhalaciones por toma/i)
     enter(/inhalaciones por toma/i, '2')

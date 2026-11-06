@@ -167,6 +167,8 @@ describe('cannabinoid calculator', () => {
 
   it('usa los mismos valores de inhalación que la app clínica', () => {
     expect(INHALATION_PROFILES.map(profile => profile.thcMg)).toEqual([1.5, 3.5, 5.5])
+    // El selector mide unos 200 px: un texto más largo se corta en pantalla.
+    expect(Math.max(...INHALATION_PROFILES.map(profile => profile.label.length))).toBeLessThanOrEqual(18)
   })
 
   it('multiplica mg por inhalación e inhalaciones por toma', () => {

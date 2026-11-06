@@ -264,7 +264,7 @@ export default function CannabinoidCalculator() {
             <p className="mt-2"><T>El porcentaje del aceite se interpreta aquí como masa por volumen (% m/v, también llamado % p/v): 10 % son 10 gramos en 100 mL. Si tu etiqueta indica porcentaje por peso o no especifica la base, verifica ese dato antes de usar este modo.</T></p>
           </details>}
 
-          <p className="text-xs leading-5 text-faint mb-5"><T>Completa los datos de etiqueta; escribe 0 solo si está declarado. Las gotas por toma y las tomas por día son opcionales.</T></p>
+          <p className="text-xs leading-5 text-faint mb-5"><T>Completa los datos de etiqueta; escribe 0 solo si está declarado. Los campos opcionales pueden quedar vacíos.</T></p>
 
           <div className="grid gap-4 sm:grid-cols-2">
             {productKind === 'oil' ? (
