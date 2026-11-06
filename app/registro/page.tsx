@@ -85,6 +85,7 @@ export default function RegistroPage() {
       options: {
         emailRedirectTo: bottleEntry ? `${location.origin}/auth/confirm${BOTTLE_NEXT}` : `${location.origin}/miembros`,
         ...(turnstileToken ? { captchaToken: turnstileToken } : {}),
+        data: { terms_accepted_at: new Date().toISOString() },
       },
     })
 
@@ -299,6 +300,14 @@ export default function RegistroPage() {
           </fieldset>
 
           </>}
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" required className="mt-0.5 accent-brand" />
+            <span className="text-xs text-muted leading-relaxed">
+              <T>{"He leído y acepto los "}</T>
+              <a href="/terminos" target="_blank" rel="noopener noreferrer" className="text-brand underline"><T>{"Términos y Condiciones"}</T></a>
+              <T>{" y autorizo el tratamiento de mis datos personales."}</T>
+            </span>
+          </label>
           <Turnstile
             action="registro"
             resetSignal={turnstileReset}
