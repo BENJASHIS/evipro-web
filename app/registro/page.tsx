@@ -1,4 +1,5 @@
 'use client'
+import GoogleSignIn from '@/app/components/GoogleSignIn'
 import { useBottleEntry, BOTTLE_NEXT } from '@/lib/use-bottle-entry'
 import { BOTTLE_PATH } from '@/lib/member-return'
 import { T, useLanguage } from '@/app/components/Language'
@@ -83,7 +84,6 @@ export default function RegistroPage() {
       password: form.password,
       options: {
         emailRedirectTo: bottleEntry ? `${location.origin}/auth/confirm${BOTTLE_NEXT}` : `${location.origin}/miembros`,
-        ...(bottleEntry ? { data: { full_name: form.full_name.trim() } } : {}),
         ...(turnstileToken ? { captchaToken: turnstileToken } : {}),
       },
     })
@@ -165,6 +165,7 @@ export default function RegistroPage() {
           <h2 className="text-2xl font-light text-white mb-2"><T>{"Crea tu cuenta"}</T></h2>
           <p className="text-sm text-muted mb-8"><T>{bottleEntry ? 'Usa un correo al que tengas acceso. Si se solicita confirmación, revisa tu bandeja de entrada.' : 'Usa un correo al que tengas acceso; ahí recibirás la confirmación de cuenta.'}</T></p>
 
+          {!confirmationSent && <GoogleSignIn next={bottleEntry ? BOTTLE_PATH : '/miembros'} />}
           {confirmationSent ? <div role="status" className="text-sm leading-6">
             <p><T>Revisa tu correo para confirmar tu cuenta. Después podrás abrir el visor de CBD.</T></p>
             <Link href={`/login${BOTTLE_NEXT}`} className="inline-block mt-4 text-brand underline"><T>Ya confirmé mi correo · ingresar al visor</T></Link>
@@ -182,7 +183,7 @@ export default function RegistroPage() {
           <fieldset className="space-y-4">
             <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"1 · Tu cuenta"}</T></legend>
 
-            {CAMPOS_CUENTA.map(field => (
+            {CAMPOS_CUENTA.filter(field => !bottleEntry || field.name !== 'full_name').map(field => (
               <div key={field.name}>
                 <label htmlFor={field.name} className={LABEL}>
                   <T>{field.label}</T>{field.required && ' *'}

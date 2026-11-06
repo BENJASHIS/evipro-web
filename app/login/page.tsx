@@ -1,4 +1,6 @@
 'use client'
+import GoogleSignIn from '@/app/components/GoogleSignIn'
+import { BOTTLE_PATH } from '@/lib/member-return'
 import { useBottleEntry, BOTTLE_NEXT } from '@/lib/use-bottle-entry'
 import { T } from '@/app/components/Language'
 import { useState } from 'react'
@@ -67,6 +69,7 @@ export default function LoginPage() {
           <p className="text-sm text-muted mt-4"><T>¿Ya tienes cuenta? Inicia sesión y volverás al visor.</T></p>
         </div> : <p className="text-sm text-muted mb-8"><T>{"Ingresa a tu cuenta"}</T></p>}
 
+        <GoogleSignIn next={bottleEntry ? BOTTLE_PATH : '/miembros'} />
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>{"Correo"}</T></label>
