@@ -10,6 +10,8 @@ Dominio platform; no modifica reglas clínicas ni permisos de membresía. Carlos
 - Google autentica; no concede membresía. No se solicitan permisos de Drive, Calendar ni datos clínicos.
 
 ## Activación externa pendiente
+**Estado comprobado 2026-11-06:** código publicado en `5c19fd1`; cliente OAuth «EVIPro web · acceso de usuarios» creado en el proyecto existente `evipro-calendario` (cuenta eviproconsultas@gmail.com) y retornos guardados en Supabase. Falta el paso 4: Client ID y secreto en el proveedor Google de Supabase; `/api/auth/providers` sigue en `google:false`. El resto de esta sección es la propuesta original: ya no aplica crear un proyecto nuevo.
+
 Supabase proyecto `bfcyzdrxnjkfeplcxyxv`, evipro-web: Google deshabilitado, ClientIDs/Secret vacíos. En la cuenta Google abierta no se encontró proyectoEVIPro; proyecto actual My First Project no tiene AuthPlatform configurado. Formulario de nuevo proyecto preparado con nombreEVIPro (sin crearlo). No se modificaron ajustes externos ni credenciales.
 
 Configuración propuesta, siguiendo [Supabase Google OAuth](https://supabase.com/docs/guides/auth/social-sign-in/auth-google):

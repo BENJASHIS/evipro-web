@@ -166,7 +166,9 @@ export default function CannabinoidCalculator() {
   const [oilVolumeMl, setOilVolumeMl] = useState('')
   const [oilCbdValue, setOilCbdValue] = useState('')
   const [oilThcValue, setOilThcValue] = useState('')
-  const [dropsPerMl, setDropsPerMl] = useState('')
+  const [dropperChoice, setDropperChoice] = useState('')
+  const [customDropsPerMl, setCustomDropsPerMl] = useState('')
+  const dropsPerMl = dropperChoice === 'otro' ? customDropsPerMl : dropperChoice
   const [dropsPerDose, setDropsPerDose] = useState('')
   const [dosesPerDay, setDosesPerDay] = useState('')
   const [inhalationInputMode, setInhalationInputMode] = useState<InhalationInputMode>('percent_of_product')
@@ -263,7 +265,13 @@ export default function CannabinoidCalculator() {
                 <Field label="Volumen del frasco" value={oilVolumeMl} onChange={setOilVolumeMl} placeholder="10" suffix="ml" />
                 <Field label="CBD declarado" value={oilCbdValue} onChange={setOilCbdValue} placeholder="10" suffix={oilInputModeOption.suffix} />
                 <Field label="THC declarado" value={oilThcValue} onChange={setOilThcValue} placeholder="0" suffix={oilInputModeOption.suffix} />
-                <Field label="Gotas por ml" value={dropsPerMl} onChange={setDropsPerMl} step="1" suffix="gotas" optional />
+                <SelectField label="Gotero (opcional)" value={dropperChoice} onChange={setDropperChoice}>
+                  <option value="" className="bg-ink"><T>Sin elegir</T></option>
+                  <option value="20" className="bg-ink"><T>20 gotas por ml</T></option>
+                  <option value="30" className="bg-ink"><T>30 gotas por ml</T></option>
+                  <option value="otro" className="bg-ink"><T>Otro gotero</T></option>
+                </SelectField>
+                {dropperChoice === 'otro' && <Field label="Gotas por ml" value={customDropsPerMl} onChange={setCustomDropsPerMl} step="1" suffix="gotas" />}
                 <Field label="Gotas por toma" value={dropsPerDose} onChange={setDropsPerDose} step="1" suffix="gotas" optional />
                 <Field label="Tomas por día" value={dosesPerDay} onChange={setDosesPerDay} step="0.5" suffix="x día" optional />
               </>
@@ -283,6 +291,8 @@ export default function CannabinoidCalculator() {
               </>
             )}
           </div>
+
+          {productKind === 'oil' && <p className="text-xs leading-5 text-faint mt-4"><T>El gotero indica cuántas gotas hacen 1 ml: si caben más, cada gota es más pequeña y lleva menos mg. Las gotas que tomas van en «Gotas por toma»: a más gotas, más mg.</T></p>}
         </section>
 
         <aside className="border border-brand/30 bg-brand/5 rounded-lg p-5 sm:p-6" aria-live="polite">
@@ -342,9 +352,9 @@ export default function CannabinoidCalculator() {
 
           {productKind === 'oil' && oil ? (
             <>
-              <ResultRow label="Por gota" value={oil.cbdMgPerDrop === null ? t('Falta gotas por ml') : formatPair(oil.cbdMgPerDrop, oil.thcMgPerDrop, 'mg', 3)} />
-              <ResultRow label="Por toma" value={oil.cbdMgPerDrop === null ? t('Requiere gotas por ml y gotas por toma') : oil.cbdMgPerDose === null ? t('Falta gotas por toma') : formatPair(oil.cbdMgPerDose, oil.thcMgPerDose, 'mg', 3)} />
-              <ResultRow label="Envase alcanza" value={oil.dosesPerBottle === null ? t('Requiere gotas por ml y gotas por toma') : `${format(oil.dosesPerBottle, t('tomas'), 1)} · ${oil.estimatedDays === null ? t('Falta tomas por día') : format(oil.estimatedDays, t('días'), 1)}`} />
+              <ResultRow label="Por gota" value={oil.cbdMgPerDrop === null ? t('Falta elegir el gotero') : formatPair(oil.cbdMgPerDrop, oil.thcMgPerDrop, 'mg', 3)} />
+              <ResultRow label="Por toma" value={oil.cbdMgPerDrop === null ? t('Requiere gotero y gotas por toma') : oil.cbdMgPerDose === null ? t('Falta gotas por toma') : formatPair(oil.cbdMgPerDose, oil.thcMgPerDose, 'mg', 3)} />
+              <ResultRow label="Envase alcanza" value={oil.dosesPerBottle === null ? t('Requiere gotero y gotas por toma') : `${format(oil.dosesPerBottle, t('tomas'), 1)} · ${oil.estimatedDays === null ? t('Falta tomas por día') : format(oil.estimatedDays, t('días'), 1)}`} />
             </>
           ) : productKind === 'inhalation' && inhalation ? (
             <>
