@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import CannabinoidCalculator from '../../app/miembros/herramientas/calculadora-cannabinoide/CannabinoidCalculator'
+import { LanguageProvider } from '@/app/components/Language'
 
 function enter(label: RegExp, value: string) {
   fireEvent.change(screen.getByLabelText(label), { target: { value } })
@@ -29,7 +30,7 @@ describe('CannabinoidCalculator', () => {
     expect(screen.getByText('CBD 10 % · THC 0 %')).toBeInTheDocument()
     expect(screen.getByText('CBD 1000 mg · THC 0 mg')).toBeInTheDocument()
     expect(screen.getByText('CBD 5 mg · THC 0 mg')).toBeInTheDocument()
-    expect(screen.getAllByText(/faltan gotas por toma/i)).toHaveLength(2)
+    expect(screen.getAllByText(/faltan gotas por toma/i)).toHaveLength(3)
   })
 
   it('más gotas por toma dan más mg sin tocar el gotero', () => {
@@ -53,6 +54,23 @@ describe('CannabinoidCalculator', () => {
     expect(screen.getByText(/200 tomas/)).toHaveTextContent(/faltan tomas por día/i)
     enter(/tomas por día/i, '1')
     expect(screen.getByText('200 tomas · 200 días')).toBeInTheDocument()
+  })
+
+  it('muestra los mg del día al indicar tomas por día', () => {
+    render(<CannabinoidCalculator />)
+    enter(/volumen del frasco/i, '10')
+    enter(/cbd declarado/i, '10')
+    enter(/thc declarado/i, '5')
+    enter(/gotas por toma/i, '4')
+    expect(screen.getByText('Por día').parentElement).toHaveTextContent(/faltan tomas por día/i)
+    enter(/tomas por día/i, '3')
+    expect(screen.getByText('Por día').parentElement).toHaveTextContent('CBD 60 mg · THC 30 mg')
+  })
+
+  it.each(['oil', 'inhalation', 'flower'])('no muestra ejemplos que parezcan datos en %s', productKind => {
+    const { container } = render(<CannabinoidCalculator />)
+    enter(/tipo de producto/i, productKind)
+    expect(container.querySelectorAll('input[placeholder]')).toHaveLength(0)
   })
 
   it('cambiar el gotero es opcional: rechaza cero y vuelve a 20 si se borra', () => {
@@ -145,4 +163,17 @@ it('explica el porcentaje del aceite sin abreviaturas técnicas en los controles
   expect(screen.getByText(/masa por volumen/)).not.toBeVisible()
   fillOil()
   expect(screen.getByText('CBD 10 % · THC 0 %')).toBeInTheDocument()
+})
+
+it('en inglés traduce campos, unidades, resultados y avisos', () => {
+  render(<LanguageProvider locale="en"><CannabinoidCalculator /></LanguageProvider>)
+  expect(screen.getByRole('alert')).toHaveTextContent('Bottle volume is missing.')
+  fireEvent.change(screen.getByLabelText(/bottle volume/i), { target: { value: '10' } })
+  fireEvent.change(screen.getByLabelText(/declared cbd/i), { target: { value: '10' } })
+  fireEvent.change(screen.getByLabelText(/declared thc/i), { target: { value: '5' } })
+  fireEvent.change(screen.getByLabelText(/drops per dose/i), { target: { value: '4' } })
+  fireEvent.change(screen.getByLabelText(/doses per day/i), { target: { value: '3' } })
+  expect(screen.getByText('Per drop')).toBeInTheDocument()
+  expect(screen.getByText('Per day')).toBeInTheDocument()
+  expect(screen.getByText('50 doses · 16.7 days')).toBeInTheDocument()
 })

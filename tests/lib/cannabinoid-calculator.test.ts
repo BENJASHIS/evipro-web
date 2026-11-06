@@ -163,6 +163,15 @@ describe('cannabinoid calculator', () => {
     expect(result.estimatedDays).toBeNull()
   })
 
+  it('suma los mg del día solo con gotas por toma y tomas por día', () => {
+    const base = { ...oilInput, cbdValue: 10, thcValue: 5 }
+    const result = calculateOilMetrics({ ...base, dropsPerDose: 4, dosesPerDay: 3 })
+    expect(result.cbdMgPerDay).toBe(60)
+    expect(result.thcMgPerDay).toBe(30)
+    expect(calculateOilMetrics({ ...base, dropsPerDose: 4, dosesPerDay: null }).cbdMgPerDay).toBeNull()
+    expect(calculateOilMetrics({ ...base, dropsPerDose: null, dosesPerDay: 3 }).cbdMgPerDay).toBeNull()
+  })
+
   it('calcula las métricas disponibles aunque falten tomas por día', () => {
     const result = calculateOilMetrics({ ...oilInput, dosesPerDay: null })
     expect(result.cbdMgPerDrop).toBe(5)

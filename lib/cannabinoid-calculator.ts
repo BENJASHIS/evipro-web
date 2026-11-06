@@ -136,6 +136,8 @@ export function calculateOilMetrics(input: OilCalculatorInput) {
     thcMgPerDrop: roundTo(thcMgPerDrop, 3),
     cbdMgPerDose: roundTo(dropsPerDose === null ? null : cbdMgPerDrop * dropsPerDose, 3),
     thcMgPerDose: roundTo(dropsPerDose === null ? null : thcMgPerDrop * dropsPerDose, 3),
+    cbdMgPerDay: roundTo(dropsPerDose === null || dosesPerDay === null ? null : cbdMgPerDrop * dropsPerDose * dosesPerDay, 3),
+    thcMgPerDay: roundTo(dropsPerDose === null || dosesPerDay === null ? null : thcMgPerDrop * dropsPerDose * dosesPerDay, 3),
     cbdTotalMg: roundTo(cbdMgPerMl * volumeMl),
     thcTotalMg: roundTo(thcMgPerMl * volumeMl),
     cbdPercentWeightVolume: roundTo(percentWeightVolumeFromConcentration(cbdMgPerMl), 2),
