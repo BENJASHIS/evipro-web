@@ -79,3 +79,10 @@ it.each([
   await waitFor(()=>expect(mocks.push).toHaveBeenCalledWith(expected))
   window.history.replaceState({},'', '/login')
 })
+
+it('explica el acceso CBD gratuito y enlaza registro preservando el destino',()=>{
+  window.history.replaceState({},'', '/login?next=%2Fmiembros%2Fcontenido%2Fexplora-cbd-thc')
+  render(<LoginPage />)
+  expect(screen.getByText(/Explora el frasco y la molécula de CBD/i)).toBeInTheDocument()
+  expect(screen.getByRole('link',{name:'Crear cuenta gratuita'})).toHaveAttribute('href','/registro?next=%2Fmiembros%2Fcontenido%2Fexplora-cbd-thc')
+})

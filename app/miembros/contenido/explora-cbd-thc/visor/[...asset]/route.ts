@@ -12,9 +12,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ ass
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new Response('Inicia sesión para abrir este recurso.',{ status:401,headers:privateHeaders })
   const access = await getMemberAccess(supabase,user)
-  if (!canUseMemberTools(access)) return new Response('Recurso para miembros con acceso vigente.',{ status:403,headers:privateHeaders })
   const { asset } = await params
-  const key = asset.join('/')
+  let key = asset.join('/')
+  if (!canUseMemberTools(access)) {
+    if (key === 'assets/thc.json' || key === 'assets/thc-reference.svg') return new Response('THC y mezclas requieren membresía activa.',{ status:403,headers:privateHeaders })
+    if (key === 'index.html') key = 'cbd.html'
+  }
   if (!Object.hasOwn(manifest.files,key)) return new Response('Recurso no encontrado.',{ status:404,headers:privateHeaders })
   const entry = manifest.files[key as keyof typeof manifest.files]
   try {

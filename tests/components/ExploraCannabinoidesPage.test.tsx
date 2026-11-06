@@ -10,11 +10,12 @@ it('exige iniciar sesión',async()=>{
   mocks.user.mockResolvedValue({data:{user:null}})
   await expect(Page()).rejects.toThrow('redirect:/login')
 })
-it('no monta el visor si falta membresía',async()=>{
+it('monta solo CBD si falta membresía',async()=>{
   mocks.user.mockResolvedValue({data:{user:{id:'u'}}})
   mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
   render(await Page())
-  expect(screen.queryByTitle('Explora CBD y THC: visor didáctico')).toBeNull()
+  expect(screen.getByTitle('Explora CBD: visor didáctico')).toBeInTheDocument()
+  expect(screen.queryByRole('link',{name:'Ir a la calculadora cannabinoide →'})).toBeNull()
   expect(screen.getByRole('link',{name:'Ver membresías'})).toBeInTheDocument()
 })
 it.each([{hasActiveMembership:true,adminPreview:false},{hasActiveMembership:false,adminPreview:true}])('integra el visor con acceso permitido %j',async(access)=>{

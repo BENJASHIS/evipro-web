@@ -20,15 +20,16 @@ export default async function ContenidoPage() {
   const access = await getMemberAccess(supabase, user)
   const mostrarModulo = moduloVisible(access, REVISION.version !== null)
 
-  const { data } = await supabase
+  const fullAccess = canUseMemberTools(access)
+  const { data } = fullAccess ? await supabase
     .from('content')
     .select('id, title, body, content_type, file_path, file_kind, category, published_at')
     .not('published_at', 'is', null)
     .order('published_at', { ascending: false })
+    .limit(24) : { data: [] }
 
-  const service = createServiceClient()
   const sign = async (path: string) => {
-    const { data } = await service.storage.from(MEMBER_CONTENT_BUCKET).createSignedUrl(path, 3600)
+    const { data } = await createServiceClient().storage.from(MEMBER_CONTENT_BUCKET).createSignedUrl(path, 3600)
     return data?.signedUrl ?? null
   }
   const items = await attachSignedUrls((data ?? []) as ContentRow[], sign)
@@ -38,11 +39,11 @@ export default async function ContenidoPage() {
       <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Biblioteca</p>
       <h1 className="text-3xl font-light font-serif italic mb-8">Contenido exclusivo</h1>
 
-      {canUseMemberTools(access) && <Link href="/miembros/contenido/explora-cbd-thc" className="block border border-subtle rounded-lg p-5 mb-6 hover:border-brand">
+      <Link href="/miembros/contenido/explora-cbd-thc" className="block border border-subtle rounded-lg p-5 mb-6 hover:border-brand">
         <span className="text-xs uppercase tracking-widest text-brand">Recurso interactivo</span>
-        <h2 className="text-lg mt-1 mb-2">Explora CBD y THC</h2>
-        <p className="text-muted text-sm">Frasco en 3D, composición y moléculas para aprender observando.</p>
-      </Link>}
+        <h2 className="text-lg mt-1 mb-2">{fullAccess ? 'Explora CBD y THC' : 'Explora CBD · acceso gratuito'}</h2>
+        <p className="text-muted text-sm">{fullAccess ? 'Frasco en 3D, composición y moléculas para aprender observando.' : 'Frasco y molécula de CBD. THC, mezclas y demás herramientas con membresía.'}</p>
+      </Link>
 
       {mostrarModulo && (
         <Link href="/miembros/contenido/que-hay-en-la-planta" className="block border border-brand rounded-lg p-5 mb-6 hover:bg-brand/5 transition-colors">
@@ -55,7 +56,7 @@ export default async function ContenidoPage() {
 
       {!items.length ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
-          <p className="text-muted text-sm">Próximamente: estamos preparando contenido exclusivo para miembros.</p>
+          <p className="text-muted text-sm">{fullAccess ? 'Próximamente: estamos preparando contenido exclusivo para miembros.' : 'El resto de la biblioteca requiere membresía activa.'}</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2">

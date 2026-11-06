@@ -43,7 +43,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if ((pathname === '/login' || pathname === '/registro') && user) {
-    const destination = pathname === '/login' ? memberReturnPath(request.nextUrl.searchParams.get('next')) : '/miembros'
+    const destination = memberReturnPath(request.nextUrl.searchParams.get('next'))
     return NextResponse.redirect(new URL(destination, request.url))
   }
 

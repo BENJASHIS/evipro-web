@@ -1,4 +1,6 @@
 'use client'
+import { useBottleEntry, BOTTLE_NEXT } from '@/lib/use-bottle-entry'
+import { BOTTLE_PATH } from '@/lib/member-return'
 import { T, useLanguage } from '@/app/components/Language'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -32,6 +34,8 @@ const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 text-whi
 const LABEL = 'block text-xs text-muted mb-1 uppercase tracking-widest'
 
 export default function RegistroPage() {
+  const bottleEntry = useBottleEntry()
+  const [confirmationSent, setConfirmationSent] = useState(false)
   const { t } = useLanguage()
   const [form, setForm] = useState({
     full_name: '',
@@ -78,7 +82,8 @@ export default function RegistroPage() {
       email: form.email,
       password: form.password,
       options: {
-        emailRedirectTo: `${location.origin}/miembros`,
+        emailRedirectTo: bottleEntry ? `${location.origin}/auth/confirm${BOTTLE_NEXT}` : `${location.origin}/miembros`,
+        ...(bottleEntry ? { data: { full_name: form.full_name.trim() } } : {}),
         ...(turnstileToken ? { captchaToken: turnstileToken } : {}),
       },
     })
@@ -88,6 +93,12 @@ export default function RegistroPage() {
       setTurnstileReset(prev => prev + 1)
       setError(signUpError.message)
       setLoading(false)
+      return
+    }
+
+    if (bottleEntry) {
+      if (data.session) router.push(BOTTLE_PATH)
+      else { setConfirmationSent(true); setLoading(false) }
       return
     }
 
@@ -130,9 +141,9 @@ export default function RegistroPage() {
         <aside className="pt-2 lg:sticky lg:top-8">
           <div className="mb-10"><Marca /></div>
           <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"Registro EVIPro"}</T></p>
-          <h1 className="max-w-xl text-4xl font-light text-white mb-4"><T>{"Tu acceso a herramientas, beneficios y seguimiento."}</T></h1>
-          <p className="max-w-lg text-sm leading-6 text-muted mb-6"><T>{"Crea una cuenta para activar membresía, usar herramientas para miembros y mantener tus datos de contacto ordenados. Para agendar una consulta suelta no necesitas cuenta."}</T></p>
-          <div className="grid gap-3 text-sm">
+          <h1 className="max-w-xl text-4xl font-light text-white mb-4"><T>{bottleEntry ? 'Explora el CBD con una cuenta gratuita.' : 'Tu acceso a herramientas, beneficios y seguimiento.'}</T></h1>
+          <p className="max-w-lg text-sm leading-6 text-muted mb-6"><T>{bottleEntry ? 'Tu cuenta permite ver el frasco y la molécula de CBD. No necesitas pagar ni ingresar un documento. THC, mezclas y calculadora requieren membresía activa.' : 'Crea una cuenta para activar membresía, usar herramientas para miembros y mantener tus datos de contacto ordenados. Para agendar una consulta suelta no necesitas cuenta.'}</T></p>
+          {!bottleEntry && <div className="grid gap-3 text-sm">
             <Link
               href="/planes#turista"
               className="flex items-center justify-between border border-yellow-400/30 bg-yellow-400/5 rounded px-4 py-3 text-yellow-100 hover:border-yellow-400/60 transition-colors"
@@ -147,14 +158,17 @@ export default function RegistroPage() {
               <span><T>{"Consulta sin cuenta"}</T></span>
               <span className="font-mono text-xs text-brand"><T>{"Agendar"}</T></span>
             </Link>
-          </div>
+          </div>}
         </aside>
 
         <section className="w-full border border-subtle rounded-lg p-6 sm:p-8">
           <h2 className="text-2xl font-light text-white mb-2"><T>{"Crea tu cuenta"}</T></h2>
-          <p className="text-sm text-muted mb-8"><T>{"Usa un correo al que tengas acceso; ahí recibirás la confirmación de cuenta."}</T></p>
+          <p className="text-sm text-muted mb-8"><T>{bottleEntry ? 'Usa un correo al que tengas acceso. Si se solicita confirmación, revisa tu bandeja de entrada.' : 'Usa un correo al que tengas acceso; ahí recibirás la confirmación de cuenta.'}</T></p>
 
-          <form onSubmit={handleRegistro} className="space-y-6">
+          {confirmationSent ? <div role="status" className="text-sm leading-6">
+            <p><T>Revisa tu correo para confirmar tu cuenta. Después podrás abrir el visor de CBD.</T></p>
+            <Link href={`/login${BOTTLE_NEXT}`} className="inline-block mt-4 text-brand underline"><T>Ya confirmé mi correo · ingresar al visor</T></Link>
+          </div> : <form onSubmit={handleRegistro} className="space-y-6">
           {/* Trampa para bots: oculta a la vista y al lector de pantalla. */}
           <input
             type="text"
@@ -213,7 +227,7 @@ export default function RegistroPage() {
             </div>
           </fieldset>
 
-          <fieldset className="space-y-4">
+          {!bottleEntry && <><fieldset className="space-y-4">
             <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"2 · Tu documento"}</T></legend>
 
             <div>
@@ -283,6 +297,7 @@ export default function RegistroPage() {
             ))}
           </fieldset>
 
+          </>}
           <Turnstile
             action="registro"
             resetSignal={turnstileReset}
@@ -299,10 +314,10 @@ export default function RegistroPage() {
           >
             <T>{loading ? 'Creando cuenta...' : 'Crear cuenta'}</T>
           </button>
-        </form>
+        </form>}
 
         <p className="text-center text-xs text-faint mt-6"><T>{"¿Ya tienes cuenta?"}</T>{' '}
-          <Link href="/login" className="text-brand hover:underline"><T>{"Ingresar"}</T></Link>
+          <Link href={bottleEntry ? `/login${BOTTLE_NEXT}` : '/login'} className="text-brand hover:underline"><T>{"Ingresar"}</T></Link>
         </p>
         </section>
       </div>

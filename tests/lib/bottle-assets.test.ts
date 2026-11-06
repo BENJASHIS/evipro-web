@@ -4,7 +4,7 @@ const mocks = vi.hoisted(()=>({ user:vi.fn(), access:vi.fn() }))
 vi.mock('@/lib/supabase-server',()=>({createServerSupabaseClient:async()=>({auth:{getUser:mocks.user}})}))
 vi.mock('@/lib/member-access',async(importOriginal)=>({ ...await importOriginal<typeof import('@/lib/member-access')>(),getMemberAccess:mocks.access }))
 import { GET } from '@/app/miembros/contenido/explora-cbd-thc/visor/[...asset]/route'
-const request = (asset:string[])=>GET(new Request(`http://localhost/miembros/contenido/explora-cbd-thc/visor/${asset.join('/')}`),{params:Promise.resolve({asset})})
+const request = (asset:string[],search='')=>GET(new Request(`http://localhost/miembros/contenido/explora-cbd-thc/visor/${asset.join('/')}${search}`),{params:Promise.resolve({asset})})
 beforeEach(()=>{
   mocks.user.mockResolvedValue({data:{user:{id:'member'}}})
   mocks.access.mockResolvedValue({hasActiveMembership:true,adminPreview:false})
@@ -48,4 +48,16 @@ it('todos los recursos del paquete coinciden con su manifiesto y se sirven prote
   const html = await (await request(['index.html'])).text()
   const importMap = html.match(/<script type="importmap">([^<]*)<\/script>/)![1]
   expect(createHash('sha256').update(importMap).digest('base64')).toBe(manifest.importMapHash)
+})
+
+it('una cuenta gratuita recibe solo CBD, aunque pida el modo completo por URL',async()=>{
+  mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
+  const html=await (await request(['index.html'],'?mode=full&cbdOnly=false')).text()
+  expect(html).toContain('data-cbd-only="true"')
+  expect(html).not.toContain('data-part="thc"')
+  expect(html).not.toContain('assets/thc')
+  expect(html).not.toContain('id="composition-controls"')
+  expect((await request(['assets','cbd.json'])).status).toBe(200)
+  expect((await request(['assets','cbd-reference.svg'])).status).toBe(200)
+  for(const key of [['assets','thc.json'],['assets','thc-reference.svg']])expect((await request(key)).status).toBe(403)
 })

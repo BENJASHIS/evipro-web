@@ -1,5 +1,5 @@
 {
-  "version": "v08",
+  "version": "v09",
   "importMapHash": "GqsWfEjHm73zbHa7lGbVXfv95jxypKuCtjd6kntjIRA=",
   "files": {
     "index.html": {
@@ -12,7 +12,7 @@
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "8d9e4c129700618dd1ad51a969ad2bfc75b26cafccaf35a7dc38d9637d07e5da"
+      "sha256": "6e187746d0ed80729b949af1b60787d10a40b32a48b86a7401189721f98d489c"
     },
     "cap.js": {
       "type": "text/javascript; charset=utf-8",
@@ -65,6 +65,10 @@
     "vendor/THREE-LICENSE.txt": {
       "type": "text/plain; charset=utf-8",
       "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    },
+    "cbd.html": {
+      "type": "text/html; charset=utf-8",
+      "sha256": "551fbb8f0df7356399c1593eee0866c5c0fabd20b9e020623229f236d79ddacc"
     }
   }
 }

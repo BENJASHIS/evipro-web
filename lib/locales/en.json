@@ -843,5 +843,17 @@
   "Concentración equivalente (%)": "Equivalent concentration (%)",
   "Esta calculadora solo convierte datos de etiqueta. Aquí el porcentaje del aceite se interpreta por volumen; en cartuchos y flor, según el peso. Esas bases no son intercambiables. No calcula absorción real, dosis clínica, descarboxilación ni cambios de tratamiento.": "This calculator only converts label data. Here, oil percentages are interpreted by volume; cartridge and flower percentages by weight. These bases are not interchangeable. It does not calculate actual absorption, clinical dose, decarboxylation or treatment changes.",
   "¿Cómo se interpreta este porcentaje?": "How is this percentage interpreted?",
-  "El porcentaje del aceite se interpreta aquí como masa por volumen (% m/v, también llamado % p/v): 10 % son 10 gramos en 100 mL. Si tu etiqueta indica porcentaje por peso o no especifica la base, verifica ese dato antes de usar este modo.": "Here, oil percentage means mass per volume (% w/v): 10% is 10 grams in 100 mL. If your label gives a percentage by weight or does not specify its basis, verify it before using this mode."
+  "El porcentaje del aceite se interpreta aquí como masa por volumen (% m/v, también llamado % p/v): 10 % son 10 gramos en 100 mL. Si tu etiqueta indica porcentaje por peso o no especifica la base, verifica ese dato antes de usar este modo.": "Here, oil percentage means mass per volume (% w/v): 10% is 10 grams in 100 mL. If your label gives a percentage by weight or does not specify its basis, verify it before using this mode.",
+  "Explora el frasco y la molécula de CBD": "Explore the bottle and the CBD molecule",
+  "Crea una cuenta gratuita o inicia sesión para abrir el visor educativo de CBD. No requiere suscripción de pago. THC, mezclas y calculadora requieren membresía activa.": "Create a free account or sign in to open the educational CBD viewer. No paid subscription is required. THC, blends and the calculator require an active membership.",
+  "Crear cuenta gratuita": "Create a free account",
+  "¿Ya tienes cuenta? Inicia sesión y volverás al visor.": "Already have an account? Sign in to return to the viewer.",
+  "Ingresa a tu cuenta": "Sign in to your account",
+  "¿No tienes cuenta?": "Don't have an account?",
+  "¿Buscas más herramientas?": "Looking for more tools?",
+  "Explora el CBD con una cuenta gratuita.": "Explore CBD with a free account.",
+  "Tu cuenta permite ver el frasco y la molécula de CBD. No necesitas pagar ni ingresar un documento. THC, mezclas y calculadora requieren membresía activa.": "Your account lets you view the bottle and the CBD molecule. No payment or identity document is required. THC, blends and the calculator require an active membership.",
+  "Revisa tu correo para confirmar tu cuenta. Después podrás abrir el visor de CBD.": "Check your email to confirm your account. You can then open the CBD viewer.",
+  "Ya confirmé mi correo · ingresar al visor": "Email confirmed · sign in to the viewer",
+  "Usa un correo al que tengas acceso. Si se solicita confirmación, revisa tu bandeja de entrada.": "Use an email address you can access. If confirmation is requested, check your inbox."
 }

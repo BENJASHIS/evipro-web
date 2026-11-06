@@ -1,4 +1,5 @@
 'use client'
+import { useBottleEntry, BOTTLE_NEXT } from '@/lib/use-bottle-entry'
 import { T } from '@/app/components/Language'
 import { useState } from 'react'
 import { memberReturnPath } from '@/lib/member-return'
@@ -21,6 +22,7 @@ function loginErrorMessage(error: { message?: string; code?: string }) {
 }
 
 export default function LoginPage() {
+  const bottleEntry = useBottleEntry()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -58,7 +60,12 @@ export default function LoginPage() {
     <main className="public-page min-h-screen flex items-center justify-center bg-ink">
       <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
         <div className="mb-2"><Marca size={36} /></div>
-        <p className="text-sm text-muted mb-8"><T>{"Ingresa a tu membresía"}</T></p>
+        {bottleEntry ? <div className="my-6">
+          <h1 className="text-2xl font-serif mb-3"><T>Explora el frasco y la molécula de CBD</T></h1>
+          <p className="text-sm text-muted mb-3"><T>Crea una cuenta gratuita o inicia sesión para abrir el visor educativo de CBD. No requiere suscripción de pago. THC, mezclas y calculadora requieren membresía activa.</T></p>
+          <Link href={`/registro${BOTTLE_NEXT}`} className="block text-center rounded bg-brand-deep px-4 py-3 text-white"><T>Crear cuenta gratuita</T></Link>
+          <p className="text-sm text-muted mt-4"><T>¿Ya tienes cuenta? Inicia sesión y volverás al visor.</T></p>
+        </div> : <p className="text-sm text-muted mb-8"><T>{"Ingresa a tu cuenta"}</T></p>}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -66,6 +73,7 @@ export default function LoginPage() {
             <input
               id="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
@@ -102,7 +110,8 @@ export default function LoginPage() {
           <Link href="/recuperar-contrasena" className="text-brand hover:underline"><T>{"¿Olvidaste tu contraseña?"}</T></Link>
         </p>
 
-        <p className="text-center text-xs text-faint mt-3"><T>{"¿No tienes membresía?"}</T>{' '}
+        {!bottleEntry && <p className="text-center text-xs text-faint mt-3"><T>¿No tienes cuenta?</T>{' '}<Link href="/registro" className="text-brand hover:underline"><T>Crear cuenta</T></Link></p>}
+        <p className="text-center text-xs text-faint mt-3"><T>{"¿Buscas más herramientas?"}</T>{' '}
           <Link href="/planes" className="text-brand hover:underline"><T>{"Ver planes"}</T></Link>
         </p>
       </div>
