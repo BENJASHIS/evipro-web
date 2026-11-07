@@ -17,13 +17,14 @@ interface InfoPago {
   monto: number
   pago_hasta: string | null
   medios: MedioPago[]
+  paypal?: string | null
   whatsapp: string
 }
 const NOMBRE: Record<MedioPago, string> = { yape: 'Yape', plin: 'Plin', paypal: 'PayPal' }
 const wa = (numero: string, texto: string) => `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
 
 /**
- * Pantalla de pago de una reserva: QR de Yape/Plin (sin celular ni nombre del médico), PayPal por WhatsApp,
+ * Pantalla de pago de una reserva: QR de Yape/Plin (sin celular ni nombre del médico), enlace de PayPal,
  * número de operación y aviso por WhatsApp. Diseño: docs/superpowers/specs/2026-11-01-pago-reserva-yape-plin-design.md.
  */
 // Al volver de Mercado Pago el paciente suele llegar antes que el aviso del pago: se reintenta.
@@ -196,12 +197,12 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
             </figure>
           ))}
         </div>
-        {info.medios.includes('paypal') && (
+        {info.paypal && (
           <div className="text-xs text-muted space-y-2">
-            <p><T>{"Desde el extranjero: PayPal, en dólares (USD). El doctor te pasa su correo y verifica el monto."}</T></p>
-            <a href={wa(info.whatsapp, `Hola, quiero pagar por PayPal mi reserva del ${cuando}. ¿Me pasa el correo?`)} target="_blank" rel="noopener noreferrer"
+            <p><T>{"Desde el extranjero: PayPal, en dólares (USD). El doctor verifica el monto."}</T></p>
+            <a href={info.paypal} target="_blank" rel="noopener noreferrer"
               className="inline-block border border-subtle px-4 py-2 rounded font-mono text-xs text-white hover:border-brand transition-colors">
-              <T>{"Pedir el correo de PayPal"}</T>
+              <T>{"Pagar con PayPal"}</T>
             </a>
           </div>
         )}

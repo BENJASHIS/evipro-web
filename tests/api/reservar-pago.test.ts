@@ -146,7 +146,7 @@ describe('GET /api/reservar/pago', () => {
     const cuerpo = await r.json()
     expect(cuerpo).toMatchObject({
       estado: 'pending_payment', slot_date: '2099-11-03', slot_time: '09:00', modality: 'virtual',
-      monto: 70, pago_hasta: '2099-11-01T21:00:00.000Z', medios: ['yape', 'plin', 'paypal'], whatsapp: '51942185939',
+      monto: 70, pago_hasta: '2099-11-01T21:00:00.000Z', medios: ['yape', 'plin', 'paypal'], paypal: 'https://www.paypal.me/drbenjachis', whatsapp: '51942185939',
     })
     expect(JSON.stringify(cuerpo)).not.toContain('Ana Prueba')
     expect(JSON.stringify(cuerpo)).not.toContain('999888777')

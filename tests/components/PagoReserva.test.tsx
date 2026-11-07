@@ -48,12 +48,11 @@ describe('PagoReserva', () => {
       `https://wa.me/51942185939?text=${encodeURIComponent('Pagué mi reserva del 2026-11-03 09:00, Yape operación 12345678')}`)
   })
 
-  it('con PayPal: sin QR, pide el correo por WhatsApp, en dólares, y acepta número con letras', async () => {
-    info = { ...pendiente, medios: ['yape', 'plin', 'paypal'] }
+  it('con PayPal: botón a PayPal.me, en dólares, y acepta número con letras', async () => {
+    info = { ...pendiente, medios: ['yape', 'plin', 'paypal'], paypal: 'https://www.paypal.me/drbenjachis' }
     render(<PagoReserva reservaId="r1" />)
-    const pedir = await screen.findByRole('link', { name: 'Pedir el correo de PayPal' })
-    expect(pedir.getAttribute('href')).toBe(
-      `https://wa.me/51942185939?text=${encodeURIComponent('Hola, quiero pagar por PayPal mi reserva del 2026-11-03 09:00. ¿Me pasa el correo?')}`)
+    const boton = await screen.findByRole('link', { name: 'Pagar con PayPal' })
+    expect(boton.getAttribute('href')).toBe('https://www.paypal.me/drbenjachis')
     expect(screen.queryByAltText('QR PayPal')).toBeNull()
     expect(screen.getByText(/en dólares \(USD\)/)).toBeTruthy()
     await pagar(/PayPal/, '5O190127TN364715T')

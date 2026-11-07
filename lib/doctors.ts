@@ -35,14 +35,14 @@ export interface Doctor {
   photoHeight: number
   counseling?: DoctorCounseling
   // Cobro al reservar por Yape/Plin: rutas de sus QR en el bucket privado `pagos-qr`.
-  // paypal: el paciente del extranjero pide el correo por WhatsApp (PayPal no da QR ni PayPal.me en Perú).
-  pagoAlReservar?: { qr: Partial<Record<MedioQR, string>>; paypal?: boolean }
+  // paypal: enlace PayPal.me para pacientes del extranjero (se muestra solo en la pantalla de pago).
+  pagoAlReservar?: { qr: Partial<Record<MedioQR, string>>; paypal?: string }
 }
 
 export const DOCTORS: Doctor[] = [
   {
     slug: 'dr-jara',
-    pagoAlReservar: { qr: { yape: 'dr-jara/yape.png', plin: 'dr-jara/plin.png' }, paypal: true },
+    pagoAlReservar: { qr: { yape: 'dr-jara/yape.png', plin: 'dr-jara/plin.png' }, paypal: 'https://www.paypal.me/drbenjachis' },
     name: 'Dr. José Carlos Benjamín Jara Ovalle',
     cmp: '82817',
     rna: 'A10684',

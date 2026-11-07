@@ -42,7 +42,9 @@ export default async function AgendarPage(
             <p className="text-faint text-xs font-mono">CMP {doctor.cmp}</p>
           </div>
         </div>
-        <AgendarForm doctor={doctor} />
+        {/* El formulario solo necesita saber si cobra al reservar: el enlace de PayPal y las rutas
+            de los QR no viajan al navegador; la pantalla de pago los pide por API con la reserva. */}
+        <AgendarForm doctor={{ ...doctor, pagoAlReservar: doctor.pagoAlReservar && { qr: {} } }} />
       </div>
     </main>
   )
