@@ -167,6 +167,12 @@ it('al reservar con pago, la dirección guarda el enlace para volver a los QR', 
     if (url.includes('/api/reservar/book')) {
       return Promise.resolve({ ok: true, json: () => Promise.resolve({ booking_id: 'r-123', pago: true }) })
     }
+    if (url.includes('/api/reservar/pago')) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({
+        estado: 'pending_payment', vencida: false, slot_date: '2099-11-03', slot_time: '09:00', modality: 'domicilio',
+        monto: 70, pago_hasta: '2099-11-01T21:00:00.000Z', medios: ['yape'], paypal: null, whatsapp: '51942185939',
+      }) })
+    }
     return Promise.resolve({ ok: true, json: () => Promise.resolve({ booked: [], is_first: true }) })
   }))
   render(<AgendarForm doctor={{ ...doctor, pagoAlReservar: { qr: { yape: '/qr.png' } } } as unknown as Doctor} />)
@@ -177,6 +183,8 @@ it('al reservar con pago, la dirección guarda el enlace para volver a los QR', 
   fireEvent.click(screen.getByRole('button', { name: /solicitar|pagar/i }))
   await waitFor(() => expect(String(guardar.mock.calls.at(-1)?.[2])).toBe(
     'https://www.evipro.pe/medicos/dr-jara/agendar?reserva=r-123'))
+  // Espera la pantalla de pago: sin esto la prueba terminaba antes de que llegara la respuesta.
+  expect(await screen.findByText('Paga escaneando el código:')).toBeTruthy()
   guardar.mockRestore()
 })
 
