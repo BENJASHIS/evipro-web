@@ -52,6 +52,12 @@ describe('normalizarReferencia', () => {
     expect(normalizarReferencia('codigo', ' evi-abcd2345 ')).toBe('EVI-ABCD2345')
     expect(normalizarReferencia('codigo', 'EVI-ABCD234I')).toBeNull()
   })
+  it('PayPal: id de transacción con letras y números, en mayúsculas', () => {
+    expect(normalizarReferencia('paypal', ' 5o190127tn364715t ')).toBe('5O190127TN364715T')
+    expect(normalizarReferencia('paypal', '5O19-0127')).toBe('5O190127')
+    expect(normalizarReferencia('paypal', 'abc')).toBeNull()
+    expect(normalizarReferencia('paypal', '5O19@0127')).toBeNull()
+  })
 })
 
 describe('liberarVencidas', () => {

@@ -7,16 +7,17 @@ import { confirmarEvento } from '@/lib/google-calendar'
 import { DOCTORS, type Doctor } from '@/lib/doctors'
 
 export type ServiceClient = ReturnType<typeof createServiceClient>
-export type MedioReporte = 'yape' | 'plin' | 'codigo'
+export type MedioReporte = 'yape' | 'plin' | 'paypal' | 'codigo'
 
-/** Número de operación (solo dígitos) o código de crédito `EVI-XXXXXXXX`; null si no es válido. */
+/** Número de operación (solo dígitos; en PayPal, letras y números) o código de crédito `EVI-XXXXXXXX`; null si no es válido. */
 export function normalizarReferencia(medio: MedioReporte, texto: string): string | null {
   if (medio === 'codigo') {
     const codigo = texto.trim().toUpperCase()
     return /^EVI-[A-HJ-NP-Z2-9]{8}$/.test(codigo) ? codigo : null
   }
-  const digitos = texto.replace(/[\s-]/g, '')
-  return /^\d{4,20}$/.test(digitos) ? digitos : null
+  const limpio = texto.replace(/[\s-]/g, '').toUpperCase()
+  if (medio === 'paypal') return /^[A-Z0-9]{6,20}$/.test(limpio) ? limpio : null
+  return /^\d{4,20}$/.test(limpio) ? limpio : null
 }
 
 /**
@@ -87,7 +88,7 @@ type ResultadoConfirmar = { ok: true; sinTurno: boolean } | { ok: false; error: 
 export async function confirmarPago(
   supabase: ServiceClient,
   id: string,
-  datos: { monto?: number; referencia?: string | null; medio?: 'yape' | 'plin' | 'mercadopago' | 'free'; mpPaymentId?: string },
+  datos: { monto?: number; referencia?: string | null; medio?: 'yape' | 'plin' | 'paypal' | 'mercadopago' | 'free'; mpPaymentId?: string },
   soloMedico?: string,
 ): Promise<ResultadoConfirmar> {
   let consulta = supabase

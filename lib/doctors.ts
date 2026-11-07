@@ -13,7 +13,7 @@ export interface Formation {
   year?: number
 }
 
-export type MedioQR = 'yape' | 'plin'
+export type MedioQR = 'yape' | 'plin' | 'paypal'
 
 export interface Doctor {
   slug: string
@@ -41,7 +41,7 @@ export interface Doctor {
 export const DOCTORS: Doctor[] = [
   {
     slug: 'dr-jara',
-    pagoAlReservar: { qr: { yape: 'dr-jara/yape.png', plin: 'dr-jara/plin.png' } },
+    pagoAlReservar: { qr: { yape: 'dr-jara/yape.png', plin: 'dr-jara/plin.png', paypal: 'dr-jara/paypal.png' } },
     name: 'Dr. José Carlos Benjamín Jara Ovalle',
     cmp: '82817',
     rna: 'A10684',

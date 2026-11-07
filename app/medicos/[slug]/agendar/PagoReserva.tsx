@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { T, useLanguage } from '@/app/components/Language'
 import { REGLA_CANCELACION } from '@/lib/bookings'
 
-type MedioQR = 'yape' | 'plin'
+type MedioQR = 'yape' | 'plin' | 'paypal'
 type Medio = MedioQR | 'codigo'
 interface InfoPago {
   estado: string
@@ -18,11 +18,11 @@ interface InfoPago {
   medios: MedioQR[]
   whatsapp: string
 }
-const NOMBRE: Record<MedioQR, string> = { yape: 'Yape', plin: 'Plin' }
+const NOMBRE: Record<MedioQR, string> = { yape: 'Yape', plin: 'Plin', paypal: 'PayPal' }
 const wa = (numero: string, texto: string) => `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
 
 /**
- * Pantalla de pago de una reserva: QR de Yape/Plin (sin celular ni nombre del médico),
+ * Pantalla de pago de una reserva: QR de Yape/Plin/PayPal (sin celular ni nombre del médico),
  * número de operación y aviso por WhatsApp. Diseño: docs/superpowers/specs/2026-11-01-pago-reserva-yape-plin-design.md.
  */
 // Al volver de Mercado Pago el paciente suele llegar antes que el aviso del pago: se reintenta.
@@ -185,7 +185,7 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
         </p>
         <p className="text-3xl font-light">{`S/ ${info.monto}`}</p>
 
-        <p className="text-sm text-muted"><T>{"Paga por Yape o Plin escaneando el código:"}</T></p>
+        <p className="text-sm text-muted"><T>{"Paga escaneando el código:"}</T></p>
         <div className="flex gap-6 justify-center">
           {info.medios.map(m => (
             <figure key={m} className="text-center">
@@ -195,6 +195,9 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
             </figure>
           ))}
         </div>
+        {info.medios.includes('paypal') && (
+          <p className="text-xs text-muted"><T>{"En PayPal paga el equivalente en dólares (USD); el doctor verifica el monto."}</T></p>
+        )}
 
         <div className="text-xs text-muted space-y-1">
           <p><T>{REGLA_CANCELACION}</T></p>
@@ -205,6 +208,7 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
           <legend className="text-xs font-mono uppercase tracking-widest text-muted mb-2"><T>{"¿Cómo pagaste?"}</T></legend>
           {info.medios.includes('yape') && opcion('yape', <T>{"Pagué con Yape"}</T>)}
           {info.medios.includes('plin') && opcion('plin', <T>{"Pagué con Plin"}</T>)}
+          {info.medios.includes('paypal') && opcion('paypal', <T>{"Pagué con PayPal"}</T>)}
           {opcion('codigo', <T>{"Tengo un código de consulta gratis"}</T>)}
         </fieldset>
 
@@ -212,7 +216,7 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
           <label htmlFor="pago-ref" className="block text-xs text-muted mb-1 uppercase tracking-widest font-mono">
             {medio === 'codigo' ? <T>{"Código"}</T> : <T>{"Número de operación"}</T>}
           </label>
-          <input id="pago-ref" type="text" inputMode={medio === 'codigo' ? 'text' : 'numeric'} value={referencia}
+          <input id="pago-ref" type="text" inputMode={medio === 'yape' || medio === 'plin' ? 'numeric' : 'text'} value={referencia}
             onChange={e => setReferencia(e.target.value)}
             className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand" />
         </div>

@@ -53,7 +53,7 @@ const STATUS_LABEL: Record<BookingState, { text: string; color: string }> = {
   unpaid:          { text: 'Sin pago',             color: 'text-faint' },
 }
 
-const MEDIO_LABEL: Record<string, string> = { yape: 'Yape', plin: 'Plin', free: 'Código', mercadopago: 'Mercado Pago' }
+const MEDIO_LABEL: Record<string, string> = { yape: 'Yape', plin: 'Plin', paypal: 'PayPal', free: 'Código', mercadopago: 'Mercado Pago' }
 const horaLima = (iso: string) =>
   new Date(iso).toLocaleTimeString('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit' })
 

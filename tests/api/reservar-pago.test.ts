@@ -78,6 +78,12 @@ describe('POST /api/reservar/pago', () => {
     })
   })
 
+  it('PayPal: guarda el id de transacción en mayúsculas con payment_method paypal', async () => {
+    const r = await POST(post({ reserva: ID, medio: 'paypal', referencia: '5o190127tn364715t' }))
+    expect(r.status).toBe(200)
+    expect(reporte()).toMatchObject({ payment_method: 'paypal', payment_reference: '5O190127TN364715T' })
+  })
+
   it('código de crédito se guarda con payment_method free y monto 0', async () => {
     estado.credito = { id: 'c1' }
     await POST(post({ reserva: ID, medio: 'codigo', referencia: 'evi-abcd2345' }))
@@ -140,7 +146,7 @@ describe('GET /api/reservar/pago', () => {
     const cuerpo = await r.json()
     expect(cuerpo).toMatchObject({
       estado: 'pending_payment', slot_date: '2099-11-03', slot_time: '09:00', modality: 'virtual',
-      monto: 70, pago_hasta: '2099-11-01T21:00:00.000Z', medios: ['yape', 'plin'], whatsapp: '51942185939',
+      monto: 70, pago_hasta: '2099-11-01T21:00:00.000Z', medios: ['yape', 'plin', 'paypal'], whatsapp: '51942185939',
     })
     expect(JSON.stringify(cuerpo)).not.toContain('Ana Prueba')
     expect(JSON.stringify(cuerpo)).not.toContain('999888777')

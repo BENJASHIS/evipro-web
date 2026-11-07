@@ -5,7 +5,7 @@ import { bookingStatus, MOTIVO_VENCIDA } from '@/lib/bookings'
 import { crearEventoTentativo } from '@/lib/google-calendar'
 import { leerReservaConPago, normalizarReferencia, type MedioReporte } from '@/lib/pago-reserva'
 
-const MEDIOS: MedioReporte[] = ['yape', 'plin', 'codigo']
+const MEDIOS: MedioReporte[] = ['yape', 'plin', 'paypal', 'codigo']
 
 /** Lo que necesita la pantalla de pago. Sin nombre ni teléfono del paciente. */
 export async function GET(req: NextRequest) {
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   })
 }
 
-/** El paciente avisa que pagó: número de operación de Yape/Plin o código de consulta gratis. */
+/** El paciente avisa que pagó: número de operación de Yape/Plin/PayPal o código de consulta gratis. */
 export async function POST(req: NextRequest) {
   const limit = checkRateLimit(req, { namespace: 'api:reservar-pago', limit: 10, windowMs: 10 * 60 * 1000 })
   if (!limit.ok) return rateLimitResponse(limit)
