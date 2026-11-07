@@ -18,11 +18,9 @@ vi.mock('@/lib/supabase', () => ({
 const aceptar = () => fireEvent.click(screen.getByRole('checkbox', { name: /acepto/i }))
 
 function completarFormulario(password: string, confirmacion: string) {
-  fireEvent.change(screen.getByLabelText(/nombre completo/i), { target: { value: 'Paciente Prueba' } })
   fireEvent.change(screen.getByLabelText(/correo electrónico/i), { target: { value: 'paciente@example.com' } })
   fireEvent.change(screen.getByLabelText(/^contraseña/i), { target: { value: password } })
   fireEvent.change(screen.getByLabelText(/repite tu contraseña/i), { target: { value: confirmacion } })
-  fireEvent.change(screen.getByLabelText(/número de documento/i), { target: { value: '12345678' } })
   aceptar()
 }
 
@@ -52,12 +50,12 @@ describe('RegistroPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /crear cuenta/i }))
     expect(mocks.signUp).not.toHaveBeenCalled()
 
+    expect(screen.getByRole('link', { name: 'Términos y Condiciones' })).toHaveAttribute('href', '/terminos')
     aceptar()
     fireEvent.click(screen.getByRole('button', { name: /crear cuenta/i }))
     await waitFor(() => expect(mocks.signUp).toHaveBeenCalledWith(expect.objectContaining({
       options: expect.objectContaining({ data: { terms_accepted_at: expect.any(String) } }),
     })))
-    expect(screen.getByRole('link', { name: 'Términos y Condiciones' })).toHaveAttribute('href', '/terminos')
   })
 
   it('envía la contraseña confirmada a Supabase', async () => {
@@ -71,7 +69,8 @@ describe('RegistroPage', () => {
       email: 'paciente@example.com',
       password: 'clave-segura',
     }))
-    expect(mocks.push).toHaveBeenCalledWith('/planes')
+    expect(mocks.push).not.toHaveBeenCalled()
+    expect(screen.getByRole('status')).toHaveTextContent(/confirma/i)
   })
 })
 
@@ -97,4 +96,20 @@ it('si requiere confirmar correo no anuncia acceso ni envía a planes',async()=>
   fireEvent.click(screen.getByRole('button',{name:/crear cuenta/i}))
   expect(await screen.findByText(/Revisa tu correo para confirmar/i)).toBeInTheDocument()
   expect(mocks.push).not.toHaveBeenCalled()
+})
+
+it('registro general solo pide correo y contraseña, sin documento ni contacto', () => {
+  window.history.replaceState({},'', '/registro')
+  render(<RegistroPage />)
+  for (const label of [/nombre completo/i, /documento/i, /teléfono/i, /ciudad/i, /país/i]) expect(screen.queryByLabelText(label)).toBeNull()
+})
+it('registro general con sesión abre miembros sin enviar documento ni crear perfil ampliado', async () => {
+  window.history.replaceState({}, '', '/registro')
+  mocks.push.mockReset()
+  mocks.signUp.mockResolvedValue({ data: { user: { id: 'new' }, session: { access_token: 'test' } }, error: null })
+  render(<RegistroPage />)
+  completarFormulario('clave-segura', 'clave-segura')
+  fireEvent.click(screen.getByRole('button', { name: /crear cuenta/i }))
+  await waitFor(() => expect(mocks.push).toHaveBeenCalledWith('/miembros'))
+  expect(mocks.signUp).toHaveBeenLastCalledWith(expect.objectContaining({ options: expect.objectContaining({ emailRedirectTo: `${location.origin}/auth/confirm` }) }))
 })

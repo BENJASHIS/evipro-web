@@ -941,5 +941,19 @@
   "Usa un correo al que tengas acceso. Si se solicita confirmación, revisa tu bandeja de entrada.": "Use an email address you can access. If confirmation is requested, check your inbox.",
   "Continuar con Google": "Continue with Google",
   "O continúa con tu correo": "Or continue with your email",
-  "No se pudo completar el acceso. Intenta otra vez o usa tu correo.": "Sign-in could not be completed. Try again or use your email."
+  "No se pudo completar el acceso. Intenta otra vez o usa tu correo.": "Sign-in could not be completed. Try again or use your email.",
+  "Crea tu cuenta con Google o correo y contraseña. No pedimos documento, teléfono ni datos de salud para registrarte. Si decides solicitar atención, te pediremos los datos necesarios en ese momento.": "Create your account with Google or email and password. We do not ask for identity documents, phone numbers or health information to register. If you request care, we will ask for the necessary details at that time.",
+  "Revisa tu correo para confirmar tu cuenta. Después podrás iniciar sesión.": "Check your email to confirm your account. You can then sign in.",
+  "Ya confirmé mi correo · ingresar": "I confirmed my email · sign in",
+  "No necesitas documento, teléfono ni datos de salud para usar tu cuenta educativa. Si solicitas atención, te explicaremos qué datos necesitamos y para qué.": "You do not need an identity document, phone number or health information to use your educational account. If you request care, we will explain which details we need and why.",
+  "Nombre para mostrar (opcional)": "Display name (optional)",
+  "Mi perfil": "My profile",
+  "Cuenta": "Account",
+  "No se pudo cargar el perfil.": "Could not load your profile.",
+  "No se pudo guardar el perfil.": "Could not save your profile.",
+  "Perfil actualizado correctamente.": "Profile updated successfully.",
+  "Guardando...": "Saving...",
+  "Guardar cambios": "Save changes",
+  "Para contratar una membresía, guarda primero tu perfil básico. No necesitas documento ni teléfono.": "To purchase a membership, first save your basic profile. You do not need an identity document or phone number.",
+  "Guardar perfil básico": "Save basic profile"
 }

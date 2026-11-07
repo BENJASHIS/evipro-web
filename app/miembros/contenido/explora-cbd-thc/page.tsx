@@ -21,7 +21,7 @@ export default async function ExploraCannabinoidesPage() {
     <a href="/miembros/contenido/explora-cbd-thc/visor/index.html" target="_blank" rel="noopener noreferrer" className="inline-block text-brand underline mb-6">Abrir visor en ventana completa ↗</a>
     <VisorFrasco cbdOnly={!fullAccess} />
     {!fullAccess && <div className="mt-4 text-sm">
-      <p className="text-muted mb-2">Para contratar una membresía, completa primero tu <Link href="/miembros/perfil" className="text-brand underline">perfil</Link>.</p>
+      <p className="text-muted mb-2">Para contratar una membresía, guarda primero tu <Link href="/miembros/perfil" className="text-brand underline">perfil básico</Link>. No necesitas documento ni teléfono.</p>
       <Link href="/planes#membresias" className="text-brand underline">Ver membresías</Link>
     </div>}
     <details className="border-t border-subtle mt-6 py-5">

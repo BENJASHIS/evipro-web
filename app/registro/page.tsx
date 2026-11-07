@@ -2,7 +2,7 @@
 import GoogleSignIn from '@/app/components/GoogleSignIn'
 import { useBottleEntry, BOTTLE_NEXT } from '@/lib/use-bottle-entry'
 import { BOTTLE_PATH } from '@/lib/member-return'
-import { T, useLanguage } from '@/app/components/Language'
+import { T } from '@/app/components/Language'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
@@ -10,26 +10,7 @@ import Link from 'next/link'
 import Marca from '@/app/components/ui/Marca'
 import PasswordInput from '@/app/components/ui/PasswordInput'
 import Turnstile, { TURNSTILE_CLIENT_ENABLED } from '@/app/components/Turnstile'
-import type { DocType } from '@/lib/types'
-
-const DOC_TYPES: { value: DocType; label: string }[] = [
-  { value: 'dni', label: 'DNI (Perú)' },
-  { value: 'pasaporte', label: 'Pasaporte' },
-  { value: 'carnet_extranjeria', label: 'Carné de Extranjería' },
-  { value: 'cedula_identidad', label: 'Cédula de Identidad' },
-]
-
 const MIN_PASSWORD = 8
-
-const CAMPOS_CUENTA = [
-  { name: 'full_name', label: 'Nombre completo', type: 'text', required: true, autoComplete: 'name' },
-  { name: 'email', label: 'Correo electrónico', type: 'email', required: true, autoComplete: 'email' },
-] as const
-
-const CAMPOS_CONTACTO = [
-  { name: 'phone', label: 'Teléfono / WhatsApp', type: 'tel', required: false, autoComplete: 'tel' },
-  { name: 'city', label: 'Ciudad de residencia', type: 'text', required: false, autoComplete: 'address-level2' },
-] as const
 
 const INPUT = 'w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand'
 const LABEL = 'block text-xs text-muted mb-1 uppercase tracking-widest'
@@ -37,17 +18,10 @@ const LABEL = 'block text-xs text-muted mb-1 uppercase tracking-widest'
 export default function RegistroPage() {
   const bottleEntry = useBottleEntry()
   const [confirmationSent, setConfirmationSent] = useState(false)
-  const { t } = useLanguage()
   const [form, setForm] = useState({
-    full_name: '',
     email: '',
-    phone: '',
-    city: '',
     password: '',
     password_confirm: '',
-    doc_type: 'dni' as DocType,
-    doc_number: '',
-    country_origin: '',
   })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -83,7 +57,7 @@ export default function RegistroPage() {
       email: form.email,
       password: form.password,
       options: {
-        emailRedirectTo: bottleEntry ? `${location.origin}/auth/confirm${BOTTLE_NEXT}` : `${location.origin}/miembros`,
+        emailRedirectTo: `${location.origin}/auth/confirm${bottleEntry ? BOTTLE_NEXT : ''}`,
         ...(turnstileToken ? { captchaToken: turnstileToken } : {}),
         data: { terms_accepted_at: new Date().toISOString() },
       },
@@ -97,44 +71,9 @@ export default function RegistroPage() {
       return
     }
 
-    if (bottleEntry) {
-      if (data.session) router.push(BOTTLE_PATH)
-      else { setConfirmationSent(true); setLoading(false) }
-      return
-    }
-
-    if (data.user) {
-      const profileRes = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {}),
-        },
-        body: JSON.stringify({
-          full_name: form.full_name,
-          phone: form.phone || null,
-          city: form.city || null,
-          doc_type: form.doc_type,
-          doc_number: form.doc_number,
-          country_origin: form.country_origin || null,
-        }),
-      })
-      if (!profileRes.ok) {
-        const profileError = await profileRes.json().catch(() => null) as { error?: string } | null
-        setError(
-          profileRes.status === 401
-            ? 'Cuenta creada. Inicia sesión para completar tu perfil.'
-            : profileError?.error ?? 'Error al crear perfil.',
-        )
-        setLoading(false)
-        return
-      }
-    }
-
-    router.push('/planes')
+    if (data.session) router.push(bottleEntry ? BOTTLE_PATH : '/miembros')
+    else { setConfirmationSent(true); setLoading(false) }
   }
-
-  const isForeign = form.doc_type !== 'dni'
 
   return (
     <main className="public-page min-h-screen bg-ink px-4 py-10 sm:px-6">
@@ -143,7 +82,7 @@ export default function RegistroPage() {
           <div className="mb-10"><Marca /></div>
           <p className="text-xs font-mono uppercase tracking-widest text-brand mb-3"><T>{"Registro EVIPro"}</T></p>
           <h1 className="max-w-xl text-4xl font-light text-white mb-4"><T>{bottleEntry ? 'Explora el CBD con una cuenta gratuita.' : 'Tu acceso a herramientas, beneficios y seguimiento.'}</T></h1>
-          <p className="max-w-lg text-sm leading-6 text-muted mb-6"><T>{bottleEntry ? 'Tu cuenta permite ver el frasco y la molécula de CBD. No necesitas pagar ni ingresar un documento. THC, mezclas y calculadora requieren membresía activa.' : 'Crea una cuenta para activar membresía, usar herramientas para miembros y mantener tus datos de contacto ordenados. Para agendar una consulta suelta no necesitas cuenta.'}</T></p>
+          <p className="max-w-lg text-sm leading-6 text-muted mb-6"><T>{bottleEntry ? 'Tu cuenta permite ver el frasco y la molécula de CBD. No necesitas pagar ni ingresar un documento. THC, mezclas y calculadora requieren membresía activa.' : 'Crea tu cuenta con Google o correo y contraseña. No pedimos documento, teléfono ni datos de salud para registrarte. Si decides solicitar atención, te pediremos los datos necesarios en ese momento.'}</T></p>
           {!bottleEntry && <div className="grid gap-3 text-sm">
             <Link
               href="/planes#turista"
@@ -168,8 +107,8 @@ export default function RegistroPage() {
 
           {!confirmationSent && <GoogleSignIn next={bottleEntry ? BOTTLE_PATH : '/miembros'} />}
           {confirmationSent ? <div role="status" className="text-sm leading-6">
-            <p><T>Revisa tu correo para confirmar tu cuenta. Después podrás abrir el visor de CBD.</T></p>
-            <Link href={`/login${BOTTLE_NEXT}`} className="inline-block mt-4 text-brand underline"><T>Ya confirmé mi correo · ingresar al visor</T></Link>
+            <p><T>{bottleEntry ? 'Revisa tu correo para confirmar tu cuenta. Después podrás abrir el visor de CBD.' : 'Revisa tu correo para confirmar tu cuenta. Después podrás iniciar sesión.'}</T></p>
+            <Link href={bottleEntry ? `/login${BOTTLE_NEXT}` : '/login'} className="inline-block mt-4 text-brand underline"><T>{bottleEntry ? 'Ya confirmé mi correo · ingresar al visor' : 'Ya confirmé mi correo · ingresar'}</T></Link>
           </div> : <form onSubmit={handleRegistro} className="space-y-6">
           {/* Trampa para bots: oculta a la vista y al lector de pantalla. */}
           <input
@@ -184,23 +123,10 @@ export default function RegistroPage() {
           <fieldset className="space-y-4">
             <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"1 · Tu cuenta"}</T></legend>
 
-            {CAMPOS_CUENTA.filter(field => !bottleEntry || field.name !== 'full_name').map(field => (
-              <div key={field.name}>
-                <label htmlFor={field.name} className={LABEL}>
-                  <T>{field.label}</T>{field.required && ' *'}
-                </label>
-                <input
-                  id={field.name}
-                  type={field.type}
-                  name={field.name}
-                  autoComplete={field.autoComplete}
-                  value={form[field.name]}
-                  onChange={handleChange}
-                  required={field.required}
-                  className={INPUT}
-                />
-              </div>
-            ))}
+            <div>
+              <label htmlFor="email" className={LABEL}><T>Correo electrónico</T> *</label>
+              <input id="email" type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} required className={INPUT} />
+            </div>
 
             <div>
               <label htmlFor="password" className={LABEL}><T>{"Contraseña *"}</T></label>
@@ -229,77 +155,6 @@ export default function RegistroPage() {
             </div>
           </fieldset>
 
-          {!bottleEntry && <><fieldset className="space-y-4">
-            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"2 · Tu documento"}</T></legend>
-
-            <div>
-              <label htmlFor="doc_type" className={LABEL}><T>{"Tipo de documento *"}</T></label>
-              <select
-                id="doc_type"
-                name="doc_type"
-                value={form.doc_type}
-                onChange={handleChange}
-                className={INPUT}
-              >
-                {DOC_TYPES.map(d => (
-                  <option key={d.value} value={d.value} className="bg-ink"><T>{d.label}</T></option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="doc_number" className={LABEL}><T>{"Número de documento *"}</T></label>
-              <input
-                id="doc_number"
-                type="text"
-                name="doc_number"
-                inputMode={form.doc_type === 'dni' ? 'numeric' : 'text'}
-                value={form.doc_number}
-                onChange={handleChange}
-                required
-                placeholder={form.doc_type === 'dni' ? '12345678' : form.doc_type === 'pasaporte' ? 'AB123456' : ''}
-                className={INPUT}
-              />
-            </div>
-
-            {isForeign && (
-              <div>
-                <label htmlFor="country_origin" className={LABEL}><T>{"País de origen *"}</T></label>
-                <input
-                  id="country_origin"
-                  type="text"
-                  name="country_origin"
-                  autoComplete="country-name"
-                  value={form.country_origin}
-                  onChange={handleChange}
-                  required={isForeign}
-                  placeholder={t('Colombia, Argentina, España...')}
-                  className={INPUT}
-                />
-              </div>
-            )}
-          </fieldset>
-
-          <fieldset className="space-y-4">
-            <legend className="text-xs font-mono text-faint uppercase tracking-widest mb-3"><T>{"3 · Cómo te ubicamos (opcional)"}</T></legend>
-
-            {CAMPOS_CONTACTO.map(field => (
-              <div key={field.name}>
-                <label htmlFor={field.name} className={LABEL}><T>{field.label}</T></label>
-                <input
-                  id={field.name}
-                  type={field.type}
-                  name={field.name}
-                  autoComplete={field.autoComplete}
-                  value={form[field.name]}
-                  onChange={handleChange}
-                  className={INPUT}
-                />
-              </div>
-            ))}
-          </fieldset>
-
-          </>}
           <label className="flex items-start gap-3 cursor-pointer">
             <input type="checkbox" required className="mt-0.5 accent-brand" />
             <span className="text-xs text-muted leading-relaxed">

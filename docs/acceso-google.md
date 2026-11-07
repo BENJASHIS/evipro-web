@@ -1,29 +1,23 @@
-# Acceso con Google y registro educativo mínimo — 2026-11-06
+# Cuenta básica y acceso con Google — 2026-11-06
 
-Dominio platform; no modifica reglas clínicas ni permisos de membresía. Carlos autorizó Google+correo y registro educativo sin nombre/documento. V09 mantiene CBD gratuito con cuenta y THC/mezclas/calculadora con membresía.
+Dominio `platform`: autenticación y perfil de cuenta. No modifica permisos de membresía, reglas clínicas ni historia clínica.
 
-## Implementación
-- Login y registro usan GoogleSignIn: consulta `/api/auth/providers`, que devuelve solo un booleano Google y cachea60s; errores fallan cerrado. No muestra un botón de proveedor no disponible.
-- `/auth/google` inicia OAuth con cliente SSR existente y PKCE/cookies; callback propio `/auth/confirm`, destino en lista cerrada, sin caché, límite10intentos/min por IP con helper existente.
-- Callback intercambia código, conserva destino permitido, limita20intentos/min, error genérico y alternativa por correo. Nunca registra códigos o secretos.
-- Registro educativo por correo pide correo/contraseña/confirmación, sin nombre ni documento; no escribe datos de perfil ni cambia registro general. Perfil ampliado se completa antes de servicios que lo necesitan.
-- Google autentica; no concede membresía. No se solicitan permisos de Drive, Calendar ni datos clínicos.
+## Registro mínimo para todos
 
-## Activación externa pendiente
-**Estado comprobado 2026-11-06:** activo. Código publicado, cliente OAuth «EVIPro web · acceso de usuarios» en `evipro-calendario` (cuenta eviproconsultas@gmail.com), retornos guardados y Client ID con secreto puestos por Carlos en Supabase. `/api/auth/providers` devuelve `google:true` y `/auth/google` llega a la pantalla de Google. Falta la prueba real con una cuenta y en teléfono. El resto de esta sección es la propuesta original: ya no aplica crear un proyecto nuevo.
+Todos los enlaces de registro piden únicamente correo, contraseña y repetición, con aceptación de Términos y protección antibot existentes. Google mantiene el acceso con nombre, correo y foto que el usuario autoriza. No se pide nombre, documento, teléfono, ciudad ni datos de salud al crear una cuenta. Si no hay sesión, se muestra el aviso de confirmar correo; si hay sesión, vuelve al visor solicitado o a `/miembros`.
 
-Supabase proyecto `bfcyzdrxnjkfeplcxyxv`, evipro-web: Google deshabilitado, ClientIDs/Secret vacíos. En la cuenta Google abierta no se encontró proyectoEVIPro; proyecto actual My First Project no tiene AuthPlatform configurado. Formulario de nuevo proyecto preparado con nombreEVIPro (sin crearlo). No se modificaron ajustes externos ni credenciales.
+`/miembros/perfil` muestra correo de solo lectura y nombre para mostrar opcional. `/api/profile` consulta exclusivamente `full_name` y el correo de Auth; si no hay fila, usa el nombre disponible en los metadatos de Google, sin crearla por lectura. Guardar crea o actualiza solo `id` y `full_name`; documentos y contacto existentes se conservan y no se devuelven a este formulario. Entradas validadas en servidor, respuestas privadas sin caché y máximo 20 escrituras/minuto por cuenta con el limitador existente.
 
-Configuración propuesta, siguiendo [Supabase Google OAuth](https://supabase.com/docs/guides/auth/social-sign-in/auth-google):
-1. Proyecto separadoEVIPro; identidad públicaEVIPro, soporteconsulta@evipro.pe. Cliente OAuth tipo Web para acceso de usuarios externos con identidad básica (openid/email/profile).
-2. Orígenes propios: https://www.evipro.pe y https://evipro.pe. Redirect URI de Google: https://bfcyzdrxnjkfeplcxyxv.supabase.co/auth/v1/callback.
-3. Supabase Auth URLConfiguration: permitir https://www.evipro.pe/auth/confirm y https://evipro.pe/auth/confirm con sus parámetros de retorno. Mantener SiteURL del dominio propio. No agregar comodines globales.
-4. Poner ClientID y ClientSecret exclusivamente en el proveedor Google de Supabase; habilitarlo. No enviar secretos por chat ni versionarlos. Mantener nonce checks y email requerido.
-5. Probar Google con una cuenta y comprobar retorno al visor, nivelgratuitoCBD y acceso completo solo para miembro. Comprobar público Google antes de anunciar acceso general (modo pruebas limita usuarios).
+La cuenta básica no es una historia clínica ni verifica identidad. Los datos requeridos para atención se recogen en el flujo de atención, con su finalidad explicada. No se trasladaron ni eliminaron registros antiguos. La reserva actual no se modifica en esta tarea y conserva sus campos y reglas; no se creó un nuevo formulario clínico ni consentimiento de salud. Para contratar membresía, la indicación del visor remite a guardar el perfil básico (sin documento/teléfono), porque las suscripciones referencian esa fila.
 
-La herramienta de navegador exige confirmación al crear acceso/credenciales de seguridad y traspaso al usuario al introducir nuevas credenciales. No aceptar términos legales ni escribir secretos sin ese paso. El código detectará el proveedor habilitado sin nuevo despliegue (hasta60s de caché).
+## Google y permisos
 
-## Verificación
-42pruebas afectadas aprobadas (13archivos): OAuth/proveedores, callback, login/registro, visor y recursos, retorno permitido, biblioteca y bloqueo de calculadora. Lint aprobado. Se probaron falta de proveedor, fallo de red, rechazo de retorno externo y límite de intentos. Revisión propia del flujo; el revisor independiente no estuvo disponible por límite de uso. Compilación de producción verificada antes de publicar.
+- `GoogleSignIn` consulta `/api/auth/providers`, que devuelve solo un booleano; el botón aparece cuando el proveedor está activo.
+- `/auth/google` usa SSR, PKCE y cookies; retorno propio `/auth/confirm` con destino en lista cerrada. Inicio limitado a 10/min e intercambio a 20/min por IP.
+- Google autentica, sin conceder membresía ni permisos de Gmail, Drive o Calendar.
+- Proyecto existente `evipro-calendario`, cuenta EVIPro; proveedor activo en Supabase `bfcyzdrxnjkfeplcxyxv`. Orígenes apex/www y callback Supabase configurados, retornos exactos sin comodines globales. Secretos solo en paneles, nunca chat/git.
+- Prueba real completada el 06-nov: Carlos aceptó consentimiento, retorno autenticado al visor, CBD 2D/3D visible, calculadora restringida y recurso THC denegado a la cuenta gratuita. Vista molecular comprobada a 390×844; no equivale a teléfono físico.
 
-Pendientes: activación real Google, prueba de loginGoogle y registro real por correo, teléfono físico. Núcleo clínico y sus pruebas no cambiaron. Sin dependencias nuevas, migraciones ni perfiles médicos.
+## Alcance de verificación del cambio de perfil
+
+Pruebas de API: acceso autenticado, nombre opcional, datos Google como valor inicial, exclusión de datos sensibles, payload inválido, errores y límite de escrituras. Componentes: registro sin datos de identidad/contacto, confirmación de correo y sesión, perfil básico y recuperación tras fallo de red. Validación ejecutada: 710 pruebas generales aprobadas (95 archivos), 22 pruebas focalizadas finales (3 archivos), ESLint y build de producción completos; Chrome local de producción confirmó registro general sin identidad/contacto y captura a 390×844. Registro real por correo, teléfono físico y revisión jurídica no incluidos. No hay migraciones ni dependencias nuevas.
