@@ -1,0 +1,37 @@
+# Revisión automática. Si falla, GitHub manda un correo a la cuenta que publicó.
+# - En cada publicación a main: lint, pruebas y build (sin claves: el build no las necesita).
+# - Cada día: el sondeo de seguridad contra evipro.pe (scripts/sondeo-seguridad.mjs).
+# ponytail: sin claves ni despliegue aquí; Vercel sigue desplegando por su cuenta.
+name: Revisión
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 12 * * *' # 7:00 a. m. en Lima
+  workflow_dispatch:
+
+jobs:
+  pruebas:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  sondeo:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm run sondeo
