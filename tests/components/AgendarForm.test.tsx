@@ -156,3 +156,27 @@ describe('AgendarForm — enlace de convenio', () => {
     })
   })
 })
+
+it('al reservar con pago, la dirección guarda el enlace para volver a los QR', async () => {
+  // Otra prueba deja window.location como un objeto falso: aquí se fija una dirección completa.
+  Object.defineProperty(window, 'location', {
+    value: new URL('https://www.evipro.pe/medicos/dr-jara/agendar'), writable: true, configurable: true,
+  })
+  const guardar = vi.spyOn(window.history, 'replaceState').mockImplementation(() => {})
+  vi.stubGlobal('fetch', vi.fn((url: string) => {
+    if (url.includes('/api/reservar/book')) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ booking_id: 'r-123', pago: true }) })
+    }
+    return Promise.resolve({ ok: true, json: () => Promise.resolve({ booked: [], is_first: true }) })
+  }))
+  render(<AgendarForm doctor={{ ...doctor, pagoAlReservar: { qr: { yape: '/qr.png' } } } as unknown as Doctor} />)
+  fireEvent.click(screen.getByText('A domicilio'))
+  fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
+  fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+  fireEvent.click(screen.getByRole('checkbox', { name: /autorizo a evipro/i }))
+  fireEvent.click(screen.getByRole('button', { name: /solicitar|pagar/i }))
+  await waitFor(() => expect(String(guardar.mock.calls.at(-1)?.[2])).toBe(
+    'https://www.evipro.pe/medicos/dr-jara/agendar?reserva=r-123'))
+  guardar.mockRestore()
+})
+

@@ -119,7 +119,13 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
         })
         if (res.ok) {
           const cuerpo = (await res.json()) as { booking_id: string; pago?: unknown }
-          if (cuerpo.pago) setReservaPago(cuerpo.booking_id)
+          if (cuerpo.pago) {
+            setReservaPago(cuerpo.booking_id)
+            // Si recarga o vuelve desde el historial, cae otra vez en sus QR.
+            const vuelta = new URL(window.location.href)
+            vuelta.searchParams.set('reserva', cuerpo.booking_id)
+            window.history.replaceState(null, '', vuelta)
+          }
           else setBookingId(cuerpo.booking_id)
         }
         else {

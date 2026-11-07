@@ -10,7 +10,7 @@ import { notFound } from 'next/navigation'
 import { bookingStatus, MOTIVO_VENCIDA, type BookingState } from '@/lib/bookings'
 import { liberarVencidas } from '@/lib/pago-reserva'
 import { agendaDe, hoyEnLima } from '@/lib/booking-validation'
-import { mensajeConfirmacion } from '@/lib/mensajes-reserva'
+import { mensajeConfirmacion, mensajeEnlacePago } from '@/lib/mensajes-reserva'
 import { CREDIT_STATUS_LABEL, CREDIT_VALID_DAYS, type CreditStatus } from '@/lib/credits'
 import { BookingActions } from './BookingActions'
 import { CreditActions } from './CreditActions'
@@ -218,6 +218,17 @@ export default async function ReservasPage({
                     </div>
                     {/* Con pago al reservar, «confirmada» solo se avisa después de «Confirmar pago»:
                         si no, el turno vence a la hora mientras el paciente cree que tiene cita. */}
+                    {b.pago_hasta && !b.confirmed_at && (
+                    <a
+                      href={`https://wa.me/51${b.patient_phone.replace(/\D/g, '')}?text=${encodeURIComponent(
+                        mensajeEnlacePago({ ...b, doctor_slug: slug, pago_hasta: b.pago_hasta }, process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.evipro.pe'))}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 border border-subtle text-faint hover:text-white text-xs font-mono px-3 py-1.5 rounded transition-colors"
+                    >
+                      Enviar enlace de pago →
+                    </a>
+                    )}
                     {(!b.pago_hasta || b.confirmed_at) && (
                     <a
                       href={waLink}
