@@ -95,7 +95,8 @@ anotar(!pagina.includes(xss), 'Texto en la dirección no se ejecuta como código
 const h = (await pedir('/')).headers
 for (const [cab, que] of [['strict-transport-security', 'solo HTTPS'], ['x-content-type-options', 'no adivinar tipos'],
   ['x-frame-options', 'no meter la página en otra'], ['content-security-policy', 'política de contenido']]) {
-  anotar(h.has(cab) ? true : 'aviso', `Cabecera ${cab} (${que})`, h.has(cab) ? '' : 'falta')
+  const soloReporte = cab === 'content-security-policy' && h.has(`${cab}-report-only`)
+  anotar(h.has(cab) ? true : 'aviso', `Cabecera ${cab} (${que})`, h.has(cab) ? '' : soloReporte ? 'en modo de solo aviso, no bloquea' : 'falta')
 }
 
 const fallas = resultados.filter(r => r.ok === false)

@@ -1,16 +1,17 @@
 import type { NextConfig } from "next";
 import { NOINDEX_ROUTES } from './lib/seo';
+import { CSP } from './lib/csp';
 
 const nextConfig: NextConfig = {
   async headers() {
     return [
       // SAMEORIGIN y no DENY: el visor del frasco se muestra en un iframe del mismo sitio.
-      // ponytail: sin Content-Security-Policy; agregarla en modo report-only si hace falta (Mercado Pago, Turnstile, analítica).
       {
         source: '/:path*',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Content-Security-Policy-Report-Only', value: CSP },
         ],
       },
       ...NOINDEX_ROUTES.map(source => ({
