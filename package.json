@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sondeo": "node scripts/sondeo-seguridad.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
