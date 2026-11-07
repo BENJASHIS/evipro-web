@@ -13,7 +13,7 @@ export interface Formation {
   year?: number
 }
 
-export type MedioQR = 'yape' | 'plin' | 'paypal'
+export type MedioQR = 'yape' | 'plin'
 
 export interface Doctor {
   slug: string
@@ -35,13 +35,14 @@ export interface Doctor {
   photoHeight: number
   counseling?: DoctorCounseling
   // Cobro al reservar por Yape/Plin: rutas de sus QR en el bucket privado `pagos-qr`.
-  pagoAlReservar?: { qr: Partial<Record<MedioQR, string>> }
+  // paypal: el paciente del extranjero pide el correo por WhatsApp (PayPal no da QR ni PayPal.me en Perú).
+  pagoAlReservar?: { qr: Partial<Record<MedioQR, string>>; paypal?: boolean }
 }
 
 export const DOCTORS: Doctor[] = [
   {
     slug: 'dr-jara',
-    pagoAlReservar: { qr: { yape: 'dr-jara/yape.png', plin: 'dr-jara/plin.png', paypal: 'dr-jara/paypal.png' } },
+    pagoAlReservar: { qr: { yape: 'dr-jara/yape.png', plin: 'dr-jara/plin.png' }, paypal: true },
     name: 'Dr. José Carlos Benjamín Jara Ovalle',
     cmp: '82817',
     rna: 'A10684',

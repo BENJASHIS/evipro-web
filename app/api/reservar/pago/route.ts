@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     modality: r.modality,
     monto: r.price_soles,
     pago_hasta: r.pago_hasta,
-    medios: Object.keys(doctor.pagoAlReservar!.qr),
+    medios: [...Object.keys(doctor.pagoAlReservar!.qr), ...(doctor.pagoAlReservar!.paypal ? ['paypal'] : [])],
     whatsapp: doctor.whatsapp,
   })
 }

@@ -48,11 +48,14 @@ describe('PagoReserva', () => {
       `https://wa.me/51942185939?text=${encodeURIComponent('Pagué mi reserva del 2026-11-03 09:00, Yape operación 12345678')}`)
   })
 
-  it('con PayPal: QR, aviso de pagar en dólares y número con letras', async () => {
+  it('con PayPal: sin QR, pide el correo por WhatsApp, en dólares, y acepta número con letras', async () => {
     info = { ...pendiente, medios: ['yape', 'plin', 'paypal'] }
     render(<PagoReserva reservaId="r1" />)
-    expect((await screen.findByAltText('QR PayPal')).getAttribute('src')).toBe('/api/reservar/qr?reserva=r1&medio=paypal')
-    expect(screen.getByText(/En PayPal paga el equivalente en dólares/)).toBeTruthy()
+    const pedir = await screen.findByRole('link', { name: 'Pedir el correo de PayPal' })
+    expect(pedir.getAttribute('href')).toBe(
+      `https://wa.me/51942185939?text=${encodeURIComponent('Hola, quiero pagar por PayPal mi reserva del 2026-11-03 09:00. ¿Me pasa el correo?')}`)
+    expect(screen.queryByAltText('QR PayPal')).toBeNull()
+    expect(screen.getByText(/en dólares \(USD\)/)).toBeTruthy()
     await pagar(/PayPal/, '5O190127TN364715T')
     const aviso = await screen.findByRole('link', { name: 'Avisar al doctor' })
     expect(aviso.getAttribute('href')).toBe(

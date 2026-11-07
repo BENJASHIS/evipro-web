@@ -4,8 +4,9 @@ import Image from 'next/image'
 import { T, useLanguage } from '@/app/components/Language'
 import { REGLA_CANCELACION } from '@/lib/bookings'
 
-type MedioQR = 'yape' | 'plin' | 'paypal'
-type Medio = MedioQR | 'codigo'
+type MedioQR = 'yape' | 'plin'
+type MedioPago = MedioQR | 'paypal'
+type Medio = MedioPago | 'codigo'
 interface InfoPago {
   estado: string
   vencida: boolean
@@ -15,14 +16,14 @@ interface InfoPago {
   modality: string
   monto: number
   pago_hasta: string | null
-  medios: MedioQR[]
+  medios: MedioPago[]
   whatsapp: string
 }
-const NOMBRE: Record<MedioQR, string> = { yape: 'Yape', plin: 'Plin', paypal: 'PayPal' }
+const NOMBRE: Record<MedioPago, string> = { yape: 'Yape', plin: 'Plin', paypal: 'PayPal' }
 const wa = (numero: string, texto: string) => `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
 
 /**
- * Pantalla de pago de una reserva: QR de Yape/Plin/PayPal (sin celular ni nombre del médico),
+ * Pantalla de pago de una reserva: QR de Yape/Plin (sin celular ni nombre del médico), PayPal por WhatsApp,
  * número de operación y aviso por WhatsApp. Diseño: docs/superpowers/specs/2026-11-01-pago-reserva-yape-plin-design.md.
  */
 // Al volver de Mercado Pago el paciente suele llegar antes que el aviso del pago: se reintenta.
@@ -187,7 +188,7 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
 
         <p className="text-sm text-muted"><T>{"Paga escaneando el código:"}</T></p>
         <div className="flex gap-6 justify-center">
-          {info.medios.map(m => (
+          {info.medios.filter((m): m is MedioQR => m !== 'paypal').map(m => (
             <figure key={m} className="text-center">
               <Image src={`/api/reservar/qr?reserva=${reservaId}&medio=${m}`} alt={`QR ${NOMBRE[m]}`}
                 width={150} height={150} unoptimized className="rounded bg-white p-1" />
@@ -196,7 +197,13 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
           ))}
         </div>
         {info.medios.includes('paypal') && (
-          <p className="text-xs text-muted"><T>{"En PayPal paga el equivalente en dólares (USD); el doctor verifica el monto."}</T></p>
+          <div className="text-xs text-muted space-y-2">
+            <p><T>{"Desde el extranjero: PayPal, en dólares (USD). El doctor te pasa su correo y verifica el monto."}</T></p>
+            <a href={wa(info.whatsapp, `Hola, quiero pagar por PayPal mi reserva del ${cuando}. ¿Me pasa el correo?`)} target="_blank" rel="noopener noreferrer"
+              className="inline-block border border-subtle px-4 py-2 rounded font-mono text-xs text-white hover:border-brand transition-colors">
+              <T>{"Pedir el correo de PayPal"}</T>
+            </a>
+          </div>
         )}
 
         <div className="text-xs text-muted space-y-1">
