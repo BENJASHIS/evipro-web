@@ -147,7 +147,7 @@ export default function RecetasPage() {
             id="product_notes"
             value={form.product_notes}
             onChange={e => setForm(prev => ({ ...prev, product_notes: e.target.value }))}
-            required rows={3} maxLength={1000} placeholder="Ej: Aceite CBD:THC 20:1, 30ml, según receta del Dr. Carlos"
+            required rows={3} maxLength={1000} placeholder="Ej: Aceite THC 1 % : CBD 19 %, 30 ml, según receta del Dr. Carlos"
             className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand resize-none"
           />
         </div>

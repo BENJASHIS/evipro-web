@@ -108,21 +108,18 @@ export function cannabinoidRatio(cbdMgPerMl: number, thcMgPerMl: number) {
   if (!thc) return 'CBD sin THC declarado'
   if (!cbd) return 'THC sin CBD declarado'
 
-  const ratio = cbd >= thc ? cbd / thc : thc / cbd
-  if (!Number.isFinite(ratio)) throw new RangeError('La relación excede el rango numérico. Revisa las cantidades.')
-  if (cbd >= thc) return `${formatRatioPart(ratio)} : 1`
-  return `1 : ${formatRatioPart(ratio)}`
+  // Estándar EVIPro: THC primero y se dice cuál domina. Mismos cortes que
+  // core/dosis.py::calcular_ratio.
+  const cbdPerThc = cbd / thc
+  const larger = cbdPerThc >= 1 ? cbdPerThc : thc / cbd
+  if (!Number.isFinite(larger)) throw new RangeError('La relación excede el rango numérico. Revisa las cantidades.')
+  const part = formatRatioPart(larger)
+  const dominance = cbdPerThc >= 0.8 && cbdPerThc < 2 ? 'balanceado' : cbdPerThc > 1 ? 'CBD dominante' : 'THC dominante'
+  return `${cbdPerThc >= 1 ? `1:${part}` : `${part}:1`} THC:CBD · ${dominance}`
 }
 
 function formatRatioPart(value: number) {
-  const rounded = Math.round(value)
-  if (Math.abs(value - rounded) < 0.05) return String(rounded)
-  if (value >= 10) return trimZeros(value.toFixed(1))
-  return trimZeros(value.toFixed(2))
-}
-
-function trimZeros(value: string) {
-  return value.replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1')
+  return value >= 10 ? String(Math.round(value)) : String(Number(value.toFixed(1)))
 }
 
 export function calculateOilMetrics(input: OilCalculatorInput) {
@@ -169,10 +166,10 @@ export function calculateInhalationMetrics(input: InhalationCalculatorInput) {
     throw new RangeError('Inhalaciones estimadas: introduce un número entero mayor que 0.')
   }
   if (input.inputMode === 'percent_of_product' && cbdValue + thcValue > 100) {
-    throw new RangeError('CBD + THC no puede superar el 100 % de la masa del producto.')
+    throw new RangeError('THC + CBD no puede superar el 100 % de la masa del producto.')
   }
   if (input.inputMode === 'total_mg' && cbdValue + thcValue > productGrams * 1000) {
-    throw new RangeError('Los mg de CBD + THC no pueden superar la masa del producto (g × 1000).')
+    throw new RangeError('Los mg de THC + CBD no pueden superar la masa del producto (g × 1000).')
   }
 
   const cbdTotalMg = inhalationTotalFromInput(input.inputMode, cbdValue, productGrams)

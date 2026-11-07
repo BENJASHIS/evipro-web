@@ -78,8 +78,14 @@ describe('cannabinoid calculator', () => {
   })
 
   it('expresa la relación CBD:THC de forma legible', () => {
-    expect(cannabinoidRatio(50, 2.5)).toBe('20 : 1')
-    expect(cannabinoidRatio(1, 4)).toBe('1 : 4')
+    expect(cannabinoidRatio(100, 9)).toBe('1:11 THC:CBD · CBD dominante')
+    expect(cannabinoidRatio(50, 2.5)).toBe('1:20 THC:CBD · CBD dominante')
+    expect(cannabinoidRatio(100, 50)).toBe('1:2 THC:CBD · CBD dominante')
+    expect(cannabinoidRatio(50, 50)).toBe('1:1 THC:CBD · balanceado')
+    expect(cannabinoidRatio(60, 50)).toBe('1:1.2 THC:CBD · balanceado')
+    expect(cannabinoidRatio(50, 60)).toBe('1.2:1 THC:CBD · balanceado')
+    expect(cannabinoidRatio(50, 100)).toBe('2:1 THC:CBD · THC dominante')
+    expect(cannabinoidRatio(1, 4)).toBe('4:1 THC:CBD · THC dominante')
     expect(cannabinoidRatio(50, 0)).toBe('CBD sin THC declarado')
   })
 

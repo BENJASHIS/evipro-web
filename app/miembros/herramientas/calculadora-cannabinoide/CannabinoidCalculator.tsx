@@ -55,7 +55,7 @@ function format(value: number | null, unit: string, decimals = 2) {
 
 function formatPair(cbd: number | null, thc: number | null, unit: string, decimals = 2) {
   if (cbd === null || thc === null) return 'Faltan datos'
-  return `CBD ${format(cbd, unit, decimals)} · THC ${format(thc, unit, decimals)}`
+  return `THC ${format(thc, unit, decimals)} : CBD ${format(cbd, unit, decimals)}`
 }
 
 // Dos cifras significativas: no finge precisión ni muestra 0 mg si hay poco cannabinoide.
@@ -286,16 +286,16 @@ export default function CannabinoidCalculator() {
             {productKind === 'oil' ? (
               <>
                 <Field label="Volumen del frasco" value={oilVolumeMl} onChange={setOilVolumeMl} suffix="ml" />
-                <Field label="CBD declarado" value={oilCbdValue} onChange={setOilCbdValue} suffix={oilInputModeOption.suffix} />
                 <Field label="THC declarado" value={oilThcValue} onChange={setOilThcValue} suffix={oilInputModeOption.suffix} />
+                <Field label="CBD declarado" value={oilCbdValue} onChange={setOilCbdValue} suffix={oilInputModeOption.suffix} />
                 <Field label="Gotas por toma" value={dropsPerDose} onChange={setDropsPerDose} step="1" suffix="gotas" optional />
                 <Field label="Tomas por día" value={dosesPerDay} onChange={setDosesPerDay} step="0.5" suffix="x día" optional />
               </>
             ) : productKind === 'inhalation' ? (
               <>
                 <Field label="Contenido del producto" value={productGrams} onChange={setProductGrams} step="0.1" suffix="g" />
-                <Field label="CBD declarado" value={inhalationCbdValue} onChange={setInhalationCbdValue} max={inhalationInputMode === 'percent_of_product' ? '100' : undefined} suffix={inhalationInputModeOption.suffix} />
                 <Field label="THC declarado" value={inhalationThcValue} onChange={setInhalationThcValue} max={inhalationInputMode === 'percent_of_product' ? '100' : undefined} suffix={inhalationInputModeOption.suffix} />
+                <Field label="CBD declarado" value={inhalationCbdValue} onChange={setInhalationCbdValue} max={inhalationInputMode === 'percent_of_product' ? '100' : undefined} suffix={inhalationInputModeOption.suffix} />
                 <SelectField label="Duración de la inhalación" value={inhalationProfile} onChange={setInhalationProfile}>
                   {INHALATION_PROFILES.map(profile => (
                     <option key={profile.value} value={profile.value} className="bg-ink"><T>{profile.label}</T></option>
@@ -308,8 +308,8 @@ export default function CannabinoidCalculator() {
             ) : (
               <>
                 <Field label="Flor por carga" value={flowerGrams} onChange={setFlowerGrams} step="0.01" suffix="g" />
-                <Field label="CBD en etiqueta" value={flowerCbdPercent} onChange={setFlowerCbdPercent} max="100" suffix="%" />
                 <Field label="THC en etiqueta" value={flowerThcPercent} onChange={setFlowerThcPercent} max="100" suffix="%" />
+                <Field label="CBD en etiqueta" value={flowerCbdPercent} onChange={setFlowerCbdPercent} max="100" suffix="%" />
                 <Field label="Inhalaciones por carga" value={flowerInhalations} onChange={setFlowerInhalations} min="1" step="1" suffix="inh." optional />
               </>
             )}
@@ -379,7 +379,7 @@ export default function CannabinoidCalculator() {
             ) : null}
           </div>
 
-          <ResultRow label="Relación" value={t(productKind === 'oil' && oil ? oil.ratio : productKind === 'inhalation' && inhalation ? inhalation.ratio : flower?.ratio ?? '')} />
+          <ResultRow label="Proporción" value={(productKind === 'oil' && oil ? oil.ratio : productKind === 'inhalation' && inhalation ? inhalation.ratio : flower?.ratio ?? '').split(' · ').map(t).join(' · ')} />
 
           {productKind === 'oil' && oil ? (
             <>
