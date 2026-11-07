@@ -35,13 +35,6 @@ const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "EVIPro · Consulta de cannabis medicinal en Cusco y online",
   description: "Evaluación médica presencial en Cusco y por teleconsulta en Perú. Conoce al médico, las modalidades y los precios de consulta en EVIPro.",
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '48x48' },
-      { url: '/icon.png',    sizes: '512x512', type: 'image/png' },
-    ],
-    apple: { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
-  },
 };
 
 export async function generateMetadata(): Promise<Metadata> {
