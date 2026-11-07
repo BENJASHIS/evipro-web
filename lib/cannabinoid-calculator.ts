@@ -2,8 +2,8 @@
 export const DEFAULT_DROPS_PER_ML = 20
 
 // mg de la app clínica (PERFILES_INHALACION en core/unidades.py), que EVIPro maneja
-// para vaporizador de 66 % o más. Se toma 66 % como referencia y se escala linealmente:
-// estimación mecánica, sin estudio que la mida. Ver evidence/appraisal/2026-11-06-thc-por-inhalacion.md.
+// para vaporizador de 66 % o más. Se toma 66 % como referencia y se escala linealmente.
+// Aproximación propia, como las gotas: ver evidence/appraisal/2026-11-06-thc-por-inhalacion.md.
 // En flor no aplica: el vapor no tiene el % de la flor, así que ahí se reparte la carga.
 export const REFERENCE_EXTRACT_PERCENT = 66
 export const INHALATION_PROFILES = [

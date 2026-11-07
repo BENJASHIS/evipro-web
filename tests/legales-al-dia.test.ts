@@ -49,10 +49,11 @@ describe('nombres de plan al día', () => {
 })
 
 describe('Términos: datos personales al día', () => {
-  it('declara el acceso con Google y la cuenta educativa', () => {
+  it('declara el acceso con Google y lo que pide una cuenta', () => {
     const texto = readFileSync(resolve(process.cwd(), 'app/terminos/page.tsx'), 'utf-8')
     expect(texto).toContain('entrar con Google')
-    expect(texto).toContain('La cuenta educativa solo solicita correo y contraseña')
+    expect(texto).toContain('Para crear una cuenta solo se solicita correo y contraseña')
+    expect(texto).not.toContain('La cuenta educativa solo solicita')
     expect(texto).not.toContain('exclusivamente para la prestación del servicio médico')
   })
 })
