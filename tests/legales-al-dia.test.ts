@@ -52,6 +52,7 @@ describe('Términos: datos personales al día', () => {
   it('declara el acceso con Google y lo que pide una cuenta', () => {
     const texto = readFileSync(resolve(process.cwd(), 'app/terminos/page.tsx'), 'utf-8')
     expect(texto).toContain('entrar con Google')
+    expect(texto).toContain('datos personales y de salud, incluido el motivo de consulta')
     expect(texto).toContain('Para crear una cuenta solo se solicita correo y contraseña')
     expect(texto).not.toContain('La cuenta educativa solo solicita')
     expect(texto).not.toContain('exclusivamente para la prestación del servicio médico')

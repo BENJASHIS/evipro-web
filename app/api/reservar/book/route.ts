@@ -17,6 +17,7 @@ interface ReservaBody {
   patient_name: string
   patient_phone: string
   patient_note?: string | null
+  consent?: boolean
   visit_number?: number
   /** Slug del aliado que manda al paciente (enlace ?convenio=); uno desconocido no cambia el precio. */
   convenio?: string
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
   if (!modality || !MODALIDADES.includes(modality)) {
     return NextResponse.json({ error: 'Modalidad inválida' }, { status: 400 })
   }
-  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note, slot_date: body.slot_date, slot_time: body.slot_time })
+  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note, consent: body.consent, slot_date: body.slot_date, slot_time: body.slot_time })
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
   const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
   if (!turnstile.ok) {
@@ -82,6 +83,7 @@ export async function POST(req: NextRequest) {
       patient_name,
       patient_phone,
       patient_note: body.patient_note ?? null,
+      consent_at: new Date().toISOString(),
       is_first_session: true,
       price_soles,
       paid: false,

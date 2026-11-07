@@ -27,6 +27,23 @@ beforeEach(() => {
 })
 
 describe('AgendarForm', () => {
+  it('no deja reservar sin autorizar el uso de los datos y envía el consentimiento', async () => {
+    render(<AgendarForm doctor={doctor} />)
+    fireEvent.click(screen.getByText('A domicilio'))
+    fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
+    fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    const casilla = screen.getByRole('checkbox', { name: /autorizo a evipro/i })
+    expect(casilla).not.toBeChecked()
+    expect(screen.getByRole('link', { name: 'Términos y Condiciones' })).toHaveAttribute('href', '/terminos')
+    expect(screen.getByRole('button', { name: /solicitar/i })).toBeDisabled()
+    fireEvent.click(casilla)
+    fireEvent.click(screen.getByRole('button', { name: /solicitar/i }))
+    await waitFor(() => {
+      const llamada = vi.mocked(fetch).mock.calls.find(([url]) => String(url).includes('/api/reservar/book'))
+      expect(JSON.parse(String(llamada?.[1]?.body)).consent).toBe(true)
+    })
+  })
+
   it('muestra las 5 modalidades: consejería (Video, WhatsApp) + consulta (Presencial, Virtual, A domicilio)', () => {
     render(<AgendarForm doctor={doctor} />)
     expect(screen.getByText('Video (15–20 min)')).toBeInTheDocument()
@@ -54,6 +71,7 @@ describe('AgendarForm', () => {
     fireEvent.click(screen.getByText('A domicilio'))
     fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
     fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByRole('checkbox', { name: /autorizo a evipro/i }))
     fireEvent.click(screen.getByText(/Solicitar/))
     await waitFor(() =>
       expect(vi.mocked(fetch).mock.calls.some(c => c[0] === '/api/reservar/book')).toBe(true),
@@ -65,6 +83,7 @@ describe('AgendarForm', () => {
     fireEvent.click(screen.getByText('WhatsApp'))
     fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
     fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByRole('checkbox', { name: /autorizo a evipro/i }))
     fireEvent.click(screen.getByText(/Pagar/))
     await waitFor(() =>
       expect(vi.mocked(fetch).mock.calls.some(c => c[0] === '/api/consejeria/book')).toBe(true),
@@ -76,6 +95,7 @@ describe('AgendarForm', () => {
     fireEvent.click(screen.getByText('WhatsApp'))
     fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
     fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByRole('checkbox', { name: /autorizo a evipro/i }))
     fireEvent.click(screen.getByText(/Pagar/))
     await waitFor(() => {
       const call = vi.mocked(fetch).mock.calls.find(c => c[0] === '/api/consejeria/book')
@@ -100,6 +120,7 @@ describe('AgendarForm', () => {
     fireEvent.click(screen.getByText('WhatsApp'))
     fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
     fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByRole('checkbox', { name: /autorizo a evipro/i }))
     fireEvent.click(screen.getByText(/Pagar/))
     await waitFor(() => expect(loc.href).toBe('https://mp.example/checkout/xyz'))
   })
@@ -127,6 +148,7 @@ describe('AgendarForm — enlace de convenio', () => {
     fireEvent.click(screen.getByText('A domicilio'))
     fireEvent.change(screen.getByLabelText(/Nombre completo/), { target: { value: 'Ana' } })
     fireEvent.change(screen.getByLabelText(/WhatsApp/), { target: { value: '987654321' } })
+    fireEvent.click(screen.getByRole('checkbox', { name: /autorizo a evipro/i }))
     fireEvent.click(screen.getByText(/Solicitar/))
     await waitFor(() => {
       const call = vi.mocked(fetch).mock.calls.find(c => c[0] === '/api/reservar/book')

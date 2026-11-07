@@ -10,10 +10,13 @@ const ok = {
   doctor_slug: DOCTORS[0].slug,
   patient_name: 'Ana Pérez',
   patient_phone: '987654321',
-  patient_note: 'dolor crónico',
-}
+  patient_note: 'dolor crónico', consent: true }
 
 describe('validateBookingInput', () => {
+  it.each([undefined, false, 'true'])('sin consentimiento expreso no hay reserva: %s', consent => {
+    expect(validateBookingInput({ ...ok, consent: consent as boolean })).toBe('Falta autorizar el uso de tus datos.')
+  })
+
   it('acepta input válido', () => {
     expect(validateBookingInput(ok)).toBeNull()
   })
@@ -48,13 +51,13 @@ describe('validateBookingInput', () => {
 
   it('acepta nota nula o ausente', () => {
     expect(validateBookingInput({ ...ok, patient_note: null })).toBeNull()
-    expect(validateBookingInput({ doctor_slug: ok.doctor_slug, patient_name: ok.patient_name, patient_phone: ok.patient_phone })).toBeNull()
+    expect(validateBookingInput({ doctor_slug: ok.doctor_slug, patient_name: ok.patient_name, patient_phone: ok.patient_phone, consent: true })).toBeNull()
   })
 })
 
 // Horario de Carlos (2026-10-29): martes a viernes, 9–12 y 15–17, turnos de una hora.
 describe('horario de atención', () => {
-  const jara = { ...ok, doctor_slug: 'dr-jara' }
+  const jara = { ...ok, doctor_slug: 'dr-jara', consent: true }
 
   it('rechaza un lunes', () => {
     expect(validateBookingInput({ ...jara, slot_date: '2026-11-02', slot_time: '09:00' })).toBe('Horario no disponible')

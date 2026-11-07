@@ -44,7 +44,7 @@ const crear = vi.mocked(crearEventoTentativo)
 // El 2026-11-03 es martes.
 const cuerpoValido = {
   doctor_slug: 'dr-jara', modality: 'virtual', slot_date: '2026-11-03', slot_time: '09:00',
-  patient_name: 'Ana Prueba', patient_phone: '999888777', turnstile_token: 't',
+  patient_name: 'Ana Prueba', patient_phone: '999888777', turnstile_token: 't', consent: true,
 }
 const pedir = (body: unknown, ruta = 'reservar') => new NextRequest(`http://localhost/api/${ruta}/book`, {
   method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
@@ -156,5 +156,21 @@ describe('POST /api/consejeria/book', () => {
     expect(r.status).toBe(400)
     expect((await r.json()).error).toBe('Canal no disponible')
     expect(estado.insertado).toBeNull()
+  })
+})
+
+describe('consentimiento para datos de salud', () => {
+  it('rechaza la reserva sin autorización y no guarda nada', async () => {
+    const { consent: _sinConsentimiento, ...sinAutorizar } = cuerpoValido
+    const res = await POST(pedir(sinAutorizar))
+    expect(res.status).toBe(400)
+    expect((await res.json()).error).toBe('Falta autorizar el uso de tus datos.')
+    expect(estado.insertado).toBeNull()
+  })
+
+  it('guarda la fecha en que se autorizó, puesta por el servidor', async () => {
+    const res = await POST(pedir({ ...cuerpoValido, consent_at: '2000-01-01T00:00:00Z' }))
+    expect(res.status).toBe(200)
+    expect(estado.insertado?.consent_at).toBe('2026-11-01T12:00:00.000Z')
   })
 })

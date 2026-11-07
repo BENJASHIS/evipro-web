@@ -16,6 +16,7 @@ interface BookingBody {
   patient_name: string
   patient_phone: string
   patient_note?: string | null
+  consent?: boolean
   is_first_session: boolean
   mp_preference_id?: string | null
 }
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
   if (!modality || !(modality in MODALITY_PRICES)) {
     return NextResponse.json({ error: 'Modalidad inválida' }, { status: 400 })
   }
-  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note, slot_date: body.slot_date, slot_time: body.slot_time })
+  const invalid = validateBookingInput({ doctor_slug, patient_name, patient_phone, patient_note: body.patient_note, consent: body.consent, slot_date: body.slot_date, slot_time: body.slot_time })
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 })
   const turnstile = await verifyTurnstileToken(readTurnstileToken(body), req)
   if (!turnstile.ok) {
@@ -72,6 +73,7 @@ export async function POST(req: NextRequest) {
       patient_name,
       patient_phone,
       patient_note: body.patient_note ?? null,
+      consent_at: new Date().toISOString(),
       is_first_session,
       price_soles,
       paid,

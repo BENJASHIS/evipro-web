@@ -53,8 +53,9 @@ export function validateBookingInput(input: {
   patient_note?: string | null
   slot_date?: string | null
   slot_time?: string | null
+  consent?: boolean
 }): string | null {
-  const { doctor_slug, patient_name, patient_phone, patient_note, slot_date, slot_time } = input
+  const { doctor_slug, patient_name, patient_phone, patient_note, slot_date, slot_time, consent } = input
   const doctor = DOCTORS.find(d => d.slug === doctor_slug)
   if (!doctor_slug || !doctor) return 'Médico no encontrado'
   if (!patient_name?.trim() || patient_name.length > NAME_MAX) return 'Nombre inválido'
@@ -62,5 +63,7 @@ export function validateBookingInput(input: {
   if (patient_note != null && patient_note.length > NOTE_MAX) return 'Nota demasiado larga'
   // Sin horario es válido (p. ej. a domicilio); si viene, debe caer en la agenda del médico.
   if ((slot_date || slot_time) && !slotValido(doctor, slot_date, slot_time)) return 'Horario no disponible'
+  // Datos de salud: la autorización es expresa; una casilla sin marcar no vale.
+  if (consent !== true) return 'Falta autorizar el uso de tus datos.'
   return null
 }

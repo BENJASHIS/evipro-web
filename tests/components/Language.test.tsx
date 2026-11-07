@@ -26,6 +26,7 @@ describe('English public journey', () => {
     fireEvent.change(screen.getByLabelText('Full name *'), { target: { value: 'Test Patient' } })
     fireEvent.change(screen.getByLabelText('WhatsApp / Phone *'), { target: { value: '999999999' } })
     fireEvent.change(screen.getByLabelText('Reason for your visit (optional)'), { target: { value: 'Mi texto original' } })
+    fireEvent.click(screen.getByRole('checkbox', { name: /I authorize EVIPro/ }))
     fireEvent.click(screen.getByRole('button', { name: 'Request a consultation →' }))
     await screen.findByRole('heading', { name: 'Request received' })
     const sent = fetchMock.mock.calls.find(call => call[0] === '/api/reservar/book')!

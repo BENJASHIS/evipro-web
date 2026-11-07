@@ -42,6 +42,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [note, setNote] = useState('')
+  const [autorizaDatos, setAutorizaDatos] = useState(false)
   const [isFirst, setIsFirst] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(false)
   const [bookingId, setBookingId] = useState<string | null>(null)
@@ -110,6 +111,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             patient_name: name,
             patient_phone: phone,
             patient_note: note || null,
+            consent: autorizaDatos,
             visit_number: visita,
             convenio,
             turnstile_token: turnstileToken,
@@ -138,6 +140,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
             patient_name: name,
             patient_phone: phone,
             patient_note: note || null,
+            consent: autorizaDatos,
             is_first_session: isFirst ?? true,
             price_soles: price ?? 0,
             paid: true,
@@ -193,7 +196,7 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
 
   const slotOk = !modality || !needsSlot(modality) || (selectedDate !== null && selectedTime !== null)
   const showData = modality !== null && slotOk
-  const canSubmit = showData && name.trim() !== '' && phone.trim() !== '' && (!TURNSTILE_CLIENT_ENABLED || turnstileToken)
+  const canSubmit = showData && name.trim() !== '' && phone.trim() !== '' && autorizaDatos && (!TURNSTILE_CLIENT_ENABLED || turnstileToken)
   const submitLabel = modality && isConsulta(modality)
     ? (cobraAlReservar && modality !== 'domicilio' ? 'Reservar y pagar →' : 'Solicitar consulta →')
     : price !== null ? `${t('Pagar')} S/. ${price} →` : 'Solicitar →'
@@ -374,6 +377,14 @@ export default function AgendarForm({ doctor }: { doctor: Doctor }) {
 
       {showData && (
         <>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" checked={autorizaDatos} onChange={e => setAutorizaDatos(e.target.checked)} className="mt-0.5 accent-brand" />
+            <span className="text-xs text-muted leading-relaxed">
+              <T>{"Autorizo a EVIPro a tratar mis datos personales y de salud, incluido el motivo de consulta, para gestionar mi cita y atenderme. Leí los "}</T>
+              <a href="/terminos" target="_blank" rel="noopener noreferrer" className="text-brand underline"><T>{"Términos y Condiciones"}</T></a>.
+            </span>
+          </label>
+
           <Turnstile
             action="agendar"
             resetSignal={turnstileReset}
