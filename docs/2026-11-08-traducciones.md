@@ -9,3 +9,7 @@ También se completan textos de navegación, citas, recetas, mensajes y pago. Se
 Validación: pruebas focalizadas de catálogo, juego completo en inglés, página de calculadora y restricciones aprobadas; verificadores moleculares e imágenes aprobados; ESLint sin errores, un aviso previo en reservar-book.test.ts. Navegador local: servidor inaccesible, sin comprobación visual. 18 pruebas focalizadas aprobadas y build completo correcto. La batería completa se interrumpió al permanecer sin resultados; no se declara aprobada. Las pruebas afectadas sí terminaron correctamente.
 
 Cambios locales, sin push. La traducción del resto del sitio requiere auditoría.
+
+## Mezcla detectada por capturas de Carlos
+
+La versión publicada aún no incorpora los commits locales. Se completan además biblioteca, tarjeta de acceso al visor, estado vacío, tipo de documento, descarga y fechas. Pruebas de biblioteca y tarjetas de herramientas en inglés aprobadas, junto al catálogo y controles de mensajes/farmacia (7 pruebas en dos ejecuciones). Las imágenes y documentos publicados conservan su idioma original; no se traducen automáticamente ni se alteran datos de usuarios. Sin push ni comprobación visual en producción.

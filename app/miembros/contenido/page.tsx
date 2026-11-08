@@ -1,3 +1,4 @@
+import { getLocale } from '@/lib/locale-server'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase-server'
@@ -13,6 +14,7 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 export default async function ContenidoPage() {
+  const locale = await getLocale()
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -36,13 +38,13 @@ export default async function ContenidoPage() {
 
   return (
     <div>
-      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Biblioteca</p>
-      <h1 className="text-3xl font-light font-serif italic mb-8">Contenido exclusivo</h1>
+      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2"><T>Biblioteca</T></p>
+      <h1 className="text-3xl font-light font-serif italic mb-8"><T>Contenido exclusivo</T></h1>
 
       <Link href="/miembros/contenido/explora-cbd-thc" className="block border border-subtle rounded-lg p-5 mb-6 hover:border-brand">
-        <span className="text-xs uppercase tracking-widest text-brand">Recurso interactivo</span>
-        <h2 className="text-lg mt-1 mb-2">{fullAccess ? 'Explora CBD y THC' : 'Explora CBD · acceso gratuito'}</h2>
-        <p className="text-muted text-sm">{fullAccess ? 'Frasco en 3D, composición y moléculas para aprender observando.' : 'Frasco y molécula de CBD. THC, mezclas y demás herramientas con membresía.'}</p>
+        <span className="text-xs uppercase tracking-widest text-brand"><T>Recurso interactivo</T></span>
+        <h2 className="text-lg mt-1 mb-2"><T>{fullAccess ? 'Explora CBD y THC' : 'Explora CBD · acceso gratuito'}</T></h2>
+        <p className="text-muted text-sm"><T>{fullAccess ? 'Frasco en 3D, composición y moléculas para aprender observando.' : 'Frasco y molécula de CBD. THC, mezclas y demás herramientas con membresía.'}</T></p>
       </Link>
 
       {mostrarModulo && (
@@ -56,7 +58,7 @@ export default async function ContenidoPage() {
 
       {!items.length ? (
         <div className="border border-subtle rounded-lg p-8 text-center">
-          <p className="text-muted text-sm">{fullAccess ? 'Próximamente: estamos preparando contenido exclusivo para miembros.' : 'El resto de la biblioteca requiere membresía activa.'}</p>
+          <p className="text-muted text-sm"><T>{fullAccess ? 'Próximamente: estamos preparando contenido exclusivo para miembros.' : 'El resto de la biblioteca requiere membresía activa.'}</T></p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2">
@@ -69,19 +71,19 @@ export default async function ContenidoPage() {
               )}
               <div className="p-5">
                 <span className="text-xs font-mono text-faint uppercase tracking-widest">
-                  {TYPE_LABELS[item.content_type] ?? item.content_type}
+                  <T>{TYPE_LABELS[item.content_type] ?? item.content_type}</T>
                 </span>
                 <h2 className="text-lg font-light mt-1 mb-2">{item.title}</h2>
                 {item.body && <p className="text-muted text-sm leading-relaxed mb-3">{item.body}</p>}
                 {item.file_kind === 'pdf' && item.file_url && (
                   <a href={item.file_url} target="_blank" rel="noopener noreferrer"
-                    className="inline-block text-xs font-mono text-brand hover:underline">
+                    className="inline-block text-xs font-mono text-brand hover:underline"><T>
                     Ver / descargar PDF →
-                  </a>
+                  </T></a>
                 )}
                 {item.published_at && (
                   <p className="text-xs text-faint font-mono mt-3">
-                    {new Date(item.published_at).toLocaleDateString('es-PE')}
+                    {new Date(item.published_at).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-PE')}
                   </p>
                 )}
               </div>
