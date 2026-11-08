@@ -13,3 +13,5 @@ Cambios locales, sin push. La traducción del resto del sitio requiere auditorí
 ## Mezcla detectada por capturas de Carlos
 
 La versión publicada aún no incorpora los commits locales. Se completan además biblioteca, tarjeta de acceso al visor, estado vacío, tipo de documento, descarga y fechas. Pruebas de biblioteca y tarjetas de herramientas en inglés aprobadas, junto al catálogo y controles de mensajes/farmacia (7 pruebas en dos ejecuciones). Las imágenes y documentos publicados conservan su idioma original; no se traducen automáticamente ni se alteran datos de usuarios. Sin push ni comprobación visual en producción.
+
+Publicación autorizada: 945bb44 desplegado correctamente en Vercel. La revisión completa detectó dos fallos (743/745): simulación de idioma faltante en FreeEducationAccess y pérdida de «clinically» en una traducción. Se corrigen conservando el requisito clínico y las restricciones de acceso.

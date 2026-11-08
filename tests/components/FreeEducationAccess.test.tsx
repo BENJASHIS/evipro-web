@@ -1,3 +1,4 @@
+vi.mock('@/lib/locale-server',()=>({getLocale:async()=> 'es'}))
 import { render, screen, cleanup } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 const mocks=vi.hoisted(()=>({from:vi.fn(),service:vi.fn()}))
