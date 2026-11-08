@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { T, useLanguage } from '@/app/components/Language'
+import { T, useLanguage, interpolar } from '@/app/components/Language'
 import { REGLA_CANCELACION } from '@/lib/bookings'
 
 type MedioQR = 'yape' | 'plin'
@@ -93,7 +93,7 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
           : info.vencida
           ? <p className="text-muted text-sm"><T>{"Tu turno venció. Si ya pagaste, escríbenos por WhatsApp con tu número de operación"}</T></p>
           : <p className="text-muted text-sm"><T>{"Esta reserva fue cancelada. Escríbenos por WhatsApp si necesitas otra fecha."}</T></p>}
-        <a href={wa(info.whatsapp, info.pagada ? `Hola, pagué mi reserva del ${cuando} y el turno ya no estaba disponible.` : `Hola, sobre mi reserva del ${cuando}.`)} target="_blank" rel="noopener noreferrer"
+        <a href={wa(info.whatsapp, info.pagada ? interpolar(t('Hola, pagué mi reserva del {cuando} y el turno ya no estaba disponible.'), { cuando }) : interpolar(t('Hola, sobre mi reserva del {cuando}.'), { cuando }))} target="_blank" rel="noopener noreferrer"
           className="inline-block bg-brand text-black px-6 py-2.5 rounded font-mono text-sm hover:bg-brand-hover transition-colors">
           <T>{"Escribir al doctor"}</T>
         </a>
@@ -106,7 +106,7 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
       <div className="max-w-md space-y-4">
         <p className="text-muted text-sm"><T>{"Recibimos tu pago con tarjeta. Estamos confirmando tu reserva…"}</T></p>
         {consultas >= REINTENTOS_TARJETA && (
-          <a href={wa(info.whatsapp, `Hola, pagué con tarjeta mi reserva del ${cuando}.`)} target="_blank" rel="noopener noreferrer"
+          <a href={wa(info.whatsapp, interpolar(t('Hola, pagué con tarjeta mi reserva del {cuando}.'), { cuando }))} target="_blank" rel="noopener noreferrer"
             className="inline-block bg-brand text-black px-6 py-2.5 rounded font-mono text-sm hover:bg-brand-hover transition-colors">
             <T>{"Escribir al doctor"}</T>
           </a>
@@ -124,8 +124,8 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
     setAvisoVencida(null)
     const ref = referencia.trim()
     const mensaje = medio === 'codigo'
-      ? `Reservé el ${cuando} con mi código de consulta gratis ${ref}`
-      : `Pagué mi reserva del ${cuando}, ${NOMBRE[medio]} operación ${ref}`
+      ? interpolar(t('Reservé el {cuando} con mi código de consulta gratis {ref}'), { cuando, ref })
+      : interpolar(t('Pagué mi reserva del {cuando}, {medio} operación {ref}'), { cuando, ref, medio: NOMBRE[medio] })
     try {
       const r = await fetch('/api/reservar/pago', {
         method: 'POST',
@@ -135,7 +135,7 @@ export default function PagoReserva({ reservaId, irA = url => window.location.as
       const cuerpo = await r.json().catch(() => ({})) as { error?: string }
       if (!r.ok) {
         setError(cuerpo.error ?? 'No se pudo guardar el pago. Intenta de nuevo.')
-        if (r.status === 410) setAvisoVencida(`${mensaje}, pero el turno venció.`)
+        if (r.status === 410) setAvisoVencida(interpolar(t('{mensaje}, pero el turno venció.'), { mensaje }))
         return
       }
       setAviso(mensaje)

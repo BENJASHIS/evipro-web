@@ -1,4 +1,5 @@
 'use client'
+import { T } from '@/app/components/Language'
 import { useState } from 'react'
 
 // URL verificada por Carlos en el navegador. Ojo si alguna vez hay que
@@ -28,14 +29,14 @@ export default function Guia({ codigo }: { codigo: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 mt-2">
-      <span className="text-xs text-muted font-mono">Guía:</span>
+      <span className="text-xs text-muted font-mono"><T>Guía:</T></span>
       <span className="text-xs text-white font-mono">{codigo}</span>
       <button
         type="button"
         onClick={copiar}
         className="text-xs font-mono text-brand hover:underline"
       >
-        {copiado ? '✓ copiado' : 'copiar'}
+        <T>{copiado ? '✓ copiado' : 'copiar'}</T>
       </button>
       <a
         href={RASTREADOR_SHALOM}
@@ -43,7 +44,7 @@ export default function Guia({ codigo }: { codigo: string }) {
         rel="noopener noreferrer"
         className="text-xs font-mono text-brand hover:underline"
       >
-        rastrear en Shalom →
+        <T>rastrear en Shalom →</T>
       </a>
     </div>
   )

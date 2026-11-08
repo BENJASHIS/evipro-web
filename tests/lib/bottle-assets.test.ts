@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 const mocks = vi.hoisted(()=>({ user:vi.fn(), access:vi.fn() }))
+vi.mock('@/lib/locale-server',()=>({getLocale:async()=> 'es'}))
 vi.mock('@/lib/supabase-server',()=>({createServerSupabaseClient:async()=>({auth:{getUser:mocks.user}})}))
 vi.mock('@/lib/member-access',async(importOriginal)=>({ ...await importOriginal<typeof import('@/lib/member-access')>(),getMemberAccess:mocks.access }))
 import { GET } from '@/app/miembros/contenido/explora-cbd-thc/visor/[...asset]/route'

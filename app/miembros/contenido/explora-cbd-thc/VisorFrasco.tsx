@@ -1,7 +1,9 @@
 'use client'
+import { useLanguage } from '@/app/components/Language'
 import { useEffect, useRef, useState } from 'react'
 
 export default function VisorFrasco({ cbdOnly = false }: { cbdOnly?: boolean }) {
+  const { locale, t } = useLanguage()
   const iframe = useRef<HTMLIFrameElement>(null)
   const [height,setHeight] = useState(1500)
   useEffect(()=>{
@@ -14,6 +16,6 @@ export default function VisorFrasco({ cbdOnly = false }: { cbdOnly?: boolean }) 
     window.addEventListener('message',resize)
     return ()=>window.removeEventListener('message',resize)
   },[])
-  return <iframe ref={iframe} title={cbdOnly ? 'Explora CBD: visor didáctico' : 'Explora CBD y THC: visor didáctico'} src="/miembros/contenido/explora-cbd-thc/visor/index.html"
+  return <iframe key={locale} ref={iframe} title={t(cbdOnly ? 'Explora CBD: visor didáctico' : 'Explora CBD y THC: visor didáctico')} src="/miembros/contenido/explora-cbd-thc/visor/index.html"
     className="w-full border-0 bg-[#f4f0e8]" style={{height}} allowFullScreen />
 }

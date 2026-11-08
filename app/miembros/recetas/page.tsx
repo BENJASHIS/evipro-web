@@ -1,4 +1,5 @@
 'use client'
+import { T, useLanguage } from '@/app/components/Language'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
@@ -16,6 +17,7 @@ type SolicitudPropia = Pick<PharmacyRequest,
   'id' | 'product_notes' | 'shalom_address' | 'status' | 'tracking_info' | 'created_at'>
 
 export default function RecetasPage() {
+  const { t } = useLanguage()
   const [requests, setRequests] = useState<SolicitudPropia[]>([])
   // null = todavía cargando; false = sin derecho; true = con derecho.
   const [tieneFarmacia, setTieneFarmacia] = useState<boolean | null>(null)
@@ -82,13 +84,13 @@ export default function RecetasPage() {
 
   const encabezado = (
     <>
-      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Farmacia</p>
-      <h1 className="text-3xl font-light font-serif italic mb-4">Coordinación de farmacia</h1>
+      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2"><T>Farmacia</T></p>
+      <h1 className="text-3xl font-light font-serif italic mb-4"><T>Coordinación de farmacia</T></h1>
     </>
   )
 
   if (tieneFarmacia === null) {
-    return <div>{encabezado}<p className="text-faint text-sm font-mono">Cargando…</p></div>
+    return <div>{encabezado}<p className="text-faint text-sm font-mono"><T>Cargando…</T></p></div>
   }
 
   if (!tieneFarmacia) {
@@ -97,10 +99,10 @@ export default function RecetasPage() {
         {encabezado}
         <div className="border border-subtle rounded-lg p-8 text-center">
           <p className="text-muted text-sm mb-3">
-            La coordinación de farmacia está incluida en la membresía EVIPro.
+            <T>La coordinación de farmacia está incluida en la membresía EVIPro.</T>
           </p>
           <Link href="/planes" className="text-brand text-sm font-mono hover:underline">
-            Ver planes →
+            <T>Ver planes →</T>
           </Link>
         </div>
       </div>
@@ -111,19 +113,17 @@ export default function RecetasPage() {
     <div>
       {encabezado}
       <p className="text-muted text-sm mb-8">
-        Coordinamos la información y documentación necesaria con una farmacia magistral autorizada.
-        La preparación, dispensación, pago y entrega corresponden a la farmacia según sus propios
-        procedimientos. EVIPro no vende, almacena ni dispensa productos de cannabis.
+        <T>Coordinamos la información y documentación necesaria con una farmacia magistral autorizada. La preparación, dispensación, pago y entrega corresponden a la farmacia según sus propios procedimientos. EVIPro no vende, almacena ni dispensa productos de cannabis.</T>
       </p>
 
       {success && (
         <div className="border border-brand/30 bg-brand/5 rounded-lg p-4 mb-6">
-          <p className="text-brand text-sm">✓ Solicitud enviada. Coordinaremos con la farmacia a la brevedad.</p>
+          <p className="text-brand text-sm"><T>✓ Solicitud enviada. Coordinaremos con la farmacia a la brevedad.</T></p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="border border-subtle rounded-lg p-6 mb-8 space-y-4">
-        <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2">Nueva solicitud</p>
+        <p className="text-xs font-mono text-faint uppercase tracking-widest mb-2"><T>Nueva solicitud</T></p>
 
         {/* La mayoría de solicitudes son repetición: el paciente continuador
             pide lo mismo. Escribirlo de nuevo invita a equivocarse en la
@@ -137,60 +137,60 @@ export default function RecetasPage() {
             }))}
             className="w-full text-left border border-subtle rounded px-3 py-2 text-xs text-muted hover:border-brand/50 hover:text-white transition-colors"
           >
-            ↻ Lo mismo de la última vez · <span className="font-mono">{ultima.product_notes}</span>
+            <T>↻ Lo mismo de la última vez ·</T> <span className="font-mono">{ultima.product_notes}</span>
           </button>
         )}
 
         <div>
-          <label htmlFor="product_notes" className="block text-xs text-muted mb-1 uppercase tracking-widest">Notas de la receta *</label>
+          <label htmlFor="product_notes" className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>Notas de la receta *</T></label>
           <textarea
             id="product_notes"
             value={form.product_notes}
             onChange={e => setForm(prev => ({ ...prev, product_notes: e.target.value }))}
-            required rows={3} maxLength={1000} placeholder="Ej: Aceite THC 1 % : CBD 19 %, 30 ml, según receta del Dr. Carlos"
+            required rows={3} maxLength={1000} placeholder={t("Ej: Aceite THC 1 % : CBD 19 %, 30 ml, según receta del Dr. Carlos")}
             className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand resize-none"
           />
         </div>
         <div>
-          <label htmlFor="shalom_address" className="block text-xs text-muted mb-1 uppercase tracking-widest">Agencia Shalom de destino *</label>
+          <label htmlFor="shalom_address" className="block text-xs text-muted mb-1 uppercase tracking-widest"><T>Agencia Shalom de destino *</T></label>
           <input
             id="shalom_address"
             type="text" value={form.shalom_address}
             onChange={e => setForm(prev => ({ ...prev, shalom_address: e.target.value }))}
-            required maxLength={200} placeholder="Ej: Shalom Sicuani, Cusco"
+            required maxLength={200} placeholder={t("Ej: Shalom Sicuani, Cusco")}
             className="w-full bg-white/5 border border-subtle rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-brand"
           />
           {/* Ayuda en el único momento en que se duda: al escribir la agencia.
               No se repite en otras partes de la página. */}
           <p className="text-xs text-faint mt-1">
-            ¿No sabes cuál te queda más cerca?{' '}
+            <T>¿No sabes cuál te queda más cerca?</T>{' '}
             <a
               href="https://shalom.com.pe/agencias"
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand hover:underline"
             >
-              Buscar agencia en Shalom →
+              <T>Buscar agencia en Shalom →</T>
             </a>
           </p>
         </div>
-        {error && <p className="text-red-400 text-xs">{error}</p>}
+        {error && <p className="text-red-400 text-xs"><T>{error}</T></p>}
         <button type="submit" disabled={sending}
           className="w-full py-2 bg-brand-deep hover:bg-brand-mid text-white text-sm rounded transition-colors disabled:opacity-50">
-          {sending ? 'Enviando...' : 'Solicitar coordinación'}
+          <T>{sending ? 'Enviando...' : 'Solicitar coordinación'}</T>
         </button>
       </form>
 
       {requests.length > 0 && (
         <div>
-          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Mis solicitudes</p>
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4"><T>Mis solicitudes</T></p>
           <div className="space-y-3">
             {requests.map(req => (
               <div key={req.id} className="border border-subtle rounded-lg p-4">
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-sm text-white">{req.product_notes}</p>
                   <span className="text-xs font-mono text-brand ml-4 shrink-0">
-                    {STATUS_LABELS[req.status]}
+                    <T>{STATUS_LABELS[req.status]}</T>
                   </span>
                 </div>
                 <p className="text-xs text-faint font-mono">📍 {req.shalom_address}</p>

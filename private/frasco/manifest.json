@@ -1,5 +1,5 @@
 {
-  "version": "v11",
+  "version": "v12",
   "importMapHash": "GqsWfEjHm73zbHa7lGbVXfv95jxypKuCtjd6kntjIRA=",
   "files": {
     "index.html": {
@@ -73,6 +73,26 @@
     "cbd.html": {
       "type": "text/html; charset=utf-8",
       "sha256": "1acd1070fd91e8fc8a98461c0cd569751e9ad0d0e3a62b390437ad3240bfffa2"
+    },
+    "index-en.html": {
+      "type": "text/html; charset=utf-8",
+      "sha256": "cf492bce299b8c4064ab1efd442e52c2d4c6d0cd32e9974ba8043367a9d8bf49"
+    },
+    "cbd-en.html": {
+      "type": "text/html; charset=utf-8",
+      "sha256": "ef862c247ed1e74b758ff7b3aa787883680f1d0c79d8fedbf68661e2beec769c"
+    },
+    "app-en.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "238f8de8e0ea17efc08cef042dfe715124b50abb2e9a6d6df860a062f4ce82dd"
+    },
+    "learning-en.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "090532b4b2445cd9a288f0b7772abf7b2b87de9085244a486c9a92e00146f7b3"
+    },
+    "composition-en.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "94b042120cba11181561bd1c3339436ec9a9bd49e1cdac88541c01a0049312f9"
     }
   }
 }

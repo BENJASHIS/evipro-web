@@ -139,7 +139,7 @@ function CheckoutForm() {
     <div className="w-full max-w-sm p-8 border border-subtle rounded-lg">
       <p className="text-xs text-brand font-mono uppercase tracking-widest mb-2"><T>{"Resumen del pedido"}</T></p>
       <h2 className="text-2xl font-light text-white mb-1"><T>{PLAN_DISPLAY_NAMES[plan.type] ?? plan.type}</T></h2>
-      <p className="text-muted text-sm mb-6">{PERIOD_LABELS[plan.period] ?? plan.period}</p>
+      <p className="text-muted text-sm mb-6"><T>{PERIOD_LABELS[plan.period] ?? plan.period}</T></p>
 
       {addons.length > 0 && (
         <div className="border-t border-subtle pt-4 mb-2 space-y-1">

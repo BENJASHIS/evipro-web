@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" data-cbd-only="true">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="robots" content="noindex,nofollow">
+  <title>CBD · Explore the composition</title>
+  <meta name="description" content="Visor ilustrativo con porcentajes CBD ajustables, ratio vinculado y estructuras moleculares de referencia.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css?v=20261108-wikipedia-v11">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="./index.html" aria-label="CBD, home">
+      <span>CBD<small>COMPOSITION</small></span>
+    </a>
+    <span class="edition"><i></i> Internal resource <span class="edition-number">/ 01</span></span>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="title">
+      <p class="eyebrow">INSIDE THE BOTTLE</p>
+      <h1 id="title">Explore<br><em>CBD.</em></h1>
+      <p class="description">Free educational access: view the bottle and CBD molecule in 2D or 3D.</p>
+      <p>Fixed example: 10% CBD equals 100 mg in each mL of oil. It does not recommend doses.</p>
+      <p id="composition-status" class="composition-note" role="status">Preparing controls…</p>
+      <p id="composition-error" role="alert" hidden></p>
+      <button id="demo" class="demo-button" type="button"><span aria-hidden="true">▷</span> Start tour</button>
+      <p class="intro-note">Illustrative example; it does not measure actual contents or recommend doses or treatments.</p>
+    </section>
+
+    <section class="viewer" aria-label="Interactive bottle viewer">
+      <div class="learning-launchers"><button type="button" id="start-guide">How to explore</button><button type="button" id="start-game">Play with the molecule</button></div>
+      <section id="learning-panel" aria-labelledby="learning-title" hidden></section>
+      <div class="scene-top"><span id="scene-mode">01 / BOTTLE</span><span class="live-badge">REAL-TIME 3D</span></div>
+      <div id="stage" role="group" aria-label="3D model: drag to rotate; use the controls to zoom and explore">
+        <p id="loading" role="status">Preparing the bottle…</p>
+        <canvas id="scene" aria-label="3D CBD composition bottle" aria-describedby="gesture-hint"></canvas>
+        <div id="error" role="alert" hidden>We could not start the 3D viewer. Open this page in a browser with WebGL 2 enabled.</div>
+        <div class="scene-hint" id="gesture-hint"><span aria-hidden="true">↔</span> Drag to rotate <span>·</span> Pinch to zoom</div>
+        <div class="view-tools" aria-label="Camera controls">
+          <button type="button" id="rotate-left" aria-label="Rotate left">↶</button>
+          <button type="button" id="rotate-right" aria-label="Rotate right">↷</button>
+          <span></span>
+          <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+          <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
+          <button type="button" id="reset" aria-label="Reset view">⌂</button>
+        </div>
+      </div>
+      <p class="label-faces-title">Choose a label face</p>
+      <nav class="label-faces" aria-label="Label faces">
+        <button type="button" data-label-face="composition">Composition</button>
+        <button type="button" data-label-face="cbd">CBD</button>
+
+      </nav>
+      <button type="button" class="compare-structures" id="compare-structures">View CBD in 2D</button>
+      <div class="explosion-controls" id="explosion-controls">
+        <div class="range-heading"><label for="explode">Open the bottle</label><output id="explode-value" for="explode">0 %</output></div>
+        <input id="explode" type="range" min="0" max="100" value="0" step="1">
+        <div class="range-captions"><span>Closed</span><span>Dropper removed · one piece</span></div>
+      </div>
+      <div id="molecule-controls" hidden>
+        <div class="legend"><span><i class="carbon"></i>Carbon</span><span><i class="oxygen"></i>Oxygen</span><span><i class="hydrogen"></i>Hydrogen</span></div>
+        <label class="hydrogen-toggle"><input type="checkbox" id="hydrogens"> Show hydrogens</label>
+      </div>
+    </section>
+
+    <aside class="details" aria-label="Explore parts and molecule">
+      <p class="eyebrow">DETAILS · NO DISASSEMBLY</p>
+      <nav class="part-list" aria-label="Bottle parts">
+        <button type="button" data-part="bulb"><span>01</span>Bulb<small>↗</small></button>
+        <button type="button" data-part="cap"><span>02</span>Cap<small>↗</small></button>
+        <button type="button" data-part="pipette"><span>03</span>Pipette<small>↗</small></button>
+        <button type="button" data-part="bottle" aria-pressed="true"><span>04</span>Bottle<small>↗</small></button>
+        <button type="button" data-part="cbd"><span>05</span>Explore CBD<small>↗</small></button>
+
+      </nav>
+      <div class="detail-copy" aria-live="polite" aria-atomic="true">
+        <p id="detail-kicker">04 / THE BOTTLE</p>
+        <h2 id="detail-title">Amber glass.</h2>
+        <p id="detail-text">The 10 mL bottle is the starting point. Drag it to see its shape from any angle.</p>
+        <p id="detail-note">Illustrative geometry based on photographs. It is not a manufacturing drawing.</p>
+      </div>
+      <button type="button" id="cap-interior" class="assemble-button" hidden>View inner thread <span>↗</span></button>
+      <a id="molecule-source" href="https://pubchem.ncbi.nlm.nih.gov/compound/644019" target="_blank" rel="noopener noreferrer" hidden>View structure in PubChem ↗</a>
+      <button type="button" id="assemble" class="assemble-button">Assemble and return <span>↙</span></button>
+    </aside>
+  </main>
+
+  <footer><span>CBD <span class="footer-dot">/</span> INTERNAL USE</span><p>Illustrative container. Each structure shows one reference molecule, not its proportions in the preparation.</p><span>01 — COMPOSITION</span></footer>
+  <dialog id="structures-dialog" aria-labelledby="structures-title">
+    <div class="structures-heading"><h2 id="structures-title">CBD in 2D</h2><button type="button" id="close-structures">Close</button></div>
+    <p>Reference CBD structure; its size does not represent the concentration of the preparation.</p>
+    <div class="structures-comparison" style="grid-template-columns:1fr">
+      <figure><figcaption>CBD · Cannabidiol</figcaption><img src="./assets/cbd-reference.svg?v=20261108-wikipedia-v11" alt="2D chemical structure of cannabidiol with bonds and stereochemical wedges"><p><a href="https://commons.wikimedia.org/wiki/File:Cannabidiol_Structural_formula_V1.svg" target="_blank" rel="noopener noreferrer">Image from Wikipedia · Wikimedia Commons</a></p></figure>
+
+    </div>
+  </dialog>
+  <script type="module" src="./app-en.js?v=20261108-wikipedia-v11"></script>
+</body>
+</html>

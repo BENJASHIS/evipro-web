@@ -1,3 +1,4 @@
+import { T } from '@/app/components/Language'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -39,7 +40,7 @@ export default async function MiembrosLayout({ children }: { children: React.Rea
           ].map(link => (
             <Link key={link.href} href={link.href}
               className="relative text-xs font-mono uppercase tracking-widest text-muted hover:text-white transition-colors">
-              {link.label}
+              <T>{link.label}</T>
               {link.href === '/miembros/mensajes' && unreadMessages && (
                 <span className="absolute -top-1.5 -right-2.5 w-1.5 h-1.5 rounded-full bg-brand" />
               )}
@@ -47,7 +48,7 @@ export default async function MiembrosLayout({ children }: { children: React.Rea
           ))}
           <form action={signOut}>
             <button type="submit" className="text-xs font-mono uppercase tracking-widest text-faint hover:text-white transition-colors">
-              Salir
+              <T>Salir</T>
             </button>
           </form>
         </div>

@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import ts from 'typescript';
 
 const root = fileURLToPath(new URL('../',import.meta.url));
 const source = path.resolve(root,'../prototypes/cannavital-3d');
@@ -13,7 +14,7 @@ const files = {
   ...Object.fromEntries(['assets/cbd-reference.svg','assets/thc-reference.svg'].map(f=>[f,'image/svg+xml'])),
   'vendor/THREE-LICENSE.txt':'text/plain; charset=utf-8',
 };
-const manifest = { version:'v11', importMapHash:'', files:{} };
+const manifest = { version:'v12', importMapHash:'', files:{} };
 for (const [file,type] of Object.entries(files)) {
   let bytes = await readFile(path.join(source,file));
   if (file === 'index.html') {
@@ -42,6 +43,37 @@ cbdHtml = cbdHtml.replace(/[ \t]+$/gm,'');
 if (!cbdHtml.includes('data-cbd-only="true"') || /assets\/thc|data-part="thc"|id="composition-controls"/.test(cbdHtml)) throw new Error('Variante gratuita incompleta.');
 await writeFile(path.join(target,'cbd.html'),cbdHtml);
 manifest.files['cbd.html'] = {type:'text/html; charset=utf-8',sha256:createHash('sha256').update(cbdHtml).digest('hex')};
+// Se generan solo recursos propios revisados; nunca se traduce información de usuarios.
+const english = JSON.parse(await readFile(path.join(source,'en.json'),'utf8'));
+const keys = Object.keys(english).sort((a,b)=>b.length-a.length);
+const matcher = new RegExp(keys.map(key=>key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g');
+const localize = text => text.replace(matcher,key=>english[key]);
+function localizeScript(file, text) {
+  const sourceFile = ts.createSourceFile(file,text,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
+  const edits = [];
+  const templateText = text => text.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$\{/g,'\\${');
+  function visit(node) {
+    if (ts.isStringLiteral(node)) edits.push([node.getStart(sourceFile),node.end,JSON.stringify(localize(node.text))]);
+    else if ([ts.SyntaxKind.NoSubstitutionTemplateLiteral,ts.SyntaxKind.TemplateHead,ts.SyntaxKind.TemplateMiddle,ts.SyntaxKind.TemplateTail].includes(node.kind)) {
+      const raw = node.getText(sourceFile);
+      const suffix = raw.endsWith('${') ? '${' : '`';
+      edits.push([node.getStart(sourceFile),node.end,raw[0]+templateText(localize(node.text))+suffix]);
+    }
+    ts.forEachChild(node,visit);
+  }
+  visit(sourceFile);
+  for(const [start,end,value] of edits.sort((a,b)=>b[0]-a[0])) text = text.slice(0,start)+value+text.slice(end);
+  return text;
+}
+for (const file of ['index.html','cbd.html','app.js','learning.js','composition.js']) {
+  const original = await readFile(path.join(target,file),'utf8');
+  let content = file.endsWith('.html') ? localize(original) : localizeScript(file,original);
+  if (file.endsWith('.html')) content = content.replace('lang="es"','lang="en"').replace('app.js?','app-en.js?');
+  else content = content.replaceAll('./learning.js','./learning-en.js').replaceAll('./composition.js','./composition-en.js');
+  const localized = file.replace(/\.(html|js)$/,'-en.$1');
+  await writeFile(path.join(target,localized),content);
+  manifest.files[localized] = {type:manifest.files[file].type,sha256:createHash('sha256').update(content).digest('hex')};
+}
 await writeFile(path.join(target,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 // Las alternativas públicas 2D ya existentes comparten los mismos dibujos.
 for (const kind of ['cbd','thc']) {

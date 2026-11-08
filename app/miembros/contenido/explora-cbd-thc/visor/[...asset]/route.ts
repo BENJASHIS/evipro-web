@@ -1,3 +1,4 @@
+import { getLocale } from '@/lib/locale-server'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
@@ -16,8 +17,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ ass
   let key = asset.join('/')
   if (!canUseMemberTools(access)) {
     if (key === 'assets/thc.json' || key === 'assets/thc-reference.svg') return new Response('THC y mezclas requieren membresía activa.',{ status:403,headers:privateHeaders })
-    if (key === 'index.html') key = 'cbd.html'
+    if (key === 'index.html' || key === 'index-en.html') key = key.endsWith('-en.html') ? 'cbd-en.html' : 'cbd.html'
   }
+  if ((key === 'index.html' || key === 'cbd.html') && await getLocale() === 'en') key = key.replace('.html','-en.html')
   if (!Object.hasOwn(manifest.files,key)) return new Response('Recurso no encontrado.',{ status:404,headers:privateHeaders })
   const entry = manifest.files[key as keyof typeof manifest.files]
   try {

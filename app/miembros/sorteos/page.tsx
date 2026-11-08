@@ -1,8 +1,11 @@
+import { getLocale } from '@/lib/locale-server'
+import { T } from '@/app/components/Language'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { RAFFLE_PUBLIC_COLUMNS, RAFFLE_TICKET_MEMBER_COLUMNS } from '@/lib/db-columns'
 import { redirect } from 'next/navigation'
 
 export default async function SorteosPage() {
+  const locale = await getLocale()
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -25,26 +28,26 @@ export default async function SorteosPage() {
 
   return (
     <div>
-      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2">Sorteos</p>
-      <h1 className="text-3xl font-light font-serif italic mb-8">Mis tickets y sorteos</h1>
+      <p className="text-xs font-mono uppercase tracking-widest text-brand mb-2"><T>Sorteos</T></p>
+      <h1 className="text-3xl font-light font-serif italic mb-8"><T>Mis tickets y sorteos</T></h1>
 
       {upcoming[0] && (
         <div className="border border-brand/30 rounded-lg p-6 mb-8">
-          <p className="text-xs font-mono text-brand uppercase tracking-widest mb-2">Próximo sorteo</p>
+          <p className="text-xs font-mono text-brand uppercase tracking-widest mb-2"><T>Próximo sorteo</T></p>
           <h2 className="text-xl font-light mb-1">{upcoming[0].title}</h2>
-          <p className="text-muted text-sm mb-2">Premio: {upcoming[0].prize}</p>
+          <p className="text-muted text-sm mb-2"><T>Premio:</T> {upcoming[0].prize}</p>
           <p className="text-xs text-faint font-mono">
-            Fecha: {new Date(upcoming[0].draw_date).toLocaleDateString('es-PE', { dateStyle: 'full' })}
+            <T>Fecha:</T> {new Date(upcoming[0].draw_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-PE', { dateStyle: 'full' })}
           </p>
         </div>
       )}
 
       <div className="border border-subtle rounded-lg p-6 mb-8">
         <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">
-          Mis tickets ({tickets?.length ?? 0})
+          <T values={{ count: tickets?.length ?? 0 }}>{'Mis tickets ({count})'}</T>
         </p>
         {!tickets?.length ? (
-          <p className="text-faint text-sm">Aún no tienes tickets. Se asignan automáticamente al activarse tu membresía.</p>
+          <p className="text-faint text-sm"><T>Aún no tienes tickets. Se asignan automáticamente al activarse tu membresía.</T></p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {tickets.map(t => (
@@ -63,7 +66,7 @@ export default async function SorteosPage() {
 
       {completed.length > 0 && (
         <div className="border border-subtle rounded-lg p-6">
-          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4">Ganadores anteriores</p>
+          <p className="text-xs font-mono text-faint uppercase tracking-widest mb-4"><T>Ganadores anteriores</T></p>
           <div className="space-y-3">
             {completed.map(raffle => (
               <div key={raffle.id} className="flex items-center gap-4">
@@ -71,8 +74,8 @@ export default async function SorteosPage() {
                   {raffle.winner_alias?.charAt(0) ?? '?'}
                 </div>
                 <div>
-                  <p className="text-sm text-white">{raffle.winner_alias ?? 'Anónimo'}</p>
-                  <p className="text-xs text-faint">{raffle.prize} · {new Date(raffle.draw_date).toLocaleDateString('es-PE')}</p>
+                  <p className="text-sm text-white">{raffle.winner_alias ?? <T>Anónimo</T>}</p>
+                  <p className="text-xs text-faint">{raffle.prize} · {new Date(raffle.draw_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-PE')}</p>
                 </div>
               </div>
             ))}
