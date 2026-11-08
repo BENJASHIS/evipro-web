@@ -1,10 +1,10 @@
 {
-  "version": "v10",
+  "version": "v11",
   "importMapHash": "GqsWfEjHm73zbHa7lGbVXfv95jxypKuCtjd6kntjIRA=",
   "files": {
     "index.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "4c4b3f022ecead27e1083fef1b1e86d0feb34973da9b4e26976346f73902a72e"
+      "sha256": "4bd9a6d845d1a5c3ccd98554ec0be540fc7b590c0ebd62e2ea90b2fe506fc84d"
     },
     "style.css": {
       "type": "text/css; charset=utf-8",
@@ -12,7 +12,7 @@
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "2d17033a51f5a8dd5f836114a7c0e00831c7ba2194aaec7b290a891bbe6208d8"
+      "sha256": "9d24c87985f32aed63f129e6f78b681881ad951c85ebbdb198a35453013844a1"
     },
     "learning.js": {
       "type": "text/javascript; charset=utf-8",
@@ -32,7 +32,7 @@
     },
     "label-panels.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "9863bf260b0a96c38080bfc0d22227c2d4ab780f9b540ebdc7c053fe3ae779da"
+      "sha256": "86ebb5a89a481c5d80bbd67a9ea4b64930f01a89c1baec7319ec7805e0b6cc43"
     },
     "vendor/three.module.js": {
       "type": "text/javascript; charset=utf-8",
@@ -60,11 +60,11 @@
     },
     "assets/cbd-reference.svg": {
       "type": "image/svg+xml",
-      "sha256": "a28505c7821e6c01aebcd3a4dc603680758b35cc9b078b2778f5c6e0c51c9674"
+      "sha256": "3b2d0c811585279139f41b2ccda7866d36511ec480e7a8e6c6026aa3e25fc4ef"
     },
     "assets/thc-reference.svg": {
       "type": "image/svg+xml",
-      "sha256": "3c9d129c7e3cf2067d4f7e3fbaf21ec26d5a01ebae842af82b3796a75e114262"
+      "sha256": "131f76d470e08be8bddbf0cf2c657930fedac8da014d6d6ceb43c7bd7cd4fbe8"
     },
     "vendor/THREE-LICENSE.txt": {
       "type": "text/plain; charset=utf-8",
@@ -72,7 +72,7 @@
     },
     "cbd.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "e9307ed20974f77c71824d24f6c7231e7fc8069704b16feb50440a6692765425"
+      "sha256": "1acd1070fd91e8fc8a98461c0cd569751e9ad0d0e3a62b390437ad3240bfffa2"
     }
   }
 }

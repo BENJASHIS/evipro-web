@@ -5,7 +5,7 @@ import { RoomEnvironment } from './vendor/RoomEnvironment.js';
 import { createDropper, updateDropper } from './dropper.js';
 import { buildCap, threadGeometry } from './cap.js';
 import { composition, fromRatio, formatNumber } from './composition.js';
-import { PANEL_CENTERS, labelCamera, shortestTurn } from './label-panels.js';
+import { PANEL_CENTERS, labelCamera, shortestTurn, fitDiagram } from './label-panels.js';
 
 // El servidor entrega un HTML y una lista de recursos limitados para el acceso gratuito.
 const CBD_ONLY = document.documentElement.dataset.cbdOnly === 'true';
@@ -136,7 +136,7 @@ function labelTexture() {
     image.onerror = () => reject(new Error('No se pudieron cargar las ilustraciones de la etiqueta. Recarga el visor.'));
     image.src = url;
   });
-  Promise.all(KINDS.map(kind => load(`./assets/${kind}-reference.svg?v=20261106-frente-v06`))).then(([cbdImage, thcImage]) => {
+  Promise.all(KINDS.map(kind => load(`./assets/${kind}-reference.svg?v=20261108-wikipedia-v11`))).then(([cbdImage, thcImage]) => {
     let current = composition(10, 0);
     function paint(c) {
       ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, 4096, 1400);
@@ -160,7 +160,8 @@ function labelTexture() {
         const x = PANEL_CENTERS[kind];
         text(kind === 'cbd' ? 'CBD' : 'Δ9-THC', x, 155, 110, true);
         text(name, x, 280, 68);
-        ctx.drawImage(image, x-650, 290, 1300, 676);
+        const size = fitDiagram(image.naturalWidth, image.naturalHeight);
+        ctx.drawImage(image, x-size.width/2, 290+(676-size.height)/2, size.width, size.height);
         text('ESTRUCTURA DE REFERENCIA', x, 1000, 52);
         text(`${formatNumber(c[kind])} %`, x, 1160, 180, true);
         text(`${formatNumber(c[`${kind}MgMl`])} mg/mL`, x, 1300, 95);

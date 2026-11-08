@@ -1,4 +1,4 @@
-// Estructuras de PubChem (dominio público), CID y fórmula verificados el 2026-10-19 (spec §8).
+// SDF de PubChem; CID/fórmula verificados el 2026-10-19. PNG de THC/CBD: Wikipedia fijada el 2026-11-08; otros PNG: PubChem.
 export type MoleculaId = 'thc' | 'cbd' | 'thca' | 'cbda' | 'cbga' | 'cbca' | 'cbg' | 'cbc' | 'cbn' | 'cbgva' | 'thcva' | 'thcv' | 'limoneno' | 'linalool' | 'mirceno' | 'cariofileno' | 'kuromanina' | 'cannflavina_a'
 
 export const MOLECULAS: Record<MoleculaId, { nombre: { es: string; en: string }; cid: number; formula: string }> = {

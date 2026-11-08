@@ -63,3 +63,18 @@ it('una cuenta gratuita recibe solo CBD, aunque pida el modo completo por URL',a
   expect((await request(['assets','cbd-reference.svg'])).status).toBe(200)
   for(const key of [['assets','thc.json'],['assets','thc-reference.svg']])expect((await request(key)).status).toBe(403)
 })
+
+it('sirve los dibujos originales de Wikipedia fijados por versión',async()=>{
+  const { createHash } = await import('node:crypto')
+  for(const [name,hash] of Object.entries({
+    cbd:'3b2d0c811585279139f41b2ccda7866d36511ec480e7a8e6c6026aa3e25fc4ef',
+    thc:'131f76d470e08be8bddbf0cf2c657930fedac8da014d6d6ceb43c7bd7cd4fbe8',
+  })) {
+    const response=await request(['assets',`${name}-reference.svg`])
+    expect(createHash('sha256').update(new Uint8Array(await response.arrayBuffer())).digest('hex')).toBe(hash)
+  }
+  mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
+  const html=await (await request(['index.html'])).text()
+  expect(html).toContain('File:Cannabidiol_Structural_formula_V1.svg')
+  expect(html).not.toContain('File:Tetrahydrocannabinol.svg')
+})

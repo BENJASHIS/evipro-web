@@ -9,3 +9,8 @@ export function labelCamera(face) {
 }
 
 export const shortestTurn = (from,to) => Math.atan2(Math.sin(to-from),Math.cos(to-from));
+
+export function fitDiagram(width, height) {
+  const scale = Math.min(1300 / width, 676 / height);
+  return { width: width * scale, height: height * scale };
+}

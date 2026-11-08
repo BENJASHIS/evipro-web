@@ -13,7 +13,7 @@ const files = {
   ...Object.fromEntries(['assets/cbd-reference.svg','assets/thc-reference.svg'].map(f=>[f,'image/svg+xml'])),
   'vendor/THREE-LICENSE.txt':'text/plain; charset=utf-8',
 };
-const manifest = { version:'v10', importMapHash:'', files:{} };
+const manifest = { version:'v11', importMapHash:'', files:{} };
 for (const [file,type] of Object.entries(files)) {
   let bytes = await readFile(path.join(source,file));
   if (file === 'index.html') {
@@ -43,4 +43,8 @@ if (!cbdHtml.includes('data-cbd-only="true"') || /assets\/thc|data-part="thc"|id
 await writeFile(path.join(target,'cbd.html'),cbdHtml);
 manifest.files['cbd.html'] = {type:'text/html; charset=utf-8',sha256:createHash('sha256').update(cbdHtml).digest('hex')};
 await writeFile(path.join(target,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
+// Las alternativas públicas 2D ya existentes comparten los mismos dibujos.
+for (const kind of ['cbd','thc']) {
+  await writeFile(path.join(root,'public/moleculas',`${kind}.png`), await readFile(path.join(source,'assets/wikipedia',`${kind}.png`)));
+}
 console.log(`Visor privado sincronizado: ${Object.keys(manifest.files).length} archivos, sin CDN ni datos clínicos.`);

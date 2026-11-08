@@ -1,4 +1,12 @@
-# Visor didáctico CBD/THC — V10: guía y Detective molecular
+# Visor didáctico CBD/THC — V11: referencias Wikipedia
+
+## V11 — corrección gráfica de Carlos, 2026-11-08
+
+Los dos dibujos 2D activos son ahora los de Wikipedia en español: CBD `Cannabidiol_Structural_formula_V1.svg` y THC `Tetrahydrocannabinol.svg`, conservados localmente con versión/SHA256 y atribución Commons. Etiqueta y comparación plana comparten SVG originales sin redibujar; escala uniforme para evitar deformaciones. Los PNG de `public/moleculas/{cbd,thc}.png` se derivan de los mismos originales, con fondo blanco, para el módulo educativo y sus alternativas al 3D. El sync actualiza ambos desde la fuente central. Otras moléculas, modelos 3D y datos químicos PubChem permanecen intactos.
+
+La página distingue fuentes de imágenes 2D y datos 3D. Los verificadores actuales garantizan integridad/procedencia/seguridad del SVG; hubo cotejo visual de conectividad/cuñas, sin extracción automática de grafo desde estos SVG. El informe RDKit previo corresponde al diseño V06 anterior y se conserva como histórico. Detalle durable en el repo raíz: `prototypes/cannavital-3d/REFERENCIAS-WIKIPEDIA-V11.md`.
+
+Sin cambios de registro, Google, permisos, CSP, juego, datos clínicos ni dependencias npm. Preparado localmente, sin push ni publicación. Validación V11: 46 pruebas afectadas aprobadas, verificadores Python/Node, lint sin errores (una advertencia previa en reservas) y build de producción aprobado. Chrome: ambas caras, comparación plana y viewport 390×844 sin desbordamiento. No se repitió la suite clínica ni toda la suite web; la suite general de 732 descrita abajo pertenece a V10. Lo que sigue es antecedente V10.
 
 ## V10 reconstruida — 2026-11-08
 

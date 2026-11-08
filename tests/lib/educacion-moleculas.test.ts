@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { it, expect } from 'vitest'
 import { readFileSync, existsSync } from 'node:fs'
 import { MOLECULAS } from '@/lib/educacion/moleculas'
@@ -46,4 +47,10 @@ it('SDF real: hidroxilos de fenol, dos en CBD, uno en THC y THCA (sin el OH del 
   expect(elems(cbd, atomosHidroxiloFenol(cbd))).toBe('HHOO')
   expect(elems(thc, atomosHidroxiloFenol(thc))).toBe('HO')
   expect(elems(thca, atomosHidroxiloFenol(thca))).toBe('HO')
+})
+
+it('las alternativas 2D de THC y CBD usan las imágenes Wikipedia fijadas', () => {
+  for (const [id, hash] of Object.entries({'thc': 'c9c18d4df24186b376a0ec484052bbd8c5143ebb34ff8e2896fe9b4bce9b5f24', 'cbd': '97f3230243cbfdcccbd0e75a3bc3c425314f6777089b82c8dfd748886679e912'})) {
+    expect(createHash('sha256').update(readFileSync(`public/moleculas/${id}.png`)).digest('hex')).toBe(hash)
+  }
 })
