@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { bookingStatus, canPatientCancel, type BookingState } from '@/lib/bookings'
 import { MODALITY_LABELS } from '@/lib/counseling'
-import { precioConsulta, PRECIOS_CONSULTA, tarifaDe } from '@/lib/consulta-pricing'
+import { precioConsulta, PRECIOS_CONSULTA, tarifaDe, CONSULTA_MODALITY_LABELS } from '@/lib/consulta-pricing'
 import { canUseMemberTools } from '@/lib/member-access'
 import { CitaActions } from './CitaActions'
 
@@ -110,7 +110,7 @@ export default async function MiembrosPage() {
             return (
               <div key={c.id} className="border-b border-subtle pb-3 last:border-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-white text-sm"><T>{MODALITY_LABELS[c.modality as keyof typeof MODALITY_LABELS]}</T></span>
+                  <span className="text-white text-sm"><T>{CONSULTA_MODALITY_LABELS[c.modality as keyof typeof CONSULTA_MODALITY_LABELS] ?? MODALITY_LABELS[c.modality as keyof typeof MODALITY_LABELS] ?? 'Consulta'}</T></span>
                   <span className={`text-xs font-mono ${estado.color}`}><T>{estado.label}</T></span>
                 </div>
                 <p className="text-faint text-xs font-mono mt-1">
