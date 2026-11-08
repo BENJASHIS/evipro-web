@@ -1,6 +1,7 @@
 // Política de contenido: qué puede cargar el navegador en evipro.pe y desde dónde.
-// Va como Content-Security-Policy-Report-Only: avisa en la consola, no bloquea nada.
-// Pasarla a Content-Security-Policy (bloquear) es otro paso, con OK de Carlos.
+// Bloquea (Content-Security-Policy) desde el 2026-11-07, con OK de Carlos, tras probarla en modo de solo aviso.
+// Un servicio nuevo que cargue dentro de la página (chat, video, píxel) hay que sumarlo aquí o no funcionará.
+// Para volver a solo avisar: en next.config.ts, la clave pasa a Content-Security-Policy-Report-Only.
 // Sin nonce, como recomienda Next 16 para no volver dinámicas las páginas: los scripts en línea de
 // Next quedan permitidos con 'unsafe-inline'; lo que se cierra es cargar código o marcos de otros sitios.
 // ponytail: sin report-uri; las faltas se ven en la consola. Agregar un receptor si hace falta medir en pacientes reales.

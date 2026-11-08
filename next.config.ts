@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          { key: 'Content-Security-Policy-Report-Only', value: CSP },
+          { key: 'Content-Security-Policy', value: CSP },
         ],
       },
       ...NOINDEX_ROUTES.map(source => ({
