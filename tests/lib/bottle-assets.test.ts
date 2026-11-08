@@ -12,7 +12,7 @@ beforeEach(()=>{
 describe('archivos privados del visor',()=>{
   it('no entrega HTML ni JS al anónimo',async()=>{
     mocks.user.mockResolvedValue({data:{user:null}})
-    for(const file of ['index.html','app.js'])expect((await request([file])).status).toBe(401)
+    for(const file of ['index.html','app.js','learning.js'])expect((await request([file])).status).toBe(401)
   })
   it('no entrega modelos a una cuenta sin membresía',async()=>{
     mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
@@ -54,6 +54,8 @@ it('una cuenta gratuita recibe solo CBD, aunque pida el modo completo por URL',a
   mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
   const html=await (await request(['index.html'],'?mode=full&cbdOnly=false')).text()
   expect(html).toContain('data-cbd-only="true"')
+  expect(html).toContain('id="start-game"')
+  expect((await request(['learning.js'])).status).toBe(200)
   expect(html).not.toContain('data-part="thc"')
   expect(html).not.toContain('assets/thc')
   expect(html).not.toContain('id="composition-controls"')

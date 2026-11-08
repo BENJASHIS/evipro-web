@@ -15,3 +15,15 @@ footer{margin:0 5%;border-top:1px solid var(--line);padding:21px 0;display:flex;
 .label-faces{display:flex;gap:8px;justify-content:center;margin:12px 0}.label-faces button,.compare-structures{border:1px solid var(--line);background:transparent;padding:9px 16px;font-size:12px}.label-faces button:hover,.compare-structures:hover{background:#e3e8dc}.compare-structures{display:block;margin:0 auto 16px}#structures-dialog{width:min(1100px,94vw);max-height:90vh;overflow:auto;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:24px}#structures-dialog::backdrop{background:#172e2877}.structures-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}.structures-heading h2{font:normal 30px var(--serif);margin:0}.structures-heading button{background:transparent;border:1px solid var(--line);padding:8px 12px}#structures-dialog p{font-size:12px;line-height:1.6}.structures-comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px}.structures-comparison figure{margin:0}.structures-comparison figcaption{font-size:15px;margin:16px 0}.structures-comparison img{display:block;width:100%;height:auto}@media(max-width:650px){.structures-comparison{grid-template-columns:1fr}.label-faces button{padding:9px 12px}}
 
 .label-faces-title{text-align:center;font-size:11px;color:var(--muted);margin:14px 0 4px}
+
+.learning-launchers { display:flex; flex-wrap:wrap; gap:.6rem; margin-bottom:1rem; }
+.learning-launchers button, #learning-panel button { min-height:44px; padding:.6rem .85rem; border:1px solid #526b45; border-radius:.35rem; background:#f4f0e8; color:#294631; cursor:pointer; font:inherit; }
+#learning-panel { margin-bottom:1rem; padding:1rem; border:1px solid #526b45; border-radius:.5rem; background:#f4f0e8; color:#294631; }
+.learning-heading { display:flex; align-items:start; justify-content:space-between; gap:.5rem; }
+#learning-panel h2 { font-size:1.15rem; margin:0; }
+#learning-panel h3 { margin:.8rem 0; }
+#learning-panel p { line-height:1.5; margin:.7rem 0; }
+#learning-answers { display:flex; gap:.4rem; flex-wrap:wrap; }
+#learning-panel button:disabled { opacity:.5; cursor:default; }
+.learning-highlight { outline:3px solid #526b45; outline-offset:3px; }
+button:focus-visible, input:focus-visible, #learning-title:focus-visible { outline:3px solid #294631; outline-offset:3px; }

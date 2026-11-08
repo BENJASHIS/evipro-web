@@ -1,4 +1,16 @@
-# Visor didáctico CBD/THC — V09: cuenta educativa gratuita
+# Visor didáctico CBD/THC — V10: guía y Detective molecular
+
+## V10 reconstruida — 2026-11-08
+
+Se recuperó únicamente la ampliación educativa aprobada sobre web `5536be1` y raíz `45ae5df`, sin restaurar las ramas antiguas de /tmp. Dos botones opcionales abren un panel no modal: guía de giro/apertura/CBD y juego de oxígeno/orientación/hidrógenos. Solo CBD para ambas modalidades de acceso; panel de tres pasos, pistas sin penalización, reinicio, teclado, Escape desde el visor y retorno de foco. La referencia plana conserva su diálogo y su propio Escape.
+
+El módulo `learning.js` no almacena respuestas ni modifica concentraciones, geometría, estereoquímica o datos científicos. El picking usa desplazamiento máximo y cancela arrastres de ida/vuelta, multitouch, pointercancel y pérdida de captura. Cierre/navegación invalidan cargas; carga fallida no permite logros ni reabre el panel. Se mantienen Route Handler, CSP, sesión, Google, registro, perfil y pagos sin cambios. El script genera 18 recursos y manifiesto V10; el paquete funciona sin la fuente hermana en el checkout web.
+
+Validación V10: 29 pruebas en ocho archivos de controlador/recursos protegidos/retornos/permisos/Google; verificadores Node de química, composición, tapa, gotero y etiqueta. Chrome local: guía y juego completos, oxígeno tocado en modelo, símbolos/teclado, referencia plana, hidrógenos, Escape/retorno y reinicio; viewport 390×844 sin desbordamiento. Revisión independiente sin hallazgos pendientes tras cubrir Escape desde hidrógenos. Build de producción aprobado. Lint sin errores, con una advertencia previa de variable sin usar en `reservar-book.test.ts`. Suite general nueva: 97 archivos, 732 pruebas aprobadas (`npm test -- --maxWorkers=2`). El verificador SVG con RDKit no se pudo ejecutar por módulo ausente; activos sin cambios byte a byte y verificaciones Node aprobadas. No se ha publicado V10 ni se ha probado en teléfono físico o con pacientes.
+
+## Antecedente V09 (conservado como registro)
+
+V09 y el registro mínimo/Google sí fueron publicados y aceptados antes de esta recuperación; la sección histórica siguiente refleja la preparación previa, no un bloqueo pendiente. El registro actual es Google o correo/contraseña/confirmación, con nombre opcional en perfil. Continuidad: `../docs/handoffs/2026-11-08-guia-detective-molecular.md` en el repo raíz.
 
 Ruta: `/miembros/contenido/explora-cbd-thc`. Accesos desde Biblioteca y calculadora cannabinoide. Uso educativo: envase, concentraciones y estructuras de referencia, sin recomendaciones de dosis. Conserva tres caras, exploración 3D y comparación plana. No incluye juego ni datos de pacientes.
 

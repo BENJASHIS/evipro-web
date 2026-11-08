@@ -1,18 +1,22 @@
 {
-  "version": "v09",
+  "version": "v10",
   "importMapHash": "GqsWfEjHm73zbHa7lGbVXfv95jxypKuCtjd6kntjIRA=",
   "files": {
     "index.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "20a36dba8160c44f97289e19d9d3a1070635cae3fabc957b17f8f20fc63eb46d"
+      "sha256": "4c4b3f022ecead27e1083fef1b1e86d0feb34973da9b4e26976346f73902a72e"
     },
     "style.css": {
       "type": "text/css; charset=utf-8",
-      "sha256": "997f910036cd793c157ac63a3309cbf61e015880e2d51b82bc4b4587aedeae18"
+      "sha256": "044c76c84df5c2733ca19a85ca1fa8dd053478b69ac8ccc88260fe2c3af7c347"
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "6e187746d0ed80729b949af1b60787d10a40b32a48b86a7401189721f98d489c"
+      "sha256": "2d17033a51f5a8dd5f836114a7c0e00831c7ba2194aaec7b290a891bbe6208d8"
+    },
+    "learning.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "74c15b5589f8d5df91204a8b5ed042e269d4bb62185b0a3bb1b6c1dd42d36e23"
     },
     "cap.js": {
       "type": "text/javascript; charset=utf-8",
@@ -68,7 +72,7 @@
     },
     "cbd.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "551fbb8f0df7356399c1593eee0866c5c0fabd20b9e020623229f236d79ddacc"
+      "sha256": "e9307ed20974f77c71824d24f6c7231e7fc8069704b16feb50440a6692765425"
     }
   }
 }

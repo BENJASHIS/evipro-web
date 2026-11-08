@@ -1,3 +1,4 @@
+import { createLearning, createTapTracker } from './learning.js';
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { RoomEnvironment } from './vendor/RoomEnvironment.js';
@@ -239,6 +240,7 @@ async function loadMolecule(kind) {
   for (const atom of data.atoms) {
     const object = mesh(new THREE.SphereGeometry(atom.element === 1 ? .078 : .145, 24, 16), materials[atom.element], moleculeModels[kind]);
     object.position.copy(positions.get(atom.id));
+    object.userData.element = atom.element;
     object.userData.hydrogen = atom.element === 1;
     moleculeObjects.push(object);
   }
@@ -265,10 +267,11 @@ const moleculePromises = Object.fromEntries(KINDS.map(kind => [kind, loadMolecul
 function setHydrogens() {
   moleculeObjects.forEach((object) => { object.visible = !object.userData.hydrogen || $('hydrogens').checked; });
 }
-$('hydrogens').addEventListener('change', setHydrogens);
+$('hydrogens').addEventListener('change', () => { setHydrogens(); learning?.hydrogens($('hydrogens').checked); });
 
 let explosion = 0, explosionTarget = 0, selected = 'bottle', view = 'bottle';
 let selectionVersion = 0;
+let learning = null;
 let transition = null, demoStart = null, demoPhase = -1;
 const framePositions = {
   bottle: [new THREE.Vector3(0, 2.3, 7.2), new THREE.Vector3(0, 1.9, 0)],
@@ -327,16 +330,17 @@ function setView(next) {
   $('scene').setAttribute('aria-label', view === 'molecule' ? `Estructura 3D de referencia de ${selected === 'thc' ? 'Δ9-THC' : 'CBD'}` : (CBD_ONLY ? 'Frasco educativo de CBD en 3D' : 'Frasco de composición CBD y THC en 3D'));
 }
 async function selectPart(part, manual = true) {
-  if (CBD_ONLY && part === 'thc') return;
+  if (manual) learning?.close(false);
+  if (CBD_ONLY && part === 'thc') return false;
   const version = ++selectionVersion;
   const molecular = part === 'cbd' || part === 'thc';
   if (manual) stopDemo();
   if (molecular) {
     await moleculePromises[part];
-    if (version !== selectionVersion) return;
+    if (version !== selectionVersion) return false;
     if (!moleculeReady.has(part)) {
       $('detail-note').textContent = 'La estructura no pudo cargarse. Puedes seguir explorando el frasco e intentar nuevamente al recargar.';
-      return;
+      return false;
     }
   }
   selected = part;
@@ -347,6 +351,7 @@ async function selectPart(part, manual = true) {
   if (part !== 'bottle' && !molecular) setExplosion(1);
   frame(part === 'bottle' && explosionTarget > .1 ? 'exploded' : part);
   if (manual && matchMedia('(max-width: 650px)').matches) $('stage').scrollIntoView({ behavior: reducedMotion.matches ? 'instant' : 'smooth', block: 'start' });
+  return true;
 }
 document.querySelectorAll('[data-part]').forEach((button) => button.addEventListener('click', () => selectPart(button.dataset.part)));
 $('explode').addEventListener('input', (event) => {
@@ -359,6 +364,7 @@ $('explode').addEventListener('input', (event) => {
   if (next === 0) frame('bottle');
 });
 function assemble() {
+  learning?.close(false);
   stopDemo(); setExplosion(0); selectPart('bottle', false); frame('bottle');
 }
 $('assemble').addEventListener('click', assemble);
@@ -388,6 +394,7 @@ $('zoom-out').addEventListener('click', () => zoom(1.18));
 controls.addEventListener('start', () => { stopDemo(); transition = null; });
 $('demo').setAttribute('aria-pressed', 'false');
 $('demo').addEventListener('click', () => {
+  learning?.close(false);
   if (demoStart !== null) { stopDemo(); return; }
   setExplosion(0); selectPart('bottle', false); frame('bottle');
   demoStart = performance.now(); demoPhase = 0;
@@ -397,16 +404,45 @@ $('demo').addEventListener('click', () => {
 });
 
 const raycaster = new THREE.Raycaster();
-let pointerStart = null;
-renderer.domElement.addEventListener('pointerdown', (event) => { pointerStart = { x: event.clientX, y: event.clientY }; });
-renderer.domElement.addEventListener('pointercancel', () => { pointerStart = null; });
+learning = createLearning(document, {
+  cancelPending() { ++selectionVersion; stopDemo(); },
+  highlightElement(selector) {
+    document.querySelectorAll('.learning-highlight').forEach(node => node.classList.remove('learning-highlight'));
+    if (selector) document.querySelector(selector)?.classList.add('learning-highlight');
+  },
+  showHydrogens(visible) { $('hydrogens').checked = visible; setHydrogens(); },
+  async showGuideStep(step) {
+    if (step === 2) return selectPart('cbd', false);
+    const ok = await selectPart('bottle', false);
+    if (ok) { setExplosion(0); frame('bottle'); }
+    return ok;
+  },
+  async showGameStep(step) {
+    const ok = await selectPart('cbd', false);
+    if (!ok) return false;
+    if (step === 1) {
+      transition = null;
+      rotate(Math.PI / 2);
+    }
+    if (step === 2) { $('hydrogens').checked = false; setHydrogens(); }
+    return true;
+  },
+});
+const taps = createTapTracker();
+renderer.domElement.addEventListener('pointerdown', event => taps.down(event));
+renderer.domElement.addEventListener('pointermove', event => taps.move(event));
+renderer.domElement.addEventListener('pointercancel', event => taps.cancel(event));
+renderer.domElement.addEventListener('lostpointercapture', event => taps.cancel(event));
 renderer.domElement.addEventListener('pointerup', (event) => {
-  if (!pointerStart || view !== 'bottle') return;
-  const distance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
-  pointerStart = null;
-  if (distance > 5) return;
+  if (!taps.up(event)) return;
   const bounds = renderer.domElement.getBoundingClientRect();
   raycaster.setFromCamera(new THREE.Vector2((event.clientX - bounds.left) / bounds.width * 2 - 1, -(event.clientY - bounds.top) / bounds.height * 2 + 1), camera);
+  if (view === 'molecule') {
+    const atoms = moleculeModels[selected].children.filter(object => object.visible && object.userData.element);
+    const hit = raycaster.intersectObjects(atoms, false)[0];
+    if (hit && selected === 'cbd') learning.atom(hit.object.userData.element);
+    return;
+  }
   const hit = raycaster.intersectObject(product, true)[0];
   if (hit) {
     let node = hit.object;
