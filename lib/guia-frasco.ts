@@ -1,0 +1,64 @@
+import { createHmac, timingSafeEqual } from 'node:crypto'
+import { cannabinoidRatio } from '@/lib/cannabinoid-calculator'
+
+// Enlace firmado de la guía del frasco: <datos>.<firma>, con vencimiento.
+export interface GuiaFrasco { thc: number; cbd: number; exp: number }
+
+export const VIGENCIAS_DIAS = [30, 90, 180] as const
+export const VIGENCIA_DEFECTO = 90
+
+function valido(thc: unknown, cbd: unknown): thc is number {
+  return (
+    typeof thc === 'number' && typeof cbd === 'number' &&
+    Number.isFinite(thc) && Number.isFinite(cbd) &&
+    thc >= 0 && cbd >= 0 && thc <= 100 && cbd <= 100 &&
+    thc + cbd > 0 && thc + cbd <= 100
+  )
+}
+
+const firma = (datos: string, secret: string) =>
+  createHmac('sha256', secret).update(datos).digest('base64url')
+
+export function firmarGuia(
+  datos: { thc: number; cbd: number; dias: number },
+  ahora = Date.now(),
+  secret = process.env.FRASCO_GUIDE_SECRET ?? '',
+): string {
+  if (!secret) throw new Error('Falta FRASCO_GUIDE_SECRET')
+  if (!valido(datos.thc, datos.cbd)) throw new RangeError('THC/CBD fuera de rango')
+  if (!Number.isInteger(datos.dias) || datos.dias <= 0) throw new RangeError('Vigencia inválida')
+  const exp = Math.floor(ahora / 1000) + datos.dias * 86400
+  const cuerpo = Buffer.from(JSON.stringify({ v: 1, thc: datos.thc, cbd: datos.cbd, exp })).toString('base64url')
+  return `${cuerpo}.${firma(cuerpo, secret)}`
+}
+
+export function verificarGuia(
+  token: string,
+  ahora = Date.now(),
+  secret = process.env.FRASCO_GUIDE_SECRET ?? '',
+): GuiaFrasco | null {
+  if (!secret || typeof token !== 'string') return null
+  const partes = token.split('.')
+  if (partes.length !== 2) return null
+  const [cuerpo, recibida] = partes
+  const a = Buffer.from(recibida)
+  const b = Buffer.from(firma(cuerpo, secret))
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null
+  try {
+    const p = JSON.parse(Buffer.from(cuerpo, 'base64url').toString('utf8'))
+    if (p?.v !== 1 || !valido(p.thc, p.cbd) || !Number.isFinite(p.exp)) return null
+    if (p.exp * 1000 <= ahora) return null
+    return { thc: p.thc, cbd: p.cbd, exp: p.exp }
+  } catch {
+    return null
+  }
+}
+
+export const formatearPct = (n: number): string => String(Number(n.toPrecision(5)))
+
+export function composicionTexto(thc: number, cbd: number): { linea: string; proporcion: string } {
+  return {
+    linea: `THC ${formatearPct(thc)} % : CBD ${formatearPct(cbd)} % (${formatearPct(thc * 10)} : ${formatearPct(cbd * 10)} mg/ml)`,
+    proporcion: cannabinoidRatio(cbd * 10, thc * 10),
+  }
+}
