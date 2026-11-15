@@ -1,0 +1,28 @@
+{
+  "fuente": "core/indicaciones.py",
+  "sublingual": [
+    "Colocar bajo la lengua y retener 60-90 segundos antes de tragar.",
+    "No comer ni beber por 15 minutos antes y después.",
+    "Mejor absorción con estómago semivacío pero no en ayunas."
+  ],
+  "almacenamiento": [
+    "Conservar en lugar fresco (máx 25°C), seco y oscuro.",
+    "Refrigeración optativa. No congelar.",
+    "Usar dentro de los 3 meses tras apertura del frasco.",
+    "Mantener lejos del alcance de menores."
+  ],
+  "umbral_thc_pct": 1.0,
+  "con_thc": [
+    "⚠ Producto con THC {thc_pct}%: NO conducir ni manejar maquinaria.",
+    "Evitar actividades que requieran concentración durante las primeras semanas.",
+    "Efectos psicoactivos posibles: reportar inmediatamente si son intensos."
+  ],
+  "sin_thc": "Producto CBD: bajo riesgo de efectos psicoactivos. Aún así, no conducir hasta conocer su respuesta individual.",
+  "umbral_altura_msnm": 3000,
+  "aviso_altura": "efectos pueden ser más intensos. Iniciar con dosis mínima y aumentar despacio.",
+  "evitar": [
+    "EVITAR: Pomelo, toronja y maracuyá: inhiben enzimas hepáticas y pueden aumentar niveles de cannabinoides en sangre.",
+    "EVITAR: Alcohol. Potencia efectos adversos, especialmente con THC.",
+    "EVITAR: Alimentos muy grasos justo antes si usa vía sublingual (pueden interferir con absorción bajo la lengua)."
+  ]
+}
