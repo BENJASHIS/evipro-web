@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingIncludes: {
     '/miembros/contenido/explora-cbd-thc/visor/*': ['./private/frasco/**/*'],
+    '/guia-frasco/*/visor/*': ['./private/frasco/**/*'],
   },
   images: {
     remotePatterns: [

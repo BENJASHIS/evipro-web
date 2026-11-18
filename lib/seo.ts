@@ -23,5 +23,5 @@ export const NOINDEX_ROUTES = [
   '/medicos/:slug/reservas/:path*', '/medicos/:slug/agendar/:path*',
   '/login', '/registro', '/recuperar-contrasena', '/actualizar-contrasena',
   '/styleguide', '/consejeria/pago-ok', '/consejeria/pago-error',
-  '/consejeria/pago-pendiente',
+  '/consejeria/pago-pendiente', '/guia-frasco/:path*',
 ]
