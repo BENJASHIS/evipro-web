@@ -26,13 +26,13 @@
       <p class="description">Porcentajes y ratio vinculados. Elige un ejemplo o ajusta los valores.</p>
       <fieldset id="composition-controls" class="composition-controls" disabled>
         <legend>¿Cuánto CBD y THC contiene?</legend>
-        <label for="cbd-percent">Concentración de CBD (%)</label>
-        <input id="cbd-percent" type="number" min="0" max="100" step="any" value="10">
-        <input id="cbd-range" type="range" min="0" max="100" step="0.01" value="10" aria-label="Ajustar CBD">
         <label for="thc-percent">Concentración de THC (%)</label>
         <input id="thc-percent" type="number" min="0" max="100" step="any" value="0">
         <input id="thc-range" type="range" min="0" max="100" step="0.01" value="0" aria-label="Ajustar THC">
-        <output id="composition-mgml" aria-live="polite">En cada mL de aceite: CBD 100 mg · THC 0 mg</output>
+        <label for="cbd-percent">Concentración de CBD (%)</label>
+        <input id="cbd-percent" type="number" min="0" max="100" step="any" value="10">
+        <input id="cbd-range" type="range" min="0" max="100" step="0.01" value="10" aria-label="Ajustar CBD">
+        <output id="composition-mgml" aria-live="polite">En cada mL de aceite: THC 0 mg · CBD 100 mg</output>
         <p class="composition-note">Por ejemplo: CBD al 10 % significa 100 mg de CBD en cada mL de aceite.</p>
         <details class="composition-note"><summary>¿Qué significa este porcentaje?</summary><p>Se expresa como masa por volumen (% m/v): 10 % equivale a 10 gramos en 100 mL de preparación. No indica la dosis que debe tomar una persona. Las cifras se muestran redondeadas; el color del aceite no indica concentración.</p></details>
         <div class="ratio-heading">Ratio <strong>THC:CBD</strong> <output id="ratio-result">0:1</output></div>

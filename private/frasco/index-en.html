@@ -26,13 +26,13 @@
       <p class="description">Linked percentages and ratio. Choose an example or adjust the values.</p>
       <fieldset id="composition-controls" class="composition-controls" disabled>
         <legend>How much CBD and THC does it contain?</legend>
-        <label for="cbd-percent">CBD concentration (%)</label>
-        <input id="cbd-percent" type="number" min="0" max="100" step="any" value="10">
-        <input id="cbd-range" type="range" min="0" max="100" step="0.01" value="10" aria-label="Adjust CBD">
         <label for="thc-percent">THC concentration (%)</label>
         <input id="thc-percent" type="number" min="0" max="100" step="any" value="0">
         <input id="thc-range" type="range" min="0" max="100" step="0.01" value="0" aria-label="Adjust THC">
-        <output id="composition-mgml" aria-live="polite">In each mL of oil: CBD 100 mg · THC 0 mg</output>
+        <label for="cbd-percent">CBD concentration (%)</label>
+        <input id="cbd-percent" type="number" min="0" max="100" step="any" value="10">
+        <input id="cbd-range" type="range" min="0" max="100" step="0.01" value="10" aria-label="Adjust CBD">
+        <output id="composition-mgml" aria-live="polite">In each mL of oil: THC 0 mg · CBD 100 mg</output>
         <p class="composition-note">For example: 10% CBD means 100 mg of CBD in each mL of oil.</p>
         <details class="composition-note"><summary>What does this percentage mean?</summary><p>It is expressed as mass per volume (% w/v): 10% equals 10 grams in 100 mL of preparation. It does not indicate the dose a person should take. Figures are rounded; oil colour does not indicate concentration.</p></details>
         <div class="ratio-heading">Ratio <strong>THC:CBD</strong> <output id="ratio-result">0:1</output></div>

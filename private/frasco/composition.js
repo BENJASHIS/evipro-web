@@ -31,3 +31,16 @@ export function fromRatio(total, thcParts, cbdParts) {
   }
   return composition(total*cbdFraction, total*thcFraction);
 }
+
+// Composición inicial desde el # del enlace (#thc=0.9&cbd=10); null si falta o no es válida.
+export function fromHash(hash) {
+  const params = new URLSearchParams(String(hash).replace(/^#/, ''));
+  const thc = params.get('thc'), cbd = params.get('cbd');
+  if (!thc || !cbd) return null;
+  try {
+    const c = composition(Number(cbd), Number(thc));
+    return c.total > 100 ? null : c;
+  } catch {
+    return null;
+  }
+}

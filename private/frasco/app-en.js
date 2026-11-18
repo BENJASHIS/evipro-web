@@ -4,7 +4,7 @@ import { OrbitControls } from "./vendor/OrbitControls.js";
 import { RoomEnvironment } from "./vendor/RoomEnvironment.js";
 import { createDropper, updateDropper } from "./dropper.js";
 import { buildCap, threadGeometry } from "./cap.js";
-import { composition, fromRatio, formatNumber } from "./composition-en.js";
+import { composition, fromRatio, fromHash, formatNumber } from "./composition-en.js";
 import { PANEL_CENTERS, labelCamera, shortestTurn, fitDiagram } from "./label-panels.js";
 
 // El servidor entrega un HTML y una lista de recursos limitados para el acceso gratuito.
@@ -137,7 +137,7 @@ function labelTexture() {
     image.src = url;
   });
   Promise.all(KINDS.map(kind => load(`./assets/${kind}-reference.svg?v=20261108-wikipedia-v11`))).then(([cbdImage, thcImage]) => {
-    let current = composition(10, 0);
+    let current = (!CBD_ONLY && fromHash(location.hash)) || composition(10, 0);
     function paint(c) {
       ctx.fillStyle = "#f5f5f5"; ctx.fillRect(0, 0, 4096, 1400);
       const text = (value, x, y, size, bold = false) => {
@@ -178,7 +178,7 @@ function labelTexture() {
       const parts = c.total ? c.ratio.split(":") : ["0", "0"];
       $("ratio-thc").value = parts[0]; $("ratio-cbd").value = parts[1];
       $("composition-total").value = `Combined concentration: ${formatNumber(c.total)} %`;
-      $("composition-mgml").value = `In each mL of oil: CBD ${formatNumber(c.cbdMgMl)} mg · THC ${formatNumber(c.thcMgMl)} mg`;
+      $("composition-mgml").value = `In each mL of oil: THC ${formatNumber(c.thcMgMl)} mg · CBD ${formatNumber(c.cbdMgMl)} mg`;
       $("composition-error").hidden = true;
       document.querySelectorAll("#composition-controls [aria-invalid]").forEach(input => input.removeAttribute("aria-invalid"));
       $("composition-status").textContent = c.total ? "Label updated · illustrative composition." : "Both values are zero; the ratio is undefined.";
