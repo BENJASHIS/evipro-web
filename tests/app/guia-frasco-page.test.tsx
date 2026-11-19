@@ -1,0 +1,31 @@
+// @vitest-environment node
+import { renderToStaticMarkup } from 'react-dom/server'
+import { beforeAll, expect, it, vi } from 'vitest'
+vi.mock('@/app/miembros/contenido/explora-cbd-thc/VisorFrasco', () => ({ default: (p: { src?: string }) => <iframe data-src={p.src} /> }))
+import GuiaFrascoPage, { metadata } from '@/app/guia-frasco/[token]/page'
+import { firmarGuia } from '@/lib/guia-frasco'
+
+const render = async (token: string) => renderToStaticMarkup(await GuiaFrascoPage({ params: Promise.resolve({ token }) }))
+beforeAll(() => { vi.stubEnv('FRASCO_GUIDE_SECRET', 's') })
+
+it('muestra composición, visor, instrucciones de core y pie', async () => {
+  const t = firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }); const html = await render(t)
+  for (const s of ['THC 0.9 % : CBD 10 % (9 : 100 mg/ml)', '1:11 THC:CBD · CBD dominante', 'No comer ni beber por 15 minutos antes y después.',
+                   'Producto CBD: bajo riesgo', '/frasco/visor/index.html#thc=0.9&amp;cbd=10', 'Esta guía no reemplaza tu receta', '106 (SAMU)'])
+    expect(html).toContain(s)
+  expect(html).not.toMatch(/Cannavital|S\/\s?\d|mayor de edad/)
+  const orden = ['tu-frasco', 'visor', 'porcentajes', 'por-que', 'como-aplicar', 'cuidados', 'avisar'].map(id => html.indexOf(`id="${id}"`))
+  expect(orden.every((p, i) => p > -1 && (i === 0 || p > orden[i - 1]))).toBe(true)
+})
+it('con THC sobre el umbral muestra la precaución de manejo', async () => {
+  expect(await render(firmarGuia({ thc: 5, cbd: 5, dias: 30 }))).toContain('Producto con THC 5%: NO conducir')
+})
+it('frasco sin THC', async () => {
+  expect(await render(firmarGuia({ thc: 0, cbd: 10, dias: 30 }))).toContain('CBD sin THC declarado')
+})
+it('enlace cortado o inválido no muestra instrucciones', async () => {
+  const html = await render(firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }).slice(0, -4))
+  expect(html).toContain('Este enlace ya no es válido. Pide uno nuevo a tu médico.')
+  expect(html).not.toContain('No comer ni beber')
+})
+it('no se indexa', () => { expect(metadata.robots).toEqual({ index: false, follow: false }) })
