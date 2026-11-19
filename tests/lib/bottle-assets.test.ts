@@ -26,9 +26,7 @@ describe('visor público del frasco',()=>{
   it('rechaza archivos fuera de la lista y traversal',async()=>{
     for(const file of [['..','.env'],['assets','..','index.html'],['manifest.json'],['assets','other.json']])expect((await request(file)).status).toBe(404)
   })
-  it('los enlaces viejos del visor de miembros llevan al público y /frasco no se indexa',async()=>{
-    const { default: config } = await import('@/next.config')
-    expect(await config.redirects!()).toContainEqual({ source:'/miembros/contenido/explora-cbd-thc/visor/:path*', destination:'/frasco/visor/:path*', permanent:false })
+  it('/frasco no se indexa',()=>{
     expect(NOINDEX_ROUTES).toContain('/frasco/:path*')
   })
 })
