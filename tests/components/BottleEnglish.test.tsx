@@ -9,7 +9,7 @@ import CalculatorPage from '@/app/miembros/herramientas/calculadora-cannabinoide
 const flush=async()=>{await Promise.resolve();await Promise.resolve()}
 it('finishes all three molecular challenges in English from its own package',async()=>{
  document.body.innerHTML=''
- document.body.innerHTML=readFileSync('private/frasco/cbd-en.html','utf8')
+ document.body.innerHTML=readFileSync('private/frasco/index-en.html','utf8')
  const learning=createLearning(document,{showGuideStep:async()=>true,showGameStep:async()=>true,cancelPending:()=>{},highlightElement:()=>{},showHydrogens:()=>{}})
  const click=(id:string)=>document.getElementById(id)!.click()
  click('start-game');await flush()
