@@ -1076,7 +1076,6 @@
   "Explora CBD: visor didáctico": "Explore CBD: educational viewer",
   "Explora CBD y THC: visor didáctico": "Explore CBD and THC: educational viewer",
   "Vista previa de administrador · sin membresía activa.": "Administrator preview · no active membership.",
-  "Gira el frasco, explora sus tres caras y compara las moléculas en plano o en 3D. Los controles muestran composición ilustrativa; no miden un preparado real ni recomiendan dosis.": "Rotate the bottle, explore its three label panels and compare the molecules in 2D or 3D. The controls show an illustrative composition; they do not measure a real preparation or recommend doses.",
   "Tu cuenta gratuita permite explorar el frasco y la molécula de CBD en plano y en 3D, con un ejemplo fijo. THC, mezclas y calculadora requieren membresía activa. No recomienda dosis.": "Your free account lets you explore the bottle and CBD molecule in 2D and 3D, using a fixed example. THC, mixtures and the calculator require an active membership. It does not recommend doses.",
   "Abrir visor en ventana completa ↗": "Open viewer in a full window ↗",
   "Para contratar una membresía, guarda primero tu": "To purchase a membership, first save your",
@@ -1131,5 +1130,6 @@
   "Consulta": "Consultation",
   "Recurso didáctico": "Learning resource",
   "La calculadora requiere membresía activa.": "The calculator requires an active membership.",
-  "Uso didáctico en EVIPro. La versión abierta está en evipro.pe/frasco. El tamaño de las moléculas y el color del aceite no representan proporciones ni efectos clínicos.": "Educational use at EVIPro. The open version is at evipro.pe/frasco. Molecule size and oil colour do not represent proportions or clinical effects."
+  "Uso didáctico en EVIPro. La versión abierta está en evipro.pe/frasco. El tamaño de las moléculas y el color del aceite no representan proporciones ni efectos clínicos.": "Educational use at EVIPro. The open version is at evipro.pe/frasco. Molecule size and oil colour do not represent proportions or clinical effects.",
+  "Gira el frasco, explora sus cuatro caras y compara las moléculas en plano o en 3D. Los controles muestran composición ilustrativa; no miden un preparado real ni recomiendan dosis.": "Rotate the bottle, explore its four label panels and compare the molecules in 2D or 3D. The controls show an illustrative composition; they do not measure a real preparation or recommend doses."
 }

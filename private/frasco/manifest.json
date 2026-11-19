@@ -4,7 +4,7 @@
   "files": {
     "index.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "976e359d8c89e3137717a43be3171eb41679815864c0ace0f53d521bdae94a9b"
+      "sha256": "155d34aa7432ccda65788cd40f8c885dd1cccf6feef7fb4e22d618f1c4fd4581"
     },
     "style.css": {
       "type": "text/css; charset=utf-8",
@@ -12,7 +12,7 @@
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "fe49334d5d033c80035d2bc2c19d4b0cb6c0e09b4f5a36b53031b8b500889ea5"
+      "sha256": "226491f1be508c193d07a0b890f02e1a34622686a7c22688c495b8c98be9ada5"
     },
     "learning.js": {
       "type": "text/javascript; charset=utf-8",
@@ -32,7 +32,7 @@
     },
     "label-panels.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "3b502082ed5369738a95e9f9bb983375a508c582fa0d27d49fd782a44a2fd492"
+      "sha256": "e6581c6d249b4e4a0a783dd8648b2d9db97af3ef555476fbff1dca524d9d4adb"
     },
     "vendor/three.module.js": {
       "type": "text/javascript; charset=utf-8",
@@ -72,11 +72,11 @@
     },
     "index-en.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "e333819261030d934f33c96374563b2b25b40b062e0d5b7ac88a614ee285c90c"
+      "sha256": "638e87f58d8ca3d6ce95fa230c387ed6dfb9fd8275fd67f7cf07611dd9c0c253"
     },
     "app-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "0f81747ace66e80a6d53b104f495d7e12848ecc8f5b0cbd42f3921df4ebf935d"
+      "sha256": "86d3ed7328aaf37b98ecbbd5727908950d3ff992ab2d6a5e00ad4af270f5c21d"
     },
     "learning-en.js": {
       "type": "text/javascript; charset=utf-8",
@@ -88,7 +88,7 @@
     },
     "label-panels-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "4d26c0fc94cda7660e1c67cee355baa5e85b2e203de8e14ae55161c87b0a2896"
+      "sha256": "8eed5b9c2b2fcc2afbe4adfedb59666f5ab1546dbd98d2f1913ca76d78c1ec5e"
     }
   }
 }

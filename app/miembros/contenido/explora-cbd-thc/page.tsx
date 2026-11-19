@@ -18,7 +18,7 @@ export default async function ExploraCannabinoidesPage() {
     <p className="text-xs uppercase tracking-widest text-brand mt-6 mb-2"><T>Recurso didáctico</T></p>
     <h1 className="text-3xl font-serif mb-4"><T>Explora CBD y THC</T></h1>
     {access.adminPreview && <p className="text-brand text-sm mb-4"><T>Vista previa de administrador · sin membresía activa.</T></p>}
-    <p className="text-sm leading-6 text-muted mb-4"><T>Gira el frasco, explora sus tres caras y compara las moléculas en plano o en 3D. Los controles muestran composición ilustrativa; no miden un preparado real ni recomiendan dosis.</T></p>
+    <p className="text-sm leading-6 text-muted mb-4"><T>Gira el frasco, explora sus cuatro caras y compara las moléculas en plano o en 3D. Los controles muestran composición ilustrativa; no miden un preparado real ni recomiendan dosis.</T></p>
     <a href="/frasco/visor/index.html" target="_blank" rel="noopener noreferrer" className="inline-block text-brand underline mb-6"><T>Abrir visor en ventana completa ↗</T></a>
     <VisorFrasco />
     {!fullAccess && <div className="mt-4 text-sm">

@@ -5,7 +5,7 @@ import { RoomEnvironment } from "./vendor/RoomEnvironment.js";
 import { createDropper, updateDropper } from "./dropper.js";
 import { buildCap, threadGeometry } from "./cap.js";
 import { composition, fromRatio, fromHash, formatNumber } from "./composition-en.js";
-import { PANEL_CENTERS, labelCamera, shortestTurn, fitDiagram, frontLines } from "./label-panels-en.js";
+import { PANEL_CENTERS, PANEL_TEXT_MAX, LABEL_THETA_START, REQUISITOS_LINEAS, labelCamera, shortestTurn, fitDiagram, frontLines } from "./label-panels-en.js";
 
 // El servidor entrega un HTML y una lista de recursos limitados para el acceso gratuito.
 const KINDS = ["cbd", "thc"];
@@ -143,11 +143,12 @@ function labelTexture() {
         ctx.fillStyle = "#172e28"; ctx.textAlign = "center";
         ctx.font = `${bold ? "bold " : ""}${size}px DejaVu Sans`;
         const width = ctx.measureText(value).width;
-        if (width > 1100) ctx.font = `${bold ? "bold " : ""}${size*1100/width}px DejaVu Sans`;
+        if (width > PANEL_TEXT_MAX) ctx.font = `${bold ? "bold " : ""}${size*PANEL_TEXT_MAX/width}px DejaVu Sans`;
         ctx.fillText(value, x, y);
       };
       const front = PANEL_CENTERS.composition;
       for (const line of frontLines(c)) text(line.text, front, line.y, line.size, line.bold);
+      for (const line of REQUISITOS_LINEAS) text(line.text, PANEL_CENTERS.requisitos, line.y, line.size, line.bold);
       for (const [kind,image,name] of [["cbd",cbdImage,"CANNABIDIOL"],["thc",thcImage,"Δ9-TETRAHYDROCANNABINOL"]]) {
         const x = PANEL_CENTERS[kind];
         text(kind === "cbd" ? "CBD" : "Δ9-THC", x, 155, 110, true);
@@ -192,7 +193,7 @@ function labelTexture() {
   }).catch(error => { $("composition-status").textContent = error.message; $("error").textContent = error.message; $("error").hidden = false; });
   return texture;
 }
-mesh(new THREE.CylinderGeometry(.663, .663, 1.38, 144, 1, true, Math.PI), new THREE.MeshBasicMaterial({ map: labelTexture(), side: THREE.DoubleSide, toneMapped: false }), pieces.bottle, .88);
+mesh(new THREE.CylinderGeometry(.663, .663, 1.38, 144, 1, true, LABEL_THETA_START), new THREE.MeshBasicMaterial({ map: labelTexture(), side: THREE.DoubleSide, toneMapped: false }), pieces.bottle, .88);
 pieces.cap.add(buildCap(black));
 lathe([[0, 2.75], [0.25, 2.75], [0.255, 2.78], [0.24, 2.84], [0.23, 2.94], [0.225, 3.4], [0.218, 3.52], [0.19, 3.63], [0.14, 3.7], [0.07, 3.74], [0, 3.75]], rubber, pieces.bulb);
 lathe([[0.05, 0.48], [0.065, 0.486], [0.075, 0.5], [0.078, 0.52], [0.074, 0.54], [0.06, 0.552], [0.048, 0.558], [0.046, 0.575], [0.05, 0.59], [0.068, 0.61], [0.092, 0.64], [0.105, 0.66], [0.105, 0.69], [0.105, 2.64], [0.105, 2.67], [0.093, 2.67], [0.093, 2.64], [0.093, 0.69], [0.093, 0.67], [0.08, 0.65], [0.055, 0.62], [0.036, 0.6], [0.032, 0.58], [0.032, 0.56], [0.04, 0.54], [0.044, 0.52], [0.041, 0.5], [0.036, 0.48], [0.05, 0.48]], glass, pieces.pipette);
@@ -274,7 +275,7 @@ for (const face of Object.keys(PANEL_CENTERS)) {
 }
 function frame(name) {
   if (view === "bottle") {
-    const face = { "label-composition":"Composition", "label-cbd":"CBD", "label-thc":"THC" }[name];
+    const face = { "label-composition":"Composition", "label-cbd":"CBD", "label-requisitos":"What it must say", "label-thc":"THC" }[name];
     $("scene-mode").textContent = face ? `01 / LABEL · ${face.toUpperCase()}` : "01 / BOTTLE";
     $("scene").setAttribute("aria-label", face ? `Bottle: face ${face}` : "3D CBD and THC composition bottle");
   }
