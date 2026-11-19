@@ -11,7 +11,8 @@ beforeAll(() => { vi.stubEnv('FRASCO_GUIDE_SECRET', 's') })
 it('muestra composición, visor, instrucciones de core y pie', async () => {
   const t = firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }); const html = await render(t)
   for (const s of ['THC 0.9 % : CBD 10 % (9 : 100 mg/ml)', '1:11 THC:CBD · CBD dominante', 'No comer ni beber por 15 minutos antes y después.',
-                   'Producto CBD: bajo riesgo', '/frasco/visor/index.html#thc=0.9&amp;cbd=10', 'Esta guía no reemplaza tu receta', '106 (SAMU)'])
+                   'Con THC menor de 1 %: bajo riesgo', '/frasco/visor/index.html#thc=0.9&amp;cbd=10', 'Esta guía no reemplaza tu receta', '106 (SAMU)',
+                   'avísale ese mismo día', 'escríbele a tu médico para que te indique qué hacer', 'Si un niño toma el aceite por accidente'])
     expect(html).toContain(s)
   expect(html).not.toMatch(/Cannavital|S\/\s?\d|mayor de edad/)
   const orden = ['tu-frasco', 'visor', 'porcentajes', 'por-que', 'como-aplicar', 'cuidados', 'avisar'].map(id => html.indexOf(`id="${id}"`))

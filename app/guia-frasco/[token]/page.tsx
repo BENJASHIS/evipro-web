@@ -42,7 +42,7 @@ export default async function GuiaFrascoPage({ params }: { params: Promise<{ tok
       </section>
       <section id="avisar" className={seccion}>
         <h2 className={titulo}>Cuándo avisar a tu médico</h2><Parrafos items={GUIA_TEXTO.avisar} />
-        <h3 className="font-semibold mt-6 mb-2">Cuándo no esperar</h3><Parrafos items={GUIA_TEXTO.urgente} />
+        <h3 className="font-semibold mt-6 mb-2">Efectos intensos y urgencias</h3><Parrafos items={GUIA_TEXTO.urgente} />
       </section>
       <footer className="mt-12 border-t border-subtle pt-6 text-sm text-muted">
         <p>Esta guía no reemplaza tu receta.</p>
