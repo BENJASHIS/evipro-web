@@ -1,0 +1,527 @@
+{
+  "fuente": "DIGEMID · Boticas y farmacias autorizadas para la comercialización de derivados de cannabis",
+  "url": "https://www.digemid.minsa.gob.pe/Archivos/PortalWeb/Informativo/DICER/ProductosControlados/Cannabis/EstablecimientosAutorizadosCannabis_06-26.pdf",
+  "actualizado": "2026-06-16",
+  "farmacias": [
+    {
+      "n": 3,
+      "categoria": "BOTICA",
+      "nombre": "CANNA NATURA",
+      "direccion": "Calle Salaverry N° 405 - B, Urb. Vallecito.",
+      "provincia": "AREQUIPA",
+      "distrito": "AREQUIPA",
+      "ruc": "20608770411",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 4,
+      "categoria": "BOTICA",
+      "nombre": "CANNABIS LIFE",
+      "direccion": "Av. Siglo XX N° 120, Int. 520 (C.C. La Gran Vía)",
+      "provincia": "AREQUIPA",
+      "distrito": "AREQUIPA",
+      "ruc": "20434838623",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 5,
+      "categoria": "FARMACIA",
+      "nombre": "FARMACIA ESPECIALIZADA SEÑOR DE LOS DESAMPARADOS",
+      "direccion": "Calle Dean Valdivia N° 114",
+      "provincia": "AREQUIPA",
+      "distrito": "AREQUIPA",
+      "ruc": "10297002401",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 7,
+      "categoria": "BOTICA",
+      "nombre": "MUSEO CANABIS BOTICA MAGISTRAL",
+      "direccion": "Calle Santa Catalina N° 302, Int 02",
+      "provincia": "AREQUIPA",
+      "distrito": "AREQUIPA",
+      "ruc": "10418600875",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 1,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA ESPECIALIZADA ANNAM",
+      "direccion": "Av. Cayma N° 601 Urb. Señorial",
+      "provincia": "AREQUIPA",
+      "distrito": "CAYMA",
+      "ruc": "20604442029",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 8,
+      "categoria": "FARMACIA",
+      "nombre": "PHARMACY FARMACIA ESPECIALIZADA",
+      "direccion": "Urb. Villa El Sol Mz. E, Lote N° 05",
+      "provincia": "AREQUIPA",
+      "distrito": "CERRO COLORADO",
+      "ruc": "20453950493",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 2,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA ESPECIALIZADA CANNABICA",
+      "direccion": "Av. Zamacola N° 217",
+      "provincia": "AREQUIPA",
+      "distrito": "YANAHUARA",
+      "ruc": "20603100647",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 6,
+      "categoria": "FARMACIA",
+      "nombre": "FARMACIAS MAGISTRAL Q.F.",
+      "direccion": "Av. Ejercito N° 302 Lt 16 B",
+      "provincia": "AREQUIPA",
+      "distrito": "YANAHUARA",
+      "ruc": "20523915399",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 9,
+      "categoria": "FARMACIA",
+      "nombre": "FARMACIA MAGISTRAL SOLIDARIDAD",
+      "direccion": "Av. La Cultura N°1524, Urb. Constancia",
+      "provincia": "CUSCO",
+      "distrito": "WANCHAQ",
+      "ruc": "20605764780",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 23,
+      "categoria": "FARMACIA",
+      "nombre": "FARMACIA NOVAFARMA",
+      "direccion": "Av. Guardia Civil Mz. B, Lote 04, Urb. Santa Rosa V Etapa",
+      "provincia": "LIMA",
+      "distrito": "CHORRILLOS",
+      "ruc": "20545924421",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 33,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. Villa Marina N°.212, Urb. Villa Marina, Esquina con Santa Anita",
+      "provincia": "LIMA",
+      "distrito": "CHORRILLOS",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 43,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. Universitaria Norte N° 5803, Urb. Las Vegas",
+      "provincia": "LIMA",
+      "distrito": "COMAS",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 24,
+      "categoria": "FARMACIA",
+      "nombre": "FARMACIA SANTA MARIA",
+      "direccion": "Av. Cayetano Heredia N°319, Int.3, Urb. Fundo Oyague",
+      "provincia": "LIMA",
+      "distrito": "JESUS MARIA",
+      "ruc": "20605984526",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 25,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. San Felipe N° 602-610 (ref. frente Iglesia San Antonio de Padua)",
+      "provincia": "LIMA",
+      "distrito": "JESUS MARIA",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 36,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. Arnaldo Márquez N° 1294 -1298 /Esq. con República Dominicana Nº 295",
+      "provincia": "LIMA",
+      "distrito": "JESUS MARIA",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 48,
+      "categoria": "BOTICA",
+      "nombre": "SATIVA PHARM",
+      "direccion": "Av. General Eugenio Garzón N°1617, Fundo Oyague",
+      "provincia": "LIMA",
+      "distrito": "JESUS MARIA",
+      "ruc": "20606551674",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 31,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. Constructores N°122 Int. L-71 Urb. El Sol",
+      "provincia": "LIMA",
+      "distrito": "LA MOLINA",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 37,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Jr. Hipólito Unánue Nº 1642",
+      "provincia": "LIMA",
+      "distrito": "LA VICTORIA",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 49,
+      "categoria": "BOTICA",
+      "nombre": "ZILIS",
+      "direccion": "Av. Canada N° 691",
+      "provincia": "LIMA",
+      "distrito": "LA VICTORIA",
+      "ruc": "20608098357",
+      "estado": "INACTIVO"
+    },
+    {
+      "n": 26,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. De la Emancipación N° 799 Esq. Jr Angares N° 535",
+      "provincia": "LIMA",
+      "distrito": "LIMA",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 18,
+      "categoria": "BOTICA",
+      "nombre": "BOTICAS PERU",
+      "direccion": "Av. Carlos Izaguirre N° 850 Urb. Las Palmeras",
+      "provincia": "LIMA",
+      "distrito": "LOS OLIVOS",
+      "ruc": "20515346113",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 32,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. Las Palmeras N° 3851 Urb. Las Palmeras 1 Etapa",
+      "provincia": "LIMA",
+      "distrito": "LOS OLIVOS",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 10,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA ANDEN NATURALS",
+      "direccion": "Calle José Gálvez N° 692 Int 102 Urb. José Balta, Edif Interlatin",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20606648392",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 12,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA GALENICA",
+      "direccion": "Av. Ricardo Palma N° 606",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20609429284",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 14,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA SANT & ANA",
+      "direccion": "Av. Alfredo Benavides N° 1555 Int. 102 Urb. San Jorge Local Comercial F",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20606003898",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 15,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA ZEN MEDICAL",
+      "direccion": "Calle 2 de Mayo N° 534 Int. 404",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20613156683",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 17,
+      "categoria": "BOTICA",
+      "nombre": "BOTICAS PERU",
+      "direccion": "Av. Jose Pardo N° 233",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20515346113",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 20,
+      "categoria": "BOTICA",
+      "nombre": "CUIDAFARMA",
+      "direccion": "Av. Angamos Oeste N° 664, ref 1° y 2° piso",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20607030635",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 27,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. José Pardo N° 255",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 28,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. Roosevelt N° 6272, Prolongación Benavides",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 38,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. Benavides N° 425",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 45,
+      "categoria": "FARMACIA",
+      "nombre": "LABPHARMA",
+      "direccion": "Av. Roosevelt N° 6100 esq. Con Gral. Silva",
+      "provincia": "LIMA",
+      "distrito": "MIRAFLORES",
+      "ruc": "20607928089",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 39,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. Brasil N° 2670 - 2674",
+      "provincia": "LIMA",
+      "distrito": "PUEBLO LIBRE",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 11,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA CANNABIS & CO PERU",
+      "direccion": "Av. Angamos Este Mz. F-10 Lote 60. Urb. Papa Juan XXIII.",
+      "provincia": "LIMA",
+      "distrito": "SAN BORJA",
+      "ruc": "20604324956",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 29,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. Aviación N° 2880 Urb. San Borja Sur",
+      "provincia": "LIMA",
+      "distrito": "SAN BORJA",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 40,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. San Luis Nº 1981",
+      "provincia": "LIMA",
+      "distrito": "SAN BORJA",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 41,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. Aviación Nº 3458",
+      "provincia": "LIMA",
+      "distrito": "SAN BORJA",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 46,
+      "categoria": "FARMACIA",
+      "nombre": "PHARMA KIDS",
+      "direccion": "Av. Aviacion N° 3320 Int. 101, Urb. Las Magnolias",
+      "provincia": "LIMA",
+      "distrito": "SAN BORJA",
+      "ruc": "20538375579",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 21,
+      "categoria": "FARMACIA",
+      "nombre": "DR. CONSALTER",
+      "direccion": "Calle Luis Aldana N° 205, Urb. Corpac",
+      "provincia": "LIMA",
+      "distrito": "SAN ISIDRO",
+      "ruc": "20610339230",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 22,
+      "categoria": "FARES",
+      "nombre": "FARMACIA DEL CENTRO MEDICO ESPECIALIZADO DEL INSTITUTO",
+      "direccion": "Av. Pablo Carriquiry Maurer N° 115",
+      "provincia": "LIMA",
+      "distrito": "SAN ISIDRO",
+      "ruc": "20428674201",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 19,
+      "categoria": "BOTICA",
+      "nombre": "BOTICAS PERU",
+      "direccion": "Av. Miguel Iglesias N° 979",
+      "provincia": "LIMA",
+      "distrito": "SAN JUAN DE MIRAFLORES",
+      "ruc": "20515346113",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 42,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. Honorio Delgado N° 339, Urb. Ingeniería",
+      "provincia": "LIMA",
+      "distrito": "SAN MARTIN DE PORRES",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 16,
+      "categoria": "BOTICA",
+      "nombre": "BOTICAS PAO",
+      "direccion": "Av. Elmer Faucett N° 373, Tienda 2-B, Urb. Maranga 6ta Etapa",
+      "provincia": "LIMA",
+      "distrito": "SAN MIGUEL",
+      "ruc": "20608208101",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 30,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av. La Marina N°2093, 1° y 2° piso",
+      "provincia": "LIMA",
+      "distrito": "SAN MIGUEL",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 35,
+      "categoria": "BOTICA",
+      "nombre": "FARMAMINSA DIGEMID",
+      "direccion": "Av. Parque de las Leyendas N° 228 Urb Pando",
+      "provincia": "LIMA",
+      "distrito": "SAN MIGUEL",
+      "ruc": "20131373237",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 34,
+      "categoria": "BOTICA",
+      "nombre": "FARMACIA UNIVERSAL",
+      "direccion": "Av Caminos del Inca N° 370 INT LO 01 Urb Tambo de Monterrico",
+      "provincia": "LIMA",
+      "distrito": "SANTIAGO DE SURCO",
+      "ruc": "20100025168",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 44,
+      "categoria": "BOTICA",
+      "nombre": "INKAFARMA",
+      "direccion": "Av. Jacaranda N° 890, Piso 1, Plaza VEA, Int. LCI-101",
+      "provincia": "LIMA",
+      "distrito": "SANTIAGO DE SURCO",
+      "ruc": "20608430301",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 47,
+      "categoria": "BOTICA",
+      "nombre": "QUMARA",
+      "direccion": "Av. Caminos del Inca N° 241, Int. 344, Urb. Tambo de Monterrico, Centro Comercial Caminos del Inca 2da ET",
+      "provincia": "LIMA",
+      "distrito": "SANTIAGO DE SURCO",
+      "ruc": "20550962871",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 13,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA SANA FAR",
+      "direccion": "Jr. Narciso de la Colina N° 722 Urb. Cercado",
+      "provincia": "LIMA",
+      "distrito": "SURQUILLO",
+      "ruc": "20608651200",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 50,
+      "categoria": "FARMACIA",
+      "nombre": "FARMACIA QF FARMACIA MAGISTRAL",
+      "direccion": "Av. Cuzco N° 03 Lt B",
+      "provincia": "TACNA",
+      "distrito": "TACNA",
+      "ruc": "20523915399",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 51,
+      "categoria": "BOTICA",
+      "nombre": "BOTICA ESTETICA VITAL",
+      "direccion": "Calle San Andrés N°356, Urb. San Andrés",
+      "provincia": "TRUJILLO",
+      "distrito": "TRUJILLO",
+      "ruc": "20439924226",
+      "estado": "ACTIVO"
+    },
+    {
+      "n": 52,
+      "categoria": "FARMACIA",
+      "nombre": "FARMACIA QF FARMACIA MAGISTRAL",
+      "direccion": "Av. Nicolas de Piérola N° 836 Urb Primavera",
+      "provincia": "TRUJILLO",
+      "distrito": "TRUJILLO",
+      "ruc": "20523915399",
+      "estado": "ACTIVO"
+    }
+  ]
+}
