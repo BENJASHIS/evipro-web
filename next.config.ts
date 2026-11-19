@@ -20,9 +20,12 @@ const nextConfig: NextConfig = {
       })),
     ];
   },
+  async redirects() {
+    // El visor de miembros pasó a /frasco/visor (19-nov): los enlaces guardados siguen funcionando.
+    return [{ source: '/miembros/contenido/explora-cbd-thc/visor/:path*', destination: '/frasco/visor/:path*', permanent: false }];
+  },
   outputFileTracingIncludes: {
-    '/miembros/contenido/explora-cbd-thc/visor/*': ['./private/frasco/**/*'],
-    '/guia-frasco/*/visor/*': ['./private/frasco/**/*'],
+    '/frasco/visor/*': ['./private/frasco/**/*'],
   },
   images: {
     remotePatterns: [

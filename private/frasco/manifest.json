@@ -12,7 +12,7 @@
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "2044404ae154d297702127b926db5bdb608f7c1305fe3c66014f7bbcd466b564"
+      "sha256": "341aa0a391b733f889b59e4586d71294366765fc0cbdb41ef8db1b3a4ada01f6"
     },
     "learning.js": {
       "type": "text/javascript; charset=utf-8",
@@ -70,21 +70,13 @@
       "type": "text/plain; charset=utf-8",
       "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
     },
-    "cbd.html": {
-      "type": "text/html; charset=utf-8",
-      "sha256": "1acd1070fd91e8fc8a98461c0cd569751e9ad0d0e3a62b390437ad3240bfffa2"
-    },
     "index-en.html": {
       "type": "text/html; charset=utf-8",
       "sha256": "4eea1e771c5009329c1786455cdc06a8f1e3c504c03d29d2c3b31287c09b41de"
     },
-    "cbd-en.html": {
-      "type": "text/html; charset=utf-8",
-      "sha256": "ef862c247ed1e74b758ff7b3aa787883680f1d0c79d8fedbf68661e2beec769c"
-    },
     "app-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "260e4f24726974e2b1e4e44fb2cb20869488676b8e7ce98c403c06e1cdde08c8"
+      "sha256": "10cde50cf7fb8ecef10133222d08d6ed68117f1b976c621e2701bb53bdd72529"
     },
     "learning-en.js": {
       "type": "text/javascript; charset=utf-8",

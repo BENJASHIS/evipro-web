@@ -10,11 +10,11 @@ it('exige iniciar sesión',async()=>{
   mocks.user.mockResolvedValue({data:{user:null}})
   await expect(Page()).rejects.toThrow('redirect:/login')
 })
-it('monta solo CBD si falta membresía',async()=>{
+it('una cuenta gratuita ve el visor completo, sin la calculadora',async()=>{
   mocks.user.mockResolvedValue({data:{user:{id:'u'}}})
   mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
   render(await Page())
-  expect(screen.getByTitle('Explora CBD: visor didáctico')).toBeInTheDocument()
+  expect(screen.getByTitle('Explora CBD y THC: visor didáctico')).toHaveAttribute('src','/frasco/visor/index.html')
   expect(screen.queryByRole('link',{name:'Ir a la calculadora cannabinoide →'})).toBeNull()
   expect(screen.getByRole('link',{name:'Ver membresías'})).toBeInTheDocument()
 })
@@ -22,6 +22,6 @@ it.each([{hasActiveMembership:true,adminPreview:false},{hasActiveMembership:fals
   mocks.user.mockResolvedValue({data:{user:{id:'u'}}})
   mocks.access.mockResolvedValue(access)
   render(await Page())
-  expect(screen.getByTitle('Explora CBD y THC: visor didáctico')).toHaveAttribute('src','/miembros/contenido/explora-cbd-thc/visor/index.html')
+  expect(screen.getByTitle('Explora CBD y THC: visor didáctico')).toHaveAttribute('src','/frasco/visor/index.html')
   expect(screen.getByRole('link',{name:'Ir a la calculadora cannabinoide →'})).toBeInTheDocument()
 })

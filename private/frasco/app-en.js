@@ -8,8 +8,7 @@ import { composition, fromRatio, fromHash, formatNumber } from "./composition-en
 import { PANEL_CENTERS, labelCamera, shortestTurn, fitDiagram } from "./label-panels.js";
 
 // El servidor entrega un HTML y una lista de recursos limitados para el acceso gratuito.
-const CBD_ONLY = document.documentElement.dataset.cbdOnly === "true";
-const KINDS = CBD_ONLY ? ["cbd"] : ["cbd", "thc"];
+const KINDS = ["cbd", "thc"];
 const $ = (id) => document.getElementById(id);
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const descriptions = {
@@ -137,7 +136,7 @@ function labelTexture() {
     image.src = url;
   });
   Promise.all(KINDS.map(kind => load(`./assets/${kind}-reference.svg?v=20261108-wikipedia-v11`))).then(([cbdImage, thcImage]) => {
-    let current = (!CBD_ONLY && fromHash(location.hash)) || composition(10, 0);
+    let current = fromHash(location.hash) || composition(10, 0);
     function paint(c) {
       ctx.fillStyle = "#f5f5f5"; ctx.fillRect(0, 0, 4096, 1400);
       const text = (value, x, y, size, bold = false) => {
@@ -150,13 +149,12 @@ function labelTexture() {
       const front = PANEL_CENTERS.composition;
       text("COMPOSITION", front, 210, 95);
       text(`CBD ${formatNumber(c.cbd)} %`, front, 540, 215, true);
-      if (!CBD_ONLY) text(`THC ${formatNumber(c.thc)} %`, front, 800, 215, true);
-      if (!CBD_ONLY) text(`THC:CBD  ${c.ratio}`, front, 980, 75);
+      text(`THC ${formatNumber(c.thc)} %`, front, 800, 215, true);
+      text(`THC:CBD  ${c.ratio}`, front, 980, 75);
       text(`CBD ${formatNumber(c.cbdMgMl)} mg/mL`, front, 1100, 90);
-      if (!CBD_ONLY) text(`THC ${formatNumber(c.thcMgMl)} mg/mL`, front, 1210, 90);
+      text(`THC ${formatNumber(c.thcMgMl)} mg/mL`, front, 1210, 90);
       text("10 mL", front, 1360, 100);
       for (const [kind,image,name] of [["cbd",cbdImage,"CANNABIDIOL"],["thc",thcImage,"Δ9-TETRAHYDROCANNABINOL"]]) {
-        if (!KINDS.includes(kind)) continue;
         const x = PANEL_CENTERS[kind];
         text(kind === "cbd" ? "CBD" : "Δ9-THC", x, 155, 110, true);
         text(name, x, 280, 68);
@@ -182,11 +180,6 @@ function labelTexture() {
       $("composition-error").hidden = true;
       document.querySelectorAll("#composition-controls [aria-invalid]").forEach(input => input.removeAttribute("aria-invalid"));
       $("composition-status").textContent = c.total ? "Label updated · illustrative composition." : "Both values are zero; the ratio is undefined.";
-    }
-    if (CBD_ONLY) {
-      paint(current);
-      $("composition-status").textContent = "Fixed 10% CBD example · educational use, no doses.";
-      return;
     }
     const attempt = (calculate, inputs, editing = null) => {
       try { apply(calculate(), editing); } catch (error) {
@@ -291,7 +284,7 @@ function frame(name) {
   if (view === "bottle") {
     const face = { "label-composition":"Composition", "label-cbd":"CBD", "label-thc":"THC" }[name];
     $("scene-mode").textContent = face ? `01 / LABEL · ${face.toUpperCase()}` : "01 / BOTTLE";
-    $("scene").setAttribute("aria-label", face ? `Bottle: face ${face}` : (CBD_ONLY ? "3D educational CBD bottle" : "3D CBD and THC composition bottle"));
+    $("scene").setAttribute("aria-label", face ? `Bottle: face ${face}` : "3D CBD and THC composition bottle");
   }
   const [basePosition, target] = framePositions[name];
   const position = basePosition.clone();
@@ -328,11 +321,10 @@ function setView(next) {
   for (const [kind, model] of Object.entries(moleculeModels)) model.visible = kind === selected;
   $("scene-mode").textContent = view === "molecule" ? `02 / MOLECULE OF ${selected === "thc" ? "Δ9-THC" : "CBD"}` : "01 / BOTTLE";
   $("molecule-source").href = `https://pubchem.ncbi.nlm.nih.gov/compound/${selected === "thc" ? 16078 : 644019}`;
-  $("scene").setAttribute("aria-label", view === "molecule" ? `Reference 3D structure of ${selected === "thc" ? "Δ9-THC" : "CBD"}` : (CBD_ONLY ? "3D educational CBD bottle" : "3D CBD and THC composition bottle"));
+  $("scene").setAttribute("aria-label", view === "molecule" ? `Reference 3D structure of ${selected === "thc" ? "Δ9-THC" : "CBD"}` : "3D CBD and THC composition bottle");
 }
 async function selectPart(part, manual = true) {
   if (manual) learning?.close(false);
-  if (CBD_ONLY && part === "thc") return false;
   const version = ++selectionVersion;
   const molecular = part === "cbd" || part === "thc";
   if (manual) stopDemo();

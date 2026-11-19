@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { createLearning, createTapTracker } from '../../private/frasco/learning.js'
 function setup(select = vi.fn().mockResolvedValue(true)) {
   document.body.replaceWith(document.createElement('body'))
-  document.body.innerHTML = readFileSync('private/frasco/cbd.html', 'utf8')
+  document.body.innerHTML = readFileSync('private/frasco/index.html', 'utf8')
   const actions = { showGuideStep: select, showGameStep: select, cancelPending: vi.fn(), highlightElement: vi.fn(), showHydrogens: vi.fn() }
   const learning = createLearning(document, actions)
   const click = (id: string) => document.getElementById(id)!.click()

@@ -26,23 +26,6 @@ for (const [file,type] of Object.entries(files)) {
   await writeFile(path.join(target,file),bytes);
   manifest.files[file] = { type,sha256:createHash('sha256').update(bytes).digest('hex') };
 }
-// Variante gratuita: sin formulario de mezclas ni referencias/controles de THC.
-let cbdHtml = (await readFile(path.join(target,'index.html'),'utf8'))
-  .replace('<html lang="es">','<html lang="es" data-cbd-only="true">')
-  .replace(/<fieldset id="composition-controls"[\s\S]*?<\/fieldset>/,'<p>Ejemplo fijo: CBD al 10 % equivale a 100 mg en cada mL de aceite. No recomienda dosis.</p>')
-  .replace(/<button[^>]*data-(?:part|label-face)="thc"[^>]*>[\s\S]*?<\/button>/g,'')
-  .replace(/<figure><figcaption>Δ9-THC[\s\S]*?<\/figure>/,'')
-  .replace('Explora la<br><em>composición.</em>','Explora el<br><em>CBD.</em>')
-  .replace('Porcentajes y ratio vinculados. Elige un ejemplo o ajusta los valores.','Acceso educativo gratuito: observa el frasco y la molécula de CBD en plano o en 3D.')
-  .replace('Comparar estructuras en plano','Ver CBD en plano')
-  .replace('Dos estructuras de referencia; su tamaño no representa la proporción del preparado.','Estructura de referencia de CBD; su tamaño no representa la concentración del preparado.')
-  .replace('Demostración configurable;','Ejemplo ilustrativo;')
-  .replaceAll('CBD y THC','CBD').replaceAll('CBD + THC','CBD')
-  .replace('class="structures-comparison"','class="structures-comparison" style="grid-template-columns:1fr"');
-cbdHtml = cbdHtml.replace(/[ \t]+$/gm,'');
-if (!cbdHtml.includes('data-cbd-only="true"') || /assets\/thc|data-part="thc"|id="composition-controls"/.test(cbdHtml)) throw new Error('Variante gratuita incompleta.');
-await writeFile(path.join(target,'cbd.html'),cbdHtml);
-manifest.files['cbd.html'] = {type:'text/html; charset=utf-8',sha256:createHash('sha256').update(cbdHtml).digest('hex')};
 // Se generan solo recursos propios revisados; nunca se traduce información de usuarios.
 const english = JSON.parse(await readFile(path.join(source,'en.json'),'utf8'));
 const keys = Object.keys(english).sort((a,b)=>b.length-a.length);
@@ -65,7 +48,7 @@ function localizeScript(file, text) {
   for(const [start,end,value] of edits.sort((a,b)=>b[0]-a[0])) text = text.slice(0,start)+value+text.slice(end);
   return text;
 }
-for (const file of ['index.html','cbd.html','app.js','learning.js','composition.js']) {
+for (const file of ['index.html','app.js','learning.js','composition.js']) {
   const original = await readFile(path.join(target,file),'utf8');
   let content = file.endsWith('.html') ? localize(original) : localizeScript(file,original);
   if (file.endsWith('.html')) content = content.replace('lang="es"','lang="en"').replace('app.js?','app-en.js?');

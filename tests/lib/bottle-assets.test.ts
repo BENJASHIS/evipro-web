@@ -1,44 +1,39 @@
 // @vitest-environment node
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-const mocks = vi.hoisted(()=>({ user:vi.fn(), access:vi.fn() }))
+import { describe, expect, it, vi } from 'vitest'
+import manifest from '@/private/frasco/manifest.json'
+import { NOINDEX_ROUTES } from '@/lib/seo'
 vi.mock('@/lib/locale-server',()=>({getLocale:async()=> 'es'}))
-vi.mock('@/lib/supabase-server',()=>({createServerSupabaseClient:async()=>({auth:{getUser:mocks.user}})}))
-vi.mock('@/lib/member-access',async(importOriginal)=>({ ...await importOriginal<typeof import('@/lib/member-access')>(),getMemberAccess:mocks.access }))
-import { GET } from '@/app/miembros/contenido/explora-cbd-thc/visor/[...asset]/route'
-const request = (asset:string[],search='')=>GET(new Request(`http://localhost/miembros/contenido/explora-cbd-thc/visor/${asset.join('/')}${search}`),{params:Promise.resolve({asset})})
-beforeEach(()=>{
-  mocks.user.mockResolvedValue({data:{user:{id:'member'}}})
-  mocks.access.mockResolvedValue({hasActiveMembership:true,adminPreview:false})
-})
-describe('archivos privados del visor',()=>{
-  it('no entrega HTML ni JS al anónimo',async()=>{
-    mocks.user.mockResolvedValue({data:{user:null}})
-    for(const file of ['index.html','app.js','learning.js'])expect((await request([file])).status).toBe(401)
-  })
-  it('no entrega modelos a una cuenta sin membresía',async()=>{
-    mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
-    expect((await request(['assets','thc.json'])).status).toBe(403)
-  })
-  it('sirve HTML con políticas privadas y solo scripts de la propia web',async()=>{
+import { GET } from '@/app/frasco/visor/[...asset]/route'
+const request = (asset:string[])=>GET(new Request(`http://localhost/frasco/visor/${asset.join('/')}`),{params:Promise.resolve({asset})})
+
+describe('visor público del frasco',()=>{
+  it('sirve el visor completo sin sesión',async()=>{
     const result = await request(['index.html'])
     expect(result.status).toBe(200)
     expect(result.headers.get('cache-control')).toBe('private, no-store')
     expect(result.headers.get('content-security-policy')).toContain("frame-ancestors 'self'")
     expect(result.headers.get('content-security-policy')).toContain("'sha256-")
     expect(result.headers.get('x-content-type-options')).toBe('nosniff')
-    expect(await result.text()).toContain('CBD y THC')
+    const html = await result.text()
+    expect(html).toContain('data-part="thc"')
+    expect(html).toContain('id="composition-controls"')
+    expect(html).not.toContain('data-cbd-only')
+    for(const key of [['assets','thc.json'],['assets','thc-reference.svg'],['assets','cbd.json']])expect((await request(key)).status,key.join('/')).toBe(200)
   })
-  it('permite la vista previa admin',async()=>{
-    mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:true})
-    expect((await request(['assets','cbd-reference.svg'])).status).toBe(200)
+  it('ya no hay variante solo CBD',()=>{
+    expect(Object.keys(manifest.files).filter(file=>file.startsWith('cbd'))).toEqual([])
   })
   it('rechaza archivos fuera de la lista y traversal',async()=>{
     for(const file of [['..','.env'],['assets','..','index.html'],['manifest.json'],['assets','other.json']])expect((await request(file)).status).toBe(404)
   })
+  it('los enlaces viejos del visor de miembros llevan al público y /frasco no se indexa',async()=>{
+    const { default: config } = await import('@/next.config')
+    expect(await config.redirects!()).toContainEqual({ source:'/miembros/contenido/explora-cbd-thc/visor/:path*', destination:'/frasco/visor/:path*', permanent:false })
+    expect(NOINDEX_ROUTES).toContain('/frasco/:path*')
+  })
 })
 
-it('todos los recursos del paquete coinciden con su manifiesto y se sirven protegidos',async()=>{
-  const { default: manifest } = await import('@/private/frasco/manifest.json')
+it('todos los recursos del paquete coinciden con su manifiesto',async()=>{
   const { createHash } = await import('node:crypto')
   for(const [file,entry] of Object.entries(manifest.files)) {
     const response = await request(file.split('/'))
@@ -51,20 +46,6 @@ it('todos los recursos del paquete coinciden con su manifiesto y se sirven prote
   expect(createHash('sha256').update(importMap).digest('base64')).toBe(manifest.importMapHash)
 })
 
-it('una cuenta gratuita recibe solo CBD, aunque pida el modo completo por URL',async()=>{
-  mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
-  const html=await (await request(['index.html'],'?mode=full&cbdOnly=false')).text()
-  expect(html).toContain('data-cbd-only="true"')
-  expect(html).toContain('id="start-game"')
-  expect((await request(['learning.js'])).status).toBe(200)
-  expect(html).not.toContain('data-part="thc"')
-  expect(html).not.toContain('assets/thc')
-  expect(html).not.toContain('id="composition-controls"')
-  expect((await request(['assets','cbd.json'])).status).toBe(200)
-  expect((await request(['assets','cbd-reference.svg'])).status).toBe(200)
-  for(const key of [['assets','thc.json'],['assets','thc-reference.svg']])expect((await request(key)).status).toBe(403)
-})
-
 it('sirve los dibujos originales de Wikipedia fijados por versión',async()=>{
   const { createHash } = await import('node:crypto')
   for(const [name,hash] of Object.entries({
@@ -74,8 +55,7 @@ it('sirve los dibujos originales de Wikipedia fijados por versión',async()=>{
     const response=await request(['assets',`${name}-reference.svg`])
     expect(createHash('sha256').update(new Uint8Array(await response.arrayBuffer())).digest('hex')).toBe(hash)
   }
-  mocks.access.mockResolvedValue({hasActiveMembership:false,adminPreview:false})
   const html=await (await request(['index.html'])).text()
   expect(html).toContain('File:Cannabidiol_Structural_formula_V1.svg')
-  expect(html).not.toContain('File:Tetrahydrocannabinol.svg')
+  expect(html).toContain('File:Tetrahydrocannabinol.svg')
 })
