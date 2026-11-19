@@ -44,12 +44,13 @@
         <button id="apply-ratio" type="button">Apply ratio, keep total</button>
         <output id="composition-total">Combined concentration: 10 %</output>
         <div class="composition-presets" aria-label="Composition examples">
-          <button type="button" data-preset="thc">I · THC dominant</button>
-          <button type="button" data-preset="balanced">II · Balanced</button>
-          <button type="button" data-preset="cbd">III · CBD dominant</button>
+          <button type="button" data-thc="0" data-cbd="10">CBD 10 % <small>CBD only</small></button>
+          <button type="button" data-thc="0.9" data-cbd="10">THC 0.9 % : CBD 10 % <small>1:11 THC:CBD · CBD dominant</small></button>
+          <button type="button" data-thc="2.5" data-cbd="5">THC 2.5 % : CBD 5 % <small>1:2 THC:CBD · CBD dominant</small></button>
+          <button type="button" data-thc="5" data-cbd="5">THC 5 % : CBD 5 % <small>1:1 THC:CBD · balanced</small></button>
+          <button type="button" data-thc="10" data-cbd="5">THC 10 % : CBD 5 % <small>2:1 THC:CBD · THC dominant</small></button>
         </div>
-        <p class="composition-note">Editable examples inspired by I–III. They do not classify or certify an actual batch.</p>
-        <button id="restore-v04" type="button">Restore 10% CBD</button>
+        <p class="composition-note">Editable examples of the most used compositions. They do not classify or certify a real batch.</p>
       </fieldset>
       <p id="composition-status" class="composition-note" role="status">Preparing controls…</p>
       <p id="composition-error" role="alert" hidden></p>

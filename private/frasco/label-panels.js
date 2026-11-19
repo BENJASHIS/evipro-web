@@ -1,3 +1,5 @@
+import { formatNumber } from './composition.js';
+
 export const LABEL_WIDTH = 4096;
 export const PANEL_CENTERS = { composition: LABEL_WIDTH/2, cbd: LABEL_WIDTH/6, thc: LABEL_WIDTH*5/6 };
 
@@ -14,3 +16,14 @@ export function fitDiagram(width, height) {
   const scale = Math.min(1300 / width, 676 / height);
   return { width: width * scale, height: height * scale };
 }
+
+// Cara frontal de la etiqueta: THC siempre primero (DL-0056).
+export const frontLines = (c) => [
+  { text: 'COMPOSICIÓN', y: 210, size: 95 },
+  { text: `THC ${formatNumber(c.thc)} %`, y: 540, size: 215, bold: true },
+  { text: `CBD ${formatNumber(c.cbd)} %`, y: 800, size: 215, bold: true },
+  { text: `THC:CBD  ${c.ratio}`, y: 980, size: 75 },
+  { text: `THC ${formatNumber(c.thcMgMl)} mg/mL`, y: 1100, size: 90 },
+  { text: `CBD ${formatNumber(c.cbdMgMl)} mg/mL`, y: 1210, size: 90 },
+  { text: '10 mL', y: 1360, size: 100 },
+];

@@ -48,11 +48,11 @@ function localizeScript(file, text) {
   for(const [start,end,value] of edits.sort((a,b)=>b[0]-a[0])) text = text.slice(0,start)+value+text.slice(end);
   return text;
 }
-for (const file of ['index.html','app.js','learning.js','composition.js']) {
+for (const file of ['index.html','app.js','learning.js','composition.js','label-panels.js']) {
   const original = await readFile(path.join(target,file),'utf8');
   let content = file.endsWith('.html') ? localize(original) : localizeScript(file,original);
   if (file.endsWith('.html')) content = content.replace('lang="es"','lang="en"').replace('app.js?','app-en.js?');
-  else content = content.replaceAll('./learning.js','./learning-en.js').replaceAll('./composition.js','./composition-en.js');
+  else content = content.replaceAll('./learning.js','./learning-en.js').replaceAll('./composition.js','./composition-en.js').replaceAll('./label-panels.js','./label-panels-en.js');
   const localized = file.replace(/\.(html|js)$/,'-en.$1');
   await writeFile(path.join(target,localized),content);
   manifest.files[localized] = {type:manifest.files[file].type,sha256:createHash('sha256').update(content).digest('hex')};

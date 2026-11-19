@@ -4,15 +4,15 @@
   "files": {
     "index.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "61471e696ce5765e6b525ec7ee9382d70da7571076d7125fad6cd4931d33f663"
+      "sha256": "976e359d8c89e3137717a43be3171eb41679815864c0ace0f53d521bdae94a9b"
     },
     "style.css": {
       "type": "text/css; charset=utf-8",
-      "sha256": "044c76c84df5c2733ca19a85ca1fa8dd053478b69ac8ccc88260fe2c3af7c347"
+      "sha256": "f1753c685f88191e3eab56015ed328a8bb901dbe8b103f8d54b9132572103a4b"
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "341aa0a391b733f889b59e4586d71294366765fc0cbdb41ef8db1b3a4ada01f6"
+      "sha256": "fe49334d5d033c80035d2bc2c19d4b0cb6c0e09b4f5a36b53031b8b500889ea5"
     },
     "learning.js": {
       "type": "text/javascript; charset=utf-8",
@@ -32,7 +32,7 @@
     },
     "label-panels.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "86ebb5a89a481c5d80bbd67a9ea4b64930f01a89c1baec7319ec7805e0b6cc43"
+      "sha256": "3b502082ed5369738a95e9f9bb983375a508c582fa0d27d49fd782a44a2fd492"
     },
     "vendor/three.module.js": {
       "type": "text/javascript; charset=utf-8",
@@ -72,11 +72,11 @@
     },
     "index-en.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "4eea1e771c5009329c1786455cdc06a8f1e3c504c03d29d2c3b31287c09b41de"
+      "sha256": "e333819261030d934f33c96374563b2b25b40b062e0d5b7ac88a614ee285c90c"
     },
     "app-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "10cde50cf7fb8ecef10133222d08d6ed68117f1b976c621e2701bb53bdd72529"
+      "sha256": "0f81747ace66e80a6d53b104f495d7e12848ecc8f5b0cbd42f3921df4ebf935d"
     },
     "learning-en.js": {
       "type": "text/javascript; charset=utf-8",
@@ -85,6 +85,10 @@
     "composition-en.js": {
       "type": "text/javascript; charset=utf-8",
       "sha256": "e499b8284407691ff9bfdbf41db91dee40dd24c03001802a09f667747a8e0c80"
+    },
+    "label-panels-en.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "4d26c0fc94cda7660e1c67cee355baa5e85b2e203de8e14ae55161c87b0a2896"
     }
   }
 }

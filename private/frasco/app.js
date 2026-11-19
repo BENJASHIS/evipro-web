@@ -5,7 +5,7 @@ import { RoomEnvironment } from './vendor/RoomEnvironment.js';
 import { createDropper, updateDropper } from './dropper.js';
 import { buildCap, threadGeometry } from './cap.js';
 import { composition, fromRatio, fromHash, formatNumber } from './composition.js';
-import { PANEL_CENTERS, labelCamera, shortestTurn, fitDiagram } from './label-panels.js';
+import { PANEL_CENTERS, labelCamera, shortestTurn, fitDiagram, frontLines } from './label-panels.js';
 
 // El servidor entrega un HTML y una lista de recursos limitados para el acceso gratuito.
 const KINDS = ['cbd', 'thc'];
@@ -147,13 +147,7 @@ function labelTexture() {
         ctx.fillText(value, x, y);
       };
       const front = PANEL_CENTERS.composition;
-      text('COMPOSICIÓN', front, 210, 95);
-      text(`CBD ${formatNumber(c.cbd)} %`, front, 540, 215, true);
-      text(`THC ${formatNumber(c.thc)} %`, front, 800, 215, true);
-      text(`THC:CBD  ${c.ratio}`, front, 980, 75);
-      text(`CBD ${formatNumber(c.cbdMgMl)} mg/mL`, front, 1100, 90);
-      text(`THC ${formatNumber(c.thcMgMl)} mg/mL`, front, 1210, 90);
-      text('10 mL', front, 1360, 100);
+      for (const line of frontLines(c)) text(line.text, front, line.y, line.size, line.bold);
       for (const [kind,image,name] of [['cbd',cbdImage,'CANNABIDIOL'],['thc',thcImage,'Δ9-TETRAHIDROCANNABINOL']]) {
         const x = PANEL_CENTERS[kind];
         text(kind === 'cbd' ? 'CBD' : 'Δ9-THC', x, 155, 110, true);
@@ -193,9 +187,7 @@ function labelTexture() {
       input.addEventListener('input', () => attempt(() => composition(kind === 'cbd' ? input.valueAsNumber : current.cbd, kind === 'thc' ? input.valueAsNumber : current.thc), [input], input));
     }
     $('apply-ratio').addEventListener('click', () => attempt(() => fromRatio(current.total, $('ratio-thc').valueAsNumber, $('ratio-cbd').valueAsNumber), [$('ratio-thc'), $('ratio-cbd')]));
-    const presets = { thc: [1,9], balanced: [5,5], cbd: [9,1] };
-    document.querySelectorAll('[data-preset]').forEach(button => button.addEventListener('click', () => apply(composition(...presets[button.dataset.preset]))));
-    $('restore-v04').addEventListener('click', () => apply(composition(10,0)));
+    document.querySelectorAll('[data-thc]').forEach(button => button.addEventListener('click', () => apply(composition(Number(button.dataset.cbd), Number(button.dataset.thc)))));
     apply(current); $('composition-controls').disabled = false;
   }).catch(error => { $('composition-status').textContent = error.message; $('error').textContent = error.message; $('error').hidden = false; });
   return texture;

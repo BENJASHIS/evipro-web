@@ -44,12 +44,13 @@
         <button id="apply-ratio" type="button">Aplicar ratio, conservar total</button>
         <output id="composition-total">Concentración combinada: 10 %</output>
         <div class="composition-presets" aria-label="Ejemplos de composición">
-          <button type="button" data-preset="thc">I · THC dominante</button>
-          <button type="button" data-preset="balanced">II · Equilibrado</button>
-          <button type="button" data-preset="cbd">III · CBD dominante</button>
+          <button type="button" data-thc="0" data-cbd="10">CBD 10 % <small>Solo CBD</small></button>
+          <button type="button" data-thc="0.9" data-cbd="10">THC 0.9 % : CBD 10 % <small>1:11 THC:CBD · CBD dominante</small></button>
+          <button type="button" data-thc="2.5" data-cbd="5">THC 2.5 % : CBD 5 % <small>1:2 THC:CBD · CBD dominante</small></button>
+          <button type="button" data-thc="5" data-cbd="5">THC 5 % : CBD 5 % <small>1:1 THC:CBD · balanceado</small></button>
+          <button type="button" data-thc="10" data-cbd="5">THC 10 % : CBD 5 % <small>2:1 THC:CBD · THC dominante</small></button>
         </div>
-        <p class="composition-note">Ejemplos inspirados en I–III, editables. No clasifican ni certifican un lote real.</p>
-        <button id="restore-v04" type="button">Restaurar CBD al 10 %</button>
+        <p class="composition-note">Ejemplos de las composiciones más usadas, editables. No clasifican ni certifican un lote real.</p>
       </fieldset>
       <p id="composition-status" class="composition-note" role="status">Preparando los controles…</p>
       <p id="composition-error" role="alert" hidden></p>
