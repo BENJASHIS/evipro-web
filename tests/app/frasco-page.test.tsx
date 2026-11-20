@@ -2,10 +2,11 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 vi.mock('@/app/miembros/contenido/explora-cbd-thc/VisorFrasco', () => ({ default: (p: { src?: string }) => <iframe data-src={p.src ?? '/frasco/visor/index.html'} /> }))
 vi.mock('@/app/components/Nav', () => ({ default: () => null }))
+vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') } }))
 import FrascoPage, { metadata } from '@/app/frasco/page'
 
-beforeEach(() => { localStorage.clear() })
-afterEach(() => { vi.restoreAllMocks() })
+beforeEach(() => { localStorage.clear(); vi.stubEnv('FRASCO_PUBLICO', '1') })
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs() })
 
 it('pregunta la edad antes de mostrar nada y no guarda un «No»', () => {
   render(<FrascoPage />)
@@ -34,3 +35,10 @@ it('con el almacenamiento bloqueado pregunta igual y deja pasar', () => {
   expect(document.querySelector('iframe')).not.toBeNull()
 })
 it('no se indexa', () => { expect(metadata.robots).toEqual({ index: false, follow: false }) })
+
+it('sin FRASCO_PUBLICO=1 la página no existe (sale cuando la declaración de conflicto sea cierta)', () => {
+  for (const valor of ['', '0', 'true']) {
+    vi.stubEnv('FRASCO_PUBLICO', valor)
+    expect(() => FrascoPage()).toThrow('NEXT_NOT_FOUND')
+  }
+})
