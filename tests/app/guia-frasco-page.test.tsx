@@ -15,6 +15,9 @@ it('muestra composición, visor, instrucciones de core y pie', async () => {
                    'escríbele a tu médico para que te indique qué hacer', 'Cuéntale a quien vive contigo', 'Si un niño toma el aceite por accidente'])
     expect(html).toContain(s)
   expect(html).not.toMatch(/Cannavital|S\/\s?\d|mayor de edad|ojos amarillos/)
+  // Inicio sublingual: una sola fuente con la receta (core), opción A de Carlos (20-nov).
+  expect(html).toContain('puede empezar a los 15-45 minutos, pero a veces tarda hasta 2 horas: no tomes más mientras esperas.')
+  expect(html).not.toContain('30 minutos a 2 horas')
   // Lo que exige estar consciente se le pide al paciente; desmayo, convulsión o no despertar, a quien lo acompaña.
   expect(html).not.toMatch(/Ve a emergencia[^.]*(desmay|convulsi|despertar)/)
   const orden = ['tu-frasco', 'visor', 'porcentajes', 'por-que', 'como-aplicar', 'cuidados', 'avisar'].map(id => html.indexOf(`id="${id}"`))

@@ -32,7 +32,7 @@ export default async function GuiaFrascoPage({ params }: { params: Promise<{ tok
       </section>
       <section id="visor" className="mt-8"><VisorFrasco src={`/frasco/visor/index.html#thc=${thc}&cbd=${cbd}`} /></section>
       <section id="porcentajes" className={seccion}><h2 className={titulo}>Qué significan los porcentajes</h2><Parrafos items={GUIA_TEXTO.porcentajes} /></section>
-      <section id="por-que" className={seccion}><h2 className={titulo}>Por qué tu porcentaje es este</h2><Parrafos items={GUIA_TEXTO.porQue} /></section>
+      <section id="por-que" className={seccion}><h2 className={titulo}>Por qué tu porcentaje es este</h2><Parrafos items={[...GUIA_TEXTO.porQue, core.inicio]} /></section>
       <section id="como-aplicar" className={seccion}><h2 className={titulo}>Cómo aplicarlo bajo la lengua</h2><Lista items={core.sublingual} /></section>
       <section id="cuidados" className={seccion}>
         <h2 className={titulo}>Cuidados</h2>

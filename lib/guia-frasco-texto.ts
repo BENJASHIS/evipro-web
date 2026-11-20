@@ -1,8 +1,8 @@
-// Texto educativo de la guía del frasco. Versión v03 (output/guia-frasco-sublingual-v03-2026-11-19/),
+// Texto educativo de la guía del frasco. Versión v04 (output/guia-frasco-sublingual-v04-2026-11-20/),
 // en revisión de Carlos: se reemplaza por la versión aprobada antes de crear FRASCO_GUIDE_SECRET en Vercel.
 // Las instrucciones de uso no van aquí: salen de core (lib/guia-frasco-core.json).
 export const GUIA_TEXTO = {
-  version: 'v03-2026-11-19',
+  version: 'v04-2026-11-20',
   porcentajes: [
     'El THC (tetrahidrocannabinol) y el CBD (cannabidiol) son dos componentes de la planta de cannabis. Tu frasco dice cuánto tiene de cada uno.',
     'El THC es el que puede producir la sensación de estar bajo los efectos del cannabis.',
@@ -18,7 +18,7 @@ export const GUIA_TEXTO = {
     'Por eso tu frasco puede tener un porcentaje bajo al comienzo. Si hace falta, tu médico lo cambia en un control.',
     'Un porcentaje más alto no demuestra que un producto sea mejor para tu caso.',
     'Sube la cantidad solo como lo indica tu receta, no por tu cuenta.',
-    'Bajo la lengua, el efecto puede tardar de 30 minutos a 2 horas en empezar: no tomes más mientras esperas.',
+    // El tiempo de inicio sale de core (guia-frasco-core.json, «inicio»), igual que en la receta impresa.
   ],
   avisar: [
     'Si tienes efectos molestos, como sueño o cansancio, boca seca, náuseas, diarrea o menos apetito, avísale al médico que te lo indicó.',
