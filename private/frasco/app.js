@@ -277,7 +277,7 @@ function frame(name) {
   if (view === 'bottle') {
     const face = { 'label-composition':'Composición', 'label-cbd':'CBD', 'label-requisitos':'Qué debe decir', 'label-thc':'THC' }[name];
     $('scene-mode').textContent = face ? `01 / ETIQUETA · ${face.toUpperCase()}` : '01 / ENVASE';
-    $('scene').setAttribute('aria-label', face ? `Frasco: cara ${face}` : 'Frasco de composición CBD y THC en 3D');
+    $('scene').setAttribute('aria-label', face ? `Frasco: cara ${face}` : 'Frasco de composición THC y CBD en 3D');
   }
   const [basePosition, target] = framePositions[name];
   const position = basePosition.clone();
@@ -314,7 +314,7 @@ function setView(next) {
   for (const [kind, model] of Object.entries(moleculeModels)) model.visible = kind === selected;
   $('scene-mode').textContent = view === 'molecule' ? `02 / MOLÉCULA DE ${selected === 'thc' ? 'Δ9-THC' : 'CBD'}` : '01 / ENVASE';
   $('molecule-source').href = `https://pubchem.ncbi.nlm.nih.gov/compound/${selected === 'thc' ? 16078 : 644019}`;
-  $('scene').setAttribute('aria-label', view === 'molecule' ? `Estructura 3D de referencia de ${selected === 'thc' ? 'Δ9-THC' : 'CBD'}` : 'Frasco de composición CBD y THC en 3D');
+  $('scene').setAttribute('aria-label', view === 'molecule' ? `Estructura 3D de referencia de ${selected === 'thc' ? 'Δ9-THC' : 'CBD'}` : 'Frasco de composición THC y CBD en 3D');
 }
 async function selectPart(part, manual = true) {
   if (manual) learning?.close(false);

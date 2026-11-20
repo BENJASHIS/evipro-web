@@ -35,3 +35,15 @@ it('sin confirmar la edad, el visor queda detrás del aviso',async()=>{
   expect(screen.getByRole('button',{name:'Sí, soy mayor de edad'})).toBeInTheDocument()
   expect(screen.queryByTitle('Explora CBD y THC: visor didáctico')).toBeNull()
 })
+
+it('solo menciona evipro.pe/frasco cuando la página pública está activa',async()=>{
+  mocks.user.mockResolvedValue({data:{user:{id:'u'}}})
+  mocks.access.mockResolvedValue({hasActiveMembership:true,adminPreview:false})
+  vi.stubEnv('FRASCO_PUBLICO','')
+  const {unmount}=render(await Page())
+  expect(document.body.textContent).not.toContain('evipro.pe/frasco')
+  unmount(); vi.stubEnv('FRASCO_PUBLICO','1')
+  render(await Page())
+  expect(document.body.textContent).toContain('evipro.pe/frasco')
+  vi.unstubAllEnvs()
+})

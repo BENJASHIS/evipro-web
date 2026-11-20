@@ -2,12 +2,13 @@
 import { describe, expect, it } from 'vitest'
 import { composicionTexto, firmarGuia, verificarGuia } from '@/lib/guia-frasco'
 
-const S = 'secreto-de-prueba', T0 = Date.UTC(2026, 10, 15)
+const S = 'secreto-de-prueba-con-mas-de-32-caracteres', T0 = Date.UTC(2026, 10, 15)
 
 describe('guia-frasco', () => {
   it('firma y verifica', () => {
     const g = verificarGuia(firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }, T0, S), T0, S)
-    expect(g).toMatchObject({ thc: 0.9, cbd: 10, exp: T0 / 1000 + 90 * 86400 })
+    // Vence al final del día de Lima (UTC-5): T0 + 90 días es el 12-feb-2027 a las 19:00 en Lima.
+  expect(g).toMatchObject({ thc: 0.9, cbd: 10, exp: Date.UTC(2027, 1, 13, 4, 59, 59) / 1000 })
   })
   it('rechaza datos alterados, firma alterada, token cortado y basura', () => {
     const t = firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }, T0, S)
@@ -18,7 +19,9 @@ describe('guia-frasco', () => {
   })
   it('rechaza vencido', () => {
     const t = firmarGuia({ thc: 1, cbd: 1, dias: 30 }, T0, S)
-    expect(verificarGuia(t, T0 + 30 * 86400_000 + 1000, S)).toBeNull()
+    const fin = Date.UTC(2026, 11, 15, 4, 59, 59)   // 14-dic, 23:59:59 en Lima
+  expect(verificarGuia(t, T0 + 30 * 86400_000 + 3600_000, S)).not.toBeNull()   // el último día vale entero
+  expect(verificarGuia(t, fin + 1000, S)).toBeNull()
   })
   it('sin secreto no firma ni verifica', () => {
     expect(() => firmarGuia({ thc: 1, cbd: 1, dias: 30 }, T0, '')).toThrow('FRASCO_GUIDE_SECRET')
@@ -36,4 +39,9 @@ describe('guia-frasco', () => {
     expect(composicionTexto(0.9, 10)).toEqual({ linea: 'THC 0.9 % : CBD 10 % (9 : 100 mg/ml)', proporcion: '1:11 THC:CBD · CBD dominante' })
     expect(composicionTexto(0, 10).proporcion).toBe('CBD sin THC declarado')
   })
+})
+
+it('exige un secreto de al menos 32 caracteres', () => {
+  expect(() => firmarGuia({ thc: 1, cbd: 1, dias: 30 }, T0, 'corto')).toThrow('FRASCO_GUIDE_SECRET')
+  expect(verificarGuia(firmarGuia({ thc: 1, cbd: 1, dias: 30 }, T0, S), T0, S.slice(0, 31))).toBeNull()
 })

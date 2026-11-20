@@ -4,7 +4,13 @@ import { composicionTexto, formatearPct, verificarGuia } from '@/lib/guia-frasco
 import { GUIA_TEXTO } from '@/lib/guia-frasco-texto'
 
 // Sin referente: la dirección lleva el token y no debe viajar a la página siguiente ni a su analítica.
-export const metadata = { title: 'Guía de uso de tu frasco · EVIPro', robots: { index: false, follow: false }, referrer: 'no-referrer' as const }
+export const metadata = {
+  title: 'Guía de uso de tu frasco · EVIPro',
+  // Propia, para que la vista previa de WhatsApp no muestre la descripción comercial del sitio.
+  description: 'Cómo usar tu frasco y qué cuidados tener. No reemplaza tu receta.',
+  robots: { index: false, follow: false },
+  referrer: 'no-referrer' as const,
+}
 
 const Lista = ({ items }: { items: string[] }) => <ul className="list-disc pl-5 space-y-2">{items.map(i => <li key={i}>{i}</li>)}</ul>
 const Parrafos = ({ items }: { items: string[] }) => <>{items.map(i => <p key={i} className="mb-3">{i}</p>)}</>
@@ -38,8 +44,8 @@ export default async function GuiaFrascoPage({ params }: { params: Promise<{ tok
         <h2 className={titulo}>Cuidados</h2>
         <h3 className="font-semibold mb-2">Conservación</h3><Lista items={core.almacenamiento} />
         <h3 className="font-semibold mt-6 mb-2">THC y manejo</h3><Lista items={manejo} />
-        <h3 className="font-semibold mt-6 mb-2">Altura</h3><p>{`Si vives a ${core.umbral_altura_msnm} msnm o más: ${core.aviso_altura}`}</p>
         <h3 className="font-semibold mt-6 mb-2">Qué evitar</h3><Lista items={core.evitar} />
+        <h3 className="font-semibold mt-6 mb-2">Altura</h3><p>{`Si vives a ${core.umbral_altura_msnm} msnm o más: ${core.aviso_altura}`}</p>
       </section>
       <section id="avisar" className={seccion}>
         <h2 className={titulo}>Cuándo avisar a tu médico</h2><Parrafos items={GUIA_TEXTO.avisar} />

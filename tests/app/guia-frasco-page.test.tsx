@@ -6,7 +6,7 @@ import GuiaFrascoPage, { metadata } from '@/app/guia-frasco/[token]/page'
 import { firmarGuia } from '@/lib/guia-frasco'
 
 const render = async (token: string) => renderToStaticMarkup(await GuiaFrascoPage({ params: Promise.resolve({ token }) }))
-beforeAll(() => { vi.stubEnv('FRASCO_GUIDE_SECRET', 's') })
+beforeAll(() => { vi.stubEnv('FRASCO_GUIDE_SECRET', 'secreto-de-prueba-con-mas-de-32-caracteres') })
 
 it('muestra composición, visor, instrucciones de core y pie', async () => {
   const t = firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }); const html = await render(t)
@@ -18,6 +18,7 @@ it('muestra composición, visor, instrucciones de core y pie', async () => {
   // Inicio sublingual: una sola fuente con la receta (core), opción A de Carlos (20-nov).
   expect(html).toContain('puede empezar a los 15-45 minutos, pero a veces tarda hasta 2 horas: no tomes más mientras esperas.')
   expect(html).not.toContain('30 minutos a 2 horas')
+  expect(html.indexOf('Qué evitar')).toBeLessThan(html.indexOf('Altura'))   // orden del texto aprobado
   // Lo que exige estar consciente se le pide al paciente; desmayo, convulsión o no despertar, a quien lo acompaña.
   expect(html).not.toMatch(/Ve a emergencia[^.]*(desmay|convulsi|despertar)/)
   const orden = ['tu-frasco', 'visor', 'porcentajes', 'por-que', 'como-aplicar', 'cuidados', 'avisar'].map(id => html.indexOf(`id="${id}"`))
@@ -34,4 +35,7 @@ it('enlace cortado o inválido no muestra instrucciones', async () => {
   expect(html).toContain('Este enlace ya no es válido. Pide uno nuevo a tu médico.')
   expect(html).not.toContain('No comer ni beber')
 })
-it('no se indexa', () => { expect(metadata.robots).toEqual({ index: false, follow: false }) })
+it('no se indexa y su vista previa no muestra la descripción comercial del sitio', () => {
+  expect(metadata.robots).toEqual({ index: false, follow: false })
+  expect(metadata.description).toBe('Cómo usar tu frasco y qué cuidados tener. No reemplaza tu receta.')
+})

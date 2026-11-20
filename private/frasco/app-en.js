@@ -277,7 +277,7 @@ function frame(name) {
   if (view === "bottle") {
     const face = { "label-composition":"Composition", "label-cbd":"CBD", "label-requisitos":"What it must say", "label-thc":"THC" }[name];
     $("scene-mode").textContent = face ? `01 / LABEL · ${face.toUpperCase()}` : "01 / BOTTLE";
-    $("scene").setAttribute("aria-label", face ? `Bottle: face ${face}` : "3D CBD and THC composition bottle");
+    $("scene").setAttribute("aria-label", face ? `Bottle: face ${face}` : "3D THC and CBD composition bottle");
   }
   const [basePosition, target] = framePositions[name];
   const position = basePosition.clone();
@@ -314,7 +314,7 @@ function setView(next) {
   for (const [kind, model] of Object.entries(moleculeModels)) model.visible = kind === selected;
   $("scene-mode").textContent = view === "molecule" ? `02 / MOLECULE OF ${selected === "thc" ? "Δ9-THC" : "CBD"}` : "01 / BOTTLE";
   $("molecule-source").href = `https://pubchem.ncbi.nlm.nih.gov/compound/${selected === "thc" ? 16078 : 644019}`;
-  $("scene").setAttribute("aria-label", view === "molecule" ? `Reference 3D structure of ${selected === "thc" ? "Δ9-THC" : "CBD"}` : "3D CBD and THC composition bottle");
+  $("scene").setAttribute("aria-label", view === "molecule" ? `Reference 3D structure of ${selected === "thc" ? "Δ9-THC" : "CBD"}` : "3D THC and CBD composition bottle");
 }
 async function selectPart(part, manual = true) {
   if (manual) learning?.close(false);

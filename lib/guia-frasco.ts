@@ -16,6 +16,12 @@ function valido(thc: unknown, cbd: unknown): thc is number {
   )
 }
 
+// Un secreto corto se adivina: el panel pide crearlo con `openssl rand -base64 32`.
+const SECRETO_MIN = 32
+// Perú está en UTC-5 todo el año: el enlace vale hasta el final de su último día en Lima.
+const LIMA_MS = 5 * 3600_000
+const finDelDiaLima = (ms: number) => Math.floor((ms - LIMA_MS) / 86_400_000) * 86_400_000 + 86_400_000 - 1000 + LIMA_MS
+
 const firma = (datos: string, secret: string) =>
   createHmac('sha256', secret).update(datos).digest('base64url')
 
@@ -24,10 +30,10 @@ export function firmarGuia(
   ahora = Date.now(),
   secret = process.env.FRASCO_GUIDE_SECRET ?? '',
 ): string {
-  if (!secret) throw new Error('Falta FRASCO_GUIDE_SECRET')
+  if (secret.length < SECRETO_MIN) throw new Error('Falta FRASCO_GUIDE_SECRET (al menos 32 caracteres)')
   if (!valido(datos.thc, datos.cbd)) throw new RangeError('THC/CBD fuera de rango')
   if (!Number.isInteger(datos.dias) || datos.dias <= 0) throw new RangeError('Vigencia inválida')
-  const exp = Math.floor(ahora / 1000) + datos.dias * 86400
+  const exp = Math.floor(finDelDiaLima(ahora + datos.dias * 86_400_000) / 1000)
   const cuerpo = Buffer.from(JSON.stringify({ v: 1, thc: datos.thc, cbd: datos.cbd, exp })).toString('base64url')
   return `${cuerpo}.${firma(cuerpo, secret)}`
 }
@@ -37,7 +43,7 @@ export function verificarGuia(
   ahora = Date.now(),
   secret = process.env.FRASCO_GUIDE_SECRET ?? '',
 ): GuiaFrasco | null {
-  if (!secret || typeof token !== 'string') return null
+  if (secret.length < SECRETO_MIN || typeof token !== 'string') return null
   const partes = token.split('.')
   if (partes.length !== 2) return null
   const [cuerpo, recibida] = partes
