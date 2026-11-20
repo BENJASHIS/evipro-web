@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
-import { Analytics } from '@vercel/analytics/next';
+import AnaliticaVercel from '@/app/components/AnaliticaVercel';
 import Script from 'next/script';
 import { MEDICO } from '@/lib/home-content';
 import { SITE_URL } from '@/lib/seo';
@@ -60,7 +60,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col bg-ink text-white font-sans">
         <LanguageProvider locale={locale}>
         {children}
-        <Analytics />
+        <AnaliticaVercel />
         {process.env.NODE_ENV === 'production' && (
           <>
             <Script
@@ -71,7 +71,8 @@ export default async function RootLayout({
               {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${GA_ID}');`}
+// La guía del frasco no se mide: su URL lleva el token con la composición recetada.
+if (!location.pathname.startsWith('/guia-frasco/')) gtag('config', '${GA_ID}');`}
             </Script>
           </>
         )}

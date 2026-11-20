@@ -3,7 +3,8 @@ import core from '@/lib/guia-frasco-core.json'
 import { composicionTexto, formatearPct, verificarGuia } from '@/lib/guia-frasco'
 import { GUIA_TEXTO } from '@/lib/guia-frasco-texto'
 
-export const metadata = { title: 'Guía de uso de tu frasco · EVIPro', robots: { index: false, follow: false } }
+// Sin referente: la dirección lleva el token y no debe viajar a la página siguiente ni a su analítica.
+export const metadata = { title: 'Guía de uso de tu frasco · EVIPro', robots: { index: false, follow: false }, referrer: 'no-referrer' as const }
 
 const Lista = ({ items }: { items: string[] }) => <ul className="list-disc pl-5 space-y-2">{items.map(i => <li key={i}>{i}</li>)}</ul>
 const Parrafos = ({ items }: { items: string[] }) => <>{items.map(i => <p key={i} className="mb-3">{i}</p>)}</>
