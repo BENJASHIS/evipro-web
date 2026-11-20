@@ -10,12 +10,23 @@ describe('guia-frasco', () => {
     // Vence al final del día de Lima (UTC-5): T0 + 90 días es el 12-feb-2027 a las 19:00 en Lima.
   expect(g).toMatchObject({ thc: 0.9, cbd: 10, exp: Date.UTC(2027, 1, 13, 4, 59, 59) / 1000 })
   })
+  // Enlace compacto (Carlos, 20-nov): firma de 22 caracteres y después «thc-cbd-vencimiento en base 36».
+  it('el enlace es corto y solo usa caracteres seguros en una URL', () => {
+    const t = firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }, T0, S)
+    expect(t.length).toBeLessThanOrEqual(40)
+    expect(t).toMatch(/^[A-Za-z0-9_-]{22}[0-9.]+-[0-9.]+-[0-9a-z]+$/)
+    expect(t.slice(22)).toBe('0.9-10-' + (Date.UTC(2027, 1, 13, 4, 59, 59) / 1000).toString(36))
+  })
   it('rechaza datos alterados, firma alterada, token cortado y basura', () => {
     const t = firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }, T0, S)
-    const [d, f] = t.split('.')
-    const otro = Buffer.from(JSON.stringify({ v: 1, thc: 20, cbd: 10, exp: T0 / 1000 + 1e6 })).toString('base64url')
-    for (const malo of [`${otro}.${f}`, `${d}.${f.slice(0, -2)}AA`, t.slice(0, -5), '', 'abc', 'a.b.c'])
+    const firma = t.slice(0, 22), datos = t.slice(22)
+    for (const malo of [firma + datos.replace('0.9-', '20-'), firma.slice(0, -2) + 'AA' + datos, t.slice(0, -2), '', 'abc', firma, firma + '1e1-10-zz'])
       expect(verificarGuia(malo, T0, S)).toBeNull()
+  })
+  it('redondea a 3 decimales, sin notación exponencial', () => {
+    const t = firmarGuia({ thc: 0.0004, cbd: 2.12345, dias: 30 }, T0, S)
+    expect(t.slice(22).startsWith('0-2.123-')).toBe(true)
+    expect(verificarGuia(t, T0, S)).toMatchObject({ thc: 0, cbd: 2.123 })
   })
   it('rechaza vencido', () => {
     const t = firmarGuia({ thc: 1, cbd: 1, dias: 30 }, T0, S)
