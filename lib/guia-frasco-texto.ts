@@ -1,8 +1,8 @@
-// Texto educativo de la guía del frasco. Versión v02 (output/guia-frasco-sublingual-v02-2026-11-19/),
+// Texto educativo de la guía del frasco. Versión v03 (output/guia-frasco-sublingual-v03-2026-11-19/),
 // en revisión de Carlos: se reemplaza por la versión aprobada antes de crear FRASCO_GUIDE_SECRET en Vercel.
 // Las instrucciones de uso no van aquí: salen de core (lib/guia-frasco-core.json).
 export const GUIA_TEXTO = {
-  version: 'v02-2026-11-19',
+  version: 'v03-2026-11-19',
   porcentajes: [
     'El THC (tetrahidrocannabinol) y el CBD (cannabidiol) son dos componentes de la planta de cannabis. Tu frasco dice cuánto tiene de cada uno.',
     'El THC es el que puede producir la sensación de estar bajo los efectos del cannabis.',
@@ -22,16 +22,17 @@ export const GUIA_TEXTO = {
   ],
   avisar: [
     'Si tienes efectos molestos, como sueño o cansancio, boca seca, náuseas, diarrea o menos apetito, avísale al médico que te lo indicó.',
-    'Si notas la piel o los ojos amarillos, la orina oscura o dolor en la parte alta derecha del abdomen, avísale ese mismo día.',
     'Antes de empezar, cambiar o dejar otro medicamento o suplemento, cuéntaselo: el cannabis puede interactuar con otros medicamentos, sobre todo con anticoagulantes y con medicamentos para la epilepsia o para dormir.',
     'Si quedas embarazada, buscas un embarazo o estás dando de lactar, avísale: en el embarazo y la lactancia se recomienda evitar el CBD y el THC.',
     'Esta guía es general. Si cambia algo de tu salud, como una enfermedad nueva, cuéntaselo también.',
   ],
   // Carlos (19-nov): los efectos intensos se avisan primero al médico (farmacovigilancia); emergencia
-  // si hay un signo de urgencia de las alarmas del seguimiento o se combinó con otros productos.
+  // ante un signo de urgencia o si no se calman o hubo combinación. Cada instrucción la recibe quien
+  // puede cumplirla: lo que exige estar consciente, el paciente; desmayo o convulsión, quien lo acompaña.
   urgente: [
     'Si los efectos son intensos, escríbele a tu médico para que te indique qué hacer y quede registrado.',
-    'Ve a emergencia o llama al 106 (SAMU) si te falta el aire, tienes dolor de pecho o te desmayas, tienes una convulsión, se te hinchan la cara o los labios, o no te pueden despertar; también si lo combinaste con otros medicamentos, alcohol u otros productos no indicados. Después avísale a tu médico.',
+    'Ve a emergencia o llama al 106 (SAMU) si te falta el aire, tienes dolor de pecho o se te hinchan la cara o los labios, o si los efectos intensos no se calman o aparecieron después de combinarlo con otros medicamentos, alcohol u otros productos no indicados. Después avísale a tu médico.',
+    'Cuéntale a quien vive contigo: si te desmayas, tienes una convulsión, no te pueden despertar o estás muy confundido, debe llamar al 106 o llevarte a emergencia, con el frasco.',
     'Si un niño toma el aceite por accidente, llévalo a emergencia o llama al 106 con el frasco, y avísale a tu médico.',
   ],
 }

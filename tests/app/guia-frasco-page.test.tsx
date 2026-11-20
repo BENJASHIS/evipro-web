@@ -12,9 +12,11 @@ it('muestra composición, visor, instrucciones de core y pie', async () => {
   const t = firmarGuia({ thc: 0.9, cbd: 10, dias: 90 }); const html = await render(t)
   for (const s of ['THC 0.9 % : CBD 10 % (9 : 100 mg/ml)', '1:11 THC:CBD · CBD dominante', 'No comer ni beber por 15 minutos antes y después.',
                    'Con THC menor de 1 %: bajo riesgo', '/frasco/visor/index.html#thc=0.9&amp;cbd=10', 'Esta guía no reemplaza tu receta', '106 (SAMU)',
-                   'avísale ese mismo día', 'escríbele a tu médico para que te indique qué hacer', 'Si un niño toma el aceite por accidente'])
+                   'escríbele a tu médico para que te indique qué hacer', 'Cuéntale a quien vive contigo', 'Si un niño toma el aceite por accidente'])
     expect(html).toContain(s)
-  expect(html).not.toMatch(/Cannavital|S\/\s?\d|mayor de edad/)
+  expect(html).not.toMatch(/Cannavital|S\/\s?\d|mayor de edad|ojos amarillos/)
+  // Lo que exige estar consciente se le pide al paciente; desmayo, convulsión o no despertar, a quien lo acompaña.
+  expect(html).not.toMatch(/Ve a emergencia[^.]*(desmay|convulsi|despertar)/)
   const orden = ['tu-frasco', 'visor', 'porcentajes', 'por-que', 'como-aplicar', 'cuidados', 'avisar'].map(id => html.indexOf(`id="${id}"`))
   expect(orden.every((p, i) => p > -1 && (i === 0 || p > orden[i - 1]))).toBe(true)
 })
