@@ -4,15 +4,15 @@
   "files": {
     "index.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "4bd9a6d845d1a5c3ccd98554ec0be540fc7b590c0ebd62e2ea90b2fe506fc84d"
+      "sha256": "bd2bf8ad1caf2caff6f877c5b32f0530a5b77479ef4b10cd170065deef122f05"
     },
     "style.css": {
       "type": "text/css; charset=utf-8",
-      "sha256": "044c76c84df5c2733ca19a85ca1fa8dd053478b69ac8ccc88260fe2c3af7c347"
+      "sha256": "f1753c685f88191e3eab56015ed328a8bb901dbe8b103f8d54b9132572103a4b"
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "9d24c87985f32aed63f129e6f78b681881ad951c85ebbdb198a35453013844a1"
+      "sha256": "06c35ec074932946f2c33e159fb62640391800f5e90873d1909441013f7c9811"
     },
     "learning.js": {
       "type": "text/javascript; charset=utf-8",
@@ -28,11 +28,11 @@
     },
     "composition.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "09c63cd66613798d0b25c7b2ce6ec445b7bbe5a930c03eea0564994f90361204"
+      "sha256": "1b0dfe0228c468058c5b5f73a40a74cdde64ef2ee71d431e5637f37d3ae86450"
     },
     "label-panels.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "86ebb5a89a481c5d80bbd67a9ea4b64930f01a89c1baec7319ec7805e0b6cc43"
+      "sha256": "e6581c6d249b4e4a0a783dd8648b2d9db97af3ef555476fbff1dca524d9d4adb"
     },
     "vendor/three.module.js": {
       "type": "text/javascript; charset=utf-8",
@@ -70,21 +70,13 @@
       "type": "text/plain; charset=utf-8",
       "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
     },
-    "cbd.html": {
-      "type": "text/html; charset=utf-8",
-      "sha256": "1acd1070fd91e8fc8a98461c0cd569751e9ad0d0e3a62b390437ad3240bfffa2"
-    },
     "index-en.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "cf492bce299b8c4064ab1efd442e52c2d4c6d0cd32e9974ba8043367a9d8bf49"
-    },
-    "cbd-en.html": {
-      "type": "text/html; charset=utf-8",
-      "sha256": "ef862c247ed1e74b758ff7b3aa787883680f1d0c79d8fedbf68661e2beec769c"
+      "sha256": "6f06e099ed5cef6311d53f45b18169966fd75f5f690e5d97caf6745e689a7723"
     },
     "app-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "238f8de8e0ea17efc08cef042dfe715124b50abb2e9a6d6df860a062f4ce82dd"
+      "sha256": "c54946b76a40de828a75ee9233945b3725bca8a9872bbe3eb7660f81b6fc0dd6"
     },
     "learning-en.js": {
       "type": "text/javascript; charset=utf-8",
@@ -92,7 +84,11 @@
     },
     "composition-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "94b042120cba11181561bd1c3339436ec9a9bd49e1cdac88541c01a0049312f9"
+      "sha256": "e499b8284407691ff9bfdbf41db91dee40dd24c03001802a09f667747a8e0c80"
+    },
+    "label-panels-en.js": {
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "8eed5b9c2b2fcc2afbe4adfedb59666f5ab1546dbd98d2f1913ca76d78c1ec5e"
     }
   }
 }

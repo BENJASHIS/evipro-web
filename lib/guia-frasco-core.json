@@ -1,0 +1,28 @@
+{
+  "fuente": "core/indicaciones.py",
+  "sublingual": [
+    "Colocar bajo la lengua y retener 60-90 segundos antes de tragar.",
+    "No comer ni beber por 15 minutos antes y después.",
+    "Pasados los 15 minutos se puede comer normal. Una comida muy grasa aumenta la absorción: tomarlo siempre de la misma manera respecto a las comidas, para que el efecto sea parejo."
+  ],
+  "almacenamiento": [
+    "Conservar en lugar fresco (máx 25°C), seco y oscuro.",
+    "Refrigeración optativa. No congelar.",
+    "Usar dentro de los 3 meses tras apertura del frasco.",
+    "Mantener lejos del alcance de menores."
+  ],
+  "umbral_thc_pct": 1.0,
+  "con_thc": [
+    "⚠ Producto con THC {thc_pct}%: NO conducir ni manejar maquinaria.",
+    "Evitar actividades que requieran concentración durante las primeras semanas.",
+    "Efectos intensos: avisar al médico, que indica qué hacer y los registra."
+  ],
+  "sin_thc": "Con THC menor de 1 %: bajo riesgo de efectos psicoactivos. Aun así, no conducir hasta conocer su respuesta individual.",
+  "umbral_altura_msnm": 3000,
+  "aviso_altura": "con menos oxígeno, los efectos pueden ser más intensos y confundirse con el soroche (mal de altura). Iniciar con dosis mínima y aumentar despacio.",
+  "evitar": [
+    "EVITAR: Pomelo y toronja: inhiben enzimas hepáticas y pueden aumentar niveles de cannabinoides en sangre.",
+    "EVITAR: Alcohol. Potencia efectos adversos, especialmente con THC."
+  ],
+  "inicio": "Bajo la lengua, el efecto puede empezar a los 15-45 minutos, pero a veces tarda hasta 2 horas: no tomes más mientras esperas."
+}

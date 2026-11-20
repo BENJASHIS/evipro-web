@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
   if (pathname.startsWith('/miembros') || pathname.startsWith('/admin')) {
     if (!user) {
       const login = new URL('/login', request.url)
-      if (pathname === BOTTLE_PATH || pathname.startsWith(`${BOTTLE_PATH}/visor/`)) login.searchParams.set('next',BOTTLE_PATH)
+      if (pathname === BOTTLE_PATH) login.searchParams.set('next',BOTTLE_PATH)
       return NextResponse.redirect(login)
     }
   }

@@ -25,14 +25,14 @@
       <h1 id="title">Explora la<br><em>composición.</em></h1>
       <p class="description">Porcentajes y ratio vinculados. Elige un ejemplo o ajusta los valores.</p>
       <fieldset id="composition-controls" class="composition-controls" disabled>
-        <legend>¿Cuánto CBD y THC contiene?</legend>
-        <label for="cbd-percent">Concentración de CBD (%)</label>
-        <input id="cbd-percent" type="number" min="0" max="100" step="any" value="10">
-        <input id="cbd-range" type="range" min="0" max="100" step="0.01" value="10" aria-label="Ajustar CBD">
+        <legend>¿Cuánto THC y CBD contiene?</legend>
         <label for="thc-percent">Concentración de THC (%)</label>
         <input id="thc-percent" type="number" min="0" max="100" step="any" value="0">
         <input id="thc-range" type="range" min="0" max="100" step="0.01" value="0" aria-label="Ajustar THC">
-        <output id="composition-mgml" aria-live="polite">En cada mL de aceite: CBD 100 mg · THC 0 mg</output>
+        <label for="cbd-percent">Concentración de CBD (%)</label>
+        <input id="cbd-percent" type="number" min="0" max="100" step="any" value="10">
+        <input id="cbd-range" type="range" min="0" max="100" step="0.01" value="10" aria-label="Ajustar CBD">
+        <output id="composition-mgml" aria-live="polite">En cada mL de aceite: THC 0 mg · CBD 100 mg</output>
         <p class="composition-note">Por ejemplo: CBD al 10 % significa 100 mg de CBD en cada mL de aceite.</p>
         <details class="composition-note"><summary>¿Qué significa este porcentaje?</summary><p>Se expresa como masa por volumen (% m/v): 10 % equivale a 10 gramos en 100 mL de preparación. No indica la dosis que debe tomar una persona. Las cifras se muestran redondeadas; el color del aceite no indica concentración.</p></details>
         <div class="ratio-heading">Ratio <strong>THC:CBD</strong> <output id="ratio-result">0:1</output></div>
@@ -44,12 +44,13 @@
         <button id="apply-ratio" type="button">Aplicar ratio, conservar total</button>
         <output id="composition-total">Concentración combinada: 10 %</output>
         <div class="composition-presets" aria-label="Ejemplos de composición">
-          <button type="button" data-preset="thc">I · THC dominante</button>
-          <button type="button" data-preset="balanced">II · Equilibrado</button>
-          <button type="button" data-preset="cbd">III · CBD dominante</button>
+          <button type="button" data-thc="0" data-cbd="10">CBD 10 % <small>Solo CBD</small></button>
+          <button type="button" data-thc="0.9" data-cbd="10">THC 0.9 % : CBD 10 % <small>1:11 THC:CBD · CBD dominante</small></button>
+          <button type="button" data-thc="2.5" data-cbd="5">THC 2.5 % : CBD 5 % <small>1:2 THC:CBD · CBD dominante</small></button>
+          <button type="button" data-thc="5" data-cbd="5">THC 5 % : CBD 5 % <small>1:1 THC:CBD · balanceado</small></button>
+          <button type="button" data-thc="10" data-cbd="5">THC 10 % : CBD 5 % <small>2:1 THC:CBD · THC dominante</small></button>
         </div>
-        <p class="composition-note">Ejemplos inspirados en I–III, editables. No clasifican ni certifican un lote real.</p>
-        <button id="restore-v04" type="button">Restaurar CBD al 10 %</button>
+        <p class="composition-note">Ejemplos de las composiciones más usadas, editables. No clasifican ni certifican un lote real.</p>
       </fieldset>
       <p id="composition-status" class="composition-note" role="status">Preparando los controles…</p>
       <p id="composition-error" role="alert" hidden></p>
@@ -79,6 +80,7 @@
       <nav class="label-faces" aria-label="Caras de la etiqueta">
         <button type="button" data-label-face="composition">Composición</button>
         <button type="button" data-label-face="cbd">CBD</button>
+        <button type="button" data-label-face="requisitos">Qué debe decir</button>
         <button type="button" data-label-face="thc">THC</button>
       </nav>
       <button type="button" class="compare-structures" id="compare-structures">Comparar estructuras en plano</button>

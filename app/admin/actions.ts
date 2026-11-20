@@ -1,18 +1,13 @@
 'use server'
-import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase-server'
-import { isAdminUser } from '@/lib/auth'
+import { createServiceClient } from '@/lib/supabase-server'
+import { requireAdmin } from '@/lib/admin-guard'
 import { computePeriodEnd } from '@/lib/billing'
 import { COUNSELING_BOOKING_CALENDAR_COLUMNS } from '@/lib/db-columns'
 import { confirmarEvento } from '@/lib/google-calendar'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-// Las server actions se exponen como endpoints POST y NO heredan el gate de
-// app/admin/layout.tsx. Cada una debe verificar admin por su cuenta.
-async function requireAdmin() {
-  const { data: { user } } = await (await createServerSupabaseClient()).auth.getUser()
-  if (!isAdminUser(user)) throw new Error('No autorizado')
-}
+// Cada server action llama a requireAdmin (lib/admin-guard.ts): no heredan el gate del layout.
 
 export async function activateSubscription(formData: FormData) {
   await requireAdmin()

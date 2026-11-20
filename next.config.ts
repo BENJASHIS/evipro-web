@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
     ];
   },
   outputFileTracingIncludes: {
-    '/miembros/contenido/explora-cbd-thc/visor/*': ['./private/frasco/**/*'],
+    '/frasco/visor/*': ['./private/frasco/**/*'],
   },
   images: {
     remotePatterns: [

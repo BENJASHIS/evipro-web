@@ -7,7 +7,7 @@ import { proxy } from '@/proxy'
 import { BOTTLE_PATH } from '@/lib/member-return'
 it('un enlace privado conserva el destino de biblioteca al pedir login',async()=>{
   mocks.user.mockResolvedValue({data:{user:null}})
-  for(const pathname of [BOTTLE_PATH,`${BOTTLE_PATH}/visor/app.js`]) {
+  for(const pathname of [BOTTLE_PATH]) {
     const response=await proxy(new NextRequest(`http://localhost${pathname}`))
     const target=new URL(response.headers.get('location')!)
     expect(target.pathname).toBe('/login')
