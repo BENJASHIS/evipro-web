@@ -1,11 +1,12 @@
 import { render, screen, cleanup } from '@testing-library/react'
-import { afterEach, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 const mocks=vi.hoisted(()=>({user:vi.fn(),access:vi.fn()}))
 vi.mock('@/lib/supabase-server',()=>({createServerSupabaseClient:async()=>({auth:{getUser:mocks.user}})}))
 vi.mock('@/lib/member-access',async(importOriginal)=>({...await importOriginal<typeof import('@/lib/member-access')>(),getMemberAccess:mocks.access}))
 vi.mock('next/navigation',()=>({redirect:(url:string)=>{throw new Error(`redirect:${url}`)}}))
 import Page from '@/app/miembros/contenido/explora-cbd-thc/page'
 afterEach(cleanup)
+beforeEach(()=>{ localStorage.clear(); localStorage.setItem('evipro-mayor-edad','1') })
 it('exige iniciar sesión',async()=>{
   mocks.user.mockResolvedValue({data:{user:null}})
   await expect(Page()).rejects.toThrow('redirect:/login')
@@ -24,4 +25,13 @@ it.each([{hasActiveMembership:true,adminPreview:false},{hasActiveMembership:fals
   render(await Page())
   expect(screen.getByTitle('Explora CBD y THC: visor didáctico')).toHaveAttribute('src','/frasco/visor/index.html')
   expect(screen.getByRole('link',{name:'Ir a la calculadora cannabinoide →'})).toBeInTheDocument()
+})
+
+it('sin confirmar la edad, el visor queda detrás del aviso',async()=>{
+  localStorage.clear()
+  mocks.user.mockResolvedValue({data:{user:{id:'u'}}})
+  mocks.access.mockResolvedValue({hasActiveMembership:true,adminPreview:false})
+  render(await Page())
+  expect(screen.getByRole('button',{name:'Sí, soy mayor de edad'})).toBeInTheDocument()
+  expect(screen.queryByTitle('Explora CBD y THC: visor didáctico')).toBeNull()
 })

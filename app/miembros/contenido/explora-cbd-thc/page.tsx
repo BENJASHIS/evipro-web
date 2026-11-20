@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { canUseMemberTools, getMemberAccess } from '@/lib/member-access'
 import VisorFrasco from './VisorFrasco'
+import AvisoEdad from '@/app/frasco/AvisoEdad'
 
 export const metadata = { title:'Explora CBD y THC · EVIPro',robots:{index:false,follow:false} }
 
@@ -20,7 +21,7 @@ export default async function ExploraCannabinoidesPage() {
     {access.adminPreview && <p className="text-brand text-sm mb-4"><T>Vista previa de administrador · sin membresía activa.</T></p>}
     <p className="text-sm leading-6 text-muted mb-4"><T>Gira el frasco, explora sus cuatro caras y compara las moléculas en plano o en 3D. Los controles muestran composición ilustrativa; no miden un preparado real ni recomiendan dosis.</T></p>
     <a href="/frasco/visor/index.html" target="_blank" rel="noopener noreferrer" className="inline-block text-brand underline mb-6"><T>Abrir visor en ventana completa ↗</T></a>
-    <VisorFrasco />
+    <AvisoEdad><VisorFrasco /></AvisoEdad>
     {!fullAccess && <div className="mt-4 text-sm">
       <p className="text-muted mb-2"><T>La calculadora requiere membresía activa.</T> <T>Para contratar una membresía, guarda primero tu </T><Link href="/miembros/perfil" className="text-brand underline"><T>perfil básico</T></Link><T>. No necesitas documento ni teléfono.</T></p>
       <Link href="/planes#membresias" className="text-brand underline"><T>Ver membresías</T></Link>
