@@ -4,11 +4,11 @@
   "files": {
     "index.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "bd2bf8ad1caf2caff6f877c5b32f0530a5b77479ef4b10cd170065deef122f05"
+      "sha256": "9849afbd86ae36852aa02206941c4130c3fb941ccf81128bf2842597691c9420"
     },
     "style.css": {
       "type": "text/css; charset=utf-8",
-      "sha256": "f1753c685f88191e3eab56015ed328a8bb901dbe8b103f8d54b9132572103a4b"
+      "sha256": "f3f9b003be4a5f85c62e6da903aa97cf0f721112270d385d24cbeb0765ec533e"
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
@@ -72,7 +72,7 @@
     },
     "index-en.html": {
       "type": "text/html; charset=utf-8",
-      "sha256": "6f06e099ed5cef6311d53f45b18169966fd75f5f690e5d97caf6745e689a7723"
+      "sha256": "4fb53b0e3c65e8b9a4505c4ff3bc83b341ae663617701527e1c29963cead1e55"
     },
     "app-en.js": {
       "type": "text/javascript; charset=utf-8",

@@ -27,7 +27,8 @@ export default function FrascoPage() {
       <AvisoEdad>
         <h1 className="font-serif text-4xl md:text-5xl mb-6">Cómo reconocer un preparado de cannabis medicinal</h1>
         <div className="max-w-3xl text-lg leading-relaxed"><Parrafos items={T.intro} /></div>
-        <section className="mt-8" aria-label="Frasco de ejemplo en 3D"><VisorFrasco /></section>
+        {/* En escritorio el visor sale del ancho del texto (hasta 1400 px) para usar sus tres columnas; en celular no cambia. */}
+        <section className="mt-8 lg:relative lg:left-1/2 lg:-translate-x-1/2 lg:w-[max(100%,min(100vw_-_4rem,1400px))]" aria-label="Frasco de ejemplo en 3D"><VisorFrasco /></section>
         <section id="etiqueta" className={seccion}>
           <h2 className={titulo}>Qué debe decir la etiqueta</h2>
           <p className="mb-3">{T.etiquetaIntro}</p>
