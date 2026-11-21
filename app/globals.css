@@ -57,6 +57,7 @@ body:has(.public-page) > footer {
 .public-page .public-panel .bg-brand { color: #eeeade; }
 .public-page .public-panel .hover\:text-white:hover { color: #20372c; }
 .home-page nav { max-width: 1200px; }
+.frasco-page nav { max-width: 1400px; }
 .home-page .home-title { font-size: clamp(2.6rem, 5.2vw, 4.6rem); letter-spacing: -.055em; line-height: 1.08; }
 .home-page .home-hero { padding-top: clamp(3rem, 7vw, 6rem); padding-bottom: 5rem; }
 .home-page .home-portrait { border-radius: 9rem 9rem 1rem 1rem; background: #1b2d25; }

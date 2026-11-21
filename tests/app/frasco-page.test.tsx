@@ -3,9 +3,14 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 vi.mock('@/app/miembros/contenido/explora-cbd-thc/VisorFrasco', () => ({ default: (p: { src?: string }) => <iframe data-src={p.src ?? '/frasco/visor/index.html'} /> }))
 vi.mock('@/app/components/Nav', () => ({ default: () => null }))
 vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') } }))
-import FrascoPage, { metadata } from '@/app/frasco/page'
+const idioma = vi.hoisted(() => ({ actual: 'es' as 'es' | 'en' }))
+vi.mock('@/lib/locale-server', () => ({ getLocale: async () => idioma.actual }))
+import FrascoPage, { generateMetadata } from '@/app/frasco/page'
+import { LanguageProvider } from '@/app/components/Language'
+import { FRASCO_TEXTO } from '@/lib/frasco-texto'
+import english from '@/lib/locales/en.json'
 
-beforeEach(() => { localStorage.clear(); vi.stubEnv('FRASCO_PUBLICO', '1') })
+beforeEach(() => { localStorage.clear(); vi.stubEnv('FRASCO_PUBLICO', '1'); idioma.actual = 'es' })
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs() })
 
 it('pregunta la edad antes de mostrar nada y no guarda un «No»', () => {
@@ -37,7 +42,22 @@ it('con el almacenamiento bloqueado pregunta igual y deja pasar', () => {
   render(<FrascoPage />); fireEvent.click(screen.getByRole('button', { name: 'Sí, soy mayor de edad' }))
   expect(document.querySelector('iframe')).not.toBeNull()
 })
-it('no se indexa', () => { expect(metadata.robots).toEqual({ index: false, follow: false }) })
+it('no se indexa', async () => { expect((await generateMetadata()).robots).toEqual({ index: false, follow: false }) })
+
+it('cada frase del texto aprobado tiene su versión en inglés', () => {
+  const frases = Object.entries(FRASCO_TEXTO).filter(([clave]) => clave !== 'version').flatMap(([, valor]) => valor)
+  const faltan = frases.filter(frase => !Object.hasOwn(english, frase))
+  expect(faltan).toEqual([])
+})
+it('en inglés, el aviso, el título, las secciones y la pestaña salen traducidos', async () => {
+  render(<LanguageProvider locale="en"><FrascoPage /></LanguageProvider>)
+  fireEvent.click(screen.getByRole('button', { name: 'Yes, I am of legal age' }))
+  expect(screen.getByRole('heading', { level: 1, name: 'How to recognize a medical cannabis preparation' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Where it is sold legally' })).toBeInTheDocument()
+  expect(document.body.textContent).not.toMatch(/Qué debe decir la etiqueta|Antes de usarlo|Tu médico decide/)
+  idioma.actual = 'en'
+  expect((await generateMetadata()).title).toBe('How to recognize a medical cannabis preparation · EVIPro')
+})
 
 it('sin FRASCO_PUBLICO=1 la página no existe (sale cuando la declaración de conflicto sea cierta)', () => {
   for (const valor of ['', '0', 'true']) {
