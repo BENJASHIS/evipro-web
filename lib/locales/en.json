@@ -1183,5 +1183,10 @@
   "Provincia": "Province",
   "Estado": "Status",
   "Fuente:": "Source:",
-  "DIGEMID, lista actualizada al {fecha}": "DIGEMID, list updated {fecha}"
+  "DIGEMID, lista actualizada al {fecha}": "DIGEMID, list updated {fecha}",
+  "Regen está disponible para miembros con membresía activa.": "Regen is available to members with an active membership.",
+  "Modo admin · vista previa de Regen sin membresía activa.": "Admin mode · preview of Regen without an active membership.",
+  "La bitácora está disponible para miembros con membresía activa.": "The habit log is available to members with an active membership.",
+  "Modo admin · vista previa de bitácora sin membresía activa.": "Admin mode · preview of the habit log without an active membership.",
+  "Registra señales simples de sueño, agua, alcohol, fármacos, comidas y síntomas para revisar patrones en consulta.": "Record simple signs about sleep, water, alcohol, medicines, meals and symptoms to review patterns in your consultation."
 }

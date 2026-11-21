@@ -16,14 +16,14 @@ export default async function RegenPage() {
   if (!canUseMemberTools(access)) {
     return (
       <div className="max-w-2xl">
-        <Link href="/miembros/herramientas" className="text-xs font-mono text-faint hover:text-white">← Volver</Link>
+        <Link href="/miembros/herramientas" className="text-xs font-mono text-faint hover:text-white"><T>← Volver</T></Link>
         <h1 className="text-2xl font-semibold mt-3">Regen</h1>
         <div className="border border-subtle rounded-lg p-8 text-center mt-6">
           <p className="text-muted text-sm mb-4">
-            Regen está disponible para miembros con membresía activa.
+            <T>Regen está disponible para miembros con membresía activa.</T>
           </p>
           <Link href="/planes#membresias" className="text-brand text-sm font-mono hover:underline">
-            Ver membresías →
+            <T>Ver membresías →</T>
           </Link>
         </div>
       </div>
@@ -40,11 +40,11 @@ export default async function RegenPage() {
 
   return (
     <div className="max-w-2xl">
-      <Link href="/miembros/herramientas" className="text-xs font-mono text-faint hover:text-white">← Volver</Link>
+      <Link href="/miembros/herramientas" className="text-xs font-mono text-faint hover:text-white"><T>← Volver</T></Link>
       {access.adminPreview && (
         <div className="border border-brand/30 bg-brand/5 rounded-lg p-4 mt-4">
           <p className="text-brand text-sm">
-            Modo admin · vista previa de Regen sin membresía activa.
+            <T>Modo admin · vista previa de Regen sin membresía activa.</T>
           </p>
         </div>
       )}
