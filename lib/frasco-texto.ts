@@ -1,8 +1,7 @@
-// Texto de evipro.pe/frasco. Versión v01 (output/frasco-etiqueta-v01-2026-11-19/), generada desde su
-// afirmaciones.json; Carlos resolvió sus puntos el 19-nov sin corregir el texto. La página no se publica
-// mientras la declaración de conflicto de interés no sea cierta (opción C: sin pagos de farmacias).
+// Texto de evipro.pe/frasco. Versión v02 (output/frasco-etiqueta-v02-2026-11-20/): la v01 sin la
+// declaración de conflicto de interés, que Carlos decidió no poner en la página (20-nov).
 export const FRASCO_TEXTO = {
-  version: 'v01-2026-11-19',
+  version: 'v02-2026-11-20',
   intro: [
     'Un preparado de cannabis medicinal en regla lo prepara una farmacia o botica con licencia, a partir de una receta médica.',
     'Su etiqueta dice de dónde viene y quién lo hizo. Gira el frasco de ejemplo y toca «Qué debe decir».',
@@ -44,5 +43,4 @@ export const FRASCO_TEXTO = {
     'Si tienes o tuviste psicosis, cuéntaselo antes a tu médico: los especialistas recomiendan evitar el THC.',
     'Si tomas otros medicamentos, cuéntaselo: el cannabis puede interactuar con ellos.',
   ],
-  conflicto: 'El Dr. Carlos Jara (EVIPro) no recibe pagos ni beneficios de farmacias; sus ingresos vienen de las consultas que pagan los pacientes. Cuando un paciente con receta lo pide, EVIPro le ayuda a coordinar la entrega desde la farmacia autorizada que él elija. El frasco de ejemplo se basó, con permiso, en el envase de una farmacia y no lleva su marca. Esta página no recomienda ninguna farmacia: la lista es la oficial de DIGEMID, completa.',
 }
