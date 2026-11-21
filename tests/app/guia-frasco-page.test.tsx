@@ -2,7 +2,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeAll, expect, it, vi } from 'vitest'
 vi.mock('@/app/miembros/contenido/explora-cbd-thc/VisorFrasco', () => ({ default: (p: { src?: string }) => <iframe data-src={p.src} /> }))
-import GuiaFrascoPage, { metadata } from '@/app/guia-frasco/[token]/page'
+import GuiaFrascoPage, { metadata } from '@/app/g/[token]/page'
 import { firmarGuia } from '@/lib/guia-frasco'
 
 const render = async (token: string) => renderToStaticMarkup(await GuiaFrascoPage({ params: Promise.resolve({ token }) }))

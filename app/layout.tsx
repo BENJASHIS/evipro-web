@@ -72,7 +72,7 @@ export default async function RootLayout({
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 // La guía del frasco no se mide: su URL lleva el token con la composición recetada.
-if (!location.pathname.startsWith('/guia-frasco/')) gtag('config', '${GA_ID}');`}
+if (!location.pathname.startsWith('/g/')) gtag('config', '${GA_ID}');`}
             </Script>
           </>
         )}

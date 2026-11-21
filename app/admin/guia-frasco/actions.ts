@@ -25,7 +25,7 @@ export async function crearEnlaceGuia(_prev: EstadoEnlace | null, formData: Form
     if (error instanceof Error && error.message.includes('FRASCO_GUIDE_SECRET')) return { ok: false, error: 'Falta configurar FRASCO_GUIDE_SECRET en Vercel, con al menos 32 caracteres.' }
     throw error
   }
-  const url = `${SITE_URL}/guia-frasco/${token}`
+  const url = `${SITE_URL}/g/${token}`
   const vence = new Date(ahora + dias * 86_400_000).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })
   const { linea, proporcion } = composicionTexto(thc, cbd)
   const whatsapp = 'https://wa.me/?text=' + encodeURIComponent(`Esta es la guía de uso de tu frasco: ${url} · válida hasta el ${vence}`)
