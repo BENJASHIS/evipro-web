@@ -32,16 +32,17 @@ export const frontLines = (c) => [
 ];
 
 // Cara «Qué debe decir»: mínimo del rotulado de un preparado (NTS 122, 6.7.2) con valores ficticios.
-// Texto v01: la redacción final sale de la revisión de Carlos (tarea 11 del plan).
+// Requisitos en negrita y ejemplos ficticios en peso normal (Carlos, 21-nov-2026).
 export const REQUISITOS_LINEAS = [
   { text: 'QUÉ DEBE DECIR', y: 145, size: 95, bold: true },
-  { text: 'FARMACIA DE EJEMPLO', y: 270, size: 62 },
-  { text: 'Preparado N.° 0000', y: 395, size: 62 },
-  { text: 'Vía sublingual', y: 520, size: 62 },
-  { text: 'ADVERTENCIAS DE USO', y: 645, size: 62 },
-  { text: 'Elaborado: DD/MM/AAAA', y: 770, size: 62 },
-  { text: 'Q.F. NOMBRE APELLIDO', y: 895, size: 62 },
-  { text: 'Conservar bien cerrado, sin luz', y: 1020, size: 62 },
-  { text: 'USO INTERNO', y: 1145, size: 62 },
+  { label: 'Farmacia:', text: 'Farmacia de ejemplo', y: 270, size: 62 },
+  { label: 'Preparado:', text: 'N.° 0000', y: 395, size: 62 },
+  { label: 'Vía:', text: 'Sublingual', y: 520, size: 62 },
+  { label: 'Advertencias:', text: 'Advertencias del preparado', y: 645, size: 62 },
+  { label: 'Elaborado:', text: 'DD/MM/AAAA', y: 770, size: 62 },
+  { label: 'Profesional:', text: 'Q. F. Nombre Apellido', y: 895, size: 62 },
+  { label: 'Conservación:', text: 'Bien cerrado, sin luz', y: 1020, size: 62 },
+  { label: 'Uso:', text: 'Interno', y: 1145, size: 62 },
   { text: 'MANTÉNGASE ALEJADO DE LOS NIÑOS', y: 1270, size: 62, bold: true },
+  { text: 'Etiqueta de ejemplo · datos ficticios', y: 1360, size: 42 },
 ];

@@ -139,7 +139,23 @@ function labelTexture() {
     let current = fromHash(location.hash) || composition(10, 0);
     function paint(c) {
       ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, 4096, 1400);
-      const text = (value, x, y, size, bold = false) => {
+      const text = (value, x, y, size, bold = false, label = '') => {
+        if (label) {
+          ctx.save();
+          ctx.fillStyle = '#172e28'; ctx.textAlign = 'left';
+          ctx.font = `bold ${size}px DejaVu Sans`;
+          const labelWidth = ctx.measureText(`${label} `).width;
+          ctx.font = `${size}px DejaVu Sans`;
+          const width = labelWidth + ctx.measureText(value).width;
+          const scale = Math.min(1, PANEL_TEXT_MAX / width);
+          ctx.translate(x, y); ctx.scale(scale, scale);
+          ctx.font = `bold ${size}px DejaVu Sans`;
+          ctx.fillText(`${label} `, -width / 2, 0);
+          ctx.font = `${size}px DejaVu Sans`;
+          ctx.fillText(value, -width / 2 + labelWidth, 0);
+          ctx.restore();
+          return;
+        }
         ctx.fillStyle = '#172e28'; ctx.textAlign = 'center';
         ctx.font = `${bold ? 'bold ' : ''}${size}px DejaVu Sans`;
         const width = ctx.measureText(value).width;
@@ -148,7 +164,7 @@ function labelTexture() {
       };
       const front = PANEL_CENTERS.composition;
       for (const line of frontLines(c)) text(line.text, front, line.y, line.size, line.bold);
-      for (const line of REQUISITOS_LINEAS) text(line.text, PANEL_CENTERS.requisitos, line.y, line.size, line.bold);
+      for (const line of REQUISITOS_LINEAS) text(line.text, PANEL_CENTERS.requisitos, line.y, line.size, line.bold, line.label);
       for (const [kind,image,name] of [['cbd',cbdImage,'CANNABIDIOL'],['thc',thcImage,'Δ9-TETRAHIDROCANNABINOL']]) {
         const x = PANEL_CENTERS[kind];
         text(kind === 'cbd' ? 'CBD' : 'Δ9-THC', x, 155, 110, true);

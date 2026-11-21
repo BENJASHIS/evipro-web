@@ -32,16 +32,17 @@ export const frontLines = (c) => [
 ];
 
 // Cara «Qué debe decir»: mínimo del rotulado de un preparado (NTS 122, 6.7.2) con valores ficticios.
-// Texto v01: la redacción final sale de la revisión de Carlos (tarea 11 del plan).
+// Requisitos en negrita y ejemplos ficticios en peso normal (Carlos, 21-nov-2026).
 export const REQUISITOS_LINEAS = [
   { text: "WHAT IT MUST SAY", y: 145, size: 95, bold: true },
-  { text: "SAMPLE PHARMACY", y: 270, size: 62 },
-  { text: "Preparation No. 0000", y: 395, size: 62 },
-  { text: "Sublingual route", y: 520, size: 62 },
-  { text: "USE WARNINGS", y: 645, size: 62 },
-  { text: "Made: DD/MM/YYYY", y: 770, size: 62 },
-  { text: "PHARMACIST NAME SURNAME", y: 895, size: 62 },
-  { text: "Keep tightly closed, away from light", y: 1020, size: 62 },
-  { text: "INTERNAL USE", y: 1145, size: 62 },
+  { label: "Pharmacy:", text: "Sample pharmacy", y: 270, size: 62 },
+  { label: "Preparation:", text: "No. 0000", y: 395, size: 62 },
+  { label: "Route:", text: "Sublingual", y: 520, size: 62 },
+  { label: "Warnings:", text: "Preparation warnings", y: 645, size: 62 },
+  { label: "Made:", text: "DD/MM/YYYY", y: 770, size: 62 },
+  { label: "Professional:", text: "Pharmacist Name Surname", y: 895, size: 62 },
+  { label: "Storage:", text: "Tightly closed, away from light", y: 1020, size: 62 },
+  { label: "Use:", text: "Internal", y: 1145, size: 62 },
   { text: "KEEP OUT OF REACH OF CHILDREN", y: 1270, size: 62, bold: true },
+  { text: "Sample label · fictional data", y: 1360, size: 42 },
 ];

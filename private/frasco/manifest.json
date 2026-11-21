@@ -12,7 +12,7 @@
     },
     "app.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "06c35ec074932946f2c33e159fb62640391800f5e90873d1909441013f7c9811"
+      "sha256": "6894bd4e15a2da64a52e8e2c3f71903ac7571abbac13b11b3d3596d816d4bea7"
     },
     "learning.js": {
       "type": "text/javascript; charset=utf-8",
@@ -32,7 +32,7 @@
     },
     "label-panels.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "e6581c6d249b4e4a0a783dd8648b2d9db97af3ef555476fbff1dca524d9d4adb"
+      "sha256": "4bd6bc98811592f5376911705db653f44ef2cc9daacf1174daebabfa0f96da39"
     },
     "vendor/three.module.js": {
       "type": "text/javascript; charset=utf-8",
@@ -76,7 +76,7 @@
     },
     "app-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "c54946b76a40de828a75ee9233945b3725bca8a9872bbe3eb7660f81b6fc0dd6"
+      "sha256": "7f6992da30993e090cab7eb880b5ae70f2a5cb456d68818a278b1e9f7ed625fd"
     },
     "learning-en.js": {
       "type": "text/javascript; charset=utf-8",
@@ -88,7 +88,7 @@
     },
     "label-panels-en.js": {
       "type": "text/javascript; charset=utf-8",
-      "sha256": "8eed5b9c2b2fcc2afbe4adfedb59666f5ab1546dbd98d2f1913ca76d78c1ec5e"
+      "sha256": "9116ae1058d47d762a12c084816b1614c827fccda33f97631c7cce4ba94e289a"
     }
   }
 }
